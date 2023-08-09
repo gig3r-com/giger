@@ -1,0 +1,22 @@
+@import '../../variables.scss';
+
+.big-button {
+    clip-path: polygon(0 0, 100% 0, 100% 77%, 96% 100%, 4% 100%, 0 77%);
+    background-color: $primary-color;
+    font-family: 'Saira', sans-serif;
+    font-weight: 500;
+    width: 100%;
+    border-radius: 0;
+    height: 60px;
+
+    &__text {
+        font-size: 20px;
+        text-transform: capitalize;
+        font-weight: 500;
+        font-stretch: semi-condensed;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: $text-color;
+    }
+}

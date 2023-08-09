@@ -1,0 +1,18 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient x1="39.336%" y1="0%" x2="60.664%" y2="100%" id="t6g2sm9tna">
+            <stop stop-color="#22193C" offset="0%"/>
+            <stop stop-color="#0A0613" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <path fill="url(#t6g2sm9tna)" d="M0 0h375v812H0z" transform="translate(-164 -331)"/>
+        <path fill-opacity=".15" fill="#86C0FF" d="M23.5-33 72.43-4.75v56.5L23.5 80l-48.93-28.25v-56.5z"/>
+        <path d="M23.5-31.268 70.93-3.884v54.768L23.5 78.268l-47.43-27.384V-3.884L23.5-31.268z" stroke="#545AE9" stroke-width="3"/>
+        <path stroke="#545AE9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0,11" d="M7-20.75V70M16.5-28.312V80.313M41-19.75V71M29.5-28.312V80.313"/>
+        <g fill="#FFF" fill-rule="nonzero">
+            <path d="M24 10c7.732 0 14 6.268 14 14s-6.268 14-14 14-14-6.268-14-14 6.268-14 14-14zm0 2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z"/>
+            <path d="M25 31v12h-2V31h2zm6-8h12v2H31v-2zm-14 2H5v-2h12v2zm8-20v12h-2V5h2z"/>
+        </g>
+    </g>
+</svg>
