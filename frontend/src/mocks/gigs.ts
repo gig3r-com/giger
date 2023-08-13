@@ -169,7 +169,7 @@ export const mockGigs: IGig[] = [
         category: GigCategoryNames.COMBAT
     },
     {
-        status: GigStatus.AVAILABLE,
+        status: GigStatus.IN_PROGRESS,
         id: '10',
         title: 'Cybernetics Sabotage',
         payout: 600,

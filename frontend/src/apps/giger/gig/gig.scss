@@ -39,15 +39,15 @@
         &--available {
             border-color: $primary-color;
         }
-        &--completed {
+        &--in-progress {
             border-color: $secondary-color;
         }
         &--available:before,
         &--available:after {
             background-color: $primary-color;
         }
-        &--completed:before,
-        &--completed:after {
+        &--in-progress:before,
+        &--in-progress:after {
             background-color: $secondary-color;
         }
 
@@ -99,9 +99,27 @@
         }
     }
 
+    &--in-progress &__title {
+        &:before {
+            background: $secondary-color;
+        }
+    }
+
+    &--completed &__title {
+        &:before {
+            background: $accent-color;
+        }
+    }
+
     .big-button {
         width: 95%;
         position: relative;
         top: -1px;
+    }
+
+    &__message {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        color: $muted-text;
     }
 }

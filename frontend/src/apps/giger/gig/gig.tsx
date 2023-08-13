@@ -6,6 +6,7 @@ import { IGigProps } from './gig.model';
 
 import './gig.scss';
 import { BigButton } from '../../../shared/big-button/big-button';
+import { useIntl } from 'react-intl';
 
 export const Gig: FC<IGigProps> = ({
     gig,
@@ -13,8 +14,12 @@ export const Gig: FC<IGigProps> = ({
     setSelected,
     delayMultiplier
 }) => {
+    const intl = useIntl();
     const gigClassname = classNames({
         gig: true,
+        'gig--completed': gig.status === GigStatus.COMPLETED,
+        'gig--in-progress': gig.status === GigStatus.IN_PROGRESS,
+        'gig--available': gig.status === GigStatus.AVAILABLE,
         'gig--selected': selectedId === gig.id,
         'gig--other-selected': selectedId !== gig.id && selectedId !== undefined
     });
@@ -25,6 +30,28 @@ export const Gig: FC<IGigProps> = ({
         'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
         'gig__summary--available': gig.status === GigStatus.AVAILABLE
     });
+
+    const buttonColor = () => {
+        switch (gig.status) {
+            case GigStatus.AVAILABLE:
+                return 'primary';
+            case GigStatus.IN_PROGRESS:
+                return 'secondary';
+            case GigStatus.COMPLETED:
+                return 'accent';
+        }
+    }
+
+    const buttonText = () => {
+        switch (gig.status) {
+            case GigStatus.AVAILABLE:
+                return intl.formatMessage({id: 'ACCEPT_GIG'});
+            case GigStatus.IN_PROGRESS:
+                return intl.formatMessage({id: 'MARK AS DONE'});
+            case GigStatus.COMPLETED:
+                return 'VIEW GIG';
+        }
+    }
 
     return (
         <li className={gigClassname}>
@@ -61,14 +88,14 @@ export const Gig: FC<IGigProps> = ({
                         }}
                     >
                         <BigButton
-                            text="ACCEPT GIG"
-                            color="primary"
+                            text={buttonText()}
+                            color={buttonColor()}
                             onClick={() => console.log('Gig accepted')}
                         />
                         <p className="gig__description">{gig.description}</p>
                         {gig.status === GigStatus.IN_PROGRESS &&
                             gig.messages.map((message) => (
-                                <span className="gig__message">{`${message.date} <${message.sender}> ${message.text}`}</span>
+                                <p className="gig__message">{`${message.date.toLocaleTimeString()} <${message.sender}> ${message.text}`}</p>
                             ))}
                     </motion.article>
                 )}

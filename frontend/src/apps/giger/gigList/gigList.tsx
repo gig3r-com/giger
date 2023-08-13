@@ -2,12 +2,21 @@ import { FC, useState } from 'react';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
+import { GigStatus, IGig } from '../../../models/gig';
 
 import './gigList.scss';
-import { IGig } from '../../../models/gig';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const [selectedGig, setSelectedGig] = useState<IGig | null>(null);
+
+    const sortedGigs = gigs.sort((a, b) => {
+        const statusesRank = {
+            [GigStatus.IN_PROGRESS]: 1,
+            [GigStatus.AVAILABLE]: 2,
+            [GigStatus.COMPLETED]: 3
+        };
+        return statusesRank[a.status] - statusesRank[b.status];
+    });
     const selectGig = (gig: IGig) => {
         selectedGig?.id === gig.id ? setSelectedGig(null) : setSelectedGig(gig);
     };
@@ -47,7 +56,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
             </header>
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
-                    {gigs.map((gig, i) => (
+                    {sortedGigs.map((gig, i) => (
                         <Gig
                             gig={gig}
                             key={gig.id}

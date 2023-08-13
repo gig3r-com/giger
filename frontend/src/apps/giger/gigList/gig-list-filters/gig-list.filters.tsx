@@ -1,5 +1,7 @@
 import { FC, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import classNames from 'classnames';
+import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { Hexagon } from '../hexagon/hexagon';
 import { GigCategoryNames } from '../../../../models/gig';
 import { categoriesByRows } from '../../categories';
@@ -7,8 +9,6 @@ import { BigButton } from '../../../../shared/big-button/big-button';
 import { IGigListFiltersProps } from './gig-list-filters.model';
 
 import './gig-list-filters.scss';
-import classNames from 'classnames';
-
 // import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
 // import { ShaderBG } from '../../shared/shader-bg/shaderBg';
 // import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
@@ -56,10 +56,10 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
         <section className={filtersClasses}>
             <header className="gig-list-filters__controls">
                 <span className="gig-list-filters__cancel" onClick={cancel}>
-                    CANCEL
+                    <MemoizedFormattedMessage id='CANCEL' />
                 </span>
             </header>
-            
+
             <div className="gig-list-filters__body">
                 {categoriesByRows.map((categoryRow, index) => (
                     <div
