@@ -1,0 +1,64 @@
+@import '../../../../variables.scss';
+
+.hexagon {
+    position: relative;
+    margin-right: -5px;
+
+    &__border {
+        fill-opacity: 1;
+        stroke: $primary-color;
+        stroke-width: 1;
+        fill: transparent;
+        stroke-dasharray: 333;
+        stroke-dashoffset: 0;
+        transition: 0.4s $standard-timing-function stroke-dashoffset;
+        animation: 0.4s borderThin $standard-timing-function both;
+
+        &--active {
+            animation: 0.4s borderWide $standard-timing-function both;
+        }
+    }
+
+    &__icon {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    &__background {
+        fill: $muted-background;
+        fill-opacity: 0;
+        transition: $standard-duration $standard-timing-function fill-opacity;
+
+        &--active {
+            fill-opacity: .15;
+        }
+    }
+
+    &__dots {
+        opacity: 0;
+        transition: $standard-duration $standard-timing-function opacity;
+
+        &--active {
+            opacity: 1;
+        }
+    }
+}
+
+@keyframes borderWide {
+    10% { stroke-width: 0; stroke-dashoffset: 0; }
+    11% { stroke-width: 0; stroke-dashoffset: 333; }
+    100% { stroke-dashoffset: 0; stroke-width: 5; }
+}
+
+@keyframes borderThin {
+    10% { stroke-width: 0; stroke-dashoffset: 0; }
+    11% { stroke-dashoffset: 333; }
+    50% { stroke-width: 1; }
+    100% { stroke-dashoffset: 0; stroke-width: 1; }
+}
+

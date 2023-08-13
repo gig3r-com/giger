@@ -1,11 +1,14 @@
 import { IMessage } from "./message";
 
 export interface IGig {
-    status: string;
+    status: GigStatus;
     id: string;
     payout: number;
+    title: string;
     description: string;
     messages: IMessage[];
+    category: GigCategoryNames;
+    reputationRequired?: number; //0-10
 }
 
 export interface IGigCategory {
@@ -23,4 +26,10 @@ export enum GigCategoryNames {
     HACKING = 'hacking',
     WEAPONS = 'weapons',
     DRUGS = 'drugs'
+}
+
+export enum GigStatus {
+    AVAILABLE = 'available',
+    IN_PROGRESS = 'in_progress',
+    COMPLETED = 'completed'
 }

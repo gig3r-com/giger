@@ -48,9 +48,9 @@ export const categories: IGigCategory[] = [
     }
 ]
 
-export const categoriesByRows: IGigCategory[][] = [
-    categories.slice(0, 3),
-    categories.slice(3, 5),
-    categories.slice(5, 8),
-    categories.slice(8, 9)
+export const categoriesByRows: GigCategoryNames[][] = [
+    categories.slice(0, 3).map(cat => cat.type),
+    categories.slice(3, 5).map(cat => cat.type),
+    categories.slice(5, 8).map(cat => cat.type),
+    categories.slice(8, 9).map(cat => cat.type)
 ]

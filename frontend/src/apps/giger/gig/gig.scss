@@ -1,0 +1,106 @@
+@import '../../../variables.scss';
+
+.gig {
+    display: block;
+    list-style: none;
+    transition: $standard-duration $standard-timing-function;
+    transition-property: height, min-height, margin-bottom;
+    height: 85px;
+    min-height: 85px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+
+    &--selected {
+        height: $standard-viewport-height;
+    }
+
+    &--other-selected {
+        height: 0;
+        min-height: 0;
+        margin-bottom: 0;
+    }
+
+    &__summary {
+        position: relative;
+        box-sizing: border-box;
+        border: 3px solid;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 85px;
+        padding: 0.5rem;
+        padding-left: 1rem;
+        cursor: pointer;
+        clip-path: polygon(4% 0, 100% 0, 100% 79%, 95% 100%, 0 100%, 0 16%);
+        flex-wrap: wrap;
+
+        &--available {
+            border-color: $primary-color;
+        }
+        &--completed {
+            border-color: $secondary-color;
+        }
+        &--available:before,
+        &--available:after {
+            background-color: $primary-color;
+        }
+        &--completed:before,
+        &--completed:after {
+            background-color: $secondary-color;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -9px;
+            width: 34px;
+            height: 2px;
+            transform: rotate(315deg);
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: -5px;
+            width: 34px;
+            height: 2px;
+            transform: rotate(315deg);
+        }
+    }
+
+    &__date {
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    &__title {
+        margin: 0 0 3px;
+        font-size: 22px;
+        font-weight: 400;
+        font-stretch: semi-condensed;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #fff;
+        width: 100%;
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100px;
+            background: $primary-color;
+        }
+    }
+
+    .big-button {
+        width: 95%;
+        position: relative;
+        top: -1px;
+    }
+}

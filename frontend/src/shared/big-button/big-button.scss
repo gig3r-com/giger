@@ -19,4 +19,20 @@
         letter-spacing: normal;
         color: $text-color;
     }
+
+    &--primary {
+        background-color: $primary-color;
+    }
+
+    &--secondary {
+        background-color: $secondary-color;
+    }
+
+    &--accent {
+        background-color: $accent-color;
+    }
+
+    &--accent2 {
+        background-color: $accent-color-2;
+    }
 }

@@ -1,49 +1,39 @@
-import { Hexagon } from './hexagon/hexagon';
-
 import './giger.scss';
-import { IGigCategory } from '../../models/gig';
+import { GigCategoryNames, IGig } from '../../models/gig';
 import { useState } from 'react';
-import { categoriesByRows } from './categories';
-import { AnimatePresence } from 'framer-motion';
-import { BigButton } from '../../shared/big-button/big-button';
+import { GigList } from './gigList/gigList';
+import { mockGigs } from '../../mocks/gigs';
+import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 // import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
 // import { ShaderBG } from '../../shared/shader-bg/shaderBg';
 // import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
 
 export const Giger = () => {
-    const [selectedCategories, setSelectedCategories] = useState<
-        IGigCategory[]
-    >([]);
+    const [menuState, setMenuState] = useState<'list' | 'filters'>('list');
+    const [filteredGigs, setFilteredGigs] = useState<IGig[]>(mockGigs);
 
-    const handleCategoryClick = (category: IGigCategory) => {
-        if (selectedCategories.includes(category)) {
-            setSelectedCategories(
-                selectedCategories.filter((c) => c !== category)
-            );
-        } else {
-            setSelectedCategories([...selectedCategories, category]);
-        }
+    const onFiltersUpdate = (categories: Set<GigCategoryNames>) => {
+        const filteredList = mockGigs.filter((gig) =>
+            categories.has(gig.category)
+        );
+        setFilteredGigs(categories.size === 0 ? mockGigs : filteredList);
+    };
+
+    const toggleMenuState = () => {
+        setMenuState(menuState === 'filters' ? 'list' : 'filters');
     };
 
     return (
-        <section className='giger'>
-            {/* <ShaderBG shader={blackFlower(ShaderPrecision.low)} /> */}
-            {categoriesByRows.map((categoryRow, index) => (
-                <div className="giger__filter-row" key={`catRow${index}`}>
-                    {categoryRow.map((category, catIndex) => (
-                        <AnimatePresence>
-                            <Hexagon
-                                key={category.type}
-                                select={handleCategoryClick}
-                                category={category}
-                                delayMultiplier={catIndex}
-                            />
-                        </AnimatePresence>
-                    ))}
-                </div>
-            ))}
-
-            <BigButton text="SAVE" onClick={() => {}} />
-        </section>
+        <article className="giger">
+            <GigList
+                gigs={filteredGigs}
+                toggleMenuState={toggleMenuState}
+            />
+            <GigListFilters
+                onFiltersUpdate={onFiltersUpdate}
+                toggleMenuState={toggleMenuState}
+                active={menuState === 'filters'}
+            />
+        </article>
     );
 };
