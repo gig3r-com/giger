@@ -66,22 +66,8 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-
-    a:hover {
-        color: #747bff;
-    }
-
-    button {
-        background-color: #f9f9f9;
-    }
-}
-
 body {
     background: linear-gradient(155deg, #22193c, #0a0613 100%);
     width: 100%;
+    color: white;
 }

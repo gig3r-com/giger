@@ -7,7 +7,12 @@ import { IGigProps } from './gig.model';
 import './gig.scss';
 import { BigButton } from '../../../shared/big-button/big-button';
 
-export const Gig: FC<IGigProps> = ({ gig, selectedId, setSelected }) => {
+export const Gig: FC<IGigProps> = ({
+    gig,
+    selectedId,
+    setSelected,
+    delayMultiplier
+}) => {
     const gigClassname = classNames({
         gig: true,
         'gig--selected': selectedId === gig.id,
@@ -22,54 +27,52 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, setSelected }) => {
     });
 
     return (
-        <AnimatePresence>
-            <motion.li className={gigClassname}>
-                <div
+        <li className={gigClassname}>
+            <AnimatePresence>
+                <motion.div
                     className={gigSummaryClassName}
                     onClick={() => setSelected(gig)}
                     key={gig.id}
-                    // //initial={{ opacity: 0, height: 0 }}
-                    // animate={{ opacity: 1, height: 'auto' }}
-                    // exit={{ opacity: 0, height: 0 }}
-                    // transition={{
-                    //     delay: delayMultiplier * 0.1,
-                    //     ease: cubicBezier(0.16, 1, 0.3, 1)
-                    // }}
+                    initial={{ opacity: 0, transform: 'scaleX(0)' }}
+                    animate={{ opacity: 1, transform: 'scaleX(1)' }}
+                    exit={{ opacity: 0, transform: 'scaleX(0)', height: 0 }}
+                    transition={{
+                        delay: delayMultiplier * 0.06,
+                        ease: cubicBezier(0.16, 1, 0.3, 1)
+                    }}
                 >
                     <h3 className="gig__title">{gig.title}</h3>
                     <span className="gig__payout">{gig.payout} ¤</span>
                     <span className="gig__reputation">
                         {gig.reputationRequired}★
                     </span>
-                </div>
+                </motion.div>
+            </AnimatePresence>
 
-                <AnimatePresence>
-                    {selectedId === gig.id && (
-                        <motion.article
-                            className="gig_details"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{
-                                ease: cubicBezier(0.16, 1, 0.3, 1)
-                            }}
-                        >
-                            <BigButton
-                                text="ACCEPT GIG"
-                                color="primary"
-                                onClick={() => console.log('Gig accepted')}
-                            />
-                            <p className="gig__description">
-                                {gig.description}
-                            </p>
-                            {gig.status === GigStatus.IN_PROGRESS &&
-                                gig.messages.map((message) => (
-                                    <span className="gig__message">{`${message.date} <${message.sender}> ${message.text}`}</span>
-                                ))}
-                        </motion.article>
-                    )}
-                </AnimatePresence>
-            </motion.li>
-        </AnimatePresence>
+            <AnimatePresence>
+                {selectedId === gig.id && (
+                    <motion.article
+                        className="gig_details"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{
+                            ease: cubicBezier(0.16, 1, 0.3, 1)
+                        }}
+                    >
+                        <BigButton
+                            text="ACCEPT GIG"
+                            color="primary"
+                            onClick={() => console.log('Gig accepted')}
+                        />
+                        <p className="gig__description">{gig.description}</p>
+                        {gig.status === GigStatus.IN_PROGRESS &&
+                            gig.messages.map((message) => (
+                                <span className="gig__message">{`${message.date} <${message.sender}> ${message.text}`}</span>
+                            ))}
+                    </motion.article>
+                )}
+            </AnimatePresence>
+        </li>
     );
 };

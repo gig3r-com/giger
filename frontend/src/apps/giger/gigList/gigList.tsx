@@ -45,31 +45,19 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                     FILTERS
                 </span>
             </header>
-            <AnimatePresence>
-                <motion.ul
-                    className="gig-list__list"
-                    animate={{ opacity: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1] }}
-                    transition={{
-                        duration: 0.4,
-                        times: [
-                            0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1
-                        ],
-                        ease: 'linear'
-                    }}
-                >
-                    <AnimatePresence>
-                        {gigs.map((gig, i) => (
-                            <Gig
-                                gig={gig}
-                                key={gig.id}
-                                selectedId={selectedGig?.id}
-                                setSelected={selectGig}
-                                delayMultiplier={i}
-                            />
-                        ))}
-                    </AnimatePresence>
-                </motion.ul>
-            </AnimatePresence>
+            <motion.ul className="gig-list__list">
+                <AnimatePresence>
+                    {gigs.map((gig, i) => (
+                        <Gig
+                            gig={gig}
+                            key={gig.id}
+                            selectedId={selectedGig?.id}
+                            setSelected={selectGig}
+                            delayMultiplier={i}
+                        />
+                    ))}
+                </AnimatePresence>
+            </motion.ul>
         </section>
     );
 };
