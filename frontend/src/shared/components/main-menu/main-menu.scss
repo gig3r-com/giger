@@ -1,4 +1,4 @@
-@import '../../variables.scss';
+@import '../../../variables.scss';
 
 .main-menu {
     width: 100%;
@@ -9,6 +9,8 @@
     bottom: 0;
     left: 0;
     display: block;
+    backdrop-filter: blur(8px);
+    border-top: 1px solid $input-text-color;
 
     &__option {
         width: calc(25% - 15px);
@@ -37,8 +39,11 @@
 
         &--active {
             background-image: linear-gradient(to bottom, rgba(84, 90, 233, 0) 28%, rgba(84, 90, 233, 0.2));
-            color: #fff;
-
+            
+            a {
+                color: #fff;
+            }
+            
             &::before {
                 background-color: #fff;
                 transform: scaleY(1);

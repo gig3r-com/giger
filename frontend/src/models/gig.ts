@@ -1,14 +1,21 @@
-import { IMessage } from "./message";
+import { IUser } from "./user";
 
-export interface IGig {
-    status: GigStatus;
-    id: string;
+export interface IGigBase {
     payout: number;
     title: string;
     description: string;
-    messages: IMessage[];
     category: GigCategoryNames;
     reputationRequired?: number; //0-10
+}
+
+export interface IDraftGig extends IGigBase {
+    message: string;
+}
+
+export interface IGig extends IGigBase {
+    status: GigStatus;
+    id: string;
+    author: IUser;
 }
 
 export interface IGigCategory {
@@ -31,5 +38,6 @@ export enum GigCategoryNames {
 export enum GigStatus {
     AVAILABLE = 'available',
     IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed'
+    COMPLETED = 'completed',
+    PENDING = 'pending'
 }

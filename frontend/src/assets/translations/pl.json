@@ -1,10 +1,17 @@
 {
     "ACCEPT_GIG": "PRZYJMIJ GIG",
+    "ADD_GIG": "Dodaj giga",
     "MARK_AS_DONE": "OZNACZ JAKO ZROBIONY",
     "SAVE": "ZAPISZ",
     "BACK": "WSTECZ",
     "FILTERS": "FILTRY",
     "GIG": "GIG",
     "GIGS": "GIGÓW",
-    "CANCEL": "ANULUJ"
+    "CANCEL": "ANULUJ",
+    "PENDING": "Oczekuje",
+    "PAYOUT": "Wypłata",
+    "PUBLIC_DESC": "Publiczny opis",
+    "GIG_NAME": "Nazwa giga",
+    "NEW_MESSAGE": "Nowa wiadomość",
+    "CHOOSE_CATEGORY": "Wybierz kategorię"
 }

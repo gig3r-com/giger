@@ -1,14 +1,18 @@
 @import '../../../variables.scss';
 
 .gig {
+    $new-msg-wrapper-height: 57px;
+    $summary-height: 85px;
+
     display: block;
     list-style: none;
     transition: $standard-duration $standard-timing-function;
     transition-property: height, min-height, margin-bottom;
-    height: 85px;
-    min-height: 85px;
+    height: $summary-height;
+    min-height: $summary-height;
     margin-bottom: 1rem;
     overflow: hidden;
+    position: relative;
 
     &--selected {
         height: $standard-viewport-height;
@@ -29,7 +33,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        height: 85px;
+        height: $summary-height;
         padding: 0.5rem;
         padding-left: 1rem;
         cursor: pointer;
@@ -42,6 +46,9 @@
         &--in-progress {
             border-color: $secondary-color;
         }
+        &--mine {
+            border-color: $accent-color;
+        }
         &--available:before,
         &--available:after {
             background-color: $primary-color;
@@ -49,6 +56,10 @@
         &--in-progress:before,
         &--in-progress:after {
             background-color: $secondary-color;
+        }
+        &--mine:before,
+        &--mine:after {
+            background-color: $accent-color;
         }
 
         &::before {
@@ -107,6 +118,12 @@
 
     &--completed &__title {
         &:before {
+            background: $accent-color-2;
+        }
+    }
+
+    &--mine &__title {
+        &:before {
             background: $accent-color;
         }
     }
@@ -117,9 +134,39 @@
         top: -1px;
     }
 
-    &__message {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 14px;
-        color: $muted-text;
+    &__new-msg-wrapper {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: $new-msg-wrapper-height;
+    }
+
+    &__details {
+        max-height: calc(calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height});
+    }
+
+    &__send-message {
+        background: transparent;
+        border: 1px solid $primary-color;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: -5px;
+        top: -6px;
+        padding: 0;
+        font-size: 34px;
+        font-weight: 100;
+        margin: 1rem;
+
+        span {
+            position: relative;
+            top: -2px;
+            color: $primary-color;
+        }
     }
 }

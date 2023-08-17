@@ -1,4 +1,4 @@
-@import '../../variables.scss';
+@import '../../../variables.scss';
 
 .big-button {
     clip-path: polygon(0 0, 100% 0, 100% 77%, 96% 100%, 4% 100%, 0 77%);
@@ -8,6 +8,7 @@
     width: 100%;
     border-radius: 0;
     height: 60px;
+        color: $text-color;
 
     &__text {
         font-size: 20px;
@@ -17,7 +18,6 @@
         font-style: normal;
         line-height: normal;
         letter-spacing: normal;
-        color: $text-color;
     }
 
     &--primary {
@@ -30,9 +30,15 @@
 
     &--accent {
         background-color: $accent-color;
+        color: $dark-text;
     }
 
     &--accent2 {
         background-color: $accent-color-2;
+    }
+
+    &:disabled {
+        background-color: $disabled-color;
+        color: $dark-text;
     }
 }

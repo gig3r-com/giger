@@ -3,14 +3,19 @@ $primary-color:             #545ae9;
 $secondary-color:           #ff0677;
 $accent-color:              #fff312;
 $accent-color-2:            #04eef3;
+$disabled-color:            #42458d;
 
 $muted-background:          #86C0FF;
 $dark-background:           #0e091a;
+$app-background:            linear-gradient(155deg, #22193c, #0a0613 100%);
 $muted-text:                #969ff4;
+$input-text-color:          #787ced;
+$dark-text:                 #0e091a;
 $text-color:                #fff;
 
 // ANIMATIONS
-$standard-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+$standard-timing-function:  cubic-bezier(0.87, 0, 0.13, 1);
+$ease-out:                  cubic-bezier(0.61, 1, 0.88, 1);
 $standard-duration:         0.3s;
 $fast-duration:             0.2s;
 $slow-duration:             0.4s;

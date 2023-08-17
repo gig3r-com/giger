@@ -1,10 +1,17 @@
 {
     "ACCEPT_GIG": "ACCEPT GIG",
+    "ADD_GIG": "ADD GIG",
     "MARK_AS_DONE": "MARK AS DONE",
     "SAVE": "SAVE",
     "BACK": "BACK",
     "FILTERS": "FILTERS",
     "GIG": "GIG",
     "GIGS": "GIGS",
-    "CANCEL": "CANCEL"
+    "CANCEL": "CANCEL",
+    "PENDING": "PENDING",
+    "PAYOUT": "Payout",
+    "PUBLIC_DESC": "Public description",
+    "GIG_NAME": "Gig name",
+    "NEW_MESSAGE": "New message",
+    "CHOOSE_CATEGORY": "Choose category"
 }

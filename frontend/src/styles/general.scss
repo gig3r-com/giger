@@ -1,0 +1,27 @@
+@import '../variables.scss';
+
+input, textarea, select {
+    width: 100%;
+    border: 1px solid $primary-color;
+    background: transparent;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+    box-sizing: border-box;
+    color: $input-text-color;
+    outline: none;
+
+    &::placeholder {
+        color: $muted-text;
+    }
+
+    &:focus {
+        border-color: $accent-color;
+        caret-color: $accent-color;
+    }
+}
+
+select option {
+    background: $dark-background;
+    color: $input-text-color;
+}

@@ -11,11 +11,11 @@
         fill: transparent;
         stroke-dasharray: 333;
         stroke-dashoffset: 0;
-        transition: 0.4s $standard-timing-function stroke-dashoffset;
-        animation: 0.4s borderThin $standard-timing-function both;
+        //transition: 0.4s $standard-timing-function stroke-dashoffset;
+        animation: 0.7s borderThin $ease-out both;
 
         &--active {
-            animation: 0.4s borderWide $standard-timing-function both;
+            animation: 0.7s borderWide $ease-out both;
         }
     }
 
@@ -51,13 +51,13 @@
 
 @keyframes borderWide {
     10% { stroke-width: 0; stroke-dashoffset: 0; }
-    11% { stroke-width: 0; stroke-dashoffset: 333; }
+    11% { stroke-width: 0; stroke-dashoffset: 350; }
     100% { stroke-dashoffset: 0; stroke-width: 5; }
 }
 
 @keyframes borderThin {
     10% { stroke-width: 0; stroke-dashoffset: 0; }
-    11% { stroke-dashoffset: 333; }
+    11% { stroke-dashoffset: 350; }
     50% { stroke-width: 1; }
     100% { stroke-dashoffset: 0; stroke-width: 1; }
 }

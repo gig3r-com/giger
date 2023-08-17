@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Giger } from './apps/giger/giger';
-import { MainMenu } from './shared/main-menu/main-menu';
+import { MainMenu } from './shared/components/main-menu/main-menu';
 
 export const Router = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Giger />} />
-      </Routes>
-      <MainMenu />
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Giger />} />
+                <Route path="giger" element={<Giger />}>
+                    <Route path="new-gig" element={<Giger />} />
+                    <Route path="gig/:id" element={<Giger />} />
+                </Route>
+            </Routes>
+            <MainMenu />
+        </BrowserRouter>
+    );
 };

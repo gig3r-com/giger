@@ -5,45 +5,48 @@ import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { Hexagon } from '../hexagon/hexagon';
 import { GigCategoryNames } from '../../../../models/gig';
 import { categoriesByRows } from '../../categories';
-import { BigButton } from '../../../../shared/big-button/big-button';
+import { BigButton } from '../../../../shared/components/big-button/big-button';
 import { IGigListFiltersProps } from './gig-list-filters.model';
 
 import './gig-list-filters.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store/store';
+import { setCategories } from '../../../../store/gigs.slice';
 // import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
 // import { ShaderBG } from '../../shared/shader-bg/shaderBg';
 // import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
 
 export const GigListFilters: FC<IGigListFiltersProps> = ({
-    onFiltersUpdate,
     toggleMenuState,
     active
 }) => {
-    const [previousSelectedCategories, setPreviousSelectedCategories] =
-        useState<Set<GigCategoryNames>>(new Set());
-    const [selectedCategories, setSelectedCategories] = useState<
+    const dispatch = useDispatch();
+    const currentCategories = useSelector((state: RootState) => state.gigs.selectedCategories);
+    const [newSelectedCategories, setNewSelectedCategories] = useState<
         Set<GigCategoryNames>
-    >(new Set());
+    >(new Set(currentCategories));
 
     const selectCategory = (category: GigCategoryNames) => {
-        if (selectedCategories.has(category)) {
-            setSelectedCategories((prevSet) => {
+        if (newSelectedCategories.has(category)) {
+            setNewSelectedCategories((prevSet) => {
                 const newSet = new Set(prevSet);
                 newSet.delete(category);
                 return newSet;
             });
         } else {
-            setSelectedCategories((prevSet) => new Set([...prevSet, category]));
+            setNewSelectedCategories((prevSet) => new Set([...prevSet, category]));
         }
     };
 
     const cancel = () => {
         toggleMenuState();
-        setSelectedCategories(previousSelectedCategories);
+        setNewSelectedCategories(new Set(currentCategories));
     };
 
     const save = () => {
-        setPreviousSelectedCategories(selectedCategories);
-        onFiltersUpdate(selectedCategories);
+        dispatch(setCategories([...newSelectedCategories]));
+        //setPreviousSelectedCategories(selectedCategories);
+        //onFiltersUpdate(selectedCategories);
         toggleMenuState();
     };
 

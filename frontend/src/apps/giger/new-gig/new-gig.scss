@@ -1,0 +1,28 @@
+@import '../../../variables.scss';
+
+.new-gig {
+    transition: $standard-duration $standard-timing-function transform;
+    transform: translateY(100vh);
+    width: 100vw;
+    height: $standard-viewport-height;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background: $app-background;
+    padding: 1rem;
+    box-sizing: border-box;
+
+    &--active {
+        transform: translateY(0);
+    }
+
+    &__input {
+        margin-bottom: 1rem;
+    }
+
+    .big-button {
+        margin-top: 1rem;
+    }
+}

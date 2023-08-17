@@ -15,7 +15,7 @@
     width: 100vw;
     height: calc(100vh - #{$menu-size});
     transition: $standard-timing-function $standard-duration transform;
-    background: linear-gradient(155deg, #22193c, #0a0613 100%);
+    background: $app-background;
 
     &--active {
         transform: translateY(-100vh);
