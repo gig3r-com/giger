@@ -1,0 +1,7 @@
+@import '../../variables.scss';
+
+.chat {
+    padding: 1rem;
+    height: $standard-viewport-height;
+    overflow: auto;
+}

@@ -1,9 +1,9 @@
 {
-    "ACCEPT_GIG": "ACCEPT GIG",
-    "ADD_GIG": "ADD GIG",
-    "MARK_AS_DONE": "MARK AS DONE",
-    "SAVE": "SAVE",
-    "BACK": "BACK",
+    "ACCEPT_GIG": "Accept gig",
+    "ADD_GIG": "Add gig",
+    "MARK_AS_DONE": "Mark as done",
+    "SAVE": "Save",
+    "BACK": "Back",
     "FILTERS": "FILTERS",
     "GIG": "GIG",
     "GIGS": "GIGS",
@@ -13,5 +13,10 @@
     "PUBLIC_DESC": "Public description",
     "GIG_NAME": "Gig name",
     "NEW_MESSAGE": "New message",
-    "CHOOSE_CATEGORY": "Choose category"
+    "CHOOSE_CATEGORY": "Choose category",
+    "SENT": "sent",
+    "RECEIVED": "received",
+    "READ": "read",
+    "ERROR": "error",
+    "AWAITING": "awaiting"
 }

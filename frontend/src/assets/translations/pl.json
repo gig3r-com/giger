@@ -13,5 +13,10 @@
     "PUBLIC_DESC": "Publiczny opis",
     "GIG_NAME": "Nazwa giga",
     "NEW_MESSAGE": "Nowa wiadomość",
-    "CHOOSE_CATEGORY": "Wybierz kategorię"
+    "CHOOSE_CATEGORY": "Wybierz kategorię",
+    "SENT": "Wysłane",
+    "RECEIVED": "Otrzymane",
+    "READ": "Przeczytane",
+    "ERROR": "Błąd",
+    "AWAITING": "Oczekujące"
 }

@@ -1,0 +1,36 @@
+@import '../../../variables.scss';
+
+.convo-snippet {
+    width: 100%;
+    font-family: 'JetBrainsMono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid white;
+    padding: 0.5rem 0;
+
+    &__meta {
+        color: $muted-text;
+    }
+
+    &__sender {
+        color: $secondary-color;
+    }
+
+    &__date {
+        color: $accent-color;
+    }
+
+    &__status {
+        color: $accent-color-2;
+        text-transform: uppercase;
+    }
+
+    &__message {
+        color: $muted-text;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+    }
+}

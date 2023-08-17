@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Giger } from './apps/giger/giger';
 import { MainMenu } from './shared/components/main-menu/main-menu';
+import { Chat } from './apps/chat/chat';
 
 export const Router = () => {
     return (
@@ -10,6 +11,9 @@ export const Router = () => {
                 <Route path="giger" element={<Giger />}>
                     <Route path="new-gig" element={<Giger />} />
                     <Route path="gig/:id" element={<Giger />} />
+                </Route>
+                <Route path="chat" element={<Chat />} >
+                    <Route path=":id" element={<Chat />} />
                 </Route>
             </Routes>
             <MainMenu />

@@ -146,6 +146,7 @@ export const Gig: FC<IGigProps> = ({
                             <input
                                 type="text"
                                 value={newMessage}
+                                onKeyDown={event => event.key === 'Enter' && send()}
                                 onChange={(event) =>
                                     setNewMessage(event.target.value)
                                 }
@@ -156,9 +157,6 @@ export const Gig: FC<IGigProps> = ({
                             />
                             <button
                                 className="gig__send-message"
-                                onKeyUp={(event) => {
-                                    if (event.key === 'Enter') send();
-                                }}
                                 onClick={send}
                             >
                                 <span>+</span>

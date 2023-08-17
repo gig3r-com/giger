@@ -3,10 +3,12 @@ import { IConversation } from '../models/message';
 
 export interface IConversationState {
     conversations: IConversation[];
+    gigConversations: IConversation[];
 }
 
 const initialState: IConversationState = {
-    conversations: []
+    conversations: [],
+    gigConversations: []
 };
 
 export const conversationsSlice = createSlice({
@@ -15,6 +17,9 @@ export const conversationsSlice = createSlice({
     reducers: {
         setConversations: (state, action: PayloadAction<IConversation[]>) => {
             state.conversations = action.payload;
+        },
+        setGigConversations: (state, action: PayloadAction<IConversation[]>) => {
+            state.gigConversations = action.payload;
         }
     }
 });

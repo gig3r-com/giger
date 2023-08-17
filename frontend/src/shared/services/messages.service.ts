@@ -7,6 +7,7 @@ import { mockConvos } from '../../mocks/convos';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setConversations } from '../../store/messages.slice';
+import { conversations } from '../../mocks/userConvos';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -45,6 +46,22 @@ export function useMessagesService() {
         return convo;
     };
 
+    const fetchUserConvos: (userId: string) => void = (userId) => {
+        dispatch(
+            setConversations(
+                JSON.parse(
+                    JSON.stringify(
+                        conversations.filter((convo) =>
+                            convo.participants.some(
+                                (user) => user.id === userId
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    };
+
     const sendMessage: (messageText: string, convoId: string) => void = (
         messageText,
         convoId
@@ -60,7 +77,7 @@ export function useMessagesService() {
             mockConvos
                 .find((convo) => convo.id === convoId)
                 ?.messages.push(message);
-            dispatch(setConversations(mockConvos));
+            dispatch(setConversations(JSON.parse(JSON.stringify(mockConvos))));
             console.log('message sent:', message, convoId);
         } catch (error) {
             console.error(error);
@@ -86,6 +103,7 @@ export function useMessagesService() {
         findUserByName,
         createConvo,
         fetchConvo,
-        fetchingConvo
+        fetchingConvo,
+        fetchUserConvos
     };
 }

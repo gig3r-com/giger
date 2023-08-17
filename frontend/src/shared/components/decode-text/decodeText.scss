@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+
+.decode-text {
+  width: 100%;
+  font-size: 30px;
+  text-align: center;
+  font-family: 'Michroma', sans-serif;
+  color: white;
+}
+.space {
+  display: inline-block;
+  width: 10px;
+}
+.text-animation {
+  display: inline-block;
+  position: relative;
+  color: transparent;
+  text-transform: uppercase;
+
+  &:before {
+    content: '';
+    color: black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #f1f6ff;
+    width: 0;
+    height: 1.2em;
+    -webkit-transform: translate(-50%, -55%);
+    -ms-transform: translate(-50%, -55%);
+    transform: translate(-50%, -55%);
+  }
+
+  &.state-1 {
+    &:before {
+      width: 1px;
+    }
+  }
+  &.state-2 {
+    &:before {
+      width: 0.9em;
+    }
+  }
+  &.state-3 {
+    color: rgb(255, 255, 255);
+    &:before {
+      width: 0;
+    }
+  }
+}

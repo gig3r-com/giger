@@ -1,6 +1,6 @@
 import { IUser } from '../models/user';
 
-export const users = [
+export const users: IUser[] = [
     { id: 'user1', name: 'John Doe', handle: 'NeonShadow' },
     { id: 'user2', name: 'Jane Smith', handle: 'CipherByte' },
     { id: 'user3', name: 'Alex Johnson', handle: 'RogueEdge' },
@@ -35,7 +35,8 @@ export const users = [
     { id: 'user32', name: 'Aria Hall', handle: 'NyxShadow' },
     { id: 'user33', name: 'Benjamin Wood', handle: 'CrimsonBinary' },
     { id: 'user34', name: 'Scarlett Baker', handle: 'ChronoHacker' },
-    { id: 'user35', name: 'Henry Nelson', handle: 'StaticPhantom' }
+    { id: 'user35', name: 'Henry Nelson', handle: 'StaticPhantom' },
+    { id: '55566ssaa5', handle: 'NeonTiger69', name: 'Johnny Sasaki'}
 ];
 
 export const systemUser: IUser = {
