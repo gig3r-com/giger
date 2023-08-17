@@ -33,8 +33,12 @@ export const Chat: FC = () => {
 
     return (
         <section className="chat">
-            {sortedConvos.map((convo) => (
-                <ConvoSnippet key={convo.id} convo={convo} />
+            {sortedConvos.map((convo, index) => (
+                <ConvoSnippet
+                    key={convo.id}
+                    convo={convo}
+                    delayMultiplier={index}
+                />
             ))}
         </section>
     );
