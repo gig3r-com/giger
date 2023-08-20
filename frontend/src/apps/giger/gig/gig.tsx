@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -9,8 +8,11 @@ import { useAuthenticationService } from '../../../shared/services/authenticatio
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import { IConversation } from '../../../models/message';
+import { useGigsService } from '../../../shared/services/gigs.service';
+import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 
 import './gig.scss';
+import { useGigHelpers } from './gig.helpers';
 
 export const Gig: FC<IGigProps> = ({
     gig,
@@ -18,11 +20,11 @@ export const Gig: FC<IGigProps> = ({
     setSelected,
     delayMultiplier
 }) => {
-    const intl = useIntl();
     const { currentUser } = useAuthenticationService();
-    const { fetchConvo, fetchingConvo, sendMessage } = useMessagesService();
+    const { acceptGig } = useGigsService();
+    const { buttonColor, buttonText } = useGigHelpers();
+    const { fetchConvo, fetchingConvo } = useMessagesService();
     const [convo, setConvo] = useState<IConversation>();
-    const [newMessage, setNewMessage] = useState('');
     const gigClassname = classNames({
         gig: true,
         'gig--completed': gig.status === GigStatus.COMPLETED,
@@ -42,43 +44,14 @@ export const Gig: FC<IGigProps> = ({
         'gig__summary--mine': gig.author.id === currentUser().id
     });
 
-    const buttonColor = () => {
-        let statusColor: 'primary' | 'secondary' | 'accent';
-        switch (gig.status) {
-            case GigStatus.AVAILABLE:
-                statusColor = 'primary';
-                break;
-            case GigStatus.IN_PROGRESS:
-                statusColor = 'secondary';
-                break;
-            case GigStatus.COMPLETED:
-                statusColor = 'accent';
-                break;
-            case GigStatus.PENDING:
-                statusColor = 'accent';
-                break;
-        }
-
-        return statusColor;
-    };
-
-    const buttonText = () => {
-        switch (gig.status) {
-            case GigStatus.PENDING:
-                return intl.formatMessage({ id: 'PENDING' });
-            case GigStatus.AVAILABLE:
-                return intl.formatMessage({ id: 'ACCEPT_GIG' });
-            case GigStatus.IN_PROGRESS:
-                return intl.formatMessage({ id: 'MARK_AS_DONE' });
-            case GigStatus.COMPLETED:
-                return 'VIEW GIG';
-        }
-    };
-
     const send = () => {
-        setNewMessage('');
-        sendMessage(newMessage, gig.id);
-        setConvo(fetchConvo(gig.id))
+        setConvo(fetchConvo(gig.id));
+    };
+
+    const handleButtonClick = () => {
+        if (gig.status === GigStatus.AVAILABLE) {
+            acceptGig(gig.id);
+        }
     };
 
     const showConvo = useMemo(() => {
@@ -90,7 +63,7 @@ export const Gig: FC<IGigProps> = ({
     }, [gig.status, gig.author.id, currentUser, convo]);
 
     useEffect(() => {
-        setConvo(fetchConvo(gig.id))
+        setConvo(fetchConvo(gig.id));
     }, [gig, fetchConvo, setConvo]);
 
     return (
@@ -128,40 +101,28 @@ export const Gig: FC<IGigProps> = ({
                         }}
                     >
                         <BigButton
-                            text={buttonText()}
-                            color={buttonColor()}
-                            onClick={() => console.log('Gig accepted')}
+                            text={buttonText(gig.status)}
+                            color={buttonColor(gig.status)}
+                            onClick={handleButtonClick}
                         />
 
                         <p className="gig__description">{gig.description}</p>
 
                         <AnimatePresence>
-                            {fetchingConvo && <p key={gig.id+'fetch'}>Fetching conversation...</p>}
+                            {fetchingConvo && (
+                                <p key={gig.id + 'fetch'}>
+                                    Fetching conversation...
+                                </p>
+                            )}
                             {showConvo && convo && (
-                                <Conversation key={convo.id+'convo'} convo={convo} />
+                                <Conversation
+                                    key={convo.id + 'convo'}
+                                    convo={convo}
+                                />
                             )}
                         </AnimatePresence>
 
-                        <div className="gig__new-msg-wrapper">
-                            <input
-                                type="text"
-                                value={newMessage}
-                                onKeyDown={event => event.key === 'Enter' && send()}
-                                onChange={(event) =>
-                                    setNewMessage(event.target.value)
-                                }
-                                placeholder={intl.formatMessage({
-                                    id: 'NEW_MESSAGE'
-                                })}
-                                className="gig__message"
-                            />
-                            <button
-                                className="gig__send-message"
-                                onClick={send}
-                            >
-                                <span>+</span>
-                            </button>
-                        </div>
+                        <NewMsg convoId={gig.id} onSend={send} />
                     </motion.article>
                 )}
             </AnimatePresence>

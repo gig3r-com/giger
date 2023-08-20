@@ -19,6 +19,11 @@ export const gigsSlice = createSlice({
         setGigs: (state, action: PayloadAction<IGig[]>) => {
             state.gigs = action.payload;
         },
+        updateGig: (state, action: PayloadAction<IGig>) => {
+            const updatedGigs = state.gigs.filter(gig => gig.id !== action.payload.id);
+            updatedGigs.push(action.payload);
+            state.gigs = updatedGigs;
+        },
         setCategories: (state, action: PayloadAction<GigCategoryNames[]>) => {
             state.selectedCategories = action.payload;
         },

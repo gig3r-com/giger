@@ -8,7 +8,9 @@
     width: 100%;
     border-radius: 0;
     height: 60px;
-        color: $text-color;
+    color: $text-color;
+    transition: $fast-duration $standard-timing-function background-color;
+    outline: none;
 
     &__text {
         font-size: 20px;

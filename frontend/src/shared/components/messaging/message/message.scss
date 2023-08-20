@@ -3,5 +3,9 @@
 .message {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
-    color: $muted-text;
+    color: $other-user-msg-color;
+
+    &--own {
+        color: $own-msg-color;
+    }
 }

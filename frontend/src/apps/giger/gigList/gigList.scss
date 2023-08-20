@@ -46,5 +46,12 @@
     &__filters,
     &__back {
         padding: 0.5rem;
+        display: flex;
+
+        svg {
+            width: 15px;
+            fill: white;
+            margin-right: 0.5rem;
+        }
     }
 }

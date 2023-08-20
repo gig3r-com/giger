@@ -24,6 +24,6 @@ export const conversationsSlice = createSlice({
     }
 });
 
-export const { setConversations } = conversationsSlice.actions;
+export const { setConversations, setGigConversations } = conversationsSlice.actions;
 
 export default conversationsSlice.reducer;

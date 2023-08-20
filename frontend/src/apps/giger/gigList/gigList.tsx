@@ -4,6 +4,7 @@ import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
 import { GigStatus, IGig } from '../../../models/gig';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
+import { ReactComponent as ChevronLeft } from '../../../assets/chevron-left-solid.svg';
 
 import './gigList.scss';
 
@@ -54,6 +55,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                             className="gig-list__back"
                             onClick={() => setSelectedGig(null)}
                         >
+                            <ChevronLeft />
                             BACK
                         </motion.span>
                     )}

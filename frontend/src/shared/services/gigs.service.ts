@@ -23,21 +23,25 @@ export function useGigsService() {
         category: draftGig.category,
         description: draftGig.description,
         payout: draftGig.payout,
-        convo: createConvo(createMessage(draftGig.message), currentUser().id, [currentUser()]),
+        convo: createConvo(createMessage(draftGig.message), currentUser().id, [
+            currentUser()
+        ]),
         id: uuidv4(),
         author: currentUser(),
         status: GigStatus.PENDING
-    })
+    });
 
     const addNewGig = (gig: IDraftGig) => {
         dispatch(setGigs([...currentGigs, constructGig(gig)]));
     };
 
     const updateGig = (updatedGig: IGig) => {
-        const updatedGigs = currentGigs.filter(gig => gig.id !== updatedGig.id);
+        const updatedGigs = currentGigs.filter(
+            (gig) => gig.id !== updatedGig.id
+        );
         updatedGigs.push(updatedGig);
         dispatch(setGigs(updatedGigs));
-    }
+    };
 
     const fetchGigs = () => {
         setFetchingGigs(true);
@@ -45,5 +49,15 @@ export function useGigsService() {
         setFetchingGigs(false);
     };
 
-    return { addNewGig, updateGig, fetchGigs, fetchingGigs };
+    /**
+     * shou;d be handled entirely server-side later on. Frontend should not edit gigs directly.
+     * @param id
+     */
+    const acceptGig = (id: string) => {
+        const gig = currentGigs.find((gig) => gig.id === id);
+        const updatedGig: IGig = { ...gig!, status: GigStatus.IN_PROGRESS };
+        updateGig(updatedGig);
+    };
+
+    return { addNewGig, updateGig, fetchGigs, fetchingGigs, acceptGig };
 }

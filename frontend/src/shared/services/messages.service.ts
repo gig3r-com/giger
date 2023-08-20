@@ -6,7 +6,7 @@ import { useAuthenticationService } from './authentication.service';
 import { mockConvos } from '../../mocks/convos';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setConversations } from '../../store/messages.slice';
+import { setConversations, setGigConversations } from '../../store/messages.slice';
 import { conversations } from '../../mocks/userConvos';
 
 /**
@@ -74,10 +74,11 @@ export function useMessagesService() {
 
         try {
             // send message
-            mockConvos
+            [...mockConvos, ...conversations]
                 .find((convo) => convo.id === convoId)
                 ?.messages.push(message);
-            dispatch(setConversations(JSON.parse(JSON.stringify(mockConvos))));
+            dispatch(setConversations(JSON.parse(JSON.stringify([...conversations]))));
+            dispatch(setGigConversations(JSON.parse(JSON.stringify([...mockConvos]))));
             console.log('message sent:', message, convoId);
         } catch (error) {
             console.error(error);

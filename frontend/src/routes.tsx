@@ -13,7 +13,7 @@ export const Router = () => {
                     <Route path="gig/:id" element={<Giger />} />
                 </Route>
                 <Route path="chat" element={<Chat />} >
-                    <Route path=":id" element={<Chat />} />
+                    <Route path=":chatId" element={<Chat />} />
                 </Route>
             </Routes>
             <MainMenu />

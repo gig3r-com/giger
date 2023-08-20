@@ -134,7 +134,7 @@
         top: -1px;
     }
 
-    &__new-msg-wrapper {
+    .new-msg {
         position: absolute;
         bottom: 0;
         width: 100%;
@@ -143,30 +143,5 @@
 
     &__details {
         max-height: calc(calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height});
-    }
-
-    &__send-message {
-        background: transparent;
-        border: 1px solid $primary-color;
-        border-radius: 50%;
-        width: 35px;
-        height: 35px;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        right: -5px;
-        top: -6px;
-        padding: 0;
-        font-size: 34px;
-        font-weight: 100;
-        margin: 1rem;
-
-        span {
-            position: relative;
-            top: -2px;
-            color: $primary-color;
-        }
     }
 }
