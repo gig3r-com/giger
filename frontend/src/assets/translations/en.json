@@ -13,10 +13,12 @@
     "PUBLIC_DESC": "Public description",
     "GIG_NAME": "Gig name",
     "NEW_MESSAGE": "New message",
+    "SEND_PRIVATE_MSG": "Send private message",
     "CHOOSE_CATEGORY": "Choose category",
     "SENT": "sent",
     "RECEIVED": "received",
     "READ": "read",
     "ERROR": "error",
-    "AWAITING": "awaiting"
+    "AWAITING": "awaiting",
+    "SEARCH": "Search"
 }

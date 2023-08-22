@@ -33,6 +33,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             publicDescription !== '' &&
             privateMessage !== '' &&
             payout !== 0 &&
+            payout !== undefined &&
             selectedCategory !== ''
         );
     }, [gigName, publicDescription, privateMessage, payout, selectedCategory]);

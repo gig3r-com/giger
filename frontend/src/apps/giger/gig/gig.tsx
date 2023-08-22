@@ -1,18 +1,19 @@
 import classNames from 'classnames';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
 import { useMessagesService } from '../../../shared/services/messages.service';
-import { IConversation } from '../../../models/message';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
+import { useGigHelpers } from './gig.helpers';
+import { RootState } from '../../../store/store';
 
 import './gig.scss';
-import { useGigHelpers } from './gig.helpers';
 
 export const Gig: FC<IGigProps> = ({
     gig,
@@ -24,7 +25,12 @@ export const Gig: FC<IGigProps> = ({
     const { acceptGig } = useGigsService();
     const { buttonColor, buttonText } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
-    const [convo, setConvo] = useState<IConversation>();
+    const convos = useSelector((state: RootState) =>
+        state.conversations.gigConversations
+    )
+    const convo = useMemo(() => {
+        return convos.find((c) => c.id === gig.id)
+    }, [convos, gig]);
     const gigClassname = classNames({
         gig: true,
         'gig--completed': gig.status === GigStatus.COMPLETED,
@@ -44,10 +50,6 @@ export const Gig: FC<IGigProps> = ({
         'gig__summary--mine': gig.author.id === currentUser().id
     });
 
-    const send = () => {
-        setConvo(fetchConvo(gig.id));
-    };
-
     const handleButtonClick = () => {
         if (gig.status === GigStatus.AVAILABLE) {
             acceptGig(gig.id);
@@ -60,11 +62,13 @@ export const Gig: FC<IGigProps> = ({
                 gig.author.id === currentUser().id) &&
             convo !== undefined
         );
-    }, [gig.status, gig.author.id, currentUser, convo]);
+    }, [gig, currentUser, convo]);
 
-    useEffect(() => {
-        setConvo(fetchConvo(gig.id));
-    }, [gig, fetchConvo, setConvo]);
+    useEffect(function fetch() {
+        if (selectedId === gig.id) {
+            fetchConvo(gig.id);
+        }
+    }, [selectedId, gig]);
 
     return (
         <li className={gigClassname}>
@@ -122,7 +126,9 @@ export const Gig: FC<IGigProps> = ({
                             )}
                         </AnimatePresence>
 
-                        <NewMsg convoId={gig.id} onSend={send} />
+                        {gig.status !== GigStatus.AVAILABLE && (
+                            <NewMsg convoId={gig.id} onSend={() => {}} />
+                        )}
                     </motion.article>
                 )}
             </AnimatePresence>

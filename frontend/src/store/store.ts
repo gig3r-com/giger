@@ -1,9 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import gigsReducer from './gigs.slice';
 import conversationsReducer from './messages.slice';
+import usersReducer from './users.slice';
 
 export const store = configureStore({
-    reducer: { gigs: gigsReducer, conversations: conversationsReducer }
+    reducer: {
+        gigs: gigsReducer,
+        conversations: conversationsReducer,
+        users: usersReducer
+    }
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,6 +1,8 @@
 @import '../variables.scss';
 
-input, textarea, select {
+input,
+textarea,
+select {
     width: 100%;
     border: 1px solid $primary-color;
     background: transparent;
@@ -18,6 +20,22 @@ input, textarea, select {
     &:focus {
         border-color: $accent-color;
         caret-color: $accent-color;
+    }
+}
+
+input[type='checkbox'] {
+    display: none;
+
+    & + label {
+        display: inline-block;
+        transition: $fast-duration $standard-timing-function background-image;
+        background-image: url('../assets/checkbox.svg');
+        width: 24px;
+        height: 24px;
+    }
+
+    &:checked + label {
+        background-image: url('../assets/checkbox-selected.svg');
     }
 }
 

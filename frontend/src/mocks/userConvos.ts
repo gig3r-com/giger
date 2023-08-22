@@ -1,7 +1,7 @@
 import { IConversation, IMessageStatus } from '../models/message';
 import { users } from './users';
 
-export const conversations: IConversation[] = [
+export const mockUserConvos: IConversation[] = [
     {
         id: 'conv1',
         participants: [users[0], users[1], users[33]], // NeonShadow, CipherByte, CrimsonBinary

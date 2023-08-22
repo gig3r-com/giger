@@ -3,7 +3,7 @@
 .message {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
-    color: $other-user-msg-color;
+    color: $other-user-color;
 
     &--own {
         color: $own-msg-color;

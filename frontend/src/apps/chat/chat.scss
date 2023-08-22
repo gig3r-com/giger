@@ -2,7 +2,20 @@
 
 .chat {
     padding: 1rem;
-    height: $standard-viewport-height;
     overflow: auto;
+    height: $standard-viewport-height;
     box-sizing: border-box;
+
+    &__list {
+        height: calc(#{$standard-viewport-height} - 115px);
+        overflow: scroll;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid white;
+
+
+        &--msg-open {
+            height: calc(#{$standard-viewport-height} - 60px);
+            border: none;
+        }
+    }
 }

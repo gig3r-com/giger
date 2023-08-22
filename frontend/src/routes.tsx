@@ -14,6 +14,7 @@ export const Router = () => {
                 </Route>
                 <Route path="chat" element={<Chat />} >
                     <Route path=":chatId" element={<Chat />} />
+                    <Route path='new' element={<Chat />} />
                 </Route>
             </Routes>
             <MainMenu />

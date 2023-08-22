@@ -1,0 +1,24 @@
+@import '../../../variables.scss';
+
+.start-new-convo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    padding: 1rem;
+    background: #0e091a;
+    box-sizing: border-box;
+
+    &__user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 0;
+        border-bottom: 1px solid white;
+    }
+
+    &__users {
+        height: calc(#{$standard-viewport-height} - 155px);
+        overflow: scroll;
+    }
+}

@@ -1,13 +1,17 @@
-import { IConversation, IMessage, IMessageStatus } from '../../models/message';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import { IConversation, IMessage, IMessageStatus } from '../../models/message';
 import { IUser } from '../../models/user';
 import { users } from '../../mocks/users';
 import { useAuthenticationService } from './authentication.service';
 import { mockConvos } from '../../mocks/convos';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setConversations, setGigConversations } from '../../store/messages.slice';
-import { conversations } from '../../mocks/userConvos';
+import {
+    setConversations,
+    setGigConversations
+} from '../../store/messages.slice';
+import { RootState } from '../../store/store';
+import { mockUserConvos } from '../../mocks/userConvos';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -16,6 +20,12 @@ export function useMessagesService() {
     const dispatch = useDispatch();
     const { currentUser } = useAuthenticationService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
+    const conversations = useSelector(
+        (state: RootState) => state.conversations.conversations
+    );
+    const gigConversations = useSelector(
+        (state: RootState) => state.conversations.gigConversations
+    );
 
     const createMessage: (text: string) => IMessage = (text) => {
         return {
@@ -28,38 +38,38 @@ export function useMessagesService() {
     };
 
     const createConvo: (
-        msg: IMessage,
-        id?: string,
-        participants?: IUser[]
-    ) => IConversation = (msg, id, participants) => {
-        return {
-            id: id ?? uuidv4(),
-            participants: participants ?? [msg.sender],
-            messages: [msg]
-        };
+        participants: IUser[],
+        msg?: IMessage,
+        id?: string
+    ) => string = (participants, msg, id) => {
+        const convoId = id ?? uuidv4();
+        dispatch(
+            setConversations([
+                ...conversations,
+                {
+                    id: convoId,
+                    participants: participants,
+                    messages: msg ? [msg] : []
+                }
+            ])
+        );
+
+        return convoId;
     };
 
-    const fetchConvo: (id: string) => IConversation | undefined = (id) => {
+    const fetchConvo: (id: string) => void = (id) => {
         setFetchingConvo(true);
         const convo = mockConvos.find((convo) => convo.id === id);
         setFetchingConvo(false);
-        return convo;
+
+        convo && dispatch(setGigConversations([...gigConversations, convo]));
     };
 
     const fetchUserConvos: (userId: string) => void = (userId) => {
-        dispatch(
-            setConversations(
-                JSON.parse(
-                    JSON.stringify(
-                        conversations.filter((convo) =>
-                            convo.participants.some(
-                                (user) => user.id === userId
-                            )
-                        )
-                    )
-                )
-            )
+        const filteredConvos = mockUserConvos.filter((convo) =>
+            convo.participants.some((user) => user.id === userId)
         );
+        dispatch(setConversations(JSON.parse(JSON.stringify(filteredConvos))));
     };
 
     const sendMessage: (messageText: string, convoId: string) => void = (
@@ -74,12 +84,28 @@ export function useMessagesService() {
 
         try {
             // send message
-            [...mockConvos, ...conversations]
-                .find((convo) => convo.id === convoId)
-                ?.messages.push(message);
-            dispatch(setConversations(JSON.parse(JSON.stringify([...conversations]))));
-            dispatch(setGigConversations(JSON.parse(JSON.stringify([...mockConvos]))));
-            console.log('message sent:', message, convoId);
+            const updatedConvo: IConversation = JSON.parse(
+                JSON.stringify(
+                    [...conversations, ...gigConversations].find(
+                        (convo) => convo.id === convoId
+                    )
+                )
+            );
+            updatedConvo?.messages.push(message);
+
+            if (updatedConvo.gigConversation) {
+                const updatedConvos = [...gigConversations].filter(
+                    (conversation) => conversation.id !== convoId
+                );
+                updatedConvos.push(updatedConvo);
+                dispatch(setGigConversations(updatedConvos));
+            } else {
+                const updatedConvos = [...conversations].filter(
+                    (conversation) => conversation.id !== convoId
+                );
+                updatedConvos.push(updatedConvo);
+                dispatch(setConversations(updatedConvos));
+            }
         } catch (error) {
             console.error(error);
         }

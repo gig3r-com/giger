@@ -59,7 +59,7 @@ export const ConvoSnippet: FC<{
                         }}
                         className="convo-snippet__summary"
                     >
-                        <Link to={`/chat/${convo.id}`}>
+                        {lastMessage && <Link to={`/chat/${convo.id}`}>
                             <section className="convo-snippet__meta">
                                 <span className="convo-snippet__sender">
                                     @{lastMessage.sender.handle}
@@ -80,7 +80,7 @@ export const ConvoSnippet: FC<{
                             <span className="convo-snippet__message">
                                 {lastMessage.text}
                             </span>
-                        </Link>
+                        </Link>}
                     </motion.section>
                 )}
                 {chatId === convo.id && (
