@@ -8,6 +8,7 @@ import { INewGigProps } from './new-gig.model';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { BigButton } from '../../../shared/components/big-button/big-button';
+import { Controls } from '../../../shared/components/controls/controls';
 
 import './new-gig.scss';
 
@@ -69,14 +70,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
     return (
         <section className={wrapperClassnames}>
-            <header className="gig-list-filters__controls">
-                <span
-                    className="gig-list-filters__back"
-                    onClick={() => navigate('/giger')}
-                >
-                    <MemoizedFormattedMessage id="BACK" />
-                </span>
-            </header>
+            <Controls leftSideOption="back" />
             <input
                 type="text"
                 className="new-gig__input"

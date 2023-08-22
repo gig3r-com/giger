@@ -10,6 +10,7 @@ import { UserSelect } from '../user-select/user-select';
 
 import './start-new-convo.scss';
 import { useNavigate } from 'react-router';
+import { Controls } from '../../../shared/components/controls/controls';
 
 export const StartNewConvo: FC = () => {
     const intl = useIntl();
@@ -43,7 +44,7 @@ export const StartNewConvo: FC = () => {
 
         if (inputHeight) {
             usersWrapper.current.style.height = `calc(100vh - ${
-                inputHeight + 155
+                inputHeight + 210
             }px`;
         }
     }, 0);
@@ -58,11 +59,13 @@ export const StartNewConvo: FC = () => {
     return (
         <AnimatePresence>
             <motion.section
+                key='new-convo'
                 className="start-new-convo"
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
             >
+                <Controls key='controls' leftSideOption="back" />
                 <UserSelect
                     selected={selectedUsers}
                     onValueUpdate={setSearchString}

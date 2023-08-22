@@ -1,10 +1,10 @@
 import { FC, useState } from 'react';
-import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
 import { GigStatus, IGig } from '../../../models/gig';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
-import { ReactComponent as ChevronLeft } from '../../../assets/chevron-left-solid.svg';
+import { Controls } from '../../../shared/components/controls/controls';
 
 import './gigList.scss';
 
@@ -32,38 +32,15 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
 
     return (
         <section className="gig-list">
-            <header className="gig-list__controls">
-                <AnimatePresence>
-                    {!selectedGig && (
-                        <motion.span
-                            className="gig-list__count"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{
-                                ease: cubicBezier(0.16, 1, 0.3, 1)
-                            }}
-                        >
-                            {gigs.length} {gigs.length > 1 ? 'GIGS' : 'GIG'}
-                        </motion.span>
-                    )}
-                    {selectedGig && (
-                        <motion.span
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="gig-list__back"
-                            onClick={() => setSelectedGig(null)}
-                        >
-                            <ChevronLeft />
-                            BACK
-                        </motion.span>
-                    )}
-                </AnimatePresence>
-                <span className="gig-list__filters" onClick={toggleMenuState}>
-                    FILTERS
-                </span>
-            </header>
+            <Controls
+                leftSideOption={
+                    selectedGig
+                        ? 'back'
+                        : `${gigs.length} ${gigs.length > 1 ? 'GIGS' : 'GIG'}`
+                }
+                rightSideOption="FILTERS"
+                onRightSideClick={toggleMenuState}
+            />
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
                     {sortedGigs.map((gig, i) => (

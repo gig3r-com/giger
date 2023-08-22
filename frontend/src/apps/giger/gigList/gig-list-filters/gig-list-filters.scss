@@ -50,15 +50,14 @@
         );
     }
 
-    &__controls {
-        height: $controlsHeight;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        width: 100%;
-    }
-
     &__cancel {
         padding: 1rem;
+    }
+
+    .big-button {
+        position: absolute;
+        bottom: 1rem;
+        width: calc(100% - 2rem);
+        left: 1rem;
     }
 }

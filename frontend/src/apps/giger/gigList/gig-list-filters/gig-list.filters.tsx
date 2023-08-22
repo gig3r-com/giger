@@ -1,17 +1,18 @@
 import { FC, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import classNames from 'classnames';
-import MemoizedFormattedMessage from 'react-intl/src/components/message';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { Hexagon } from '../hexagon/hexagon';
 import { GigCategoryNames } from '../../../../models/gig';
 import { categoriesByRows } from '../../categories';
 import { BigButton } from '../../../../shared/components/big-button/big-button';
 import { IGigListFiltersProps } from './gig-list-filters.model';
-
-import './gig-list-filters.scss';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/store';
 import { setCategories } from '../../../../store/gigs.slice';
+import { Controls } from '../../../../shared/components/controls/controls';
+
+import './gig-list-filters.scss';
 // import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
 // import { ShaderBG } from '../../shared/shader-bg/shaderBg';
 // import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
@@ -21,7 +22,10 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
     active
 }) => {
     const dispatch = useDispatch();
-    const currentCategories = useSelector((state: RootState) => state.gigs.selectedCategories);
+    const intl = useIntl();
+    const currentCategories = useSelector(
+        (state: RootState) => state.gigs.selectedCategories
+    );
     const [newSelectedCategories, setNewSelectedCategories] = useState<
         Set<GigCategoryNames>
     >(new Set(currentCategories));
@@ -34,7 +38,9 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                 return newSet;
             });
         } else {
-            setNewSelectedCategories((prevSet) => new Set([...prevSet, category]));
+            setNewSelectedCategories(
+                (prevSet) => new Set([...prevSet, category])
+            );
         }
     };
 
@@ -57,11 +63,10 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
 
     return (
         <section className={filtersClasses}>
-            <header className="gig-list-filters__controls">
-                <span className="gig-list-filters__cancel" onClick={cancel}>
-                    <MemoizedFormattedMessage id='CANCEL' />
-                </span>
-            </header>
+            <Controls
+                rightSideOption={intl.formatMessage({ id: 'CANCEL' })}
+                onRightSideClick={cancel}
+            />
 
             <div className="gig-list-filters__body">
                 {categoriesByRows.map((categoryRow, index) => (
@@ -81,9 +86,8 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                         ))}
                     </div>
                 ))}
+                <BigButton text="SAVE" onClick={save} color='primary' />
             </div>
-
-            <BigButton text="SAVE" onClick={save} />
         </section>
     );
 };

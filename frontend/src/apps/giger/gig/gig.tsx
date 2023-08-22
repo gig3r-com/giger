@@ -25,11 +25,11 @@ export const Gig: FC<IGigProps> = ({
     const { acceptGig } = useGigsService();
     const { buttonColor, buttonText } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
-    const convos = useSelector((state: RootState) =>
-        state.conversations.gigConversations
-    )
+    const convos = useSelector(
+        (state: RootState) => state.conversations.gigConversations
+    );
     const convo = useMemo(() => {
-        return convos.find((c) => c.id === gig.id)
+        return convos.find((c) => c.id === gig.id);
     }, [convos, gig]);
     const gigClassname = classNames({
         gig: true,
@@ -64,11 +64,14 @@ export const Gig: FC<IGigProps> = ({
         );
     }, [gig, currentUser, convo]);
 
-    useEffect(function fetch() {
-        if (selectedId === gig.id) {
-            fetchConvo(gig.id);
-        }
-    }, [selectedId, gig]);
+    useEffect(
+        function fetch() {
+            if (selectedId === gig.id) {
+                fetchConvo(gig.id);
+            }
+        },
+        [selectedId, gig]
+    );
 
     return (
         <li className={gigClassname}>

@@ -1,0 +1,37 @@
+@import '../../../variables';
+
+.controls {
+    text-transform: uppercase;
+    color: $text-color;
+    display: flex;
+    font-size: 17px;
+    font-family: 'Saira', sans-serif;
+    width: 100%;
+    padding: 1rem;
+
+    &__back {
+        display: flex;
+    }
+
+    &__right-side,
+    &__left-side {
+        display: flex;
+        width: 50%;
+    }
+
+    &__left-side {
+        justify-content: flex-start;
+        padding-left: 1rem;
+    }
+
+    &__right-side {
+        justify-content: flex-end;
+        padding-right: 1rem;
+    }
+
+    svg {
+        width: 15px;
+        fill: white;
+        margin-right: 0.5rem;
+    }
+}

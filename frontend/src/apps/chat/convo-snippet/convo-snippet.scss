@@ -57,25 +57,14 @@
         overflow: hidden;
     }
 
-    &__controls {
-        text-transform: uppercase;
-        color: $text-color;
-        display: flex;
-        font-size: 17px;
-        font-family: 'Saira', sans-serif;
-        margin-bottom: 1rem;
-
-        svg {
-            width: 15px;
-            fill: white;
-            margin-right: 0.5rem;
-        }
-    }
-
     .new-msg {
         position: absolute;
         bottom: 0;
         width: 100%;
         height: 57px;
+    }
+
+    .controls {
+        padding-left: 0;
     }
 }

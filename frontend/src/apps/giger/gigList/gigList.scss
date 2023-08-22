@@ -19,6 +19,7 @@
         flex-direction: column;
         width: 100%;
         box-sizing: border-box;
+        margin-top: 0;
     }
 
     &__payout {
@@ -33,25 +34,5 @@
         line-height: normal;
         letter-spacing: normal;
         color: $muted-text;
-    }
-
-    &__controls {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        font-family: Saira, sans-serif;
-    }
-
-    &__count,
-    &__filters,
-    &__back {
-        padding: 0.5rem;
-        display: flex;
-
-        svg {
-            width: 15px;
-            fill: white;
-            margin-right: 0.5rem;
-        }
     }
 }

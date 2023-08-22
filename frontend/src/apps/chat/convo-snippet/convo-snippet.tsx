@@ -5,10 +5,10 @@ import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
-import { ReactComponent as ChevronLeft } from '../../../assets/chevron-left-solid.svg';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 
 import './convo-snippet.scss';
+import { Controls } from '../../../shared/components/controls/controls';
 
 export const ConvoSnippet: FC<{
     convo: IConversation;
@@ -36,16 +36,7 @@ export const ConvoSnippet: FC<{
             }}
             className={convoSnippetClassnames}
         >
-            {chatId === convo.id && isConversationExpanded && (
-                <Link to="/chat" key={convo.id + 'controls'}>
-                    <header className="convo-snippet__controls">
-                        <ChevronLeft />
-                        <span className="convo-snippet__back">
-                            <MemoizedFormattedMessage id="BACK" />
-                        </span>
-                    </header>
-                </Link>
-            )}
+            {chatId === convo.id && isConversationExpanded &&<Controls leftSideOption='back' />}
             <AnimatePresence>
                 {!isConversationExpanded && (
                     <motion.section
