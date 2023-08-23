@@ -37,7 +37,7 @@ export const Controls: FC<IControlsProps> = ({
             {leftSideOption === 'back' && (
                 <motion.span
                     {...anim}
-                    className="controls__back"
+                    className="controls__back controls__left-side"
                     onClick={() => navigate(-1)}
                 >
                     <ChevronLeft />

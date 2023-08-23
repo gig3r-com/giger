@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -21,6 +22,7 @@ export const Gig: FC<IGigProps> = ({
     setSelected,
     delayMultiplier
 }) => {
+    const navigate = useNavigate();
     const { currentUser } = useAuthenticationService();
     const { acceptGig } = useGigsService();
     const { buttonColor, buttonText } = useGigHelpers();
@@ -56,6 +58,11 @@ export const Gig: FC<IGigProps> = ({
         }
     };
 
+    const selectGig = () => {
+        setSelected(gig);
+        navigate(`/gig/${gig.id}`);
+    };
+
     const showConvo = useMemo(() => {
         return (
             (gig.status !== GigStatus.AVAILABLE ||
@@ -78,7 +85,7 @@ export const Gig: FC<IGigProps> = ({
             <AnimatePresence>
                 <motion.div
                     className={gigSummaryClassName}
-                    onClick={() => setSelected(gig)}
+                    onClick={() => selectGig()}
                     key={gig.id}
                     initial={{ opacity: 0, transform: 'scaleX(0)' }}
                     animate={{ opacity: 1, transform: 'scaleX(1)' }}
