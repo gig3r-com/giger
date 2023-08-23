@@ -1,8 +1,9 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
+import { useParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
-import { GigStatus, IGig } from '../../../models/gig';
+import { GigStatus } from '../../../models/gig';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { Controls } from '../../../shared/components/controls/controls';
 
@@ -10,7 +11,7 @@ import './gigList.scss';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const { currentUser } = useAuthenticationService();
-    const [selectedGig, setSelectedGig] = useState<IGig | null>(null);
+    const { gigId } = useParams();
 
     const sortedGigs = [...gigs].sort((a, b) => {
         const aIsOwn = a.author.id === currentUser().id;
@@ -26,15 +27,12 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
 
         return aScore - bScore;
     });
-    const selectGig = (gig: IGig) => {
-        selectedGig?.id === gig.id ? setSelectedGig(null) : setSelectedGig(gig);
-    };
 
     return (
         <section className="gig-list">
             <Controls
                 leftSideOption={
-                    selectedGig
+                    gigId
                         ? 'back'
                         : `${gigs.length} ${gigs.length > 1 ? 'GIGS' : 'GIG'}`
                 }
@@ -47,8 +45,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                         <Gig
                             gig={gig}
                             key={gig.id}
-                            selectedId={selectedGig?.id}
-                            setSelected={selectGig}
+                            selectedId={gigId}
                             delayMultiplier={i}
                         />
                     ))}

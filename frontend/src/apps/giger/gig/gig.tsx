@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -13,15 +13,11 @@ import { useGigsService } from '../../../shared/services/gigs.service';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
 import { RootState } from '../../../store/store';
+import { standardTimingFunction } from '../../../shared/constants';
 
 import './gig.scss';
 
-export const Gig: FC<IGigProps> = ({
-    gig,
-    selectedId,
-    setSelected,
-    delayMultiplier
-}) => {
+export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const { currentUser } = useAuthenticationService();
     const { acceptGig } = useGigsService();
@@ -59,8 +55,7 @@ export const Gig: FC<IGigProps> = ({
     };
 
     const selectGig = () => {
-        setSelected(gig);
-        navigate(`/gig/${gig.id}`);
+        navigate(`/giger/${gig.id}`);
     };
 
     const showConvo = useMemo(() => {
@@ -92,7 +87,7 @@ export const Gig: FC<IGigProps> = ({
                     exit={{ opacity: 0, transform: 'scaleX(0)', height: 0 }}
                     transition={{
                         delay: delayMultiplier * 0.06,
-                        ease: cubicBezier(0.16, 1, 0.3, 1)
+                        ease: standardTimingFunction
                     }}
                 >
                     <h3 className="gig__title">{gig.title}</h3>
@@ -110,9 +105,7 @@ export const Gig: FC<IGigProps> = ({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{
-                            ease: cubicBezier(0.16, 1, 0.3, 1)
-                        }}
+                        transition={{ ease: standardTimingFunction }}
                     >
                         <BigButton
                             text={buttonText(gig.status)}

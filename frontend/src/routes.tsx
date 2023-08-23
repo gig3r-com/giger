@@ -10,7 +10,7 @@ export const Router = () => {
                 <Route path="/" element={<Giger />} />
                 <Route path="giger" element={<Giger />}>
                     <Route path="new-gig" element={<Giger />} />
-                    <Route path="gig/:id" element={<Giger />} />
+                    <Route path=":gigId" element={<Giger />} />
                 </Route>
                 <Route path="chat" element={<Chat />} >
                     <Route path=":chatId" element={<Chat />} />
