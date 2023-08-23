@@ -20,5 +20,7 @@
     "READ": "read",
     "ERROR": "error",
     "AWAITING": "awaiting",
-    "SEARCH": "Search"
+    "SEARCH": "Search",
+    "EDIT": "Edit",
+    "REPORT_A_PROBLEM": "Report a problem"
 }

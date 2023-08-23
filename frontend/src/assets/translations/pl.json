@@ -20,5 +20,7 @@
     "READ": "Przeczytane",
     "ERROR": "Błąd",
     "AWAITING": "Oczekujące",
-    "SEARCH": "Szukaj"
+    "SEARCH": "Szukaj",
+    "EDIT": "Edytuj",
+    "REPORT_A_PROBLEM": "Zgłoś problem"
 }

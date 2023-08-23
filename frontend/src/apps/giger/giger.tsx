@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { IGig } from '../../models/gig';
 import { GigList } from './gigList/gigList';
@@ -15,6 +15,8 @@ import './giger.scss';
 
 export const Giger: FC = () => {
     const location = useLocation();
+    const { gigId } = useParams();
+    const navigate = useNavigate();
     const { fetchGigs } = useGigsService();
     const gigs = useSelector((state: RootState) => state.gigs.gigs);
     const selectedCategories = useSelector(
@@ -39,6 +41,12 @@ export const Giger: FC = () => {
     const toggleMenuState = () => {
         setMenuState(menuState === 'filters' ? 'list' : 'filters');
     };
+
+    useEffect(function redirectOnGigNotFound() {
+        if (gigId && !gigs.some((gig) => gig.id === gigId)) {
+            navigate('/giger');
+        }
+    }, [gigId, gigs, navigate]);
 
     useEffect(function showNewGigMenu() {
         if (location.pathname === '/giger/new-gig') {

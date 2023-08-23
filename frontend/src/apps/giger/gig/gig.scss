@@ -134,6 +134,10 @@
         top: -1px;
     }
 
+    .big-button + .big-button {
+        margin-top: 1rem;
+    }
+
     .new-msg {
         position: absolute;
         bottom: 0;

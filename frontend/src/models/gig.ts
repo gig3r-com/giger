@@ -16,6 +16,7 @@ export interface IGig extends IGigBase {
     status: GigStatus;
     id: string;
     author: IUser;
+    takenBy?: IUser;
 }
 
 export interface IGigCategory {

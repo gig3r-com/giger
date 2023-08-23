@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,7 @@ export const Chat: FC = () => {
     const { fetchUserConvos } = useMessagesService();
     const { currentUser } = useAuthenticationService();
     const location = useLocation();
+    const navigate = useNavigate();
     const { chatId } = useParams();
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -56,6 +57,12 @@ export const Chat: FC = () => {
     useEffect(function fetchOnMount() {
         fetchUserConvos(currentUser().id);
     }, []);
+
+    useEffect(function redirectOnConvoNotFound() {
+        if (chatId && !conversations.some((convo) => convo.id === chatId)) {
+            navigate('/chat');
+        }
+    }, [chatId, conversations, navigate]);
 
     return (
         <section className="chat">

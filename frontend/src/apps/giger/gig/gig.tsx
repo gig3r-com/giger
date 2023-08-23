@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,41 +20,22 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const { currentUser } = useAuthenticationService();
     const { acceptGig } = useGigsService();
-    const { buttonColor, buttonText } = useGigHelpers();
+    const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
+    const isMine = useMemo(() => {
+        return gig.author.id === currentUser().id;
+    }, [gig, currentUser]);
     const convo = useMemo(() => {
         return convos.find((c) => c.id === gig.id);
     }, [convos, gig]);
-    const gigClassname = classNames({
-        gig: true,
-        'gig--completed': gig.status === GigStatus.COMPLETED,
-        'gig--in-progress': gig.status === GigStatus.IN_PROGRESS,
-        'gig--available': gig.status === GigStatus.AVAILABLE,
-        'gig--selected': selectedId === gig.id,
-        'gig--other-selected':
-            selectedId !== gig.id && selectedId !== undefined,
-        'gig--mine': gig.author.id === currentUser().id
-    });
-
-    const gigSummaryClassName = classNames({
-        gig__summary: true,
-        'gig__summary--completed': gig.status === GigStatus.COMPLETED,
-        'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
-        'gig__summary--available': gig.status === GigStatus.AVAILABLE,
-        'gig__summary--mine': gig.author.id === currentUser().id
-    });
 
     const handleButtonClick = () => {
         if (gig.status === GigStatus.AVAILABLE) {
             acceptGig(gig.id);
         }
-    };
-
-    const selectGig = () => {
-        navigate(`/giger/${gig.id}`);
     };
 
     const showConvo = useMemo(() => {
@@ -76,11 +56,11 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     );
 
     return (
-        <li className={gigClassname}>
+        <li className={gigClassname(gig)}>
             <AnimatePresence>
                 <motion.div
-                    className={gigSummaryClassName}
-                    onClick={() => selectGig()}
+                    className={gigSummaryClassName(gig)}
+                    onClick={() => navigate(`/giger/${gig.id}`)}
                     key={gig.id}
                     initial={{ opacity: 0, transform: 'scaleX(0)' }}
                     animate={{ opacity: 1, transform: 'scaleX(1)' }}
@@ -112,6 +92,14 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             color={buttonColor(gig.status)}
                             onClick={handleButtonClick}
                         />
+
+                        {isMine && (
+                            <BigButton
+                                text={secondButtonText(!!gig.takenBy)}
+                                color='accent'
+                                onClick={() => {}}
+                            />
+                        )}
 
                         <p className="gig__description">{gig.description}</p>
 

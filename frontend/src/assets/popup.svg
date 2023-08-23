@@ -1,0 +1,55 @@
+<svg width="345" height="223" viewBox="0 0 345 223" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter x="-28.4%" y="-26.2%" width="156.7%" height="152.3%" filterUnits="objectBoundingBox" id="zjuk4m6qua">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 0.952941176 0 0 0 0 0.0705882353 0 0 0 1 0" in="shadowBlurOuter1"/>
+        </filter>
+        <filter x="inf%" y="inf%" width="760.9%" height="19.5%" filterUnits="objectBoundingBox" id="3xmy3a2hec">
+            <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 0.952941176 0 0 0 0 0.0705882353 0 0 0 1 0" in="shadowBlurOuter1"/>
+        </filter>
+        <filter x="-195.7%" y="-24.5%" width="491.3%" height="149%" filterUnits="objectBoundingBox" id="o7u2cs5h8e">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 0.952941176 0 0 0 0 0.0705882353 0 0 0 1 0" in="shadowBlurOuter1"/>
+        </filter>
+        <filter x="-43.5%" y="-38.5%" width="187%" height="176.9%" filterUnits="objectBoundingBox" id="1kuz2qatvg">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 0.952941176 0 0 0 0 0.0705882353 0 0 0 1 0" in="shadowBlurOuter1"/>
+        </filter>
+        <filter x="-28.4%" y="-26.2%" width="156.7%" height="152.3%" filterUnits="objectBoundingBox" id="icbg0kbghi">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 0.952941176 0 0 0 0 0.0705882353 0 0 0 1 0" in="shadowBlurOuter1"/>
+        </filter>
+        <path id="mkb4eahsqb" d="M44.16 7.8v4.589H17.02v29.825h-4.6V7.8z"/>
+        <path d="M15.18 136.167V172" id="fqjahjt1pd"/>
+        <path id="eulhd99ewf" d="M12.88 139.49v36.708h4.6V139.49z"/>
+        <path id="ilrislagbh" d="M332.58 7.8v23.402h-4.6V12.389h-16.1V7.8z"/>
+        <path id="8u14bi6q6j" d="M332.58 181.704v34.413h-31.74v-4.588h27.14v-29.825z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <path stroke="#545AE9" stroke-width="2" fill="#22193C" d="M14.8 10.177h315.4v202.646H14.8z"/>
+        <g fill-rule="nonzero">
+            <use fill="#000" filter="url(#zjuk4m6qua)" xlink:href="#mkb4eahsqb"/>
+            <use fill="#FFF312" xlink:href="#mkb4eahsqb"/>
+        </g>
+        <use filter="url(#3xmy3a2hec)" xlink:href="#fqjahjt1pd" fill="#000"/>
+        <g fill-rule="nonzero">
+            <use fill="#000" filter="url(#o7u2cs5h8e)" xlink:href="#eulhd99ewf"/>
+            <use fill="#FFF312" xlink:href="#eulhd99ewf"/>
+        </g>
+        <g fill-rule="nonzero">
+            <use fill="#000" filter="url(#1kuz2qatvg)" xlink:href="#ilrislagbh"/>
+            <use fill="#FFF312" xlink:href="#ilrislagbh"/>
+        </g>
+        <g fill-rule="nonzero">
+            <use fill="#000" filter="url(#icbg0kbghi)" xlink:href="#8u14bi6q6j"/>
+            <use fill="#FFF312" xlink:href="#8u14bi6q6j"/>
+        </g>
+        <path d="M7.36 216.576h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zm7.36 0h4.6v4.589h-4.6zM226.32 1.836h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6zm7.36 0h4.6v4.588h-4.6z" fill="#FFF312"/>
+    </g>
+</svg>
