@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Giger } from './apps/giger/giger';
 import { MainMenu } from './shared/components/main-menu/main-menu';
 import { Chat } from './apps/chat/chat';
+import { Bank } from './apps/bank/bank';
 
 export const Router = () => {
     return (
@@ -16,6 +17,7 @@ export const Router = () => {
                     <Route path=":chatId" element={<Chat />} />
                     <Route path='new' element={<Chat />} />
                 </Route>
+                <Route path='bank' element={<Bank />} />
             </Routes>
             <MainMenu />
         </BrowserRouter>

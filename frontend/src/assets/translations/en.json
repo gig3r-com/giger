@@ -22,5 +22,10 @@
     "AWAITING": "awaiting",
     "SEARCH": "Search",
     "EDIT": "Edit",
-    "REPORT_A_PROBLEM": "Report a problem"
+    "REPORT_A_PROBLEM": "Report a problem",
+    "TRANSFER": "Transfer",
+    "TRANSFER_HISTORY": "Transfer history",
+    "ACCOUNT_BALANCE": "Account balance",
+    "PRIVATE_ACCOUNT": "Private account",
+    "BUSINESS_ACCOUNT": "Business account"
 }

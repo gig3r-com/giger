@@ -22,5 +22,10 @@
     "AWAITING": "Oczekujące",
     "SEARCH": "Szukaj",
     "EDIT": "Edytuj",
-    "REPORT_A_PROBLEM": "Zgłoś problem"
+    "REPORT_A_PROBLEM": "Zgłoś problem",
+    "TRANSFER": "Prześlij",
+    "TRANSFER_HISTORY": "Historia przelewów",
+    "ACCOUNT_BALANCE": "Stan konta",
+    "PRIVATE_ACCOUNT": "Konto prywatne",
+    "BUSINESS_ACCOUNT": "Konto firmowe"
 }

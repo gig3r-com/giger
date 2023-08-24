@@ -1,0 +1,24 @@
+@import '../../variables.scss';
+
+.bank {
+    padding: 1rem;
+    height: $standard-viewport-height;
+    overflow-y: scroll;
+    box-sizing: border-box;
+
+    &__transactions {
+        list-style: none;
+        padding: 0;
+    }
+
+    &__balance {
+        font-family: 'Saira', sans-serif;
+        font-size: 2.5rem;
+    }
+
+    &__balance-label,
+    &__transfer-history-label {
+        font-family: 'JetBrains Mono', monospace;
+        color: $muted-text;
+    }
+}

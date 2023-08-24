@@ -1,0 +1,41 @@
+@import '../../../variables.scss';
+
+.transaction {
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid $primary-color;
+    padding: 1rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    &__meta {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 120px);
+    }
+
+    &__amount {
+        width: calc(100% - 280px);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__other-party,
+    &__amount{
+        color: white;
+        font-size: 0.875rem;
+    }
+
+    &__date {
+        color: $muted-text;
+        font-size: 0.6rem;
+    }
+
+    &__direction {
+        background-color: $primary-color;
+        width: 34px;
+        height: 34px;
+        margin-right: 1rem;
+    }
+}

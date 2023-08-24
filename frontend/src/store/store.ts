@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import gigsReducer from './gigs.slice';
 import conversationsReducer from './messages.slice';
 import usersReducer from './users.slice';
+import bankSlice from './bank.slice';
 
 export const store = configureStore({
     reducer: {
         gigs: gigsReducer,
         conversations: conversationsReducer,
-        users: usersReducer
+        users: usersReducer,
+        bank: bankSlice
     }
 });
 
