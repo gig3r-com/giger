@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useBankingService } from '../../shared/services/banking.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { Transaction } from './transaction/transaction';
-import { Card } from './card/card';
+import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 
 import './bank.scss';
@@ -13,14 +13,21 @@ export const Bank: FC = () => {
     const intl = useIntl();
     const { accounts, fetchAccounts } = useBankingService();
     const [account, setAccount] = useState<IAccount | undefined>(undefined);
+    const showCards = useMemo(
+        () => accounts.private && accounts.business,
+        [accounts]
+    );
 
     useEffect(function fetchAccountsOnMount() {
         fetchAccounts();
     }, []);
 
-    useEffect(function setAccountAfterFetching() {
-        accounts.private && !account && setAccount(accounts.private);
-    }, [accounts, account]);
+    useEffect(
+        function setAccountAfterFetching() {
+            accounts.private && !account && setAccount(accounts.private);
+        },
+        [accounts, account]
+    );
 
     return (
         <article className="bank">
@@ -29,7 +36,13 @@ export const Bank: FC = () => {
             </span>
             <div className="bank__balance">{account?.balance.toFixed(2)} ¤</div>
 
-            <Card />
+            {showCards && (
+                <Cards
+                    accounts={[accounts.private!, accounts.business!]}
+                    onAccountChange={setAccount}
+                />
+            )}
+
             <BigButton
                 text={intl.formatMessage({ id: 'TRANSFER' })}
                 color="primary"
@@ -39,7 +52,7 @@ export const Bank: FC = () => {
             <h4 className="bank__transfer-history-label">
                 <MemoizedFormattedMessage id="TRANSFER_HISTORY" />
             </h4>
-            <ol className="bank__transactions">
+            <ol className="bank__transactions" key={account?.id}>
                 {account?.transactions.map((transaction) => (
                     <Transaction
                         key={transaction.id}

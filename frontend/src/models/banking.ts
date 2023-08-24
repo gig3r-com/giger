@@ -14,6 +14,7 @@ export interface IAccount {
     id: string;
     owner: IUser;
     type: AccountType
+    accountNumber: string;
 }
 
 export enum AccountType {
