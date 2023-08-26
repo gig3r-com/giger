@@ -3,7 +3,7 @@
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 // Contact the author for other licensing options
 
-import { IShader, UniformsRequired } from "../../shader.types";
+import { IShader, UniformsRequired } from "../../shader.model";
 
 /*
 	Technical details:

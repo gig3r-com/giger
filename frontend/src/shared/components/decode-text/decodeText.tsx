@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import * as React from 'react';
 import './decodeText.scss';
 
+// originally created by Ben Racicot: https://codepen.io/BRacicot/pen/Nryjpa
+
 export const DecodeText: React.FC<{ text: string }> = (props) => {
     const textArray = props.text.split('');
 
@@ -84,8 +86,8 @@ export const DecodeText: React.FC<{ text: string }> = (props) => {
 
     return (
         <div className="decode-text">
-            {textArray.map((letter) => (
-                <div className="text-animation">{letter}</div>
+            {textArray.map((letter, index) => (
+                <div key={`${letter} ${index}`} className="text-animation">{letter}</div>
             ))}
         </div>
     );

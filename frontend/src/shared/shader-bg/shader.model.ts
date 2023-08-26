@@ -2,6 +2,7 @@ export enum UniformsRequired {
     time = 'TIME',
     resolution = 'RESOLUTION',
     mouse = 'MOUSE',
+    texture = 'TEXTURE'
 }
 
 export enum ShaderPrecision {
@@ -26,4 +27,7 @@ export interface IShaderBGProps {
     shader: IShader,
     resolutionModifier?: number;
     classNames?: string;
+    texture?: HTMLImageElement;
+    height?: number;
+    width?: number;
 }

@@ -1,4 +1,4 @@
-import { IShader, UniformsRequired } from "../shader.types";
+import { IShader, UniformsRequired } from "../shader.model";
 
 export const pink: IShader = {
   uniformsRequired: [UniformsRequired.time, UniformsRequired.resolution],

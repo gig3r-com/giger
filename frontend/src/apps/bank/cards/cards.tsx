@@ -2,34 +2,35 @@ import { FC, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AccountType } from '../../../models/banking';
+import { ICardsProps } from './cards.model';
 
 import './cards.scss';
-import { ICardsProps } from './cards.model';
 
 export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
     const scrollerRef = useRef<HTMLDivElement>(null);
-    const cardClassNames = (accountType: AccountType) =>
+    const cardBgClassNames = (accountType: AccountType) =>
         classNames({
-            cards__card: true,
-            'cards__card--private': accountType === AccountType.PRIVATE,
-            'cards__card--business': accountType === AccountType.BUSINESS
+            'cards__card-bg': true,
+            'cards__card-bg--private': accountType === AccountType.PRIVATE,
+            'cards__card-bg--business': accountType === AccountType.BUSINESS
         });
 
     useEffect(() => {
         if (!scrollerRef.current) return;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
 
-                const cardIndex = Array
-                    .from(entry.target.parentElement!.children)
-                    .indexOf(entry.target);
-                    
-                onAccountChange(accounts[cardIndex]);
-            });
-        },
-        { threshold: 0.7 }
+                    const cardIndex = Array.from(
+                        entry.target.parentElement!.children
+                    ).indexOf(entry.target);
+
+                    onAccountChange(accounts[cardIndex]);
+                });
+            },
+            { threshold: 0.7 }
         );
 
         Array.from(scrollerRef.current.children).forEach((child) => {
@@ -46,17 +47,19 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
             <div className="cards__scroller" ref={scrollerRef}>
                 {accounts.map((account) => (
                     <div
-                        className={cardClassNames(account.type)}
+                        className='cards__card'
                         key={account.id}
                     >
-                        <span className="cards__account-type">
-                            <MemoizedFormattedMessage
-                                id={`${account.type.toUpperCase()}_ACCOUNT`}
-                            />
-                        </span>
-                        <span className="cards__number">
-                            {account.accountNumber}
-                        </span>
+                        <div className={cardBgClassNames(account.type)}>
+                            <span className="cards__account-type">
+                                <MemoizedFormattedMessage
+                                    id={`${account.type.toUpperCase()}_ACCOUNT`}
+                                />
+                            </span>
+                            <span className="cards__number">
+                                **** **** **** {account.accountNumber.slice(-4)}
+                            </span>
+                        </div>
                     </div>
                 ))}
             </div>

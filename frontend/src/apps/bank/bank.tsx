@@ -5,9 +5,9 @@ import { BigButton } from '../../shared/components/big-button/big-button';
 import { Transaction } from './transaction/transaction';
 import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
+import { IAccount } from '../../models/banking';
 
 import './bank.scss';
-import { IAccount } from '../../models/banking';
 
 export const Bank: FC = () => {
     const intl = useIntl();

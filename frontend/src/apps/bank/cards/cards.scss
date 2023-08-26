@@ -11,25 +11,63 @@
 
     &__card {
         width: 100%;
-        background-size: cover;
         aspect-ratio: 69 / 37;
+        padding: 0.5rem;   
+        overflow: hidden;
+        scroll-snap-align: center;
+    }
+
+    &__card-bg {
+        background-size: cover;
         text-shadow: 0 1px 5px #16286d;
+        aspect-ratio: 69 / 37;
         color: white;
         font-family: 'JetBrains Mono', monospace;
         scroll-snap-align: center;
-        margin: 0 0.5rem;
         padding: 1rem;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        position: relative;
+
+        &::before {
+            content: '';
+            width: 100%;
+            aspect-ratio: 69/37;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            padding-top: 100%;
+            filter: blur(5px);
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
 
         &--private {
             background-image: url(../../../assets/karta-1@3x.webp);
+
+            &::before {
+                background-image: url(../../../assets/karta-1@3x.webp);
+            }
         }
 
         &--business {
             background-image: url(../../../assets/karta-2@3x.webp);
+
+            &::before {
+                background-image: url(../../../assets/karta-1@3x.webp);
+            }
         }
+    }
+
+    &__number {
+        font-size: 1.625rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
     }
 }

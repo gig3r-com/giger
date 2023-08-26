@@ -4,37 +4,44 @@ import {
     IShaderBGProps,
     IUniformUpdateData,
     UniformsRequired
-} from './shader.types';
+} from './shader.model';
 
 import './shaderBg.scss';
 
 /**
  * A component used to render a fragment shader to canvas
  * @param shader {IShader} shader data required for render
+ * @param classNames {string} css classes to be added to canvas
+ * @param resolutionModifier {number} a number to multiply the resolution by. Defaults to 1. Fractions will diminish quality but improve performance
+ * @param texture {HTMLImageElement} an image to be used as a texture. only use if the shader requires a texture uniform
+ * @param height {number} height of the canvas. Defaults to 740
+ * @param width {number} width of the canvas. Defaults to 360
  */
 export const ShaderBG: FC<IShaderBGProps> = ({
     shader,
     classNames = '',
-    resolutionModifier = 1
+    resolutionModifier = 1,
+    texture,
+    height,
+    width
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const shaderCanvas = new ShaderCanvas();
     const uniforms: IUniformUpdateData = {
         time: 0,
-        height: 740,
-        width: 360,
+        height: height || 740,
+        width: width || 360,
         mouse: [0, 0, 0, 0]
     };
 
     const renderFrame = () => {
-        let animReq: number;
         const animate = (timestamp: number) => {
             uniforms.time = timestamp / 1000;
             setUniforms();
             shaderCanvas.render();
-            animReq = window.requestAnimationFrame(animate);
+            window.requestAnimationFrame(animate);
         };
-        animReq = window.requestAnimationFrame(animate);
+        window.requestAnimationFrame(animate);
     };
 
     const initShaderCanvas = () => {
@@ -50,10 +57,25 @@ export const ShaderBG: FC<IShaderBGProps> = ({
             uniforms.width / window.devicePixelRatio,
             uniforms.height / window.devicePixelRatio
         );
-        setUniforms();
 
-        wrapperRef.current?.appendChild(shaderCanvas.domElement);
-        renderFrame();
+        const start = () => {
+            const canvasSet =
+                wrapperRef.current &&
+                Array.from(wrapperRef.current?.querySelectorAll('canvas'))
+                    .length > 0;
+            setUniforms();
+
+            !canvasSet &&
+                wrapperRef.current?.appendChild(shaderCanvas.domElement);
+            renderFrame();
+        };
+
+        if (texture) {
+            shaderCanvas.setTexture('iChannel0', texture);
+            texture.complete ? start() : (texture.onload = start);
+        } else {
+            start();
+        }
     };
 
     const setUniforms = () => {
@@ -73,6 +95,10 @@ export const ShaderBG: FC<IShaderBGProps> = ({
 
         if (uniformsRequired.includes(UniformsRequired.mouse)) {
             shaderCanvas.setUniform('iMouse', uniforms.mouse);
+        }
+
+        if (uniformsRequired.includes(UniformsRequired.texture)) {
+            shaderCanvas.setUniform('iChannel0', 0);
         }
     };
 

@@ -1,4 +1,4 @@
-import { IShader, ShaderPrecision, UniformsRequired } from "../../shader.types";
+import { IShader, ShaderPrecision, UniformsRequired } from "../../shader.model";
 
 export const blackFlower: (precision: ShaderPrecision) => IShader = (precision) => ({
     uniformsRequired: [UniformsRequired.resolution, UniformsRequired.time],

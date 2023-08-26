@@ -13,11 +13,11 @@ export const Router = () => {
                     <Route path="new-gig" element={<Giger />} />
                     <Route path=":gigId" element={<Giger />} />
                 </Route>
-                <Route path="chat" element={<Chat />} >
+                <Route path="chat" element={<Chat />}>
                     <Route path=":chatId" element={<Chat />} />
-                    <Route path='new' element={<Chat />} />
+                    <Route path="new" element={<Chat />} />
                 </Route>
-                <Route path='bank' element={<Bank />} />
+                <Route path="bank" element={<Bank />} />
             </Routes>
             <MainMenu />
         </BrowserRouter>

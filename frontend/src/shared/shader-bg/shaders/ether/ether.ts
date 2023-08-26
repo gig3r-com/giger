@@ -2,7 +2,7 @@
 // https://www.shadertoy.com/view/MsjSW3
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 
-import { IShader, UniformsRequired } from "../../shader.types";
+import { IShader, UniformsRequired } from "../../shader.model";
 
 // Contact the author for other licensing options
 export const ether: IShader = {
