@@ -1,8 +1,9 @@
-from ..app import db
+from backend.app import db
 import sqlalchemy as sa
 
 
-class User(db.Model):
-    id = sa.Column(sa.String, primary_key=True)
-    name = sa.Column(sa.String)
-    handle = sa.Column(sa.String)
+class Users(db.Model):
+    sa.Column("id", sa.Integer, primary_key=True, nullable=False)
+    sa.Column("name", sa.String, nullable=False)
+    sa.Column("parent_id", sa.Integer, nullable=False)
+    sa.Column("reputation", sa.Integer)
