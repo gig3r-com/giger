@@ -1,0 +1,41 @@
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python virtual environments
+venv/
+env/
+*.venv/
+
+# IDE-specific files
+.idea/
+.vscode/
+*.iml
+
+# User-specific settings
+*.idea/workspace.xml
+*.idea/misc.xml
+*.idea/modules.xml
+*.idea/vcs.xml
+*.idea/editor.xml
+*.idea/jsLibraryMappings.xml
+
+# macOS-specific files
+.DS_Store
+
+# Compiled files
+dist/
+build/
+*.egg-info/
+
+# Logs and other generated files
+*.log
+*.sqlite
+*.db
+*.xlsx
+*.csv
+
+# Local settings
+config.local.py
