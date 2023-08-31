@@ -6,6 +6,7 @@ export interface IGigBase {
     description: string;
     category: GigCategoryNames;
     reputationRequired?: number; //0-10
+    id: string;
 }
 
 export interface IDraftGig extends IGigBase {
@@ -14,7 +15,6 @@ export interface IDraftGig extends IGigBase {
 
 export interface IGig extends IGigBase {
     status: GigStatus;
-    id: string;
     author: IUser;
     takenBy?: IUser;
 }

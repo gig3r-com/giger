@@ -23,9 +23,11 @@ export function useGigsService() {
         category: draftGig.category,
         description: draftGig.description,
         payout: draftGig.payout,
-        convo: createConvo(createMessage(draftGig.message), currentUser().id, [
-            currentUser()
-        ]),
+        convo: createConvo(
+            [currentUser()],
+            createMessage(draftGig.message),
+            draftGig.id
+        ),
         id: uuidv4(),
         author: currentUser(),
         status: GigStatus.PENDING
