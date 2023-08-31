@@ -5,9 +5,12 @@ import { BigButton } from '../../shared/components/big-button/big-button';
 import { Transaction } from './transaction/transaction';
 import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
-import { IAccount } from '../../models/banking';
+import { AccountType, IAccount } from '../../models/banking';
 
 import './bank.scss';
+import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
+import { standardTimingFunction } from '../../shared/constants';
 
 export const Bank: FC = () => {
     const intl = useIntl();
@@ -17,6 +20,12 @@ export const Bank: FC = () => {
         () => accounts.private && accounts.business,
         [accounts]
     );
+
+    const balanceClasses = (type: AccountType) =>
+        classNames({
+            [`bank__${type}-balance`]: true,
+            [`bank__${type}-balance--active`]: account?.type === type
+        });
 
     useEffect(function fetchAccountsOnMount() {
         fetchAccounts();
@@ -34,7 +43,18 @@ export const Bank: FC = () => {
             <span className="bank__balance-label">
                 <MemoizedFormattedMessage id="ACCOUNT_BALANCE" />
             </span>
-            <div className="bank__balance">{account?.balance.toFixed(2)} ¤</div>
+            <div className="bank__balance">
+                {accounts.private && (
+                    <span className={balanceClasses(AccountType.PRIVATE)}>
+                        {accounts.private.balance.toFixed(2)} ¤
+                    </span>
+                )}
+                {accounts.business && (
+                    <span className={balanceClasses(AccountType.BUSINESS)}>
+                        {accounts.business.balance.toFixed(2)} ¤
+                    </span>
+                )}
+            </div>
 
             {showCards && (
                 <Cards
@@ -52,14 +72,21 @@ export const Bank: FC = () => {
             <h4 className="bank__transfer-history-label">
                 <MemoizedFormattedMessage id="TRANSFER_HISTORY" />
             </h4>
-            <ol className="bank__transactions" key={account?.id}>
-                {account?.transactions.map((transaction) => (
-                    <Transaction
-                        key={transaction.id}
-                        transaction={transaction}
-                    />
-                ))}
-            </ol>
+            <AnimatePresence mode='sync'>
+                {account && <motion.ol 
+                    className="bank__transactions" 
+                    key={account?.id}
+
+                    transition={{ ease: standardTimingFunction, duration: 3.2 }}
+                >
+                    {account?.transactions.map((transaction) => (
+                        <Transaction
+                            key={transaction.id}
+                            transaction={transaction}
+                        />
+                    ))}
+                </motion.ol>}
+            </AnimatePresence>
         </article>
     );
 };

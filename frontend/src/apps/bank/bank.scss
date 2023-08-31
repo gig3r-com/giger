@@ -14,6 +14,31 @@
     &__balance {
         font-family: 'Saira', sans-serif;
         font-size: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: 60px;
+    }
+
+    &__private-balance,
+    &__business-balance {
+        transition: transform $standard-timing-function $standard-duration;  
+    }
+
+    &__private-balance {
+        transform: translateY(-100%);
+
+        &--active {
+            transform: translateY(0);
+        }
+    }
+
+    &__business-balance {
+        transform: translateY(100%);
+
+        &--active {
+            transform: translateY(-100%);
+        }
     }
 
     &__balance-label,
