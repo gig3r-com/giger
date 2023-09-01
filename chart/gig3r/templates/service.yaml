@@ -1,0 +1,35 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.frontend.app" . }}
+  name: {{ include "gig3r.frontend.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.frontend.app" . }}
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: {{ include "gig3r.frontend.app" . }}
+  sessionAffinity: None
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.backend.app" . }}
+  name: {{ include "gig3r.backend.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.backend.app" . }}
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: {{ include "gig3r.backend.app" . }}
+  sessionAffinity: None
