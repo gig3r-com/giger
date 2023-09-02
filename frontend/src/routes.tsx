@@ -3,6 +3,7 @@ import { Giger } from './apps/giger/giger';
 import { MainMenu } from './shared/components/main-menu/main-menu';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
+import { MyId } from './apps/myId/my-id';
 
 export const Router = () => {
     return (
@@ -18,6 +19,7 @@ export const Router = () => {
                     <Route path="new" element={<Chat />} />
                 </Route>
                 <Route path="bank" element={<Bank />} />
+                <Route path="my.id" element={<MyId />} />
             </Routes>
             <MainMenu />
         </BrowserRouter>

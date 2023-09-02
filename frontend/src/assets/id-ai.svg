@@ -1,0 +1,60 @@
+<svg width="117" height="133" viewBox="0 0 117 133" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter x="-5.5%" y="-5.5%" width="110.9%" height="110.9%" filterUnits="objectBoundingBox" id="nclivni1na">
+            <feGaussianBlur stdDeviation="2" in="SourceGraphic"/>
+        </filter>
+        <filter x="-37.5%" y="-37.5%" width="175%" height="175%" filterUnits="objectBoundingBox" id="p63iao3mmb">
+            <feGaussianBlur stdDeviation="2" in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <path d="m334.793-61.5 9.707 9.707V301.5H.5v-363h334.293z" stroke="#545AE9"/>
+        <g transform="translate(15 39)">
+            <circle fill="#FFF" cx="1.5" cy="40.5" r="1.5"/>
+            <circle fill="#FFF" cx="55.5" cy="64.5" r="1.5"/>
+            <circle fill="#FFF" cx="42.5" cy="42.5" r="1.5"/>
+            <circle fill="#FFF" cx="79.5" cy="11.5" r="1.5"/>
+            <circle fill="#FFF" cx="17.5" cy="21.5" r="1.5"/>
+            <circle fill="#FFF" cx="80.5" cy="37.5" r="1.5"/>
+            <circle fill="#FFF" cx="57.5" cy="18.5" r="1.5"/>
+            <circle fill="#FFF" cx="46.5" cy="1.5" r="1.5"/>
+            <circle fill="#FFF" transform="rotate(-106 71.404 49.768)" cx="71.404" cy="49.768" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(-106 33.555 30.086)" cx="33.555" cy="30.086" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(-106 46.654 49.192)" cx="46.654" cy="49.192" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(-106 32.581 63.896)" cx="32.581" cy="63.896" r="1.465"/>
+            <path stroke="#FFF" d="M1 40.558 31.722 64H55.13l16.092-14.651L80 37.628l-38.037 4.395 14.63-23.442 21.944-7.325L46.352 1 33.185 30.302l-16.092-8.79z"/>
+            <path stroke="#FFF" d="M17 21.512 31.815 64l10.37-21.977-8.889-11.72L57 18.58 46.63 1"/>
+            <path stroke="#FFF" d="M55.154 64 42 41.917l4.385 7.36H71.23L56.615 18.362 80 37.5 78.538 11M1 41l41 1"/>
+        </g>
+        <g transform="translate(8.159 7.058)">
+            <circle fill="#FFF" transform="rotate(118 71.24 13.947)" cx="71.24" cy="13.947" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 14.102 59.364)" cx="14.102" cy="59.364" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 46.333 57.9)" cx="46.333" cy="57.899" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 58.054 115.037)" cx="58.054" cy="115.037" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 82.96 41.783)" cx="82.96" cy="41.783" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 28.753 101.851)" cx="28.753" cy="101.851" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 63.914 87.2)" cx="63.914" cy="87.201" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(118 88.82 85.736)" cx="88.82" cy="85.736" r="1.465"/>
+            <circle fill="#FFF" transform="rotate(12 20.99 84.914)" cx="20.989" cy="84.914" r="1.818"/>
+            <circle fill="#FFF" transform="rotate(12 64.6 54.914)" cx="64.6" cy="54.914" r="1.818"/>
+            <circle fill="#FFF" transform="rotate(12 36.038 58.136)" cx="36.038" cy="58.136" r="1.818"/>
+            <circle fill="#FFF" transform="rotate(12 28.127 34.152)" cx="28.127" cy="34.152" r="1.818"/>
+            <path stroke="#FFF" d="M71.594 13.564 28.162 33.705l-13.654 25.68 6.556 26.133L28.7 101.93l17.405-44.274 16.977 29.615-4.829 28.313L88.188 86.21l-24.208-31.4L82.934 42.24z"/>
+            <path stroke="#FFF" d="m83.17 41.534-54.9-8.296 17.854 24.12 17.952-2.992-1.103 32.845 25.196-1.23"/>
+            <path stroke="#FFF" d="m14.754 58.764 31.873-1.433-10.624.478-14.391 27.065 42.421 2.134-34.565 14.297L59.42 115.19M71.47 12.897 46.103 57.484"/>
+        </g>
+        <path stroke="#787CED" d="M5 16h16v16H5zM21 16h16v16H21zM37 16h16v16H37zM53 16h16v16H53zM69 16h16v16H69zM85 16h16v16H85zM101 16h16v16h-16zM5 32h16v16H5zM21 32h16v16H21zM37 32h16v16H37zM53 32h16v16H53zM69 32h16v16H69zM85 32h16v16H85zM101 32h16v16h-16zM5 48h16v16H5zM21 48h16v16H21zM37 48h16v16H37zM53 48h16v16H53zM69 48h16v16H69zM85 48h16v16H85zM101 48h16v16h-16zM5 80h16v16H5zM21 80h16v16H21zM37 80h16v16H37zM53 80h16v16H53zM69 80h16v16H69zM85 80h16v16H85zM101 80h16v16h-16zM5 96h16v16H5zM21 96h16v16H21zM37 96h16v16H37zM53 96h16v16H53zM69 96h16v16H69zM85 96h16v16H85zM101 96h16v16h-16zM5 112h16v16H5zM21 112h16v16H21zM37 112h16v16H37zM53 112h16v16H53zM69 112h16v16H69zM85 112h16v16H85zM101 112h16v16h-16zM5 64h16v16H5zM21 64h16v16H21zM37 64h16v16H37zM53 64h16v16H53zM69 64h16v16H69zM85 64h16v16H85zM101 64h16v16h-16z"/>
+        <path stroke="#787CED" d="M7.603 6H0v127h115"/>
+        <path stroke="#787CED" stroke-width="2" filter="url(#nclivni1na)" d="M7 18h108v108H7z"/>
+        <path d="M13 2.121 16.879 6 13 9.879 9.121 6 13 2.121zM31 2.121 34.879 6 31 9.879 27.121 6 31 2.121z" stroke="#B84AF5" stroke-width="3"/>
+        <path fill="#787CED" d="M0 56h2v25H0zM21 131h25v2H21z"/>
+        <text font-family="JetBrainsMono-Regular, JetBrains Mono" font-size="12" fill="#BBC1FB" transform="translate(0 -62)">
+                    <tspan x="102" y="72">AI</tspan>
+                </text>
+        <g>
+            <path stroke="#B84AF5" stroke-width="2" filter="url(#p63iao3mmb)" d="M1 1h14v14H1z" transform="translate(21 32)"/>
+            <path stroke="#FFF312" d="M36 33 22 47M22 33l14 14"/>
+            <path stroke="#B84AF5" d="M21.5 32.5h15v15h-15zM36 33 22 47M22 33l14 14"/>
+        </g>
+    </g>
+</svg>
