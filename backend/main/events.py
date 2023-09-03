@@ -1,4 +1,4 @@
-from backend.app import socketio
+from backend.main import socketio
 from flask_socketio import emit
 
 
