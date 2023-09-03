@@ -19,6 +19,5 @@ export interface IUser {
 export enum UserTypes {
     HUMAN = 'human',
     AI = 'ai',
-    //CYBORG = 'cyborg',
     ANDROID = 'android'
 }
