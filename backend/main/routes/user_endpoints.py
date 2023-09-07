@@ -27,7 +27,10 @@ def get_all():
     for user in users:
         user_list.append({"name": user.name})
 
-    return jsonify(user_list)
+    if len(users) > 0:
+        return jsonify(user_list)
+    else:
+        return jsonify({"error": "Users not found"}), 200
 
 
 @api_v1.route('/users/backdoor/handles/all')
