@@ -9,7 +9,7 @@ class GigCategoryNames(db.Model):
 
 class GigStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String)
+    name = db.Column(db.String)
 
 
 class GigList(db.Model):
