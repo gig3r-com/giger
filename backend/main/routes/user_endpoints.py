@@ -1,4 +1,6 @@
 from flask import jsonify
+
+from ..data_models.userdata import UserData
 from ..db_models.user import User
 from flask import Blueprint
 from typing import List, Dict
@@ -21,13 +23,9 @@ def get_user(user_name):
 
 @api_v1.route('/users')
 def get_all():
-    users = User.query.all()
-    user_list = []
+    user_list = UserData().get_all_users()
 
-    for user in users:
-        user_list.append({"name": user.name})
-
-    if len(users) > 0:
+    if len(user_list) > 0:
         return jsonify(user_list)
     else:
         return jsonify({"error": "Users not found"}), 200
