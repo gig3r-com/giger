@@ -1,0 +1,6 @@
+environment: app
+base_url: gig3r.com
+
+frontend:
+  image: mivalsten/gig3r-frontend
+  tag: 5
