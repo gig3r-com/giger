@@ -1,4 +1,10 @@
-export interface IUser {
+export interface IUserBase {
+    id: string,
+    name: string,
+    handle: string
+}
+
+export interface IUser extends IUserBase {
     id: string;
     name: string;
     surname: string;
