@@ -14,6 +14,6 @@ Expand the name of the chart.
 {{- end }}
 
 {{- define "gig3r.frontend.image" -}}
-"{{ default "mivalsten/gig3r-frontend" .Values.frontend.image }}:{{ default "mivalsten/gig3r-frontend" .Values.frontend.tag }}"
+"{{ default "mivalsten/gig3r-frontend" .Values.frontend.image }}:{{ default "dev" .Values.frontend.tag }}"
 {{- end }}
 
