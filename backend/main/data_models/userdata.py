@@ -4,6 +4,9 @@ from ..db_models.user import User, AffiliationList
 
 class UserData:
 
+    def __init__(self, user_id=None):
+        self.id = user_id
+
     def get_all_users(self, full_details=False) -> List[Dict]:
         user_list = []
         users = User.query.join(AffiliationList).all()

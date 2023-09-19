@@ -71,7 +71,7 @@ Modify the necessary configuration files for your Flask-SocketIO backend applica
 Start your Flask-SocketIO application:
 
 ```bash
-python main.py
+python app.py
 ```
 
 ## Step 7: Access the Application
