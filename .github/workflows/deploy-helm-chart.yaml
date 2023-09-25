@@ -36,15 +36,25 @@ jobs:
       - name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
-          release: gig3r-${{ inputs.HELM_ENVIRONMENT }}
-          namespace: ${{ inputs.HELM_ENVIRONMENT }}
-          chart: './chart/gig3r'
-          values: |
-            environment: ${{ inputs.HELM_ENVIRONMENT }}
-            base-url: gig3r.com
-            frontend:
-              image: ${{ inputs.HELM_FRONTEND_IMAGE }}
-              tag: ${{ env.HELM_FRONTEND_TAG }}
+          exec: |
+            helm upgrade --install \
+            gig3r-dev \
+            ./chart/gig3r \
+            --wait \
+            --atomic \
+            --namespace=${{ inputs.HELM_ENVIRONMENT }} \
+            --create-namespace \
+            --set environment=${{ inputs.HELM_ENVIRONMENT }} \
+            --set base_url=gig3r.com \
+            --set frontend.image=${{ inputs.HELM_FRONTEND_IMAGE }} \
+            --set frontend.tag=${{ envs.HELM_FRONTEND_TAG }} \
+            --set database.name=${{ inputs.HELM_ENVIRONMENT }} \
+            --set database.user=${{ inputs.HELM_ENVIRONMENT }} \
+            --set database.password=test \
+            --set database.admin.user=postgres \
+            --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }}
+                    
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          overrule_existing_kubeconfig: true
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-          HELM_FRONTEND_TAG: ${{ inputs.HELM_FFRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
