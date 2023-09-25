@@ -34,7 +34,7 @@ jobs:
         run: |
           
       - name: 'Deploy'
-        uses: 'deliverybot/helm@v1'
+        uses: 'WyriHaximus/github-action-helm3@v3'
         with:
           exec: |
             helm upgrade --install \
