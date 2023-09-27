@@ -20,7 +20,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const { currentUser } = useAuthenticationService();
     const { acceptGig } = useGigsService();
-    const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText } = useGigHelpers();
+    const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText, secondButtonAction } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
@@ -97,7 +97,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             <BigButton
                                 text={secondButtonText(!!gig.takenBy)}
                                 color='accent'
-                                onClick={() => {}}
+                                onClick={secondButtonAction(!!gig.takenBy)}
                             />
                         )}
 
