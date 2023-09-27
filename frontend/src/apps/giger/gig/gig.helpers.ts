@@ -2,12 +2,13 @@ import { useIntl } from 'react-intl';
 import { GigStatus, IGig } from '../../../models/gig';
 import classNames from 'classnames';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 export function useGigHelpers() {
     const intl = useIntl();
     const { currentUser } = useAuthenticationService();
     const { gigId } = useParams();
+    const navigate = useNavigate();
     const buttonColor = (status: GigStatus) => {
         let statusColor: 'primary' | 'secondary' | 'accent';
         switch (status) {
@@ -67,11 +68,21 @@ export function useGigHelpers() {
             return intl.formatMessage({ id: 'REPORT_A_PROBLEM' });
         }
     }
+
+    const secondButtonAction = (gigTaken: boolean) => () => {
+        if(gigTaken){
+            console.error("Not implemented");
+        }else{
+            navigate("/report-problem");
+        }
+    }
+
     return {
         buttonColor,
         buttonText,
         gigClassname,
         gigSummaryClassName,
-        secondButtonText
+        secondButtonText,
+        secondButtonAction
     };
 }
