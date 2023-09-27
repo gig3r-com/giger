@@ -73,7 +73,7 @@ export function useGigHelpers() {
         if(gigTaken){
             console.error("Not implemented");
         }else{
-            navigate("/report-problem");
+            navigate(`/report-problem?gigId=${gigId}`, { replace: true });
         }
     }
 

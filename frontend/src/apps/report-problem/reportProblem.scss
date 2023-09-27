@@ -1,55 +1,47 @@
+@import '../../variables.scss';
 
 .report-problem {
+    $controlsHeight: 1.5rem;
+    height: calc($standard-viewport-height - $controlsHeight);
+    display: flex;
+    flex-direction: column;
 
-    &__content{
+    &-root {
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 110px);
-        height: calc(100dvh - 110px);
-        padding-left: 16px;
-        padding-right: 16px;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
-    
-    &__message {
-        width: 345px;
-        height: 138px;
-        font-family: JetBrainsMono;
-        font-size: 14px;
-        font-weight: normal;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        resize: none;
+        flex: 1;
+        justify-content: space-between;
+        padding: 0 1rem;
+
+        &__content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+        }
+
+        &__message {
+            font-family: 'JetBrains Mono';
+            font-size: 0.875rem;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            resize: none;
+        }
+
+        &__describe {
+            align-self: flex-start;
+            font-family: 'Saira Thin';
+            font-size: 1rem;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+        }
+
     }
 
-    &__describe {
-        padding: 0px 14px 3px 13px;
-        align-self: flex-start;
-        font-family: SairaThin;
-        font-size: 16px;
-        font-weight: normal;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-    }
-
-    &__big-button {
-        width: 335px;
-        height: 40px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        margin-top: auto;
-        font-family: SairaMedium;
-        font-size: 20px;
-        font-weight: 500;
-        font-stretch: semi-condensed;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        text-align: center;
-    }
 }
