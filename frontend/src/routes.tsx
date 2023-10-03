@@ -4,7 +4,7 @@ import { MainMenu } from './shared/components/main-menu/main-menu';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
-import { ReportProblem } from './apps/report-problem/reportProblem';
+import { ReportProblem } from './shared/components/report-problem/reportProblem';
 
 export const Router = () => {
     return (
