@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { motion } from 'framer-motion';
 import { ITransaction } from '../../../models/banking';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { IUser } from '../../../models/user';
@@ -18,13 +19,22 @@ export const Transaction: FC<{ transaction: ITransaction }> = ({
     const sign = transaction.to.id === currentUser().id ? '+' : '-';
 
     return (
-        <li className="transaction">
+        <motion.li
+            className="transaction"
+        >
             <span className="transaction__direction"></span>
             <div className="transaction__meta">
-                <span className='transaction__other-party'>{otherParty.name}</span>
-                <span className='transaction__date'>{new Date(transaction.date).toLocaleDateString()}</span>
+                <span className="transaction__other-party">
+                    {otherParty.name}
+                </span>
+                <span className="transaction__date">
+                    {new Date(transaction.date).toLocaleDateString()}
+                </span>
             </div>
-            <span className='transaction__amount'>{sign}{transaction.amount} ¤</span>
-        </li>
+            <span className="transaction__amount">
+                {sign}
+                {transaction.amount} ¤
+            </span>
+        </motion.li>
     );
 };

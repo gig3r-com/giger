@@ -27,5 +27,13 @@
     "TRANSFER_HISTORY": "Historia przelewów",
     "ACCOUNT_BALANCE": "Stan konta",
     "PRIVATE_ACCOUNT": "Konto prywatne",
-    "BUSINESS_ACCOUNT": "Konto firmowe"
+    "BUSINESS_ACCOUNT": "Konto firmowe",
+    "ALIAS": "Alias",
+    "INSURANCE": "Ubezpieczenie",
+    "AGE": "Wiek",
+    "CYBERWARE": "Cyberyzacja",
+    "AFFILIATION": "przynależność",
+    "PROFESSION": "Zawód",
+    "NET_WORTH": "Majątek",
+    "ID_VALID": "Dowód ważny do"
 }

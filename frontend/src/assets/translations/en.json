@@ -27,5 +27,13 @@
     "TRANSFER_HISTORY": "Transfer history",
     "ACCOUNT_BALANCE": "Account balance",
     "PRIVATE_ACCOUNT": "Private account",
-    "BUSINESS_ACCOUNT": "Business account"
+    "BUSINESS_ACCOUNT": "Business account",
+    "ALIAS": "Alias",
+    "INSURANCE": "Insurance",
+    "AGE": "Age",
+    "CYBERWARE": "Cyberware",
+    "AFFILIATION": "Afilliation",
+    "PROFESSION": "Profession",
+    "NET_WORTH": "Net worth",
+    "ID_VALID": "ID valid"
 }

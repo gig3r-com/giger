@@ -1,3 +1,4 @@
+import { users } from "../../mocks/users";
 import { IUser } from "../../models/user";
 
 /**
@@ -5,11 +6,7 @@ import { IUser } from "../../models/user";
  */
 export function useAuthenticationService() {
     const currentUser: () => IUser = () => {
-        return {
-            id: '55566ssaa5',
-            handle: 'NeonTiger69',
-            name: 'Johnny Sasaki'
-        }
+        return users[35];
     }
 
     return { currentUser }

@@ -1,0 +1,100 @@
+@import '../../../variables.scss';
+
+.char-summary {
+    border: 1px solid $base-text-color;
+    margin-bottom: 1rem;
+    clip-path: polygon(calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%, 0 0);
+    position: relative;
+    font-size: 1.2rem;
+
+    &:before {
+        content: '';
+        transform: rotate(45deg);
+        width: 28px;
+        height: 1px;
+        background: $base-text-color;
+        position: absolute;
+        right: -4px;
+        top: 9px;
+    }
+
+    &__basic-data {
+        display: flex;
+        flex-wrap: wrap;
+        width: 60%;
+    }
+
+    &__header {
+        font-family: 'Saira', sans-serif;
+        font-size: 1.4rem;
+        padding: 1rem;
+        border-bottom: 1px solid $base-text-color;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+
+    &__surname {
+        margin-right: 0.5rem;
+    }
+
+    &__name {
+        color: $base-text-color;
+    }
+
+    &__label,
+    &__entry {
+        width: 50%;
+        box-sizing: border-box;
+        border-bottom: 1px solid $base-text-color;
+        box-sizing: border-box;
+    }
+
+    &__label {
+        color: $base-text-color;
+        padding-left: 1rem;
+    }
+
+    &__entry {
+        padding-right: 1rem;
+    }
+
+    &__signature {
+        width: 40%;
+    }
+
+    &__signature-and-basic-data,
+    &__details {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+
+    &__details {
+        flex-wrap: wrap;
+    }
+
+    &__id-valid-section {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 0.5rem 0.5rem 0 0.5rem;
+    }
+
+    &__id-valid {
+        text-transform: uppercase;
+        margin-right: 0.5rem;
+    }
+
+    &__id-valid-to {
+        text-transform: uppercase;
+        color: $base-text-color;
+    }
+}
+
+.controls,
+.controls__left-side {
+    padding-left: 0;
+}
+
+.controls {
+    padding-top: 0;
+}

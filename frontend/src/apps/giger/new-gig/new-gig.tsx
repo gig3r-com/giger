@@ -9,6 +9,7 @@ import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Controls } from '../../../shared/components/controls/controls';
+import { v4 as uuidv4 } from 'uuid';
 
 import './new-gig.scss';
 
@@ -46,7 +47,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   description: publicDescription!,
                   message: privateMessage,
                   payout: payout!,
-                  category: (selectedCategory! as GigCategoryNames)
+                  category: (selectedCategory! as GigCategoryNames),
+                  id: uuidv4()
               }
             : undefined;
     }, [
