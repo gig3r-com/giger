@@ -3,7 +3,7 @@ import './reportProblem.scss';
 import { BigButton } from '../big-button/big-button';
 import { Controls } from '../controls/controls';
 import { useIntl } from 'react-intl';
-import { userReportProblem } from '../../services/reportProblem.service';
+import { useReportProblem } from '../../services/reportProblem.service';
 
 const TEXTAREA_ROWS_SIZE = 6;
 
@@ -14,13 +14,13 @@ export const ReportProblem: FC = () => {
         handleReportProblem,
         setProblemDescription,
         onBack
-    } = userReportProblem();
+    } = useReportProblem();
 
     return (
         <section className="report-problem">
             <Controls leftSideOption="back" onLeftSideClick={onBack} />
 
-            <div className="report-problem-root">
+            <div className="report-problem-body">
                 <div className="report-problem__content">
                     <p className="report-problem__describe">
                         {intl.formatMessage({ id: 'DESCRIBE_PROBLEM' })}

@@ -42,24 +42,25 @@ export function useGigHelpers() {
         }
     };
 
-    const gigClassname = (gig: IGig) => classNames({
-        gig: true,
-        'gig--completed': gig.status === GigStatus.COMPLETED,
-        'gig--in-progress': gig.status === GigStatus.IN_PROGRESS,
-        'gig--available': gig.status === GigStatus.AVAILABLE,
-        'gig--selected': gigId === gig.id,
-        'gig--other-selected':
-            gigId !== gig.id && gigId !== undefined,
-        'gig--mine': gig.author.id === currentUser().id
-    });
+    const gigClassname = (gig: IGig) =>
+        classNames({
+            gig: true,
+            'gig--completed': gig.status === GigStatus.COMPLETED,
+            'gig--in-progress': gig.status === GigStatus.IN_PROGRESS,
+            'gig--available': gig.status === GigStatus.AVAILABLE,
+            'gig--selected': gigId === gig.id,
+            'gig--other-selected': gigId !== gig.id && gigId !== undefined,
+            'gig--mine': gig.author.id === currentUser().id
+        });
 
-    const gigSummaryClassName = (gig: IGig) => classNames({
-        gig__summary: true,
-        'gig__summary--completed': gig.status === GigStatus.COMPLETED,
-        'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
-        'gig__summary--available': gig.status === GigStatus.AVAILABLE,
-        'gig__summary--mine': gig.author.id === currentUser().id
-    });
+    const gigSummaryClassName = (gig: IGig) =>
+        classNames({
+            gig__summary: true,
+            'gig__summary--completed': gig.status === GigStatus.COMPLETED,
+            'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
+            'gig__summary--available': gig.status === GigStatus.AVAILABLE,
+            'gig__summary--mine': gig.author.id === currentUser().id
+        });
 
     const secondButtonText = (gigTaken: boolean) => {
         if (gigTaken) {
@@ -67,15 +68,15 @@ export function useGigHelpers() {
         } else {
             return intl.formatMessage({ id: 'REPORT_A_PROBLEM' });
         }
-    }
+    };
 
     const secondButtonAction = (gigTaken: boolean) => () => {
-        if(gigTaken){
-            console.error("Not implemented");
-        }else{
+        if (gigTaken) {
+            console.error('Not implemented');
+        } else {
             navigate(`/report-problem?gigId=${gigId}`, { replace: true });
         }
-    }
+    };
 
     return {
         buttonColor,
