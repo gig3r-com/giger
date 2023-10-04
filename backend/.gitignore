@@ -39,3 +39,4 @@ build/
 
 # Local settings
 config.local.py
+.config.json

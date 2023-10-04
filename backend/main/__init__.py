@@ -22,7 +22,7 @@ def create_app(debug=False, db_init=False):
 
 
 def create_tables():
-    from .db_models.user import User, UserFavorites, AffiliationList, IdentityType
+    from .db_models.user import User, UserFavorites, IdentityType, AffiliationList
     from .db_models.banking import Transaction, TransactionAuditLog, Account, AccountUser, AccountType
     from .db_models.gig import GigList, GigStatus, GigCategoryNames
     from .db_models.message import Message, MessageStatus, ConversationMessage, Conversation
