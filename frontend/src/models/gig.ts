@@ -1,4 +1,4 @@
-import { IUser } from "./user";
+import { IUserBase } from "./user";
 
 export interface IGigBase {
     payout: number;
@@ -15,8 +15,8 @@ export interface IDraftGig extends IGigBase {
 
 export interface IGig extends IGigBase {
     status: GigStatus;
-    author: IUser;
-    takenBy?: IUser;
+    author: IUserBase;
+    takenBy?: IUserBase;
 }
 
 export interface IGigCategory {

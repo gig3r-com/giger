@@ -1,0 +1,23 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gig3r.frontend.app" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "gig3r.frontend.app" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gig3r.frontend.app" . }}
+    spec:
+      containers:
+      - image: {{ include "gig3r.frontend.image" . }}
+        name: {{ include "gig3r.frontend.app" . }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      restartPolicy: Always
