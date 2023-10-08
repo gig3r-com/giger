@@ -22,14 +22,14 @@
     }
 
     &__message {
-        font-family: 'JetBrains Mono';
+        font-family: 'JetBrains Mono', monospace;
         font-size: 0.875rem;
         resize: none;
     }
 
     &__describe {
         align-self: flex-start;
-        font-family: 'Saira Thin';
+        font-family: 'Saira', sans-serif;
         font-size: 1rem;
     }
 }
