@@ -18,9 +18,10 @@ export const ReportProblem: FC = () => {
 
     return (
         <section className="report-problem">
-            <Controls leftSideOption="back" onLeftSideClick={onBack} />
+           
 
             <div className="report-problem-body">
+            <Controls leftSideOption="back" onLeftSideClick={onBack} />
                 <div className="report-problem__content">
                     <p className="report-problem__describe">
                         {intl.formatMessage({ id: 'DESCRIBE_PROBLEM' })}
