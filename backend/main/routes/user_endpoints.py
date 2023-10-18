@@ -1,23 +1,22 @@
 from flask import jsonify
-
-from ..data_models.userdata import UserData
 from flask import Blueprint
+from ..data_models.user_data_model import UserDataModel
 
-api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1')
+user_endpoints = Blueprint('user_endpoints', __name__, url_prefix='/api/v1')
 
 
-@api_v1.route('/users/<int:user_id>')
+@user_endpoints.route('/users/<int:user_id>')
 def get_user(user_id):
-    user = UserData().get_full_user_details_by_id(user_id)
+    user = UserDataModel().get_full_user_details_by_id(user_id)
     if user:
         return jsonify(user)
     else:
         return jsonify({"error": "User not found"}), 200
 
 
-@api_v1.route('/users')
+@user_endpoints.route('/users')
 def get_all():
-    user_list = UserData().get_all_users()
+    user_list = UserDataModel().get_all_users()
 
     if len(user_list) > 0:
         return jsonify(user_list)

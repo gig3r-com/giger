@@ -2,7 +2,7 @@ from typing import List, Dict
 from ..db_models.user import User, AffiliationList
 
 
-class UserData:
+class UserDataModel:
 
     def get_all_users(self) -> List[Dict] | None:
         user_list = []
