@@ -12,7 +12,7 @@ class GigStatus(db.Model):
     name = db.Column(db.String)
 
 
-class GigList(db.Model):
+class Gig(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # TODO: Fancy idea of using UUID as id, can be changed to int
     amount = db.Column(db.Integer)
     title = db.Column(db.String)

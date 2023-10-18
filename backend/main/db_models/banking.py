@@ -1,6 +1,6 @@
 from .. import db
 from ..db_models.user import User
-from ..db_models.gig import GigList
+from ..db_models.gig import Gig
 
 
 class Transaction(db.Model):
@@ -9,7 +9,7 @@ class Transaction(db.Model):
     from_user = db.Column(db.ForeignKey(User.id))
     amount = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
-    gig_id = db.Column(db.ForeignKey(GigList.id), nullable=True)
+    gig_id = db.Column(db.ForeignKey(Gig.id), nullable=True)
 
 
 class AccountType(db.Model):
