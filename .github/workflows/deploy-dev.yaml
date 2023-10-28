@@ -24,10 +24,13 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
   build-backend:
-    runs-on: microk8s-runner-1
-    steps:
-      - name: placeholder
-        run: "echo this is just placeholder job waiting for backend"
+    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    with:
+      DOCKER_CONTEXT: ./backend
+      DOCKERFILE_NAME: Dockerfile
+      IMAGE_NAME: "gig3r-backend"
+      IMAGE_TAG: ${{ github.sha }}
+    secrets: inherit
   
   deploy-helm-chart:
     uses: gig3r-com/giger/.github/workflows/deploy-helm-chart.yaml@main

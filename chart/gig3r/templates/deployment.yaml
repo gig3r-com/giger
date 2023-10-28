@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: {{ include "gig3r.frontend.app" . }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: {{ include "gig3r.frontend.app" . }}
@@ -21,3 +21,35 @@ spec:
         - containerPort: 8080
           protocol: TCP
       restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gig3r.backend.app" . }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ include "gig3r.backend.app" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gig3r.backend.app" . }}
+    spec:
+      containers:
+      - image: {{ include "gig3r.backend.image" . }}
+        name: {{ include "gig3r.backend.app" . }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: DB_PASSWORD
+      restartPolicy: Always
+
+---

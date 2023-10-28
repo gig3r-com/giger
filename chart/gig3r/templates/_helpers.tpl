@@ -14,6 +14,43 @@ Expand the name of the chart.
 {{- end }}
 
 {{- define "gig3r.frontend.image" -}}
-"{{ default "mivalsten/gig3r-frontend" .Values.frontend.image }}:{{ default "mivalsten/gig3r-frontend" .Values.frontend.tag }}"
+"{{ default "mivalsten/gig3r-frontend" .Values.frontend.image }}:{{ default "dev" .Values.frontend.tag }}"
 {{- end }}
 
+{{- define "gig3r.backend.image" -}}
+"{{ default "mivalsten/gig3r-backend" .Values.backend.image }}:{{ default "dev" .Values.backend.tag }}"
+{{- end }}
+
+{{- define "gig3r.database.password" -}}
+{{- $len := 24 | int -}}
+{{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
+{{- if $obj }}
+{{- index $obj "DB_PASSWORD" -}}
+{{- else -}}
+{{- randAlphaNum $len | b64enc -}}
+{{- end -}}
+{{- end }}
+
+{{- define "gig3r.backend.debug" -}}
+{{- if eq "app" .Release.Namespace -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end }}
+
+{{- define "gig3r.backend.config" -}}
+"{
+  \"postgres\": {
+    \"username\": \"{{ .Values.database.user }}\",
+    \"password\": \"{{- include "gig3r.database.password" (dict "Namespace" .Namespace ) -}}\",
+    \"host\": \"postgres-postgresql.postgres.svc.cluster.local\",
+    \"database\": \"{{ .Values.database.name }}\"
+  },
+  \"flask\": {
+    \"host\": \"127.0.0.1\",
+    \"port\": \"7312\",
+    \"debug\": {{ include "gig3r.backend.debug" }}
+  }
+}"
+{{- end }}
