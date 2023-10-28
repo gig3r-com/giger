@@ -4,3 +4,15 @@ base_url: gig3r.com
 frontend:
   image: mivalsten/gig3r-frontend
   tag: 5
+
+backend:
+  image: mivalsten/gig3r-backend
+  tag: 5
+
+database:
+  name: gig3r
+  user: gig3r
+  password: gig3r
+  admin:
+    user: postgres
+    password: superSecretPassword

@@ -16,6 +16,13 @@ on:
       HELM_FRONTEND_TAG:
         type: string
         required: true
+      HELM_BACKEND_IMAGE:
+        type: string
+        required: false
+        default: mivalsten/gig3r-backend
+      HELM_BACKEND_TAG:
+        type: string
+        required: true
     secrets:
       KUBECONFIG:
         required: true
@@ -49,6 +56,8 @@ jobs:
             --set base_url=gig3r.com \
             --set frontend.image=${{ inputs.HELM_FRONTEND_IMAGE }} \
             --set frontend.tag=${{ env.HELM_FRONTEND_TAG }} \
+            --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
+            --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ inputs.HELM_ENVIRONMENT }} \
             --set database.user=${{ inputs.HELM_ENVIRONMENT }} \
             --set database.password=test \
