@@ -4,6 +4,7 @@ import { MainMenu } from './shared/components/main-menu/main-menu';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
+import { ReportProblem } from './shared/components/report-problem/reportProblem';
 
 export const Router = () => {
     return (
@@ -20,6 +21,7 @@ export const Router = () => {
                 </Route>
                 <Route path="bank" element={<Bank />} />
                 <Route path="myid" element={<MyId />} />
+                <Route path="report-problem" element={<ReportProblem />} />
             </Routes>
             <MainMenu />
         </BrowserRouter>
