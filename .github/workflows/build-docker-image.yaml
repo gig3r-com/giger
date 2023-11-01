@@ -66,7 +66,8 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           context: ${{ inputs.DOCKER_CONTEXT }}
-          dockerfile: ${{ inputs.DOCKERFILE_NAME }}
+          file: ${{ inputs.DOCKERFILE_NAME }}
+          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
         env:
