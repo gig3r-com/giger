@@ -19,7 +19,7 @@ jobs:
     uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
       DOCKER_CONTEXT: ./frontend
-      DOCKERFILE_NAME: Dockerfile
+      DOCKERFILE_NAME: ./frontend/Dockerfile
       IMAGE_NAME: "gig3r-frontend"
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
@@ -27,7 +27,7 @@ jobs:
     uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
       DOCKER_CONTEXT: ./backend
-      DOCKERFILE_NAME: Dockerfile
+      DOCKERFILE_NAME: ./backend/Dockerfile
       IMAGE_NAME: "gig3r-backend"
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
