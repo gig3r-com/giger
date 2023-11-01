@@ -60,7 +60,6 @@ jobs:
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ inputs.HELM_ENVIRONMENT }} \
             --set database.user=${{ inputs.HELM_ENVIRONMENT }} \
-            --set database.password=test \
             --set database.admin.user=postgres \
             --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }}
                     
