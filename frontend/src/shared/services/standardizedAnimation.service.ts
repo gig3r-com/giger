@@ -7,6 +7,9 @@ export interface IAnimationParams {
 
 export type animationType = 'fadeIn' | 'expandCollapse' | 'horExpand';
 
+/**
+ * A hook that returns a function that generates standardized animations used thorough the app. 
+ */
 export function useStandardizedAnimation() {
     const generateAnimation = (
         animationType: animationType,
