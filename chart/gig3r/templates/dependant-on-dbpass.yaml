@@ -1,3 +1,17 @@
+{{ $dbpass := include "gig3r.database.password" (dict "Namespace" .Release.Namespace ) }}
+{{ with (mergeOverwrite . (dict "Values" (dict "database" (dict "password" $dbpass)) )) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gig3r-secret
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+data:
+  DB_PASSWORD: "{{ $dbpass }}"
+  backend_config.json: >-
+{{ include "gig3r.backend.config" . | b64enc | indent 4 }}
+
 ---
 # This job creates postgres database
 apiVersion: batch/v1
@@ -6,7 +20,7 @@ metadata:
   name: db-creator
   annotations:
     helm.sh/hook: pre-install
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-delete-policy: before-hook-creation
 spec:
   template:
     spec:
@@ -21,6 +35,7 @@ spec:
         - "-c CREATE DATABASE {{ .Values.database.name }};"
         - "-c CREATE USER {{ .Values.database.user }} WITH ENCRYPTED PASSWORD '{{ .Values.database.password }}';"
         - "-c GRANT ALL PRIVILEGES ON DATABASE {{ .Values.database.name }} TO {{ .Values.database.user }};"
+        - "-c ALTER DATABASE {{ .Values.database.name }} OWNER TO {{ .Values.database.user }};"
         env:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
@@ -53,4 +68,6 @@ spec:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
       restartPolicy: Never
-  backoffLimit: 4
+  backoffLimit: 1
+
+  {{- end -}}
