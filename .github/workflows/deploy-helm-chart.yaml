@@ -8,7 +8,7 @@ on:
         default: "microk8s-runner-1"
       HELM_ENVIRONMENT:
         type: string
-        required: true
+        required: false
       HELM_FRONTEND_IMAGE:
         type: string
         required: false
@@ -37,6 +37,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+        with:
+          prefix: CI_
+
       - name: install additional packages
         run: |
           sudo apt update
@@ -50,9 +55,9 @@ jobs:
             ./chart/gig3r \
             --wait \
             --atomic \
-            --namespace=${{ inputs.HELM_ENVIRONMENT }} \
+            --namespace=${{ env.HELM_ENVIRONMENT }} \
             --create-namespace \
-            --set environment=${{ inputs.HELM_ENVIRONMENT }} \
+            --set environment=${{ env.HELM_ENVIRONMENT }} \
             --set base_url=gig3r.com \
             --set frontend.image=${{ inputs.HELM_FRONTEND_IMAGE }} \
             --set frontend.tag=${{ env.HELM_FRONTEND_TAG }} \
@@ -68,3 +73,4 @@ jobs:
         env:
           HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT == '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
