@@ -45,3 +45,16 @@ jobs:
       HELM_BACKEND_TAG: ${{ github.sha }}
     secrets: inherit
 
+  comment:
+    runs-on: microk8s-runner-1
+    needs: [ deploy-helm-chart ]
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'this PR env address is: ${{needs.deploy-helm-chart.outputs.address}}'
+            })
