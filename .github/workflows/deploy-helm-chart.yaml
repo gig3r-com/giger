@@ -33,7 +33,7 @@ on:
     outputs:
       address:
         description: "address of deployed environment"
-        value: $${{ jobs.deploy-helm-chart.address.address }}
+        value: ${{ jobs.deploy-helm-chart.address.address }}
 env:
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}
   
