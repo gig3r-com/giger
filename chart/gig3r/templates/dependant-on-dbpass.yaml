@@ -20,7 +20,7 @@ metadata:
   name: db-creator
   annotations:
     helm.sh/hook: pre-install
-    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   template:
     spec:
@@ -32,10 +32,10 @@ spec:
         - "--host=postgres-postgresql.postgres.svc.cluster.local"
         - "--port=5432"
         - "--username={{ .Values.database.admin.user }}"
-        - "-c CREATE DATABASE {{ .Values.database.name }};"
-        - "-c CREATE USER {{ .Values.database.user }} WITH ENCRYPTED PASSWORD '{{ .Values.database.password }}';"
-        - "-c GRANT ALL PRIVILEGES ON DATABASE {{ .Values.database.name }} TO {{ .Values.database.user }};"
-        - "-c ALTER DATABASE {{ .Values.database.name }} OWNER TO {{ .Values.database.user }};"
+        - "-c CREATE DATABASE \"{{ .Values.database.name }}\";"
+        - "-c CREATE USER \"{{ .Values.database.user }}\" WITH ENCRYPTED PASSWORD '{{ .Values.database.password }}';"
+        - "-c GRANT ALL PRIVILEGES ON DATABASE \"{{ .Values.database.name }}\" TO \"{{ .Values.database.user }}\";"
+        - "-c ALTER DATABASE \"{{ .Values.database.name }}\" OWNER TO \"{{ .Values.database.user }}\";"
         env:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
@@ -43,7 +43,7 @@ spec:
   backoffLimit: 4
 
 ---
-# This job creates postgres database
+# This job deletes postgres database
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -62,8 +62,8 @@ spec:
         - "--host=postgres-postgresql.postgres.svc.cluster.local"
         - "--port=5432"
         - "--username={{ .Values.database.admin.user }}"
-        - "-c DROP DATABASE {{ .Values.database.name }};"
-        - "-c DROP USER {{ .Values.database.user }};"
+        - "-c DROP DATABASE \"{{ .Values.database.name }}\";"
+        - "-c DROP USER \"{{ .Values.database.user }}\";"
         env:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
