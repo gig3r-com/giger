@@ -40,4 +40,3 @@ This project is licensed under the Creative Commons License.
 Created with ❤️ by LarpVenture
 
 For any inquiries, please contact juskiw.borys - at - gmail.com
- 
