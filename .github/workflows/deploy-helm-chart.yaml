@@ -36,7 +36,6 @@ on:
         value: ${{ jobs.deploy-helm-chart.address.address }}
 env:
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}
-  
 
 jobs:
   deploy-helm-chart:
