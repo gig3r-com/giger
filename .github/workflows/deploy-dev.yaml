@@ -6,13 +6,13 @@ on:
       - main
     # tags:
     #   - "v**"
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - synchronize
-  #     - reopened
-  #   branches:
-  #     - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
 
 jobs:
   build-frontend:
@@ -38,9 +38,10 @@ jobs:
       - build-frontend
       - build-backend
     with:
-      HELM_ENVIRONMENT: dev
+      HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
       HELM_FRONTEND_IMAGE: "mivalsten/gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ github.sha }}
       HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
       HELM_BACKEND_TAG: ${{ github.sha }}
     secrets: inherit
+
