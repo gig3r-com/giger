@@ -1,4 +1,4 @@
-name: Build and deploy dev/PR
+name: Destroy environment
 on:
   pull_request:
     types:
