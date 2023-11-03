@@ -33,13 +33,15 @@ on:
     outputs:
       address:
         description: "address of deployed environment"
-        value: ${{ jobs.deploy-helm-chart.address.address }}
+        value: ${{ jobs.deploy_helm_chart.outputs.address }}
 env:
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}
 
 jobs:
-  deploy-helm-chart:
+  deploy_helm_chart:
     runs-on: ${{ inputs.GITHUB_RUNNER_NAME }}
+    outputs:
+      address: ${{ steps.address.outputs.address }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -85,6 +87,4 @@ jobs:
 
       - name: output address
         id: address
-        run: echo "address=${{ env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> "$GITHUB_OUTPUT"
-    outputs:
-      address: ${{ steps.address.outputs.address }}
+        run: echo "address=${{ env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> $GITHUB_OUTPUT
