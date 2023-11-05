@@ -14,7 +14,7 @@ class Transaction(db.Model):
 
 class AccountType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String)
+    type = db.Column(db.String, unique=True)
 
 
 class Account(db.Model):
