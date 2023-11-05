@@ -1,18 +1,19 @@
 import { FC, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Controls } from "../../shared/components/controls/controls";
 import { BigButton } from "../../shared/components/big-button/big-button";
 import { CharSummary } from "./char-summary/char-summary";
-import { useAuthenticationService } from "../../shared/services/authentication.service";
 import { IUser } from "../../models/user";
+import { RootState } from "../../store/store";
 
 import "./my-id.scss";
 
 export const MyId: FC = () => {
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const [userToShow, setUserToShow] = useState<IUser>();
 
     useEffect(function setUserOnMount() {
-        setUserToShow(currentUser());
+        setUserToShow(currentUser);
     }, []);
 
     return (

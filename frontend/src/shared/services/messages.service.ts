@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { IConversation, IMessage, IMessageStatus } from '../../models/message';
 import { IUser } from '../../models/user';
 import { users } from '../../mocks/users';
-import { useAuthenticationService } from './authentication.service';
 import { mockConvos } from '../../mocks/convos';
 import {
     setConversations,
@@ -18,7 +17,7 @@ import { mockUserConvos } from '../../mocks/userConvos';
  */
 export function useMessagesService() {
     const dispatch = useDispatch();
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -31,7 +30,7 @@ export function useMessagesService() {
         return {
             id: uuidv4(),
             date: new Date().toString(),
-            sender: currentUser(),
+            sender: currentUser!,
             text: text,
             status: IMessageStatus.AWAITING
         };

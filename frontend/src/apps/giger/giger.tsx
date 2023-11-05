@@ -9,10 +9,6 @@ import { RootState } from '../../store/store';
 import { useGigsService } from '../../shared/services/gigs.service';
 
 import './giger.scss';
-import { SplashScreen } from '../../shared/components/splash-screen/splash-screen';
-// import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
-// import { ShaderBG } from '../../shared/shader-bg/shaderBg';
-// import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
 
 export const Giger: FC = () => {
     const location = useLocation();
@@ -23,7 +19,6 @@ export const Giger: FC = () => {
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
-    const [decryptCompleted, setDecryptCompleted] = useState(false);
     const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigs);
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
@@ -31,7 +26,6 @@ export const Giger: FC = () => {
 
     useEffect(function mountSetup() {
         fetchGigs();
-        setTimeout(() => setDecryptCompleted(true), 2500);
     }, []);
 
     useEffect(
@@ -72,20 +66,12 @@ export const Giger: FC = () => {
 
     return (
         <article className="giger">
-            <SplashScreen entering={true} />
-            {decryptCompleted && (
-                <>
-                    <GigList
-                        gigs={filteredGigs}
-                        toggleMenuState={toggleMenuState}
-                    />
-                    <GigListFilters
-                        toggleMenuState={toggleMenuState}
-                        active={menuState === 'filters'}
-                    />
-                    <NewGig active={menuState === 'newGig'} />
-                </>
-            )}
+            <GigList gigs={filteredGigs} toggleMenuState={toggleMenuState} />
+            <GigListFilters
+                toggleMenuState={toggleMenuState}
+                active={menuState === 'filters'}
+            />
+            <NewGig active={menuState === 'newGig'} />
         </article>
     );
 };
