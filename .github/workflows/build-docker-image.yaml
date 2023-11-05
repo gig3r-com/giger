@@ -49,6 +49,9 @@ jobs:
         run: |
           docker context create builders
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
@@ -66,7 +69,8 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           context: ${{ inputs.DOCKER_CONTEXT }}
-          dockerfile: ${{ inputs.DOCKERFILE_NAME }}
+          file: ${{ inputs.DOCKERFILE_NAME }}
+          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
         env:

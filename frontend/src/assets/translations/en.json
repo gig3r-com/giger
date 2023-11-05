@@ -23,6 +23,8 @@
     "SEARCH": "Search",
     "EDIT": "Edit",
     "REPORT_A_PROBLEM": "Report a problem",
+    "DESCRIBE_PROBLEM": "Describe the problem",
+    "WHAT_WENT_WRONG": "What went wrong?",
     "TRANSFER": "Transfer",
     "TRANSFER_HISTORY": "Transfer history",
     "ACCOUNT_BALANCE": "Account balance",
