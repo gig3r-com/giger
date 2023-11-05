@@ -1,6 +1,6 @@
-import json
+import logging
 from flask import jsonify, Blueprint, request
-from ..data_models.gig_data_model import GigDataModel
+from ..db_models.gig import Gig, get_all_gigs
 
 gig_endpoints = Blueprint('gig_endpoints', __name__, url_prefix='/api/v1')
 
@@ -9,29 +9,39 @@ gig_endpoints = Blueprint('gig_endpoints', __name__, url_prefix='/api/v1')
 def gig():
     if request.method == 'POST':
 
-        allowed_params = dict(GigDataModel.__annotations__)
+        allowed_params = Gig.allowed_params()
 
         if request.content_type == 'application/json':
 
             json_data = request.json
             for key in json_data.keys():
-                if key not in allowed_params.keys():
+                if key not in allowed_params:
                     return jsonify({
                         "error": f"wrong parameter {key}"
                     }), 400
 
-                allowed_params.pop(key)
-
-            if len(allowed_params) > 0:
-                return jsonify({
-                    "error": f"parameters missing:{allowed_params}"
-                })
-
-            new_gig = GigDataModel(request.json)
+            new_gig = Gig.create_gig(request.json)
 
             return jsonify({
-                "message": "gig creation successfull"
+                "message": f"gig created",
+                "id": new_gig
             }), 201
 
     elif request.method == 'GET':
-        return "Gig list"
+
+        if len(request.args) > 1:
+            return jsonify({
+                "error": "too many parameters"
+            }), 400
+
+        requested_gig = Gig.query.filter_by(id=request.args.get("id")).first()
+        return jsonify(requested_gig.to_dict()), 201
+
+
+@gig_endpoints.route('/gig/all', methods=['GET'])
+def all_gigs():
+    all_gigs = get_all_gigs()
+    gig_list = []
+    for gig in all_gigs:
+        gig_list.append(gig.to_dict())
+    return jsonify(gig_list)
