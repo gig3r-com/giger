@@ -35,6 +35,7 @@ def gig():
             }), 400
 
         requested_gig = Gig.query.filter_by(id=request.args.get("id")).first()
+        # TODO: Bulletproof this
         return jsonify(requested_gig.to_dict()), 201
 
 
