@@ -7,8 +7,7 @@ socketio = SocketIO(app)
 db = SQLAlchemy()
 
 
-def create_app(debug=False, db_init=False):
-    app.debug = debug
+def create_app(db_init=False):
     app.config.from_object('config')
 
     with app.app_context():
