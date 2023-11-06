@@ -45,7 +45,8 @@ false
     "username": "{{ .Values.database.user }}",
     "password": "{{ .Values.database.password }}",
     "host": "postgres-postgresql.postgres.svc.cluster.local",
-    "database": "{{ .Values.database.name }}"
+    "database": "{{ .Values.database.name }}",
+    "db_init": false
   },
   "flask": {
     "host": "{{ include "gig3r.host" . }}",
