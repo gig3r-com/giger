@@ -6,6 +6,7 @@ import { useAuthenticationService } from '../../shared/services/authentication.s
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { ReactComponent as GigerLogo } from '../../assets/logo-giger.svg';
 import { DecodeText } from '../../shared/components/decode-text/decodeText';
+import LoginHelp from './login-help/login-help';
 
 import './login.scss';
 
@@ -17,10 +18,19 @@ export const Login: FC = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showHelp, setShowHelp] = useState(false);
     const { login, retrieveLoginData } = useAuthenticationService();
+    const helpClasses = classNames({
+        login__help: true,
+        'login__help--visible': showHelp
+    });
     const wrapperClasses = classNames({
         login: true,
         'login--hidden': !notLoggedIn
+    });
+    const mainClasses = classNames({
+        login__main: true,
+        'login__main--hidden': showHelp
     });
     const logoClasses = classNames({
         'login__logo-wrapper': true,
@@ -70,40 +80,57 @@ export const Login: FC = () => {
                 <div className="login__background-img"></div>
                 <div className="login__background-img"></div>
             </div>
+            <section className={mainClasses}>
+                <div className={logoClasses}>
+                    <GigerLogo />
+                    <span className={loaderClasses}></span>
+                    {loading && (
+                        <div className="login__decrypting">
+                            <DecodeText
+                                text={intl.formatMessage({ id: 'DECRYPTING' })}
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className={inputsClasses}>
+                    <label>
+                        <input
+                            placeholder={intl.formatMessage({ id: 'USERNAME' })}
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            placeholder={intl.formatMessage({ id: 'PASSWORD' })}
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyUp={handleKeyPress}
+                        />
+                    </label>
 
-            <div className={logoClasses}>
-                <GigerLogo />
-                <span className={loaderClasses}></span>
-                {loading && <div className="login__decrypting">
-                    <DecodeText text={intl.formatMessage({ id: 'DECRYPTING' })} />
-                </div>}
-            </div>
-            <div className={inputsClasses}>
-                <label>
-                    <input
-                        placeholder={intl.formatMessage({ id: 'USERNAME' })}
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                    <span className={errorClasses}>{error}</span>
+
+                    <BigButton
+                        onClick={handleLogin}
+                        text={intl.formatMessage({ id: 'LOGIN' })}
                     />
-                </label>
-                <label>
-                    <input
-                        placeholder={intl.formatMessage({ id: 'PASSWORD' })}
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onKeyUp={handleKeyPress}
-                    />
-                </label>
-
-                <span className={errorClasses}>{error}</span>
-
-                <BigButton
-                    onClick={handleLogin}
-                    text={intl.formatMessage({ id: 'LOGIN' })}
-                />
-            </div>
+                </div>
+                <span
+                    className="login__show-help"
+                    onClick={() => setShowHelp(true)}
+                    onKeyUp={(event) =>
+                        event.key === 'Enter' && setShowHelp(true)
+                    }
+                >
+                    {intl.formatMessage({ id: 'SHOW_HELP' })}
+                </span>
+            </section>
+            <section className={helpClasses}>
+                <LoginHelp onBack={() => setShowHelp(false)} />
+            </section>
         </div>
     );
 };

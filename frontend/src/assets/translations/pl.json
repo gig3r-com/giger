@@ -42,5 +42,6 @@
     "PASSWORD": "Hasło",
     "LOGIN": "Zaloguj",
     "LOGIN_FAILED": "Błędna nazwa użytkownika lub hasło",
-    "DECRYPTING": "Odszyfrowywanie"
+    "DECRYPTING": "Odszyfrowywanie",
+    "SHOW_HELP": "Potrzebujesz pomocy?"
 }

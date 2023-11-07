@@ -42,5 +42,6 @@
     "PASSWORD": "Password",
     "LOGIN": "Log in",
     "LOGIN_FAILED": "Wrong username or password provided",
-    "DECRYPTING": "Decrypting"
+    "DECRYPTING": "Decrypting",
+    "SHOW_HELP": "Need any help?"
 }

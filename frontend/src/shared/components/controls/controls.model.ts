@@ -3,4 +3,5 @@ export interface IControlsProps {
     onLeftSideClick?: () => void;
     rightSideOption?: string;
     onRightSideClick?: () => void;
+    navigateBack?: boolean;
 }
