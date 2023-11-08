@@ -12,7 +12,7 @@ import { useGigsService } from '../../../shared/services/gigs.service';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
 import { RootState } from '../../../store/store';
-import { standardTimingFunction } from '../../../shared/constants';
+import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 
 import './gig.scss';
 
@@ -22,6 +22,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const { acceptGig } = useGigsService();
     const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText, secondButtonAction } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
+    const { generateAnimation } = useStandardizedAnimation();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
@@ -62,13 +63,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     className={gigSummaryClassName(gig)}
                     onClick={() => navigate(`/giger/${gig.id}`)}
                     key={gig.id}
-                    initial={{ opacity: 0, transform: 'scaleX(0)' }}
-                    animate={{ opacity: 1, transform: 'scaleX(1)' }}
-                    exit={{ opacity: 0, transform: 'scaleX(0)', height: 0 }}
-                    transition={{
-                        delay: delayMultiplier * 0.06,
-                        ease: standardTimingFunction
-                    }}
+                    {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
                 >
                     <h3 className="gig__title">{gig.title}</h3>
                     <span className="gig__payout">{gig.payout} ¤</span>
@@ -82,10 +77,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 {selectedId === gig.id && (
                     <motion.article
                         className="gig_details"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ ease: standardTimingFunction }}
+                        {...generateAnimation('expandCollapse')}
                     >
                         <BigButton
                             text={buttonText(gig.status)}
