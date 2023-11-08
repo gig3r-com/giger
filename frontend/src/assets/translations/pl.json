@@ -37,5 +37,11 @@
     "AFFILIATION": "przynależność",
     "PROFESSION": "Zawód",
     "NET_WORTH": "Majątek",
-    "ID_VALID": "Dowód ważny do"
+    "ID_VALID": "Dowód ważny do",
+    "USERNAME": "Nazwa użytkownika",
+    "PASSWORD": "Hasło",
+    "LOGIN": "Zaloguj",
+    "LOGIN_FAILED": "Błędna nazwa użytkownika lub hasło",
+    "DECRYPTING": "Odszyfrowywanie",
+    "SHOW_HELP": "Potrzebujesz pomocy?"
 }

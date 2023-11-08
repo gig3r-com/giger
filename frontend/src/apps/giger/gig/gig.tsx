@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
-import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import { useGigsService } from '../../../shared/services/gigs.service';
@@ -18,7 +17,7 @@ import './gig.scss';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const { acceptGig } = useGigsService();
     const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText, secondButtonAction } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
@@ -27,7 +26,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         (state: RootState) => state.conversations.gigConversations
     );
     const isMine = useMemo(() => {
-        return gig.author.id === currentUser().id;
+        return gig.author.id === currentUser?.id;
     }, [gig, currentUser]);
     const convo = useMemo(() => {
         return convos.find((c) => c.id === gig.id);
@@ -42,7 +41,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const showConvo = useMemo(() => {
         return (
             (gig.status !== GigStatus.AVAILABLE ||
-                gig.author.id === currentUser().id) &&
+                gig.author.id === currentUser?.id) &&
             convo !== undefined
         );
     }, [gig, currentUser, convo]);

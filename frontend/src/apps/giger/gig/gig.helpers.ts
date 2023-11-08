@@ -1,12 +1,13 @@
 import { useIntl } from 'react-intl';
 import { GigStatus, IGig } from '../../../models/gig';
 import classNames from 'classnames';
-import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { useNavigate, useParams } from 'react-router';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
 export function useGigHelpers() {
     const intl = useIntl();
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const { gigId } = useParams();
     const navigate = useNavigate();
     const buttonColor = (status: GigStatus) => {
@@ -50,7 +51,7 @@ export function useGigHelpers() {
             'gig--available': gig.status === GigStatus.AVAILABLE,
             'gig--selected': gigId === gig.id,
             'gig--other-selected': gigId !== gig.id && gigId !== undefined,
-            'gig--mine': gig.author.id === currentUser().id
+            'gig--mine': gig.author.id === currentUser?.id
         });
 
     const gigSummaryClassName = (gig: IGig) =>
@@ -59,7 +60,7 @@ export function useGigHelpers() {
             'gig__summary--completed': gig.status === GigStatus.COMPLETED,
             'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
             'gig__summary--available': gig.status === GigStatus.AVAILABLE,
-            'gig__summary--mine': gig.author.id === currentUser().id
+            'gig__summary--mine': gig.author.id === currentUser?.id
         });
 
     const secondButtonText = (gigTaken: boolean) => {
