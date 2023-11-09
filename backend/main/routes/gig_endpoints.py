@@ -1,6 +1,5 @@
 import logging
 from flask import jsonify, Blueprint, request
-from ..db_models.gig import Gig
 from ..db_models.gig import allowed_params, get_all_gigs, create_gig, get_gig_by_id, delete_gig_by_id
 
 gig_endpoints = Blueprint('gig_endpoints', __name__, url_prefix='/api/v1')
@@ -49,7 +48,7 @@ def gig_delete(gig_id):
     }), 200
 
 
-@gig_endpoints.route('/gig', methods=['POST', 'GET', 'DELETE'])
+@gig_endpoints.route('/gig', methods=['POST'])
 def gig():
     if request.method == 'POST':
         return gig_post(request)
@@ -62,6 +61,7 @@ def gig_by_id(gig_id):
 
     elif request.method == 'DELETE':
         return gig_delete(gig_id)
+
 
 @gig_endpoints.route('/gig/all', methods=['GET'])
 def all_gigs():
