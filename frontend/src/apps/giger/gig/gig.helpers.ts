@@ -3,9 +3,11 @@ import { GigStatus, IGig } from '../../../models/gig';
 import classNames from 'classnames';
 import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 export function useGigHelpers() {
     const intl = useIntl();
+    const mode = 'edit';
     const { currentUser } = useAuthenticationService();
     const { gigId } = useParams();
     const navigate = useNavigate();
@@ -62,6 +64,22 @@ export function useGigHelpers() {
             'gig__summary--mine': gig.author.id === currentUser().id
         });
 
+    const firstButtonText = (gigTaken: boolean) => {
+        if (gigTaken) {
+            return intl.formatMessage({ id: 'MARK_AS_DONE' });
+        } else {
+            return intl.formatMessage({ id: 'DELETE' });
+        }
+    };
+
+    const firstButtonAction = (gigTaken: boolean) => () => {
+        if (gigTaken) {
+            console.error('Not implemented yet');
+        } else {
+            console.error('Delete action not implemented yet');
+        }
+    };
+
     const secondButtonText = (gigTaken: boolean) => {
         if (gigTaken) {
             return intl.formatMessage({ id: 'EDIT' });
@@ -70,20 +88,23 @@ export function useGigHelpers() {
         }
     };
 
-    const secondButtonAction = (gigTaken: boolean) => () => {
+    const secondButtonAction = (gigTaken: boolean, id?: string) => () => {
         if (gigTaken) {
-            console.error('Not implemented');
+            navigate(`/giger/edit-gig?gigId=${id}&mode=${mode}`, {
+                replace: true
+            });
         } else {
-            navigate(`/report-problem?gigId=${gigId}`, { replace: true });
+            navigate(`/report-problem?gigId=${id}`, { replace: true });
         }
     };
-
     return {
         buttonColor,
         buttonText,
         gigClassname,
         gigSummaryClassName,
         secondButtonText,
-        secondButtonAction
+        secondButtonAction,
+        firstButtonText,
+        firstButtonAction
     };
 }

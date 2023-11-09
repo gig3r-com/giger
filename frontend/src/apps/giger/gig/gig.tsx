@@ -15,12 +15,22 @@ import { RootState } from '../../../store/store';
 import { standardTimingFunction } from '../../../shared/constants';
 
 import './gig.scss';
+import { IBigButtonProps } from '../../../shared/components/big-button/big-button.model';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const { currentUser } = useAuthenticationService();
     const { acceptGig } = useGigsService();
-    const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText, secondButtonAction } = useGigHelpers();
+    const {
+        buttonColor,
+        buttonText,
+        gigClassname,
+        gigSummaryClassName,
+        secondButtonText,
+        secondButtonAction,
+        firstButtonText,
+        firstButtonAction
+    } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
@@ -55,6 +65,31 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         [selectedId, gig]
     );
 
+    const primaryActionProps: IBigButtonProps = useMemo(() => {
+        if (!isMine) {
+            return {
+                text: buttonText(gig.status),
+                color: buttonColor(gig.status),
+                onClick: handleButtonClick
+            };
+        }
+        const isActive = gig.takenBy !== undefined && Boolean(gig.takenBy);
+        return {
+            text: firstButtonText(isActive),
+            color: 'accent',
+            onClick: firstButtonAction(isActive)
+        };
+    }, [isMine, gig.takenBy, gig.status]);
+
+    const secondaryActionProps: IBigButtonProps = useMemo(() => {
+        const isActive = Boolean(gig.takenBy) || !gig.takenBy;
+        return {
+            text: secondButtonText(isActive),
+            color: 'accent',
+            onClick: secondButtonAction(isActive, gig.id)
+        };
+    }, [isMine, gig.takenBy, gig.id]);
+
     return (
         <li className={gigClassname(gig)}>
             <AnimatePresence>
@@ -87,19 +122,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ ease: standardTimingFunction }}
                     >
-                        <BigButton
-                            text={buttonText(gig.status)}
-                            color={buttonColor(gig.status)}
-                            onClick={handleButtonClick}
-                        />
-
-                        {isMine && (
-                            <BigButton
-                                text={secondButtonText(!!gig.takenBy)}
-                                color='accent'
-                                onClick={secondButtonAction(!!gig.takenBy)}
-                            />
-                        )}
+                        <BigButton {...primaryActionProps} />
+                        {isMine && <BigButton {...secondaryActionProps} />}
 
                         <p className="gig__description">{gig.description}</p>
 

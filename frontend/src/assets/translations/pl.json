@@ -37,5 +37,8 @@
     "AFFILIATION": "przynależność",
     "PROFESSION": "Zawód",
     "NET_WORTH": "Majątek",
-    "ID_VALID": "Dowód ważny do"
+    "ID_VALID": "Dowód ważny do",
+    "DELETE" : "Usuń",
+    "SAVE_CHANGES" : "Zapisz zmiany"
+    
 }

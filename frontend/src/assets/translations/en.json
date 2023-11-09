@@ -37,5 +37,7 @@
     "AFFILIATION": "Afilliation",
     "PROFESSION": "Profession",
     "NET_WORTH": "Net worth",
-    "ID_VALID": "ID valid"
+    "ID_VALID": "ID valid",
+    "DELETE" : "Delete",
+    "SAVE_CHANGES" : "Save changes"
 }
