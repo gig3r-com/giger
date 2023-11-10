@@ -18,6 +18,6 @@ python-engineio==4.6.1
 python-socketio==5.8.0
 SQLAlchemy==2.0.20
 typing_extensions==4.7.1
-Werkzeug==2.3.7
+Werkzeug==3.0.1
 zope.event==5.0
 zope.interface==6.0
