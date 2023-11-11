@@ -49,7 +49,7 @@ def gig_delete(gig_id):
 
 
 @gig_endpoints.route('/gig', methods=['POST'])
-def gig():
+def gig_create():
     if request.method == 'POST':
         return gig_post(request)
 
@@ -64,7 +64,7 @@ def gig_by_id(gig_id):
 
 
 @gig_endpoints.route('/gig/all', methods=['GET'])
-def all_gigs():
+def gigs_all():
     gigs = get_all_gigs()
     gig_list = []
     for gig in gigs:
