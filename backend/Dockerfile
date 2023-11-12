@@ -17,3 +17,5 @@ RUN pip install -r requirements.txt
 COPY . .
 
 CMD ["python3", "app.py"]
+
+CMD ["flask", "db", "upgrade"]
