@@ -1,6 +1,11 @@
 from .. import db
 
 
+class Authorization(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    phash = db.Column(db.String, nullable=False)
+
+
 class AffiliationList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
@@ -16,6 +21,7 @@ class User(db.Model):
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     handle = db.Column(db.String, nullable=False, unique=True)
+    phash_id = db.Column(db.ForeignKey(Authorization.id))
     alias = db.Column(db.String)
     age = db.Column(db.Integer)
     cyberware_percentage = db.Column(db.Integer)
@@ -29,9 +35,23 @@ class User(db.Model):
 
     affiliation_name = db.relationship("AffiliationList", backref='user')
     identity_name = db.relationship("IdentityType", backref='user')
+    phash = db.relationship("Authorization", backref='user')
 
 
 class UserFavorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey(User.id))
     favorite_user_id = db.Column(db.ForeignKey(User.id))
+
+
+def get_user_phash(user_name: str) -> str | None:
+    user = User.query.filter_by(handle=user_name).first()
+
+    if user:
+        authorization = user.phash
+        phash_value = authorization.phash
+
+    else:
+        phash_value = None
+
+    return phash_value

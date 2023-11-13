@@ -1,6 +1,7 @@
 import logging
 from flask import jsonify, Blueprint, request
 from ..db_models.gig import allowed_params, get_all_gigs, create_gig, get_gig_by_id, delete_gig_by_id
+from ..routes.securitycheck import basic_auth_required
 
 gig_endpoints = Blueprint('gig_endpoints', __name__, url_prefix='/api/v1')
 
@@ -49,12 +50,14 @@ def gig_delete(gig_id):
 
 
 @gig_endpoints.route('/gig', methods=['POST'])
+@basic_auth_required
 def gig_create():
     if request.method == 'POST':
         return gig_post(request)
 
 
 @gig_endpoints.route('/gig/<int:gig_id>', methods=['GET', 'DELETE'])
+@basic_auth_required
 def gig_by_id(gig_id):
     if request.method == 'GET':
         return gig_get(gig_id)
@@ -64,6 +67,7 @@ def gig_by_id(gig_id):
 
 
 @gig_endpoints.route('/gig/all', methods=['GET'])
+@basic_auth_required
 def gigs_all():
     gigs = get_all_gigs()
     gig_list = []
