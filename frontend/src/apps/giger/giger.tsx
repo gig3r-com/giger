@@ -24,7 +24,6 @@ export const Giger: FC = () => {
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
-    const [decryptCompleted, setDecryptCompleted] = useState(false);
     const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigs);
     const [menuState, setMenuState] = useState<
         'list' | 'filters' | 'newGig' | 'editGig'
@@ -32,7 +31,6 @@ export const Giger: FC = () => {
 
     useEffect(function mountSetup() {
         fetchGigs();
-        setTimeout(() => setDecryptCompleted(true), 2500);
     }, []);
 
     useEffect(
@@ -88,24 +86,16 @@ export const Giger: FC = () => {
     }, [filteredGigs, location.pathname, location.search]);
     return (
         <article className="giger">
-            <SplashScreen entering={true} />
-            {decryptCompleted && (
-                <>
-                    <GigList
-                        gigs={filteredGigs}
-                        toggleMenuState={toggleMenuState}
-                    />
-                    <GigListFilters
-                        toggleMenuState={toggleMenuState}
-                        active={filtersActive}
-                    />
-                    <GigForm
-                        active={gigFormActive}
-                        mode={gigFormMode}
-                        gig={activeGig}
-                    />
-                </>
-            )}
+            <GigList gigs={filteredGigs} toggleMenuState={toggleMenuState} />
+            <GigListFilters
+                toggleMenuState={toggleMenuState}
+                active={menuState === 'filters'}
+            />
+            <GigForm
+                active={gigFormActive}
+                mode={gigFormMode}
+                gig={activeGig}
+            />
         </article>
     );
 };

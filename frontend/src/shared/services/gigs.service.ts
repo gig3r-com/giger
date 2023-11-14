@@ -5,7 +5,6 @@ import { GigStatus, IDraftGig, IGig } from '../../models/gig';
 import { setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { mockGigs } from '../../mocks/gigs';
-import { useAuthenticationService } from './authentication.service';
 import { useMessagesService } from './messages.service';
 
 /**
@@ -13,7 +12,7 @@ import { useMessagesService } from './messages.service';
  */
 export function useGigsService() {
     const dispatch = useDispatch();
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const [fetchingGigs, setFetchingGigs] = useState(false);
@@ -24,12 +23,12 @@ export function useGigsService() {
         description: draftGig.description,
         payout: draftGig.payout,
         convo: createConvo(
-            [currentUser()],
+            [currentUser!],
             createMessage(draftGig.message),
             draftGig.id
         ),
         id: uuidv4(),
-        author: currentUser(),
+        author: currentUser!,
         status: GigStatus.PENDING
     });
 

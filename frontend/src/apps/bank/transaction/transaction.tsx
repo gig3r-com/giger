@@ -1,22 +1,23 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 import { ITransaction } from '../../../models/banking';
-import { useAuthenticationService } from '../../../shared/services/authentication.service';
 import { IUser } from '../../../models/user';
+import { RootState } from '../../../store/store';
 
 import './transaction.scss';
 
 export const Transaction: FC<{ transaction: ITransaction }> = ({
     transaction
 }) => {
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
 
     const otherParty: IUser =
-        transaction.to.id === currentUser().id
+        transaction.to.id === currentUser?.id
             ? transaction.from
             : transaction.to;
 
-    const sign = transaction.to.id === currentUser().id ? '+' : '-';
+    const sign = transaction.to.id === currentUser?.id ? '+' : '-';
 
     return (
         <motion.li

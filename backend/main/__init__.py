@@ -7,24 +7,25 @@ socketio = SocketIO(app)
 db = SQLAlchemy()
 
 
-def create_app(debug=False, db_init=False):
-    app.debug = debug
+def create_app(db_init=False):
     app.config.from_object('config')
 
     with app.app_context():
         db.init_app(app)
         if db_init:
             create_tables()
-        from .routes.user_endpoints import api_v1
-        app.register_blueprint(api_v1)
+        from .routes.user_endpoints import user_endpoints
+        from .routes.gig_endpoints import gig_endpoints
+        app.register_blueprint(user_endpoints)
+        app.register_blueprint(gig_endpoints)
 
         return app
 
 
 def create_tables():
-    from .db_models.user import User, UserFavorites, AffiliationList, IdentityType
+    from .db_models.user import User, UserFavorites, IdentityType, AffiliationList
     from .db_models.banking import Transaction, TransactionAuditLog, Account, AccountUser, AccountType
-    from .db_models.gig import GigList, GigStatus, GigCategoryNames
+    from .db_models.gig import Gig, GigStatus, GigCategoryNames
     from .db_models.message import Message, MessageStatus, ConversationMessage, Conversation
 
     db.create_all()

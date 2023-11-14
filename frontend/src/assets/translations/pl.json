@@ -39,6 +39,11 @@
     "NET_WORTH": "Majątek",
     "ID_VALID": "Dowód ważny do",
     "DELETE" : "Usuń",
-    "SAVE_CHANGES" : "Zapisz zmiany"
-    
+    "SAVE_CHANGES" : "Zapisz zmiany",
+    "USERNAME": "Nazwa użytkownika",
+    "PASSWORD": "Hasło",
+    "LOGIN": "Zaloguj",
+    "LOGIN_FAILED": "Błędna nazwa użytkownika lub hasło",
+    "DECRYPTING": "Odszyfrowywanie",
+    "SHOW_HELP": "Potrzebujesz pomocy?"
 }

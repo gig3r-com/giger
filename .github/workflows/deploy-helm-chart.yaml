@@ -6,9 +6,13 @@ on:
         type: string
         required: false
         default: "microk8s-runner-1"
+      BASE_URL:
+        type: string
+        required: false
+        default: "gig3r.com"
       HELM_ENVIRONMENT:
         type: string
-        required: true
+        required: false
       HELM_FRONTEND_IMAGE:
         type: string
         required: false
@@ -16,35 +20,71 @@ on:
       HELM_FRONTEND_TAG:
         type: string
         required: true
+      HELM_BACKEND_IMAGE:
+        type: string
+        required: false
+        default: mivalsten/gig3r-backend
+      HELM_BACKEND_TAG:
+        type: string
+        required: true
     secrets:
       KUBECONFIG:
         required: true
+    outputs:
+      address:
+        description: "address of deployed environment"
+        value: ${{ jobs.deploy_helm_chart.outputs.address }}
 env:
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}
-  
 
 jobs:
-  deploy-helm-chart:
+  deploy_helm_chart:
     runs-on: ${{ inputs.GITHUB_RUNNER_NAME }}
+    outputs:
+      address: ${{ steps.address.outputs.address }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: set variables
-        run: |
-          
-      - name: 'Deploy'
-        uses: 'deliverybot/helm@v1'
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
         with:
-          release: gig3r-${{ inputs.HELM_ENVIRONMENT }}
-          namespace: ${{ inputs.HELM_ENVIRONMENT }}
-          chart: './chart/gig3r'
-          values: |
-            environment: ${{ inputs.HELM_ENVIRONMENT }}
-            base-url: gig3r.com
-            frontend:
-              image: ${{ inputs.HELM_FRONTEND_IMAGE }}
-              tag: ${{ env.HELM_FRONTEND_TAG }}
+          prefix: CI_
+
+      - name: install additional packages
+        run: |
+          sudo apt update
+          sudo apt install -y curl
+
+      - name: Deploy
+        uses: 'WyriHaximus/github-action-helm3@v3'
+        with:
+          exec: |
+            helm upgrade --install \
+            gig3r-${{ env.HELM_ENVIRONMENT }} \
+            ./chart/gig3r \
+            --wait \
+            --atomic \
+            --namespace=${{ env.HELM_ENVIRONMENT }} \
+            --create-namespace \
+            --set environment=${{ env.HELM_ENVIRONMENT }} \
+            --set base_url=${{ inputs.BASE_URL }} \
+            --set frontend.image=${{ inputs.HELM_FRONTEND_IMAGE }} \
+            --set frontend.tag=${{ env.HELM_FRONTEND_TAG }} \
+            --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
+            --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
+            --set database.name=${{ env.HELM_ENVIRONMENT }} \
+            --set database.user=${{ env.HELM_ENVIRONMENT }} \
+            --set database.admin.user=postgres \
+            --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }}
+                    
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          overrule_existing_kubeconfig: true
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-          HELM_FRONTEND_TAG: ${{ inputs.HELM_FFRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+
+      - name: output address
+        id: address
+        run: echo "address=${{ env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> $GITHUB_OUTPUT

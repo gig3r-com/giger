@@ -15,11 +15,12 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
   name: gig3r-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - host: {{ include "gig3r.host" . }}
     http:
       paths:
-      - path: /api/(.*)
+      - path: /(api/.*)
         pathType: ImplementationSpecific
         backend:
           service:

@@ -39,5 +39,11 @@
     "NET_WORTH": "Net worth",
     "ID_VALID": "ID valid",
     "DELETE" : "Delete",
-    "SAVE_CHANGES" : "Save changes"
+    "SAVE_CHANGES" : "Save changes",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "LOGIN": "Log in",
+    "LOGIN_FAILED": "Wrong username or password provided",
+    "DECRYPTING": "Decrypting",
+    "SHOW_HELP": "Need any help?"
 }

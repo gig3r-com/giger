@@ -4,7 +4,7 @@ from ..db_models.user import User
 
 class MessageStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
 
 
 class Message(db.Model):
