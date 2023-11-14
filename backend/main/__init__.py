@@ -27,7 +27,7 @@ def create_app():
         return app
 
 
-@custom_cli.command('database')
+@custom_cli.command('database', short_help='Initializes tables from scratch')
 def create_tables():
     with app.app_context():
         from .db_models.user import User, UserFavorites, IdentityType, AffiliationList, Authorization
@@ -39,7 +39,7 @@ def create_tables():
     click.echo('Database initialized successfully!')
 
 
-@custom_cli.command('staticdata')
+@custom_cli.command('staticdata', short_help='Loads staticdata like affiliations and types')
 def load_static_data():
     with app.app_context():
         from .db_models.user import User, UserFavorites, IdentityType, AffiliationList, Authorization
@@ -81,3 +81,30 @@ def load_static_data():
         db.session.commit()
 
         click.echo('Static data load completed')
+
+
+@custom_cli.command('backdoor', short_help='Loads test user for DEV only')
+def load_test_user():
+    with app.app_context():
+        from .db_models.user import User
+        from .db_models.user import Authorization, AffiliationList, IdentityType
+
+        authorization = Authorization(phash="$2b$12$xrPXbLWK02AuE1D2Cv8gkuuf5DWD8ViIA1GkE98mAbJr8mGUnoa5G")
+
+        db.session.add(authorization)
+
+        new_user = User(
+            first_name="John",
+            last_name="Poe",
+            handle="john_poe",
+            phash=authorization,
+            alias="JP",
+            age=103,
+            cyberware_percentage=100
+        )
+
+        db.session.add(new_user)
+
+        db.session.commit()
+
+        click.echo('IF(PROD): THIS IS BAD.')
