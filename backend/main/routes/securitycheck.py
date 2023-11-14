@@ -24,7 +24,7 @@ def basic_auth_required(f):
                     "message": "login or password incorrect"
                 }), 401
         else:
-            return Response('Unauthorized', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+            return Response('Unauthorized', 401)
         return f(*args, **kwargs)
 
     return decorated

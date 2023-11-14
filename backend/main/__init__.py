@@ -26,7 +26,7 @@ def create_app(db_init=False):
 
 
 def create_tables():
-    from .db_models.user import User, UserFavorites, IdentityType, AffiliationList
+    from .db_models.user import User, UserFavorites, IdentityType, AffiliationList, Authorization
     from .db_models.banking import Transaction, TransactionAuditLog, Account, AccountUser, AccountType
     from .db_models.gig import Gig, GigStatus, GigCategoryNames
     from .db_models.message import Message, MessageStatus, ConversationMessage, Conversation
