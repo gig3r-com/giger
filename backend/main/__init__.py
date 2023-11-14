@@ -108,3 +108,4 @@ def load_test_user():
         db.session.commit()
 
         click.echo('IF(PROD): THIS IS BAD.')
+
