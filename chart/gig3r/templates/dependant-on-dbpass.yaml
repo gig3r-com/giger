@@ -20,6 +20,7 @@ metadata:
   name: db-creator
   annotations:
     helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-100"
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   template:
@@ -43,6 +44,57 @@ spec:
   backoffLimit: 4
 
 ---
+#this job initiates application database
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-creator
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "10"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-creator
+        image: {{ include "gig3r.backend.image" . }}
+        command: ["sh"]
+        args: 
+        - -c
+        - "flask init database; {{ if ne .Values.environment "app" }}flask init staticdata;{{ end }}"
+        env:
+        - name: PGPASSWORD
+          value: "{{ .Values.database.admin.password }}"
+      restartPolicy: Never
+  backoffLimit: 4
+
+---
+
+# This job upgrades postgres database
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-updater
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "20"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-updater
+        image: {{ include "gig3r.backend.image" . }}
+        command: ["flask"]
+        args: 
+        - db
+        - upgrade
+      restartPolicy: Never
+  backoffLimit: 4
+
+---
 # This job deletes postgres database
 apiVersion: batch/v1
 kind: Job
@@ -50,6 +102,7 @@ metadata:
   name: db-deleter
   annotations:
     helm.sh/hook: post-delete
+    helm.sh/hook-weight: "100"
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   template:
