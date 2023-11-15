@@ -6,7 +6,8 @@ kind: Secret
 metadata:
   name: gig3r-secret
   annotations:
-    app.kubernetes.io/managed-by: "Helm"
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-1000"
 data:
   DB_PASSWORD: "{{ $dbpass }}"
   backend_config.json: >-
@@ -67,6 +68,15 @@ spec:
         env:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
+        volumeMounts:
+        - mountPath: /app/.config.json
+          name: config
+          subPath: "backend_config.json"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: gig3r-secret
       restartPolicy: Never
   backoffLimit: 4
 
