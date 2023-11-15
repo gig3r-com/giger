@@ -10,7 +10,7 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 db = SQLAlchemy()
 migrate = Migrate(app, db)
-CORS(app, origins=['https://dev.gig3r.com'])  # TODO: After successful test, put this into config
+CORS(app, origins=['https://gig3r.com'])
 custom_cli = AppGroup('init', short_help='Perform initial operations.')
 
 
