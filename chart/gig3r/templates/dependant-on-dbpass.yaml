@@ -50,7 +50,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: db-creator
+  name: db-initer
   annotations:
     helm.sh/hook: pre-install
     helm.sh/hook-weight: "10"
@@ -59,7 +59,7 @@ spec:
   template:
     spec:
       containers:
-      - name: db-creator
+      - name: db-initer
         image: {{ include "gig3r.backend.image" . }}
         command: ["sh"]
         args: 
@@ -101,6 +101,15 @@ spec:
         args: 
         - db
         - upgrade
+        volumeMounts:
+        - mountPath: /app/.config.json
+          name: config
+          subPath: "backend_config.json"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: gig3r-secret
       restartPolicy: Never
   backoffLimit: 4
 
