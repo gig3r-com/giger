@@ -64,7 +64,7 @@ spec:
         command: ["sh"]
         args: 
         - -c
-        - "flask init database; {{ if ne .Values.environment "app" }}flask init staticdata;{{ end }}"
+        - "flask db upgrade; {{ if ne .Values.environment "app" }}flask init staticdata;{{ end }}"
         env:
         - name: PGPASSWORD
           value: "{{ .Values.database.admin.password }}"
