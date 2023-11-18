@@ -1,18 +1,16 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { EditGig } from '../edit-gig/edit-gig';
-import { NewGig } from '../new-gig/new-gig';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { useIntl } from 'react-intl';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { useNavigate } from 'react-router';
+import { v4 as uuidv4 } from 'uuid';
 import { GigCategoryNames, IDraftGig, IGig } from '../../../models/gig';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { categories } from '../categories';
-import { v4 as uuidv4 } from 'uuid';
-import './gig-form.scss';
 import { IGigProps } from '../gig/gig.model';
+import './gig-form.scss';
 
 type GigFormProps = {
     active: boolean;

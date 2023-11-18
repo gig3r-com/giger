@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 import { GigCategoryNames } from '../../../models/gig';
 import { categories } from '../categories';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 
 export const EditGig: FC<{
@@ -27,8 +27,7 @@ export const EditGig: FC<{
     const [selectedCategory, setSelectedCategory] = useState<
         GigCategoryNames | ''
     >('');
-    const navigate = useNavigate();
-    const { gigId } = useParams();
+    useParams();
 
     const handleEditGig = () => {
         setGigName('');
