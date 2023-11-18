@@ -12,13 +12,14 @@ import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
 import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
-
-import './gig.scss';
 import { IBigButtonProps } from '../../../shared/components/big-button/big-button.model';
+import './gig.scss';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const currentUser = useSelector(
+        (state: RootState) => state.users.currentUser
+    );
     const { acceptGig } = useGigsService();
     const {
         buttonColor,
@@ -97,7 +98,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     className={gigSummaryClassName(gig)}
                     onClick={() => navigate(`/giger/${gig.id}`)}
                     key={gig.id}
-                    {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
+                    {...generateAnimation('horExpand', {
+                        delay: delayMultiplier * 0.06
+                    })}
                 >
                     <h3 className="gig__title">{gig.title}</h3>
                     <span className="gig__payout">{gig.payout} ¤</span>

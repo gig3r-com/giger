@@ -4,16 +4,10 @@ import { useSelector } from 'react-redux';
 import { IGig } from '../../models/gig';
 import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
-import { NewGig } from './new-gig/new-gig';
 import { RootState } from '../../store/store';
 import { useGigsService } from '../../shared/services/gigs.service';
-
 import './giger.scss';
-import { SplashScreen } from '../../shared/components/splash-screen/splash-screen';
 import { GigForm } from './gig-form/gig-form';
-// import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
-// import { ShaderBG } from '../../shared/shader-bg/shaderBg';
-// import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
 
 export const Giger: FC = () => {
     const location = useLocation();
@@ -76,7 +70,6 @@ export const Giger: FC = () => {
         [location.pathname]
     );
 
-    const filtersActive = menuState === 'filters';
     const gigFormActive = menuState === 'newGig' || menuState === 'editGig';
     const gigFormMode = menuState === 'newGig' ? 'new' : 'edit';
     const activeGig = useMemo(() => {
