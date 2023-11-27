@@ -38,6 +38,8 @@
     "PROFESSION": "Zawód",
     "NET_WORTH": "Majątek",
     "ID_VALID": "Dowód ważny do",
+    "DELETE" : "Usuń",
+    "SAVE_CHANGES" : "Zapisz zmiany",
     "USERNAME": "Nazwa użytkownika",
     "PASSWORD": "Hasło",
     "LOGIN": "Zaloguj",
