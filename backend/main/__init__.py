@@ -90,7 +90,7 @@ def load_test_user():
         from .db_models.user import User
         from .db_models.user import Authorization, AffiliationList, IdentityType
 
-        authorization = Authorization(phash="$2b$12$xrPXbLWK02AuE1D2Cv8gkuuf5DWD8ViIA1GkE98mAbJr8mGUnoa5G")
+        authorization = Authorization(phash="$2b$12$xrPXbLWK02AuE1D2Cv8gkuuf5DWD8ViIA1GkE98mAbJr8mGUnoa5G") # "password"
 
         db.session.add(authorization)
 
