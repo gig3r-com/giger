@@ -1,0 +1,14 @@
+{
+    "postgres": {
+      "username": "postgres",
+      "password": "postgres",
+      "host": "postgres",
+      "database": "postgres",
+      "db_init": false
+    },
+    "flask": {
+      "host": "localhost",
+      "port": "80",
+      "debug": true
+    }
+  }

@@ -1,7 +1,9 @@
 from functools import wraps
 from flask import request, Response, jsonify
 from ..db_models.user import get_user_phash
-import base64
+import bcrypt
+
+BCRYPT_SALT_ROUNDS = 14
 
 
 def basic_auth_required(f):
@@ -10,16 +12,16 @@ def basic_auth_required(f):
         auth = request.authorization
         if auth:
 
-            handle, basic_phash = auth.parameters.values()
+            handle, password = auth.parameters.values()
 
-            if handle is None or basic_phash is None:
+            if handle is None or password is None:
                 return jsonify({
                     "message": "login or password incorrect"
                 }), 401
 
             stored_phash = get_user_phash(handle)
 
-            if stored_phash is None or basic_phash != stored_phash:
+            if stored_phash is None or bcrypt.checkpw(password.encode('UTF-8'), stored_phash.encode('UTF-8')):
                 return jsonify({
                     "message": "login or password incorrect"
                 }), 401

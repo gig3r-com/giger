@@ -16,7 +16,8 @@ custom_cli = AppGroup('init', short_help='Perform initial operations.')
 
 def create_app():
     app.config.from_object('config')
-
+    # import models so they are known to flask-migrate
+    from .db_models import banking, gig, message, user
     with app.app_context():
         db.init_app(app)
         migrate.init_app(app)
@@ -91,7 +92,7 @@ def load_test_user():
         from .db_models.user import User
         from .db_models.user import Authorization, AffiliationList, IdentityType
 
-        authorization = Authorization(phash="$2b$12$xrPXbLWK02AuE1D2Cv8gkuuf5DWD8ViIA1GkE98mAbJr8mGUnoa5G")
+        authorization = Authorization(phash="$2b$12$xrPXbLWK02AuE1D2Cv8gkuuf5DWD8ViIA1GkE98mAbJr8mGUnoa5G") # "password"
 
         db.session.add(authorization)
 
