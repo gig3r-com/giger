@@ -1,14 +1,16 @@
+import click
 from flask import Flask
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask.cli import AppGroup
-import click
+from flask_cors import CORS
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 db = SQLAlchemy()
 migrate = Migrate(app, db)
+CORS(app, origins=['https://gig3r.com'])
 custom_cli = AppGroup('init', short_help='Perform initial operations.')
 
 
@@ -109,4 +111,3 @@ def load_test_user():
         db.session.commit()
 
         click.echo('IF(PROD): THIS IS BAD.')
-
