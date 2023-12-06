@@ -40,3 +40,19 @@ This project is licensed under the Creative Commons License.
 Created with ❤️ by LarpVenture
 
 For any inquiries, please contact juskiw.borys - at - gmail.com
+
+## DevOps
+
+running application stack from the root of the repository:
+
+```sh
+docker-compose up -d --build
+docker-compose exec backend flask db upgrade
+
+#below are to be run only on first launch ((probably (i'm only devops, don't believe me))
+docker-compose exec backend flask init staticdata
+docker-compose exec backend flask init backdoor
+```
+
+App should be now available on localhost 8080. If you don't like the port, create file `.env` and add `PORT=your_desiderd_port`.
+
