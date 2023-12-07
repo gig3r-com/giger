@@ -34,7 +34,6 @@ export const ToastItem: FC<{ toast: Toast }> = ({ toast }) => {
                 fontSize: '0.875rem',
                 color: '#fff312',
                 position: 'relative',
-                transform: 'translateY(-60px)',
             }}
         >
             {({ icon, message }) => toastElement( icon, message )}

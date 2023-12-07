@@ -45,7 +45,12 @@ export const Router = () => {
                             element={<ReportProblem />}
                         />
                     </Routes>
-                    <Toaster position="bottom-center">
+                    <Toaster
+                        position="bottom-center"
+                        containerStyle={{
+                            bottom: 80
+                        }}
+                    >
                         {(t) => <ToastItem toast={t} />}
                     </Toaster>
                     <MainMenu />
