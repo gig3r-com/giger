@@ -1,0 +1,63 @@
+@import '../../../variables.scss';
+
+.toast {
+    &__corner {
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            width: 0.25rem;
+            background: $accent-color;
+            border-radius: 0;
+            box-shadow: 0 0 6px 0 $accent-color;
+        }
+
+        &--top-left {
+            &::before {
+                left: -1px;
+                top: -1px;
+                height: 31px;
+            }
+
+            &::after {
+                left: -1px;
+                top: -1px;
+                height: 34px;
+                transform: rotate(-90deg);
+                transform-origin: top left;
+            }
+        }
+
+        &--top-right {
+            &::before {
+                right: -1px;
+                top: -1px;
+                height: 21px;
+            }
+
+            &::after {
+                right: -1px;
+                top: -1px;
+                height: 24px;
+                transform: rotate(90deg);
+                transform-origin: top left;
+            }
+        }
+
+        &--bottom-right {
+            &::before {
+                right: -1px;
+                bottom: -1px;
+                height: 34px;
+            }
+
+            &::after {
+                right: -1px;
+                bottom: -1px;
+                height: 31px;
+                transform: rotate(-90deg);
+                transform-origin: bottom right;
+            }
+        }
+    }
+}

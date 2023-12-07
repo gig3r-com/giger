@@ -1,16 +1,16 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
+import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useBankingService } from '../../shared/services/banking.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { Transaction } from './transaction/transaction';
 import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AccountType, IAccount } from '../../models/banking';
+import { standardTimingFunction } from '../../shared/constants';
 
 import './bank.scss';
-import classNames from 'classnames';
-import { AnimatePresence, motion } from 'framer-motion';
-import { standardTimingFunction } from '../../shared/constants';
 
 export const Bank: FC = () => {
     const intl = useIntl();
