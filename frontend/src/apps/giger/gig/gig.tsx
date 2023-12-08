@@ -52,7 +52,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 fetchConvo(gig.id);
             }
         },
-        [selectedId, gig, fetchConvo]
+        [selectedId, gig]
     );
 
     return (
