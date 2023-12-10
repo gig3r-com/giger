@@ -8,8 +8,18 @@ import { MyId } from './apps/myId/my-id';
 import { ReportProblem } from './shared/components/report-problem/reportProblem';
 import { Login } from './apps/login/login';
 import { RootState } from './store/store';
+import { useEffect } from 'react';
+import { useNotificationsService } from './shared/services/notifications.service';
+import { Toaster } from 'react-hot-toast';
+import { ToastItem } from './shared/components/toast/toast';
 
 export const Router = () => {
+    const { test } = useNotificationsService();
+
+    useEffect(() => {
+        test();
+    }, []);
+
     const isLoggedIn = useSelector(
         (state: RootState) => !!state.users.currentUser
     );
@@ -35,6 +45,14 @@ export const Router = () => {
                             element={<ReportProblem />}
                         />
                     </Routes>
+                    <Toaster
+                        position="bottom-center"
+                        containerStyle={{
+                            bottom: 80
+                        }}
+                    >
+                        {(t) => <ToastItem toast={t} />}
+                    </Toaster>
                     <MainMenu />
                 </>
             ) : (
