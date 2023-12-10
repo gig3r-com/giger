@@ -44,5 +44,6 @@
     "LOGIN_FAILED": "Błędna nazwa użytkownika lub hasło",
     "DECRYPTING": "Odszyfrowywanie",
     "SHOW_HELP": "Potrzebujesz pomocy?",
-    "GIG_DELETED": "Gig został usunięty"
+    "GIG_DELETED": "Gig został usunięty",
+    "FROM": "Od"
 }

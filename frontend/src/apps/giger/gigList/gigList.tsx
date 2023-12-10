@@ -11,7 +11,9 @@ import { RootState } from '../../../store/store';
 import './gigList.scss';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const currentUser = useSelector(
+        (state: RootState) => state.users.currentUser
+    );
     const { gigId } = useParams();
 
     const sortedGigs = [...gigs].sort((a, b) => {
@@ -37,8 +39,8 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                         ? 'back'
                         : `${gigs.length} ${gigs.length > 1 ? 'GIGS' : 'GIG'}`
                 }
-                rightSideOption="FILTERS"
-                onRightSideClick={toggleMenuState}
+                rightSideOption={gigId ? undefined : 'FILTERS'}
+                onRightSideClick={gigId ? undefined : toggleMenuState}
             />
             <motion.ul className="gig-list__list">
                 <AnimatePresence>

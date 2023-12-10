@@ -14,12 +14,24 @@ import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 
 import './gig.scss';
+import GigReputation from '../gig-reputation/gig-reputation';
+import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const currentUser = useSelector(
+        (state: RootState) => state.users.currentUser
+    );
     const { acceptGig } = useGigsService();
-    const { buttonColor, buttonText, gigClassname, gigSummaryClassName, secondButtonText, secondButtonAction } = useGigHelpers();
+    const {
+        buttonColor,
+        buttonText,
+        gigClassname,
+        gigSummaryClassName,
+        secondButtonText,
+        secondButtonAction
+    } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
     const convos = useSelector(
@@ -55,65 +67,97 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         [selectedId, gig]
     );
 
+    const wrapperClasses = classNames({
+        'gig__wrapper': true,
+        'gig__wrapper--small-margin': gig.status !== GigStatus.AVAILABLE
+    });
+
     return (
-        <li className={gigClassname(gig)}>
-            <AnimatePresence>
-                <motion.div
-                    className={gigSummaryClassName(gig)}
-                    onClick={() => navigate(`/giger/${gig.id}`)}
-                    key={gig.id}
-                    {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
-                >
-                    <h3 className="gig__title">{gig.title}</h3>
-                    <span className="gig__payout">{gig.payout} ¤</span>
-                    <span className="gig__reputation">
-                        {gig.reputationRequired}★
-                    </span>
-                </motion.div>
-            </AnimatePresence>
-
-            <AnimatePresence>
-                {selectedId === gig.id && (
-                    <motion.article
-                        className="gig_details"
-                        {...generateAnimation('expandCollapse')}
+        <li className={wrapperClasses}>
+            <span
+                className={`gig__from ${
+                    gig.id === selectedId ? 'gig__from--shown' : ''
+                }`}
+            >
+                <FormattedMessage id={'FROM'} />: {gig.author.handle}
+            </span>
+            <div className={gigClassname(gig)}>
+                <AnimatePresence>
+                    <motion.div
+                        className={gigSummaryClassName(gig)}
+                        onClick={() => navigate(`/giger/${gig.id}`)}
+                        key={gig.id}
+                        {...generateAnimation('horExpand', {
+                            delay: delayMultiplier * 0.06
+                        })}
                     >
-                        <BigButton
-                            text={buttonText(gig.status)}
-                            color={buttonColor(gig.status)}
-                            onClick={handleButtonClick}
-                        />
-
-                        {isMine && (
-                            <BigButton
-                                text={secondButtonText(!!gig.takenBy)}
-                                color='accent'
-                                onClick={secondButtonAction(!!gig.takenBy)}
-                            />
-                        )}
-
-                        <p className="gig__description">{gig.description}</p>
-
-                        <AnimatePresence>
-                            {fetchingConvo && (
-                                <p key={gig.id + 'fetch'}>
-                                    Fetching conversation...
-                                </p>
-                            )}
-                            {showConvo && convo && (
-                                <Conversation
-                                    key={convo.id + 'convo'}
-                                    convo={convo}
+                        <h3 className="gig__title">{gig.title}</h3>
+                        <span className="gig__payout">{gig.payout} ¤</span>
+                        <span className="gig__reputation">
+                            {gig.reputationRequired !== undefined && (
+                                <GigReputation
+                                    reputation={gig.reputationRequired}
+                                    color={buttonColor(gig.status)}
                                 />
                             )}
-                        </AnimatePresence>
+                        </span>
+                    </motion.div>
+                </AnimatePresence>
 
-                        {gig.status !== GigStatus.AVAILABLE && (
-                            <NewMsg convoId={gig.id} onSend={() => {}} />
-                        )}
-                    </motion.article>
-                )}
-            </AnimatePresence>
+                <AnimatePresence>
+                    {selectedId === gig.id && (
+                        <motion.article
+                            className="gig_details"
+                            {...generateAnimation('expandCollapse')}
+                        >
+                            <BigButton
+                                text={buttonText(gig.status)}
+                                color={buttonColor(gig.status)}
+                                onClick={handleButtonClick}
+                            />
+
+                            {isMine && (
+                                <BigButton
+                                    text={secondButtonText(!!gig.takenBy)}
+                                    color="accent"
+                                    onClick={secondButtonAction(!!gig.takenBy)}
+                                />
+                            )}
+
+                            <p className="gig__description">
+                                {gig.description}
+                            </p>
+
+                            <AnimatePresence>
+                                {fetchingConvo && (
+                                    <p key={gig.id + 'fetch'}>
+                                        Fetching conversation...
+                                    </p>
+                                )}
+                                {showConvo && convo && (
+                                    <Conversation
+                                        key={convo.id + 'convo'}
+                                        convo={convo}
+                                    />
+                                )}
+                            </AnimatePresence>
+
+                            {gig.status !== GigStatus.AVAILABLE && (
+                                <NewMsg convoId={gig.id} onSend={() => {}} />
+                            )}
+                        </motion.article>
+                    )}
+                </AnimatePresence>
+            </div>
+            {gig.status !== GigStatus.AVAILABLE && (
+                <div
+                    className={`gig__status gig__status--${buttonColor(
+                        gig.status
+                    )}`}
+                >
+                    {gig.status.replace('_', ' ')}
+                </div>
+            )}
         </li>
     );
 };

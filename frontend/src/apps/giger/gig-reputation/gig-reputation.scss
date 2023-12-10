@@ -1,0 +1,35 @@
+@import '../../../variables.scss';
+
+.gig-reputation {
+    display: flex;
+    width: 150px;
+    gap: 5px;
+    justify-content: flex-end;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, calc(100% - 6px) 100%, 0% 100%);
+
+    &__bar {
+        width: 15px;
+        height: 18px;
+        transform: skewX(45deg);
+
+        &--primary {
+            background-color: $primary-color;
+        }
+    
+        &--secondary {
+            background-color: $secondary-color;
+        }
+    
+        &--accent {
+            background-color: $accent-color;
+        }
+    
+        &--accent-2 {
+            background-color: $accent-color-2;
+        }
+    
+        &--empty {
+            background-color: #252d68;
+        }
+    }
+}

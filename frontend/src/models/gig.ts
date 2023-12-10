@@ -5,7 +5,7 @@ export interface IGigBase {
     title: string;
     description: string;
     category: GigCategoryNames;
-    reputationRequired?: number; //0-10
+    reputationRequired?: 0 | 1 | 2 | 3 | 4 | 5;
     id: string;
 }
 
