@@ -39,7 +39,7 @@ export const Router = () => {
                             <Route path="new" element={<Chat />} />
                         </Route>
                         <Route path="bank" element={<Bank />} />
-                        <Route path="myid" element={<MyId />} />
+                        <Route path="my.id" element={<MyId />} />
                         <Route
                             path="report-problem"
                             element={<ReportProblem />}

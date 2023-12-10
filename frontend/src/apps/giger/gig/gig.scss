@@ -10,7 +10,6 @@
     transition-property: height, min-height, margin-bottom;
     height: $summary-height;
     min-height: $summary-height;
-    margin-bottom: 1rem;
     overflow: hidden;
     position: relative;
 
@@ -37,7 +36,14 @@
         padding: 0.5rem;
         padding-left: 1rem;
         cursor: pointer;
-        clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 19px), calc(100% - 19px) 100%, 0 100%, 0 15px);
+        clip-path: polygon(
+            12px 0,
+            100% 0,
+            100% calc(100% - 19px),
+            calc(100% - 19px) 100%,
+            0 100%,
+            0 15px
+        );
         flex-wrap: wrap;
 
         &--available {
@@ -146,6 +152,57 @@
     }
 
     &__details {
-        max-height: calc(calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height});
+        max-height: calc(
+            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height}
+        );
+    }
+
+    &__from {
+        display: none;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        text-transform: uppercase;
+        color: $muted-text;
+
+        &--shown {
+            display: flex;
+        }
+    }
+
+    &__wrapper {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+
+        &--small-margin {
+            margin-bottom: 0.3rem;
+        }
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &::before {
+            content: '';
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        &--primary { color: $primary-color }
+        &--primary::before { background-color: $primary-color }
+
+        &--secondary { color: $secondary-color }
+        &--secondary::before { background-color: $secondary-color }
+
+        &--accent { color: $accent-color }
+        &--accent::before { background-color: $accent-color }
+
+        &--accent-2 { color: $accent-color-2 }
+        &--accent-2::before { background-color: $accent-color-2 }
     }
 }

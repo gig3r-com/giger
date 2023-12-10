@@ -44,5 +44,6 @@
     "LOGIN_FAILED": "Wrong username or password provided",
     "DECRYPTING": "Decrypting",
     "SHOW_HELP": "Need any help?",
-    "GIG_DELETED": "Gig successfully deleted"
+    "GIG_DELETED": "Gig successfully deleted",
+    "FROM": "From"
 }

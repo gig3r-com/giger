@@ -6,6 +6,7 @@ export const mockGigs: IGig[] = [
         id: '1',
         title: 'Corporate Data Heist',
         payout: 500,
+        reputationRequired: 5,
         author: {
             id: '555665',
             name: 'NeonTiger',
@@ -20,6 +21,7 @@ export const mockGigs: IGig[] = [
         id: '2',
         title: 'Undercover Delivery',
         payout: 300,
+        reputationRequired: 2,
         author: {
             id: '555dd6ss65',
             name: 'World Breaker',
@@ -34,6 +36,7 @@ export const mockGigs: IGig[] = [
         id: '6',
         title: 'Prototype Extraction',
         payout: 800,
+        reputationRequired: 4,
         author: {
             id: '555dd6ss65',
             name: 'World Breaker',
@@ -49,6 +52,7 @@ export const mockGigs: IGig[] = [
         title: 'High-Speed Assassination',
         payout: 150,
 
+        reputationRequired: 5,
         author: {
             id: '555665',
             name: 'NeonTiger',
@@ -63,6 +67,7 @@ export const mockGigs: IGig[] = [
         title: 'Stolen Implant Recovery',
         payout: 400,
 
+        reputationRequired: 3,
         author: {
             id: '555665',
             name: 'NeonTiger',
@@ -77,6 +82,7 @@ export const mockGigs: IGig[] = [
         id: '9',
         title: 'Corporate Hit',
         payout: 250,
+        reputationRequired: 4,
         author: {
             id: '555665',
             name: 'NeonTiger',
@@ -91,6 +97,7 @@ export const mockGigs: IGig[] = [
         id: '10',
         title: 'Cybernetics Sabotage',
         payout: 600,
+        reputationRequired: 1,
         author: {
             id: '555dd665',
             handle: 'Internet Explorer',
@@ -104,6 +111,7 @@ export const mockGigs: IGig[] = [
         id: '11',
         title: 'Prototype AI Smuggling',
         payout: 350,
+        reputationRequired: 0,
         author: {
             id: '555dd665',
             handle: 'Internet Explorer',
@@ -118,6 +126,7 @@ export const mockGigs: IGig[] = [
         id: '12',
         title: 'High-Profile Rescue',
         payout: 700,
+        reputationRequired: 2,
         author: {
             id: '555dd665',
             handle: 'Internet Explorer',
@@ -132,6 +141,7 @@ export const mockGigs: IGig[] = [
         id: '13',
         title: 'Corporate Data Theft',
         payout: 250,
+        reputationRequired: 0,
         author: {
             id: '555dd665',
             handle: 'Internet Explorer',
