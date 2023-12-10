@@ -6,6 +6,8 @@ import { setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { mockGigs } from '../../mocks/gigs';
 import { useMessagesService } from './messages.service';
+import { useIntl } from 'react-intl';
+import { useNotificationsService } from './notifications.service';
 
 /**
  * TODO: connect it to the backend.
@@ -16,6 +18,8 @@ export function useGigsService() {
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const [fetchingGigs, setFetchingGigs] = useState(false);
+    const intl = useIntl();
+    const { displayToast } = useNotificationsService();
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
         title: draftGig.title,
@@ -50,8 +54,14 @@ export function useGigsService() {
         setFetchingGigs(false);
     };
 
+    const deleteGig = (id: string) => {
+        const updatedGigs = currentGigs.filter((gig) => gig.id !== id);
+        dispatch(setGigs(updatedGigs));
+        displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
+    };
+
     /**
-     * shou;d be handled entirely server-side later on. Frontend should not edit gigs directly.
+     * should be handled entirely server-side later on. Frontend should not edit gigs directly.
      * @param id
      */
     const acceptGig = (id: string) => {
@@ -60,5 +70,5 @@ export function useGigsService() {
         updateGig(updatedGig);
     };
 
-    return { addNewGig, updateGig, fetchGigs, fetchingGigs, acceptGig };
+    return { addNewGig, updateGig, fetchGigs, fetchingGigs, acceptGig, deleteGig };
 }

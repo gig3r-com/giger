@@ -3,9 +3,9 @@ import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 /**
- * Service for handling toast messages. 
+ * Service for handling toast messages.
  * Meant to be used in conjunction with websockets to notify the user about gig changes or bank transfers.
- * This connection will be added once backend is ready. 
+ * This connection will be added once backend is ready.
  */
 export const useNotificationsService = () => {
     /**
@@ -13,8 +13,13 @@ export const useNotificationsService = () => {
      * @param linkAddress the address to link to
      * @param toastMsg the message to display
      */
-    const handleIncomingBankTransfer = (linkAddress: string, toastMsg: string) => {
-        toast(React.createElement(Link, {to: linkAddress}, toastMsg), { duration: 15000 });
+    const displayToast = (toastMsg: string, linkAddress?: string) => {
+        toast(
+            linkAddress
+                ? React.createElement(Link, { to: linkAddress }, toastMsg)
+                : toastMsg,
+            { duration: 15000 }
+        );
     };
 
     /**
@@ -22,8 +27,8 @@ export const useNotificationsService = () => {
      */
     const test = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any)['toast'] = handleIncomingBankTransfer;
+        (window as any)['toast'] = displayToast;
     };
 
-    return { test, handleIncomingBankTransfer };
+    return { test, displayToast };
 };
