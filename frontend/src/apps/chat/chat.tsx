@@ -17,7 +17,7 @@ export const Chat: FC = () => {
     const intl = useIntl();
     const { fetchUserConvos } = useMessagesService();
     const currentUser = useSelector((state: RootState) => state.users.currentUser);
-    const location = ation();
+    const location = useLocation();
     const navigate = useNavigate();
     const { chatId } = useParams();
     const conversations = useSelector(
