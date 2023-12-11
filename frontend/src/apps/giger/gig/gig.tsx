@@ -72,6 +72,12 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         'gig__wrapper--small-margin': gig.status !== GigStatus.AVAILABLE
     });
 
+    const statusClasses = classNames({
+        'gig__status': true,
+        [`gig__status--${buttonColor(gig.status)}`]: true,
+        'gig__status--shown': !selectedId
+    });
+
     return (
         <li className={wrapperClasses}>
             <span
@@ -151,9 +157,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
             </div>
             {gig.status !== GigStatus.AVAILABLE && (
                 <div
-                    className={`gig__status gig__status--${buttonColor(
-                        gig.status
-                    )}`}
+                    className={statusClasses}
                 >
                     {gig.status.replace('_', ' ')}
                 </div>
