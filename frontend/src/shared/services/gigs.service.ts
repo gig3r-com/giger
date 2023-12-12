@@ -26,6 +26,7 @@ export function useGigsService() {
         category: draftGig.category,
         description: draftGig.description,
         payout: draftGig.payout,
+        reputationRequired: draftGig.reputationRequired,
         convo: createConvo(
             [currentUser!],
             createMessage(draftGig.message),
