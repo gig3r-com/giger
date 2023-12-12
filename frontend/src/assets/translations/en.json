@@ -45,5 +45,9 @@
     "DECRYPTING": "Decrypting",
     "SHOW_HELP": "Need any help?",
     "GIG_DELETED": "Gig successfully deleted",
-    "FROM": "From"
+    "FROM": "From",
+    "NO_GIGS_FOUND_TITLE": "No gigs found",
+    "NO_GIGS_FOUND_TEXT": "Try changing some of the filters, or wait for more gigs to appear",
+    "GIG_SINGULAR": "Gig",
+    "GIG_PLURAL": "Gigs"
 }
