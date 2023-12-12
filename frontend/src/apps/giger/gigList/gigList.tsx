@@ -1,12 +1,14 @@
 import { FC } from 'react';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
 import { GigStatus } from '../../../models/gig';
 import { Controls } from '../../../shared/components/controls/controls';
 import { RootState } from '../../../store/store';
+import { NoGigFound } from '../no-gig-found/no-gig-found';
 
 import './gigList.scss';
 
@@ -15,6 +17,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
         (state: RootState) => state.users.currentUser
     );
     const { gigId } = useParams();
+    const intl = useIntl();
 
     const sortedGigs = [...gigs].sort((a, b) => {
         const aIsOwn = a.author.id === currentUser?.id;
@@ -37,11 +40,16 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                 leftSideOption={
                     gigId
                         ? 'back'
-                        : `${gigs.length} ${gigs.length > 1 ? 'GIGS' : 'GIG'}`
+                        : `${gigs.length} ${
+                              gigs.length > 1 || gigs.length === 0
+                                  ? intl.formatMessage({ id: 'GIG_PLURAL' })
+                                  : intl.formatMessage({ id: 'GIG_PLURAL' })
+                          }`
                 }
                 rightSideOption={gigId ? undefined : 'FILTERS'}
                 onRightSideClick={gigId ? undefined : toggleMenuState}
             />
+            {gigs.length === 0 && <NoGigFound />}
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
                     {sortedGigs.map((gig, i) => (

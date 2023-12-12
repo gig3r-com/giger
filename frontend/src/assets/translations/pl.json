@@ -45,5 +45,9 @@
     "DECRYPTING": "Odszyfrowywanie",
     "SHOW_HELP": "Potrzebujesz pomocy?",
     "GIG_DELETED": "Gig został usunięty",
-    "FROM": "Od"
+    "FROM": "Od",
+    "NO_GIGS_FOUND_TITLE": "Brak znalezionych gigów",
+    "NO_GIGS_FOUND_TEXT": "Spróbuj zmienić filtry wyszukiwania lub poczekać aż pojawią się nowe gigi",
+    "GIG_SINGULAR": "Gig",
+    "GIG_PLURAL": "Gigów"
 }

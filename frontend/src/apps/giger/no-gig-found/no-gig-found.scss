@@ -1,0 +1,43 @@
+@import '../../../variables.scss';
+
+.no-gig-found {
+    width: 100vw;
+    position: relative;
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    justify-content: center;
+
+    &__title {
+        font-family: Saira;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    &__text {
+        font-family: Saira;
+        font-size: 16px;
+        text-align: center;
+        padding: 0 2rem;
+    }
+
+    &__image {
+        width: 100%;
+        aspect-ratio: 1.1313;
+    }
+
+    a {
+        padding: 0 5px;
+    }
+
+    &__attribution {
+        position: absolute;
+        bottom: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        color: $primary-color;
+        font-size: 0.75rem;
+    }
+}
