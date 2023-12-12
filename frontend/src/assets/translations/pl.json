@@ -49,5 +49,12 @@
     "NO_GIGS_FOUND_TITLE": "Brak znalezionych gigów",
     "NO_GIGS_FOUND_TEXT": "Spróbuj zmienić filtry wyszukiwania lub poczekać aż pojawią się nowe gigi",
     "GIG_SINGULAR": "Gig",
-    "GIG_PLURAL": "Gigów"
+    "GIG_PLURAL": "Gigów",
+    "ROOKIE": "Nowicjusz",
+    "AMATEUR": "Amator",
+    "EXPERIENCED": "Doświadczony",
+    "PROFESSIONAL": "Profesjonalista",
+    "EXPERT": "Ekspert",
+    "MASTER": "Mistrz",
+    "CHOOSE_REPUTATION": "Wybierz poziom reputacji"
 }

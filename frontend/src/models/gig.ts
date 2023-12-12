@@ -5,7 +5,7 @@ export interface IGigBase {
     title: string;
     description: string;
     category: GigCategoryNames;
-    reputationRequired?: 0 | 1 | 2 | 3 | 4 | 5;
+    reputationRequired?: GigRepuation;
     id: string;
 }
 
@@ -18,6 +18,8 @@ export interface IGig extends IGigBase {
     author: IUserBase;
     takenBy?: IUserBase;
 }
+
+export type GigRepuation = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface IGigCategory {
     type: GigCategoryNames;
@@ -42,3 +44,12 @@ export enum GigStatus {
     COMPLETED = 'completed',
     PENDING = 'pending'
 }
+
+export const reputationLabels = new Map<GigRepuation, string>([
+    [0, 'ROOKIE'],
+    [1, 'AMATEUR'],
+    [2, 'EXPERIENCED'],
+    [3, 'PROFESSIONAL'],
+    [4, 'EXPERT'],
+    [5, 'MASTER'] 
+]);
