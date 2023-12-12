@@ -23,6 +23,8 @@
     "SEARCH": "Search",
     "EDIT": "Edit",
     "REPORT_A_PROBLEM": "Report a problem",
+    "DESCRIBE_PROBLEM": "Describe the problem",
+    "WHAT_WENT_WRONG": "What went wrong?",
     "TRANSFER": "Transfer",
     "TRANSFER_HISTORY": "Transfer history",
     "ACCOUNT_BALANCE": "Account balance",
@@ -35,5 +37,13 @@
     "AFFILIATION": "Afilliation",
     "PROFESSION": "Profession",
     "NET_WORTH": "Net worth",
-    "ID_VALID": "ID valid"
+    "ID_VALID": "ID valid",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "LOGIN": "Log in",
+    "LOGIN_FAILED": "Wrong username or password provided",
+    "DECRYPTING": "Decrypting",
+    "SHOW_HELP": "Need any help?",
+    "GIG_DELETED": "Gig successfully deleted",
+    "FROM": "From"
 }

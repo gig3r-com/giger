@@ -1,10 +1,13 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, 
+    // useParams
+ } from 'react-router';
+import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
+import { RootState } from "../../store/store";
 import { Controls } from '../../shared/components/controls/controls';
 import { BigButton } from '../../shared/components/big-button/big-button';
-import { useAuthenticationService } from '../../shared/services/authentication.service';
 import { standardTimingFunction } from '../../shared/constants';
 import { MyIdNavigation } from './my-id-navigation';
 import { Contacts } from './contacts/contacts';
@@ -13,18 +16,19 @@ import { CharSummary } from './char-summary/char-summary';
 import { IUser } from '../../models/user';
 import './my-id.scss';
 
+
 export const MyId: FC = () => {
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const [userToShow, setUserToShow] = useState<IUser>();
-    const { userId } = useParams();
+    // const { userId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(function setUserOnMount() {
-        setUserToShow(currentUser());
+        setUserToShow(currentUser);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    console.log('userToShow', userToShow, userId);
+    // console.log('userToShow', userToShow, userId);
     // const isCurrentUser = true;
     // const showSummary = userToShow && true;
     const buttons = (

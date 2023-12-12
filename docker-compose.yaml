@@ -1,0 +1,41 @@
+version: "3.9"
+
+# networks:
+#   default:
+#     external: true
+#     name: traefik-proxy
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - ${PORT:-8080}:80
+    volumes:
+      - ./docker/nginx/:/etc/nginx/conf.d/
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    expose:
+      - 8080
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    expose:
+      - 80
+    volumes:
+      - ./docker/backend/config.json:/app/.config.json
+      - ./backend/migrations/:/app/migrations
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./docker/volumes/postgres:/var/lib/postgresql/data/

@@ -29,3 +29,4 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 SERVER_NAME = f'{config_file["flask"]["host"]}:{config_file["flask"]["port"]}'
 DEBUG = config_file["flask"]["debug"]
+DB_INIT = config_file["postgres"]["db_init"]

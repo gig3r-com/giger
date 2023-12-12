@@ -23,6 +23,8 @@
     "SEARCH": "Szukaj",
     "EDIT": "Edytuj",
     "REPORT_A_PROBLEM": "Zgłoś problem",
+    "DESCRIBE_PROBLEM": "Opisz problem",
+    "WHAT_WENT_WRONG": "Co poszło nie tak?",
     "TRANSFER": "Prześlij",
     "TRANSFER_HISTORY": "Historia przelewów",
     "ACCOUNT_BALANCE": "Stan konta",
@@ -35,5 +37,13 @@
     "AFFILIATION": "przynależność",
     "PROFESSION": "Zawód",
     "NET_WORTH": "Majątek",
-    "ID_VALID": "Dowód ważny do"
+    "ID_VALID": "Dowód ważny do",
+    "USERNAME": "Nazwa użytkownika",
+    "PASSWORD": "Hasło",
+    "LOGIN": "Zaloguj",
+    "LOGIN_FAILED": "Błędna nazwa użytkownika lub hasło",
+    "DECRYPTING": "Odszyfrowywanie",
+    "SHOW_HELP": "Potrzebujesz pomocy?",
+    "GIG_DELETED": "Gig został usunięty",
+    "FROM": "Od"
 }

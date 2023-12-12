@@ -19,7 +19,8 @@ export const Controls: FC<IControlsProps> = ({
     leftSideOption,
     rightSideOption,
     onLeftSideClick,
-    onRightSideClick
+    onRightSideClick,
+    navigateBack = true
 }) => {
     const navigate = useNavigate();
 
@@ -38,7 +39,7 @@ export const Controls: FC<IControlsProps> = ({
                 <motion.span
                     {...anim}
                     className="controls__back controls__left-side"
-                    onClick={() => navigate(-1)}
+                    onClick={navigateBack ? () => navigate(-1) : () => onLeftSideClick && onLeftSideClick()}
                 >
                     <ChevronLeft />
                     <MemoizedFormattedMessage id="BACK" />

@@ -1,20 +1,22 @@
 import { FC } from 'react';
-import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
+import { Controls } from '../../../shared/components/controls/controls';
+import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 
 import './convo-snippet.scss';
-import { Controls } from '../../../shared/components/controls/controls';
 
 export const ConvoSnippet: FC<{
     convo: IConversation;
     delayMultiplier: number;
 }> = ({ convo, delayMultiplier }) => {
     const { chatId } = useParams();
+    const { generateAnimation } = useStandardizedAnimation();
     const lastMessage = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({
@@ -27,13 +29,7 @@ export const ConvoSnippet: FC<{
 
     return (
         <motion.article
-            initial={{ opacity: 0, transform: 'scaleX(0)' }}
-            animate={{ opacity: 1, transform: 'scaleX(1)' }}
-            exit={{ opacity: 0, transform: 'scaleX(0)', height: 0 }}
-            transition={{
-                delay: delayMultiplier * 0.06,
-                ease: cubicBezier(0.16, 1, 0.3, 1)
-            }}
+            {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
             className={convoSnippetClassnames}
         >
             {chatId === convo.id && isConversationExpanded &&<Controls leftSideOption='back' />}
@@ -41,13 +37,7 @@ export const ConvoSnippet: FC<{
                 {!isConversationExpanded && (
                     <motion.section
                         key={convo.id + 'snippet'}
-                        initial={{ opacity: 0, transform: 'scaleX(0)' }}
-                        animate={{ opacity: 1, transform: 'scaleX(1)' }}
-                        exit={{ opacity: 0, transform: 'scaleX(0)', height: 0 }}
-                        transition={{
-                            delay: delayMultiplier * 0.06,
-                            ease: cubicBezier(0.16, 1, 0.3, 1)
-                        }}
+                        {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
                         className="convo-snippet__summary"
                     >
                         {lastMessage && <Link to={`/chat/${convo.id}`}>

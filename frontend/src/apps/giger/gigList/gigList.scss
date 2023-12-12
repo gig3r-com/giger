@@ -20,6 +20,7 @@
         width: 100%;
         box-sizing: border-box;
         margin-top: 0;
+        margin-bottom: 0;
     }
 
     &__payout {
@@ -34,5 +35,11 @@
         line-height: normal;
         letter-spacing: normal;
         color: $muted-text;
+    }
+
+    .controls {
+        padding-top: 1rem;
+        padding-left: 1rem;
+        padding-right: 0;
     }
 }

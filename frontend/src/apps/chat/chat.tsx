@@ -3,21 +3,20 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import { useIntl } from 'react-intl';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useMessagesService } from '../../shared/services/messages.service';
-import { useAuthenticationService } from '../../shared/services/authentication.service';
 import { RootState } from '../../store/store';
 import { ConvoSnippet } from './convo-snippet/convo-snippet';
 import { StartNewConvo } from './start-new/start-new-convo';
 import { BigButton } from '../../shared/components/big-button/big-button';
 
 import './chat.scss';
-import classNames from 'classnames';
 
 export const Chat: FC = () => {
     const intl = useIntl();
     const { fetchUserConvos } = useMessagesService();
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const location = useLocation();
     const navigate = useNavigate();
     const { chatId } = useParams();
@@ -55,7 +54,7 @@ export const Chat: FC = () => {
     }), [chatId])
 
     useEffect(function fetchOnMount() {
-        fetchUserConvos(currentUser().id);
+        currentUser && fetchUserConvos(currentUser.id);
     }, []);
 
     useEffect(function redirectOnConvoNotFound() {

@@ -1,15 +1,16 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useAuthenticationService } from '../../../services/authentication.service';
+import { useSelector } from 'react-redux';
 import { IMessage } from '../../../../models/message';
+import { RootState } from '../../../../store/store';
 
 import './message.scss';
 
 export const Message: FC<{ message: IMessage }> = ({ message }) => {
-    const { currentUser } = useAuthenticationService();
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const messageClassnames = classNames({
         message: true,
-        'message--own': currentUser().id === message.sender.id
+        'message--own': currentUser?.id === message.sender.id
     });
 
     return (

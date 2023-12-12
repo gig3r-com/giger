@@ -4,10 +4,12 @@ import { users } from '../mocks/users';
 
 export interface IUsersState {
     users: IUser[];
+    currentUser?: IUser;
 }
 
 const initialState: IUsersState = {
-    users: JSON.parse(JSON.stringify(users))
+    users: JSON.parse(JSON.stringify(users)),
+    currentUser: undefined
 };
 
 export const usersSlice = createSlice({
@@ -17,9 +19,12 @@ export const usersSlice = createSlice({
         setUsers: (state, action: PayloadAction<IUser[]>) => {
             state.users = action.payload;
         },
+        setCurrentUser: (state, action: PayloadAction<IUser>) => {
+            state.currentUser = action.payload;
+        }
     }
 });
 
-export const { setUsers } = usersSlice.actions;
+export const { setUsers, setCurrentUser } = usersSlice.actions;
 
 export default usersSlice.reducer;
