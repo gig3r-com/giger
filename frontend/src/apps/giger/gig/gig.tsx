@@ -69,7 +69,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
     const wrapperClasses = classNames({
         'gig__wrapper': true,
-        'gig__wrapper--small-margin': gig.status !== GigStatus.AVAILABLE
+        'gig__wrapper--small-margin': gig.status !== GigStatus.AVAILABLE,
+        'gig__wrapper--no-margin': selectedId !== undefined
     });
 
     const statusClasses = classNames({

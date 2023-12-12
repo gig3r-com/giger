@@ -174,19 +174,27 @@
         list-style: none;
         padding: 0;
         margin-bottom: 1rem;
+        transition: margin-bottom $standard-duration $standard-timing-function;
 
         &--small-margin {
             margin-bottom: 0.3rem;
         }
+
+        &--no-margin {
+            margin-bottom: 0;
+        }
     }
 
     &__status {
-        display: none;
+        display: flex;
         align-items: center;
         gap: 0.5rem;
+        height: 0;
+        overflow: hidden;
+        transition: height $standard-duration $standard-timing-function;
 
         &--shown {
-            display: flex;
+            height: 24px;
         }
 
         &::before {
