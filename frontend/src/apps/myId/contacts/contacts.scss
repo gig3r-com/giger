@@ -1,0 +1,51 @@
+@import '../../../variables.scss';
+
+.contacts {
+    font-family: 'JetBrains Mono', monospace;
+    & h2 {
+        font-weight: 400;
+        font-size: 16px;
+        color: $other-user-color;
+    }
+
+    & .contacts__list {
+        margin: 0 0 1rem 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    & .contacts__list-item {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+        padding: 1rem 0;
+
+        &--name {
+            color: $other-user-color;
+        }
+
+        &--action {
+            display: inline-flex;
+            align-items: center;
+            color: $base-text-color;
+
+            &::after {
+                margin-top: -0.250rem;
+                line-height: 1rem;
+                font-size: 2rem;
+                content: '\203A'; //todo: get correct icon
+                margin-left: 5px;
+            }
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            border-bottom: solid 1px #868290; //todo: find color
+        }
+    }
+}

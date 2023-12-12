@@ -6,19 +6,17 @@ import classNames from 'classnames';
 
 export const MainMenu = () => {
     const location = useLocation();
-    const classes = (option: IMainMenuOption) => classNames({
-        'main-menu__option': true,
-        'main-menu__option--active': location.pathname === option.link
-    })
+    const classes = (option: IMainMenuOption) =>
+        classNames({
+            'main-menu__option': true,
+            'main-menu__option--active': location.pathname.split('/').some((entry) => `/${entry}` === option.link)
+        });
 
     return (
         <header className="main-menu">
             <ul>
                 {mainMenuOptions.map((option) => (
-                    <li
-                        className={classes(option)}
-                        key={option.name + option.link}
-                    >
+                    <li className={classes(option)} key={option.name + option.link}>
                         <Link to={option.link}>{option.name}</Link>
                     </li>
                 ))}

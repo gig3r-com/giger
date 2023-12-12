@@ -19,7 +19,17 @@ export const Router = () => {
                     <Route path="new" element={<Chat />} />
                 </Route>
                 <Route path="bank" element={<Bank />} />
-                <Route path="myid" element={<MyId />} />
+                <Route path="myid" element={<MyId />}>
+                    <Route path=":userId" element={<MyId />} />
+                    <Route path="details" element={<MyId />} />
+                    <Route path="contacts" element={<MyId />} />
+                    <Route path="neotribe" element={<MyId />} />
+                    <Route path="medical" element={<MyId />} />
+                    <Route path="criminal" element={<MyId />} />
+                    <Route path="goals" element={<MyId />} />
+                    <Route path="hacking" element={<MyId />} />
+                    <Route path="meta" element={<MyId />} />
+                </Route>
             </Routes>
             <MainMenu />
         </BrowserRouter>
