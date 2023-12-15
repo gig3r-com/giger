@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Tag and deploy prod
 on:
   workflow_call:
   push:

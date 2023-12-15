@@ -32,7 +32,7 @@ gig3r-api-{{ default "app" .Values.environment }}
 {{- end }}
 
 {{- define "gig3r.backend.debug" -}}
-{{- if eq "app" .Release.Namespace -}}
+{{- if eq "gig3r-app" .Release.Namespace -}}
 true
 {{- else -}}
 false
