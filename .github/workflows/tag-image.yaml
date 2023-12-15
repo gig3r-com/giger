@@ -1,0 +1,42 @@
+name: Tag
+on:
+  workflow_call:
+    inputs:
+      IMAGE_NAME:
+        type: string
+        required: true
+      CURRENT_TAG:
+        type: string
+        required: true
+      NEW_TAG:
+        type: string
+        required: true
+      GITHUB_RUNNER_NAME:
+        type: string
+        required: false
+        default: "microk8s-runner-1"
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+
+env:
+  CURRENT_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}:${{ inputs.CURRENT_TAG }}
+  NEW_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.IMAGE_NAME }}:${{ inputs.NEW_TAG }}
+
+jobs:
+  tag:
+    runs-on: ${{ inputs.GITHUB_RUNNER_NAME }}
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Tag image
+        run: |
+          docker pull ${{ env.CURRENT_IMAGE }};
+          docker tag ${{ env.CURRENT_IMAGE }} ${{ env.NEW_IMAGE }};
+          docker push ${{ env.NEW_IMAGE }};
