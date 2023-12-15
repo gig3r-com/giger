@@ -57,5 +57,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'PR had been deployed successfully. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
+              body: 'PR had been deployed successfully. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
             })
