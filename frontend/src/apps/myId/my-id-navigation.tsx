@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { FC } from 'react';
 import './my-id-navigation.scss';
+import { useUserService } from '../../shared/services/user.service';
 
 export type MyIdNavigationProps = {
     active?: boolean;
@@ -8,6 +9,7 @@ export type MyIdNavigationProps = {
 };
 
 export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
+    const { logout } = useUserService();
     const wrapperClassnames = classNames({
         'my-id-navigation': true
     });
@@ -18,13 +20,23 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
         { name: 'criminal', isNew: true },
         { name: 'goals', isNew: true },
         { name: 'hacking' },
-        { name: 'meta' }
+        { name: 'meta' },
+        { name: 'log out', onClickAction: () => logout() }
     ];
+
     return (
         <nav className={wrapperClassnames}>
             <ul className="my-id-navigation__list">
-                {items.map(({ name, isNew }) => (
-                    <li className="my-id-navigation__item" key={name} onClick={() => onItemClick?.(name)}>
+                {items.map(({ name, isNew, onClickAction }) => (
+                    <li
+                        className="my-id-navigation__item"
+                        key={name}
+                        onClick={() =>
+                            onClickAction
+                                ? onClickAction()
+                                : onItemClick?.(name)
+                        }
+                    >
                         {name}
                         {isNew && (
                             <span className="my-id-navigation__item--badge-new">

@@ -2,6 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -12,17 +14,14 @@ import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
 import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
+import GigReputation from '../gig-reputation/gig-reputation';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './gig.scss';
-import GigReputation from '../gig-reputation/gig-reputation';
-import { FormattedMessage } from 'react-intl';
-import classNames from 'classnames';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const currentUser = useSelector(
-        (state: RootState) => state.users.currentUser
-    );
+    const { currentUser } = useUserService();
     const { acceptGig } = useGigsService();
     const {
         buttonColor,

@@ -2,7 +2,7 @@ import { useState, FC, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
-import { useAuthenticationService } from '../../shared/services/authentication.service';
+import { useUserService } from '../../shared/services/user.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { ReactComponent as GigerLogo } from '../../assets/logo-giger.svg';
 import { DecodeText } from '../../shared/components/decode-text/decodeText';
@@ -19,7 +19,7 @@ export const Login: FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showHelp, setShowHelp] = useState(false);
-    const { login, retrieveLoginData } = useAuthenticationService();
+    const { login, retrieveLoginData } = useUserService();
     const helpClasses = classNames({
         login__help: true,
         'login__help--visible': showHelp

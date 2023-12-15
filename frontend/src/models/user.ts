@@ -1,7 +1,8 @@
 export interface IUserBase {
     id: string,
     name: string,
-    handle: string
+    handle: string,
+    roles?: UserRoles[]
 }
 
 export interface IUser extends IUserBase {
@@ -26,4 +27,8 @@ export enum UserTypes {
     HUMAN = 'human',
     AI = 'ai',
     ANDROID = 'android'
+}
+
+export enum UserRoles {
+    ADMIN = 'admin'
 }

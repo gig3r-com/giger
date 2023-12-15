@@ -1,16 +1,15 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
 import { ITransaction } from '../../../models/banking';
 import { IUser } from '../../../models/user';
-import { RootState } from '../../../store/store';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './transaction.scss';
 
 export const Transaction: FC<{ transaction: ITransaction }> = ({
     transaction
 }) => {
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
 
     const otherParty: IUser =
         transaction.to.id === currentUser?.id
@@ -20,9 +19,7 @@ export const Transaction: FC<{ transaction: ITransaction }> = ({
     const sign = transaction.to.id === currentUser?.id ? '+' : '-';
 
     return (
-        <motion.li
-            className="transaction"
-        >
+        <motion.li className="transaction">
             <span className="transaction__direction"></span>
             <div className="transaction__meta">
                 <span className="transaction__other-party">

@@ -12,16 +12,19 @@ import { useEffect } from 'react';
 import { useNotificationsService } from './shared/services/notifications.service';
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
+import { useVersionService } from './shared/services/version.service';
 
 export const Router = () => {
     const { test } = useNotificationsService();
+    const { versionCheck } = useVersionService();
 
     useEffect(() => {
+        versionCheck();
         test();
     }, []);
 
     const isLoggedIn = useSelector(
-        (state: RootState) => !!state.users.currentUser
+        (state: RootState) => !!state.users.currentUserId
     );
 
     return (

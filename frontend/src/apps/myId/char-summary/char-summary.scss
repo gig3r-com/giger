@@ -33,8 +33,8 @@
         text-transform: uppercase;
     }
 
-    &__surname {
-        margin-right: 0.5rem;
+    &__name {
+        margin-left: 0.5rem;
     }
 
     &__name {
@@ -45,7 +45,7 @@
     &__entry {
         width: 50%;
         box-sizing: border-box;
-        border-bottom: 1px solid $base-text-color;
+        border-bottom: 1px solid $base-text-color!important;
         box-sizing: border-box;
     }
 
@@ -55,7 +55,8 @@
     }
 
     &__entry {
-        padding-right: 1rem;
+        padding: 0 1rem!important;
+        color: white;
     }
 
     &__signature {
