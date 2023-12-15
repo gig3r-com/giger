@@ -1,0 +1,36 @@
+name: Build and deploy
+on:
+  workflow_call:
+  push:
+    tags:
+      - "v**"
+
+jobs:
+  tag-frontend:
+    uses: gig3r-com/giger/.github/workflows/tag-image.yaml@main
+    with:
+      IMAGE_NAME: "gig3r-frontend"
+      CURRENT_TAG: ${{ github.sha }}
+      NEW_TAG: ${{ GITHUB.REF_NAME }}
+    secrets: inherit
+
+  tag-backend:
+    uses: gig3r-com/giger/.github/workflows/tag-image.yaml@main
+    with:
+      IMAGE_NAME: "gig3r-backend"
+      CURRENT_TAG: ${{ github.sha }}
+      NEW_TAG: ${{ GITHUB.REF_NAME }}
+    secrets: inherit
+  
+  deploy-helm-chart:
+    uses: gig3r-com/giger/.github/workflows/deploy-helm-chart.yaml@main
+    needs:
+      - tag-frontend
+      - tag-backend
+    with:
+      HELM_ENVIRONMENT: app
+      HELM_FRONTEND_IMAGE: "mivalsten/gig3r-frontend"
+      HELM_FRONTEND_TAG: ${{ GITHUB.REF_NAME }}
+      HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
+      HELM_BACKEND_TAG: ${{ GITHUB.REF_NAME }}
+    secrets: inherit
