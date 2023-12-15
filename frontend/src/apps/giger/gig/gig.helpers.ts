@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl';
-import { GigStatus, IGig } from '../../../models/gig';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { GigStatus, IGig } from '../../../models/gig';
+import { useUserService } from '../../../shared/services/user.service';
 
 export function useGigHelpers() {
     const intl = useIntl();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const { gigId } = useParams();
     const navigate = useNavigate();
     const buttonColor = (status: GigStatus) => {

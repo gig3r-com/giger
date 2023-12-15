@@ -11,13 +11,14 @@ import {
 } from '../../store/messages.slice';
 import { RootState } from '../../store/store';
 import { mockUserConvos } from '../../mocks/userConvos';
+import { useUserService } from './user.service';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
  */
 export function useMessagesService() {
     const dispatch = useDispatch();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations

@@ -2,10 +2,8 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, 
     // useParams
  } from 'react-router';
-import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
-import { RootState } from "../../store/store";
 import { Controls } from '../../shared/components/controls/controls';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { standardTimingFunction } from '../../shared/constants';
@@ -14,11 +12,13 @@ import { Contacts } from './contacts/contacts';
 import { Neotribe } from './neotribe/neotribe';
 import { CharSummary } from './char-summary/char-summary';
 import { IUser } from '../../models/user';
+import { useUserService } from '../../shared/services/user.service';
+
 import './my-id.scss';
 
 
 export const MyId: FC = () => {
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const [userToShow, setUserToShow] = useState<IUser>();
     // const { userId } = useParams();
     const navigate = useNavigate();
@@ -105,13 +105,13 @@ export const MyId: FC = () => {
             default:
                 result = (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        {userToShow && <CharSummary user={userToShow} />}
+                        {currentUser && <CharSummary user={currentUser} />}
                         {buttons}
                     </motion.div>
                 );
         }
         return result;
-    }, [location.pathname, userToShow]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [location.pathname, currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <section className="my-id">

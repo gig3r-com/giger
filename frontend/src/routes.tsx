@@ -21,7 +21,7 @@ export const Router = () => {
     }, []);
 
     const isLoggedIn = useSelector(
-        (state: RootState) => !!state.users.currentUser
+        (state: RootState) => !!state.users.currentUserId
     );
 
     return (

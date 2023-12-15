@@ -10,13 +10,14 @@ import { RootState } from '../../store/store';
 import { ConvoSnippet } from './convo-snippet/convo-snippet';
 import { StartNewConvo } from './start-new/start-new-convo';
 import { BigButton } from '../../shared/components/big-button/big-button';
+import { useUserService } from '../../shared/services/user.service';
 
 import './chat.scss';
 
 export const Chat: FC = () => {
     const intl = useIntl();
     const { fetchUserConvos } = useMessagesService();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const location = useLocation();
     const navigate = useNavigate();
     const { chatId } = useParams();

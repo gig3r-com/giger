@@ -1,20 +1,21 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useIntl } from 'react-intl';
 import { GigStatus, IDraftGig, IGig } from '../../models/gig';
 import { setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { mockGigs } from '../../mocks/gigs';
 import { useMessagesService } from './messages.service';
-import { useIntl } from 'react-intl';
 import { useNotificationsService } from './notifications.service';
+import { useUserService } from './user.service';
 
 /**
  * TODO: connect it to the backend.
  */
 export function useGigsService() {
     const dispatch = useDispatch();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const [fetchingGigs, setFetchingGigs] = useState(false);

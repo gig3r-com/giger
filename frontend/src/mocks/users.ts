@@ -1,4 +1,4 @@
-import { IUser, UserTypes } from '../models/user';
+import { IUser, UserRoles, UserTypes } from '../models/user';
 
 export const users: IUser[] = [
     { 
@@ -611,6 +611,24 @@ export const users: IUser[] = [
         reputation: 90, 
         type: UserTypes.HUMAN, 
         netWorth: 1000000, 
+        assets: ['Retro Computer Collection', 'Hacker Manifesto']
+    },
+    { 
+        id: '55566ssaa5ADMIN', 
+        handle: 'NeonTiger69', 
+        name: 'Johnny', 
+        surname: 'Sasaki', 
+        alias: 'Tiger', 
+        IDValidTo: 'indefinite', 
+        insurance: true, 
+        age: 40, 
+        cyberwarePercentage: 70, 
+        affiliation: 'Retro Hacker Group', 
+        profession: 'Hacker Veteran', 
+        reputation: 90, 
+        type: UserTypes.HUMAN, 
+        netWorth: 1000000, 
+        roles: [UserRoles.ADMIN],
         assets: ['Retro Computer Collection', 'Hacker Manifesto']
     }
     

@@ -4,12 +4,12 @@ import { users } from '../mocks/users';
 
 export interface IUsersState {
     users: IUser[];
-    currentUser?: IUser;
+    currentUserId?: string;
 }
 
 const initialState: IUsersState = {
     users: JSON.parse(JSON.stringify(users)),
-    currentUser: undefined
+    currentUserId: undefined
 };
 
 export const usersSlice = createSlice({
@@ -19,12 +19,26 @@ export const usersSlice = createSlice({
         setUsers: (state, action: PayloadAction<IUser[]>) => {
             state.users = action.payload;
         },
-        setCurrentUser: (state, action: PayloadAction<IUser>) => {
-            state.currentUser = action.payload;
+        setUser: (state, action: PayloadAction<IUser>) => {
+            const userIndex = state.users.findIndex(
+                (user) => user.id === action.payload.id
+            );
+
+            if (userIndex !== -1) {
+                const updatedUsers = [...state.users];
+                updatedUsers[userIndex] = action.payload;
+                state.users = updatedUsers;
+            }
+        },
+        setCurrentUser: (state, action: PayloadAction<string | undefined>) => {
+            state.currentUserId = action.payload;
         }
     }
 });
 
-export const { setUsers, setCurrentUser } = usersSlice.actions;
+export const { setUsers, setCurrentUser, setUser } = usersSlice.actions;
+
+export const selectCurrentUser = (state: { users: IUsersState }) =>
+    state.users.users.find((user) => user.id === state.users.currentUserId);
 
 export default usersSlice.reducer;
