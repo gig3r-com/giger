@@ -20,7 +20,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                 <div
                     contentEditable={true}
                     suppressContentEditableWarning={true}
-                    className={`${props.className} admin-editable-field admin-editable-field__text`}
+                    className={`${props.className} admin-editable-field admin-editable-field__text admin-editable-field__admin-mode`}
                     onBlur={() => {
                         console.log(value);
                         props.onChange(value as string);
@@ -35,7 +35,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
             {isAdmin && numberInput && (
                 <input
                     type="number"
-                    className={`${props.className} admin-editable-field admin-editable-field__number`}
+                    className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={value as number}
                     onBlur={() => {
                         console.log(value);
@@ -48,7 +48,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
             )}
             {isAdmin && booleanInput && (
                 <select
-                    className={`${props.className} admin-editable-field admin-editable-field__number`}
+                    className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={`${value}`}
                     onBlur={() => props.onChange(value as boolean)}
                     onChange={(event) =>

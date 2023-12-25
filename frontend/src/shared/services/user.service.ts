@@ -4,16 +4,23 @@ import { users } from '../../mocks/users';
 import { setCurrentUser, setUser } from '../../store/users.slice';
 import { IUser, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
+import { mockMedicalHistory } from '../../mocks/medical';
+import { IMedHistory } from '../../models/medical';
 
 /**
  * TODO: Connect to backend once it exists
  */
 export function useUserService() {
     const dispatch = useDispatch();
-    const currentUserId = useSelector((state: RootState) => state.users.currentUserId);
-    const currentUser = useSelector((state: RootState) => state.users.users.find(user => user.id === currentUserId));
+    const currentUserId = useSelector(
+        (state: RootState) => state.users.currentUserId
+    );
+    const userList = useSelector((state: RootState) => state.users.users);
+    const currentUser = useSelector((state: RootState) =>
+        state.users.users.find((user) => user.id === currentUserId)
+    );
     const isAdmin = useMemo(() => {
-        return currentUser?.roles?.includes(UserRoles.ADMIN)
+        return currentUser?.roles?.includes(UserRoles.ADMIN);
     }, [currentUser]);
 
     /**
@@ -81,5 +88,24 @@ export function useUserService() {
         dispatch(setUser({ ...updatedData }));
     };
 
-    return { login, logout, retrieveLoginData, isAdmin, updateUserData, currentUser };
+    const getMedicalHistoryForUser = (userId: string) =>
+        new Promise<IMedHistory>((resolve, reject) => {
+            const user = userList.find((user) => user.id === userId);
+
+            if (!user) {
+                reject('User not found');
+            }
+
+            resolve(user?.medical || mockMedicalHistory);
+        });
+
+    return {
+        login,
+        logout,
+        retrieveLoginData,
+        isAdmin,
+        updateUserData,
+        currentUser,
+        getMedicalHistoryForUser
+    };
 }

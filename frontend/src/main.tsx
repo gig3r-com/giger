@@ -7,6 +7,7 @@ import { Router } from './routes.tsx';
 import messages from './assets/translations/en.json';
 
 import './index.css';
+import 'material-icons/iconfont/material-icons.css';
 import './styles/general.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

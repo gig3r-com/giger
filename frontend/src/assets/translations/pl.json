@@ -56,5 +56,10 @@
     "PROFESSIONAL": "Profesjonalista",
     "EXPERT": "Ekspert",
     "MASTER": "Mistrz",
-    "CHOOSE_REPUTATION": "Wybierz poziom reputacji"
+    "CHOOSE_REPUTATION": "Wybierz poziom reputacji",
+    "DRUGS": "Leki",
+    "PAST_TREATMENTS": "Przeszłe zabiegi",
+    "ADD_ENTRY": "Dodaj wpis",
+    "IMPLANTS": "Implanty",
+    "PRESCRIPTIONS": "Recepty"
 }
