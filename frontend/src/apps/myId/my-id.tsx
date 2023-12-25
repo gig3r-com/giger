@@ -12,6 +12,7 @@ import { Contacts } from './contacts/contacts';
 import { Neotribe } from './neotribe/neotribe';
 import { CharSummary } from './char-summary/char-summary';
 import { IUser } from '../../models/user';
+import { Medical } from './medical/medical';
 import { useUserService } from '../../shared/services/user.service';
 
 import './my-id.scss';
@@ -96,6 +97,12 @@ export const MyId: FC = () => {
                 ) : null;
                 break;
             case '/myid/medical':
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <Medical />
+                    </motion.div>
+                ) : null;
+                break;
             case '/myid/criminal':
             case '/myid/goals':
             case '/myid/hacking':

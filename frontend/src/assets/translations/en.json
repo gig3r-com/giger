@@ -56,5 +56,10 @@
     "PROFESSIONAL": "professional",
     "EXPERT": "expert",
     "MASTER": "master",
-    "CHOOSE_REPUTATION": "Choose reputation level"
+    "CHOOSE_REPUTATION": "Choose reputation level",
+    "DRUGS": "Drugs",
+    "PAST_TREATMENTS": "Past treatments",
+    "ADD_ENTRY": "Add entry",
+    "IMPLANTS": "Implants",
+    "PRESCRIPTIONS": "Prescriptions"
 }

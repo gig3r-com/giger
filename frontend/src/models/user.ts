@@ -1,3 +1,5 @@
+import { IMedHistory } from "./medical";
+
 export interface IUserBase {
     id: string,
     name: string,
@@ -21,6 +23,7 @@ export interface IUser extends IUserBase {
     type: UserTypes;
     netWorth: number;
     assets: string[];
+    medical: IMedHistory;
 }
 
 export enum UserTypes {
