@@ -1,6 +1,6 @@
 @import '../../../variables.scss';
 
-.medical {
+.event-record {
     width: 100%;
     height: calc(100vh - 137px);
     overflow: auto;
@@ -14,6 +14,7 @@
         display: flex;
         justify-content: flex-start;
         position: relative;
+        flex-direction: column;
     }
 
     &__header {
@@ -21,6 +22,7 @@
         color: $primary-color;
         margin-top: 1rem;
         display: flex;
+        text-transform: capitalize;
     }
 
     &__section {
@@ -33,29 +35,6 @@
         &:first-of-type .medical__header {
             margin-top: 0;
         }
-    }
-
-    &__year {
-        color: $other-user-color;
-        width: 65px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-
-    &__info {
-        margin: 0.5rem;
-        color: white;
-        width: calc(100% - 117px);
-    }
-
-    &__remove-entry {
-        position: absolute;
-        right: 0;
-        top: 10px;
-        width: 32px;
-        height: 32px;
     }
 
     &__add-entry {

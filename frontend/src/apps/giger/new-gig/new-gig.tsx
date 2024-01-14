@@ -15,6 +15,7 @@ import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Controls } from '../../../shared/components/controls/controls';
+import { Slider } from '../../../shared/components/slider/slider';
 
 import './new-gig.scss';
 
@@ -177,12 +178,17 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 onChange={(event) => setPrivateMessage(event.target.value)}
             />
 
-            <input
-                type="number"
-                placeholder={intl.formatMessage({ id: 'PAYOUT' })}
+            <Slider
+                min={0}
+                max={50000}
                 value={payout}
-                onChange={(event) => setPayout(parseInt(event.target.value))}
-            />
+                className='new-gig__slider'
+                step={100}
+                showValue={true}
+                showMax={true}
+                showMin={true}
+                label={intl.formatMessage({ id: 'PAYOUT' })}
+                onChange={(value) => setPayout(value)} />
 
             <BigButton
                 disabled={!gigReady}

@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
-import { GigRepuationLevels, GigStatus, IDraftGig, IGig, reputationBrackets } from '../../models/gig';
-import { setGigs } from '../../store/gigs.slice';
+import {
+    GigRepuationLevels,
+    GigStatus,
+    IDraftGig,
+    IGig,
+    reputationBrackets
+} from '../../models/gig';
+import { setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { mockGigs } from '../../mocks/gigs';
 import { useMessagesService } from './messages.service';
@@ -18,7 +23,6 @@ export function useGigsService() {
     const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
-    const [fetchingGigs, setFetchingGigs] = useState(false);
     const intl = useIntl();
     const { displayToast } = useNotificationsService();
 
@@ -61,9 +65,9 @@ export function useGigsService() {
     };
 
     const fetchGigs = () => {
-        setFetchingGigs(true);
+        dispatch(setFetchingGigs(true));
         dispatch(setGigs(mockGigs));
-        setFetchingGigs(false);
+        setTimeout(() => setFetchingGigs(false), 25);
     };
 
     const deleteGig = (id: string) => {
@@ -90,13 +94,12 @@ export function useGigsService() {
         });
 
         return 5;
-    }
+    };
 
     return {
         addNewGig,
         updateGig,
         fetchGigs,
-        fetchingGigs,
         acceptGig,
         deleteGig,
         getReputationLevel

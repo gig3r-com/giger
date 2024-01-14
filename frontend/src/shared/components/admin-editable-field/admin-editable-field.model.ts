@@ -20,6 +20,7 @@ export type IAdminEditableFieldProps =
 export interface IAdminEditableFieldPropsBase {
     type: FieldTypes;
     className?: string;
+    onClick?: () => void;
     value: string | number | boolean;
     onChange:
         | ((value: string) => void)

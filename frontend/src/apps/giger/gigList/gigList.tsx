@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useParams } from 'react-router';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
 import { Gig } from '../gig/gig';
@@ -8,13 +9,13 @@ import { GigStatus } from '../../../models/gig';
 import { Controls } from '../../../shared/components/controls/controls';
 import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
-import { useGigsService } from '../../../shared/services/gigs.service';
+import { RootState } from '../../../store/store';
 
 import './gigList.scss';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const { currentUser } = useUserService();
-    const { fetchingGigs } = useGigsService();
+    const fetchingGigs = useSelector((state: RootState) => state.gigs.fetchingGigs);
     const { gigId } = useParams();
     const intl = useIntl();
 
