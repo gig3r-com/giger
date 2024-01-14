@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
+import { v4 } from 'uuid';
 import { users } from '../../mocks/users';
 import { setCurrentUser, setUser } from '../../store/users.slice';
 import { IUser, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
-import { mockMedicalHistory } from '../../mocks/medical';
-import { IMedHistory } from '../../models/medical';
 
 /**
  * TODO: Connect to backend once it exists
@@ -20,7 +19,7 @@ export function useUserService() {
         state.users.users.find((user) => user.id === currentUserId)
     );
     const isAdmin = useMemo(() => {
-        return currentUser?.roles?.includes(UserRoles.ADMIN);
+        return !!currentUser?.roles?.includes(UserRoles.ADMIN);
     }, [currentUser]);
 
     /**
@@ -73,10 +72,6 @@ export function useUserService() {
     const updateUserData = (userId: string, userData: Partial<IUser>) => {
         const user = users.find((user) => user.id === userId);
 
-        if (!isAdmin) {
-            throw new Error('Only admins can update user data');
-        }
-
         if (!user) {
             throw new Error(`User with id ${userId} not found`);
         }
@@ -88,16 +83,24 @@ export function useUserService() {
         dispatch(setUser({ ...updatedData }));
     };
 
-    const getMedicalHistoryForUser = (userId: string) =>
-        new Promise<IMedHistory>((resolve, reject) => {
-            const user = userList.find((user) => user.id === userId);
+    const canAnonymizeChatHandle = () => {
+        return currentUser && currentUser.hackingSkill >= 1 || isAdmin;
+    }
 
-            if (!user) {
-                reject('User not found');
-            }
+    const getAnonymizedHandle = () => {
+        const rand = v4().split('-');
+        return [rand[0], rand[1]].join('');
+    }
 
-            resolve(user?.medical || mockMedicalHistory);
-        });
+    const getUserById = (id: string) => {
+        return userList.find((user) => user.id === id);
+    }
+
+    const getHandleForConvo = (convoId: string, userId: string) => {
+        const user = getUserById(userId);
+
+        return user?.aliasMap[convoId] ?? user?.handle;
+    }
 
     return {
         login,
@@ -106,6 +109,9 @@ export function useUserService() {
         isAdmin,
         updateUserData,
         currentUser,
-        getMedicalHistoryForUser
+        getAnonymizedHandle,
+        canAnonymizeChatHandle,
+        getUserById,
+        getHandleForConvo
     };
 }

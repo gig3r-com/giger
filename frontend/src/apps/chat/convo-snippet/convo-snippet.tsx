@@ -8,6 +8,7 @@ import { Conversation } from '../../../shared/components/messaging/conversation/
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './convo-snippet.scss';
 
@@ -16,6 +17,7 @@ export const ConvoSnippet: FC<{
     delayMultiplier: number;
 }> = ({ convo, delayMultiplier }) => {
     const { chatId } = useParams();
+    const { getHandleForConvo } = useUserService();
     const { generateAnimation } = useStandardizedAnimation();
     const lastMessage = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
@@ -43,7 +45,7 @@ export const ConvoSnippet: FC<{
                         {lastMessage && <Link to={`/chat/${convo.id}`}>
                             <section className="convo-snippet__meta">
                                 <span className="convo-snippet__sender">
-                                    @{lastMessage.sender.handle}
+                                    @{getHandleForConvo(convo.id, lastMessage.sender)}
                                 </span>
                                 {' > '}
                                 <span className="convo-snippet__date">

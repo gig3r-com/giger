@@ -1,5 +1,7 @@
+import { MedicalEventType } from "../../../models/medical";
+
 interface IMedicalLists {
-    name: 'drugsPrescribed' | 'implants' | 'pastTreatments';
+    name: MedicalEventType
     msgId: string;
 }
 
@@ -7,7 +9,8 @@ interface IMedicalLists {
  * controls the order of the medical lists in the medical page
  */
 export const medicalLists: IMedicalLists[] = [
-    { name: 'drugsPrescribed', msgId: 'PRESCRIPTIONS' },
-    { name: 'implants', msgId: 'IMPLANTS' },
-    { name: 'pastTreatments', msgId: 'PAST_TREATMENTS' }
+    { name: MedicalEventType.MEDICAL_DRUG , msgId: 'PRESCRIPTIONS' },
+    { name: MedicalEventType.CYBERWARE, msgId: 'IMPLANTS' },
+    { name: MedicalEventType.MEDICAL_PROCEDURE, msgId: 'PAST_TREATMENTS' },
+    { name: MedicalEventType.SYMPTOM, msgId: 'SYMPTOMS' }
 ];

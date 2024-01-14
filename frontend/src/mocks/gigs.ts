@@ -7,14 +7,10 @@ export const mockGigs: IGig[] = [
         title: 'Corporate Data Heist',
         payout: 500,
         reputationRequired: 5,
-        author: {
-            id: '555665',
-            name: 'NeonTiger',
-            handle: 'Jerry Tarkovsky'
-        },
+        authorId: 'user27',
         description:
             'Retrieve confidential data from a heavily guarded corporate server.',
-        category: GigCategoryNames.HACKING
+        category: GigCategoryNames.SPOOFING
     },
     {
         status: GigStatus.AVAILABLE,
@@ -22,14 +18,10 @@ export const mockGigs: IGig[] = [
         title: 'Undercover Delivery',
         payout: 300,
         reputationRequired: 2,
-        author: {
-            id: '555dd6ss65',
-            name: 'World Breaker',
-            handle: 'Adria Warren'
-        },
+        authorId: 'user5',
         description:
             'Deliver a mysterious package to an undisclosed location without asking questions.',
-        category: GigCategoryNames.COURIER
+        category: GigCategoryNames.DELIVERY
     },
     {
         status: GigStatus.AVAILABLE,
@@ -37,11 +29,7 @@ export const mockGigs: IGig[] = [
         title: 'Prototype Extraction',
         payout: 800,
         reputationRequired: 4,
-        author: {
-            id: '555dd6ss65',
-            name: 'World Breaker',
-            handle: 'Adria Warren'
-        },
+        authorId: 'user16',
         description:
             'Infiltrate a high-security lab and steal experimental tech prototype.',
         category: GigCategoryNames.TECH
@@ -53,13 +41,9 @@ export const mockGigs: IGig[] = [
         payout: 150,
 
         reputationRequired: 5,
-        author: {
-            id: '555665',
-            name: 'NeonTiger',
-            handle: 'Jerry Tarkovsky'
-        },
+        authorId: 'user4',
         description: 'Extract a target from a high-speed corporate convoy.',
-        category: GigCategoryNames.COMBAT
+        category: GigCategoryNames.BODYGUARD
     },
     {
         status: GigStatus.AVAILABLE,
@@ -68,14 +52,10 @@ export const mockGigs: IGig[] = [
         payout: 400,
 
         reputationRequired: 3,
-        author: {
-            id: '555665',
-            name: 'NeonTiger',
-            handle: 'Jerry Tarkovsky'
-        },
+        authorId: 'user22',
         description:
             'Retrieve a stolen cybernetic implant from a black market dealer.',
-        category: GigCategoryNames.RELATION
+        category: GigCategoryNames.DEBT_COLLECTION
     },
     {
         status: GigStatus.IN_PROGRESS,
@@ -83,14 +63,10 @@ export const mockGigs: IGig[] = [
         title: 'Corporate Hit',
         payout: 250,
         reputationRequired: 4,
-        author: {
-            id: '555665',
-            name: 'NeonTiger',
-            handle: 'Jerry Tarkovsky'
-        },
+        authorId: 'user15',
         description:
             'Assassinate a corporate executive during a high-profile event.',
-        category: GigCategoryNames.COMBAT
+        category: GigCategoryNames.HIT
     },
     {
         status: GigStatus.IN_PROGRESS,
@@ -98,11 +74,7 @@ export const mockGigs: IGig[] = [
         title: 'Cybernetics Sabotage',
         payout: 600,
         reputationRequired: 1,
-        author: {
-            id: '555dd665',
-            handle: 'Internet Explorer',
-            name: 'Marion Brown'
-        },
+        authorId: 'user2',
         description: "Sabotage a rival gang's illegal cybernetics operation.",
         category: GigCategoryNames.TECH
     },
@@ -112,14 +84,10 @@ export const mockGigs: IGig[] = [
         title: 'Prototype AI Smuggling',
         payout: 350,
         reputationRequired: 0,
-        author: {
-            id: '555dd665',
-            handle: 'Internet Explorer',
-            name: 'Marion Brown'
-        },
+        authorId: 'user29',
         description:
             'Smuggle a prototype AI out of a restricted research facility.',
-        category: GigCategoryNames.HACKING
+        category: GigCategoryNames.SECURITY
     },
     {
         status: GigStatus.AVAILABLE,
@@ -127,14 +95,10 @@ export const mockGigs: IGig[] = [
         title: 'High-Profile Rescue',
         payout: 700,
         reputationRequired: 2,
-        author: {
-            id: '555dd665',
-            handle: 'Internet Explorer',
-            name: 'Marion Brown'
-        },
+        authorId: 'user10',
         description:
             'Rescue a high-profile target from a corrupt law enforcement raid.',
-        category: GigCategoryNames.COMBAT
+        category: GigCategoryNames.BODYGUARD
     },
     {
         status: GigStatus.AVAILABLE,
@@ -142,13 +106,9 @@ export const mockGigs: IGig[] = [
         title: 'Corporate Data Theft',
         payout: 250,
         reputationRequired: 0,
-        author: {
-            id: '555dd665',
-            handle: 'Internet Explorer',
-            name: 'Marion Brown'
-        },
+        authorId: 'user30',
         description:
             'Steal sensitive corporate financial data from a heavily fortified server.',
-        category: GigCategoryNames.HACKING
+        category: GigCategoryNames.SECURITY
     }
 ];

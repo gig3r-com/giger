@@ -12,13 +12,15 @@ import {
 import { RootState } from '../../store/store';
 import { mockUserConvos } from '../../mocks/userConvos';
 import { useUserService } from './user.service';
+import { useIntl } from 'react-intl';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
  */
 export function useMessagesService() {
     const dispatch = useDispatch();
-    const { currentUser } = useUserService();
+    const intl = useIntl();
+    const { currentUser, updateUserData, getUserById } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -27,34 +29,66 @@ export function useMessagesService() {
         (state: RootState) => state.conversations.gigConversations
     );
 
-    const createMessage: (text: string) => IMessage = (text) => {
+    const createMessage: (text: string, senderId?: string) => IMessage = (
+        text, senderId
+    ) => {
         return {
             id: uuidv4(),
             date: new Date().toString(),
-            sender: currentUser!,
+            sender: senderId || currentUser!.id,
             text: text,
             status: IMessageStatus.AWAITING
         };
     };
 
     const createConvo: (
-        participants: IUser[],
+        participants: string[],
         msg?: IMessage,
-        id?: string
-    ) => string = (participants, msg, id) => {
+        id?: string,
+        anonymize?: boolean
+    ) => string = (participants, msg, id, anonymize) => {
         const convoId = id ?? uuidv4();
+        const anonymizedHandle = uuidv4().substring(0, 8);
+
         dispatch(
             setConversations([
                 ...conversations,
                 {
                     id: convoId,
                     participants: participants,
-                    messages: msg ? [msg] : []
+                    messages: msg
+                        ? [...createInitialMessages(participants), msg]
+                        : [...createInitialMessages(participants)]
                 }
             ])
         );
 
+        if (anonymize) {
+            updateUserData(currentUser!.id, {
+                aliasMap: {
+                    ...currentUser!.aliasMap,
+                    [convoId]: anonymizedHandle
+                }
+            });
+        }
+
         return convoId;
+    };
+
+    const createInitialMessages = (participants: string[]): IMessage[] => {
+        const initialMessages: IMessage[] = [];
+        participants.forEach((participant) => {
+            const handle = getUserById(participant)?.handle;
+            const message = createMessage(
+                `<@${handle} ${intl.formatMessage({
+                    id: 'ENTERED_THE_CHAT'
+                })}>`,
+                participant
+            );
+            message.sender = currentUser!.id;
+            initialMessages.push(message);
+        });
+        return initialMessages;
     };
 
     const fetchConvo: (id: string) => void = (id) => {
@@ -67,7 +101,7 @@ export function useMessagesService() {
 
     const fetchUserConvos: (userId: string) => void = (userId) => {
         const filteredConvos = mockUserConvos.filter((convo) =>
-            convo.participants.some((user) => user.id === userId)
+            convo.participants.some((user) => user === userId)
         );
         dispatch(setConversations(JSON.parse(JSON.stringify(filteredConvos))));
     };

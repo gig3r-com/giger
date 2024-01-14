@@ -1,9 +1,7 @@
-import { IUser } from "./user";
-
 export interface IMessage {
     id: string;
     date: string; // Date timestamp
-    sender: IUser;
+    sender: string; // user id
     text: string;
     status?: IMessageStatus;
 }
@@ -11,7 +9,7 @@ export interface IMessage {
 export interface IConversation {
     id: string;
     messages: IMessage[];
-    participants: IUser[];
+    participants: string[]; // user ids
     gigConversation?: boolean;
 }
 

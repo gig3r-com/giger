@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
-import { GigStatus, IDraftGig, IGig } from '../../models/gig';
+import { GigRepuationLevels, GigStatus, IDraftGig, IGig, reputationBrackets } from '../../models/gig';
 import { setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { mockGigs } from '../../mocks/gigs';
@@ -15,7 +15,7 @@ import { useUserService } from './user.service';
  */
 export function useGigsService() {
     const dispatch = useDispatch();
-    const { currentUser } = useUserService();
+    const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const [fetchingGigs, setFetchingGigs] = useState(false);
@@ -28,18 +28,28 @@ export function useGigsService() {
         description: draftGig.description,
         payout: draftGig.payout,
         reputationRequired: draftGig.reputationRequired,
+        anonymizedAuthor: draftGig.anonymizedAuthor,
         convo: createConvo(
-            [currentUser!],
+            [currentUser!.id],
             createMessage(draftGig.message),
             draftGig.id
         ),
-        id: uuidv4(),
-        author: currentUser!,
+        id: draftGig.id,
+        authorId: currentUser!.id,
         status: GigStatus.PENDING
     });
 
     const addNewGig = (gig: IDraftGig) => {
         dispatch(setGigs([...currentGigs, constructGig(gig)]));
+
+        if (gig.anonymizedAuthor) {
+            updateUserData(currentUser!.id, {
+                aliasMap: {
+                    ...currentUser!.aliasMap,
+                    [gig!.id]: uuidv4().substring(0, 8)
+                }
+            });
+        }
     };
 
     const updateGig = (updatedGig: IGig) => {
@@ -72,5 +82,23 @@ export function useGigsService() {
         updateGig(updatedGig);
     };
 
-    return { addNewGig, updateGig, fetchGigs, fetchingGigs, acceptGig, deleteGig };
+    const getReputationLevel = (creditValue: number): GigRepuationLevels => {
+        reputationBrackets.forEach((value, key) => {
+            if (creditValue >= value) {
+                return key;
+            }
+        });
+
+        return 5;
+    }
+
+    return {
+        addNewGig,
+        updateGig,
+        fetchGigs,
+        fetchingGigs,
+        acceptGig,
+        deleteGig,
+        getReputationLevel
+    };
 }
