@@ -1,13 +1,13 @@
 import { FC, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import {
     FieldTypes,
     IAdminEditableFieldProps
 } from './admin-editable-field.model';
 import { useUserService } from '../../services/user.service';
+import { Slider } from '../slider/slider';
 
 import './admin-editable-field.scss';
-import { FormattedMessage } from 'react-intl';
-import { Slider } from '../slider/slider';
 
 export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
     const textInput = props.type === FieldTypes.TEXT;
@@ -93,7 +93,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                 />
             )}
             {!isAdmin && !sliderInput && (
-                <span className={`admin-editable-field ${props.className}`}>
+                <span className={`admin-editable-field ${props.className}`} onClick={props.onClick}>
                     {props.value}
                 </span>
             )}

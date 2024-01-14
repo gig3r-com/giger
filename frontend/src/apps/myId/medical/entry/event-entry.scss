@@ -1,0 +1,44 @@
+@import '../../../../variables.scss';
+
+.event-entry {
+    &__year {
+        color: $other-user-color;
+        width: 65px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    &__info {
+        margin: 0.5rem;
+        color: white;
+        width: calc(100% - 117px);
+    }
+
+    &__remove-entry {
+        position: absolute;
+        right: 0;
+        top: 10px;
+        width: 32px;
+        height: 32px;
+    }
+
+    &__description {
+        max-height: 0;
+        opacity: 0;
+        transition:
+            $standard-duration $standard-timing-function max-height,
+            $standard-duration $standard-timing-function opacity;
+
+        &--expanded {
+            max-height: 200px;
+            opacity: 1;
+        }
+    }
+
+    &__summary {
+        display: flex;
+        align-items: center;
+    }
+}

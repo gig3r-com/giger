@@ -91,5 +91,10 @@
     "COWARD": "Tchórz",
     "FIGHTER": "Wojownik",
     "THINKER": "Myśliciel",
-    "DOER": "Działacz"
+    "DOER": "Działacz",
+    "VICTIM": "ofiara",
+    "SUSPECT": "podejrzany",
+    "WANTED": "poszukiwany",
+    "WITNESS": "świadek",
+    "PUNISHMENT": "Kara"
 }

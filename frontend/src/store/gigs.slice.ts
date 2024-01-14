@@ -5,11 +5,13 @@ import { GigCategoryNames, IGig } from '../models/gig';
 export interface GigsState {
     gigs: IGig[];
     selectedCategories: GigCategoryNames[];
+    fetchingGigs: boolean;
 }
 
 const initialState: GigsState = {
     gigs: [],
-    selectedCategories: []
+    selectedCategories: [],
+    fetchingGigs: false
 };
 
 export const gigsSlice = createSlice({
@@ -32,10 +34,13 @@ export const gigsSlice = createSlice({
         },
         removeCategory: (state, action: PayloadAction<GigCategoryNames>) => {
             state.selectedCategories = state.selectedCategories.filter(cat => cat !== action.payload);
-        }
+        },
+        setFetchingGigs: (state, action: PayloadAction<boolean>) => {
+            state.fetchingGigs = action.payload;
+        }   
     }
 });
 
-export const { setGigs, addCategory, removeCategory, setCategories } = gigsSlice.actions;
+export const { setGigs, addCategory, removeCategory, setCategories, setFetchingGigs } = gigsSlice.actions;
 
 export default gigsSlice.reducer;

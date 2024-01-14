@@ -1,7 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, 
-    // useParams
- } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { Controls } from '../../shared/components/controls/controls';
@@ -12,11 +10,11 @@ import { Contacts } from './contacts/contacts';
 import { Neotribe } from './neotribe/neotribe';
 import { CharSummary } from './char-summary/char-summary';
 import { IUser } from '../../models/user';
-import { Medical } from './medical/medical';
+import { EventRecord } from './medical/event-record';
 import { useUserService } from '../../shared/services/user.service';
+import { EventRecordType } from '../../models/events';
 
 import './my-id.scss';
-
 
 export const MyId: FC = () => {
     const { currentUser } = useUserService();
@@ -46,7 +44,10 @@ export const MyId: FC = () => {
         </div>
     );
 
-    const navigationActive = useMemo(() => location.pathname === '/myid/details', [location.pathname]);
+    const navigationActive = useMemo(
+        () => location.pathname === '/myid/details',
+        [location.pathname]
+    );
     const wrapperClassnames = classNames({
         'my-id__content': true
     });
@@ -78,7 +79,10 @@ export const MyId: FC = () => {
                         }}
                         exit={{ x: '100vw' }}
                     >
-                        <MyIdNavigation active={navigationActive} onItemClick={(item) => navigate(`/myid/${item}`)} />
+                        <MyIdNavigation
+                            active={navigationActive}
+                            onItemClick={(item) => navigate(`/myid/${item}`)}
+                        />
                     </motion.div>
                 );
                 break;
@@ -99,11 +103,17 @@ export const MyId: FC = () => {
             case '/myid/medical':
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        <Medical />
+                        <EventRecord type={EventRecordType.MEDICAL} />
                     </motion.div>
                 ) : null;
                 break;
             case '/myid/criminal':
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <EventRecord type={EventRecordType.CRIMINAL} />
+                    </motion.div>
+                ) : null;
+                break;
             case '/myid/goals':
             case '/myid/hacking':
             case '/myid/meta':
