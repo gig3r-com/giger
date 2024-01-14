@@ -87,7 +87,7 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                                     </li>
                                 ))}
                             {isAdmin && (
-                                <li className="event-record__entry">
+                                <li className="event-record__entry event-record__entry--new">
                                     <NewEntry
                                         onAdd={(name, year) =>
                                             onAddEntry(name, year)

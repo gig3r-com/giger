@@ -15,6 +15,10 @@
         justify-content: flex-start;
         position: relative;
         flex-direction: column;
+
+        &--new {
+            flex-direction: row;
+        }
     }
 
     &__header {
