@@ -1,32 +1,29 @@
 import { FC, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { v4 } from 'uuid';
+import dayjs from 'dayjs';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
-import {
-    IImplant,
-    IMedHistory,
-    IObscurableMedInfo
-} from '../../../models/medical';
+import { IMedEvent, IMedHistory, MedicalEventStatus, MedicalEventType } from '../../../models/medical';
 import { AdminEditableField } from '../../../shared/components/admin-editable-field/admin-editable-field';
 import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 import { medicalLists } from './medical-lists';
 import { NewEntry } from './new-entry/new-entry';
+import { useMedicalService } from '../../../shared/services/medical.service';
 
 import './medical.scss';
 
 /**
- * A component that displays the medical history of the user. 
+ * A component that displays the medical history of the user.
  * Allows editing in admin mode
  */
 export const Medical: FC = () => {
     const intl = useIntl();
     const [medHistory, setMedHistory] = useState<IMedHistory | null>(null);
-    const { getMedicalHistoryForUser, currentUser, isAdmin, updateUserData } =
-        useUserService();
+    const { getMedicalHistoryForUser, updateMedEvent, addMedEvent } = useMedicalService();
+    const { currentUser, isAdmin } = useUserService();
 
     const updateData = (
-        type: 'drugsPrescribed' | 'pastTreatments' | 'implants',
         propToUpdate: 'year' | 'name',
         id: string,
         val: string | number
@@ -34,56 +31,32 @@ export const Medical: FC = () => {
         if (!currentUser || !medHistory) return;
 
         const newMedHistory = { ...medHistory };
-        const entry = newMedHistory[type]?.find((entry) => entry.id === id);
+        const entry = newMedHistory.medEvents.find((entry) => entry.id === id);
 
         if (entry) {
-            entry.year = propToUpdate === 'year' ? (val as number) : entry.year;
             entry.name = propToUpdate === 'name' ? (val as string) : entry.name;
         }
 
         setMedHistory(newMedHistory as IMedHistory);
-        updateUserData(currentUser.id, {
-            medical: newMedHistory as IMedHistory
-        });
+        updateMedEvent(currentUser.id, entry!.id, entry!);
     };
 
     const onAddEntry = (
-        type: 'drugsPrescribed' | 'pastTreatments' | 'implants',
         name: string,
         year: number
     ) => {
         if (!currentUser || !medHistory) return;
 
-        const newMedHistory = { ...medHistory };
-        const newEntry: IObscurableMedInfo = {
+        const newEntry: IMedEvent = {
             id: v4(),
-            year,
-            name
-        };
-
-        const newImplantEntry: IImplant = {
-            id: v4(),
-            year,
+            timestamp: dayjs().set('year', year).toISOString(),
             name,
-            status: 'ok'
+            status: MedicalEventStatus.HISTORICAL,
+            type: MedicalEventType.MEDICAL_PROCEDURE,
+            description: ''
         };
 
-        if (type === 'implants') {
-            newMedHistory[type] = [
-                ...newMedHistory[type]!,
-                newEntry
-            ] as IImplant[];
-        } else {
-            newMedHistory[type] = [
-                ...newMedHistory[type]!,
-                newImplantEntry
-            ] as IObscurableMedInfo[];
-        }
-
-        updateUserData(currentUser.id, {
-            medical: newMedHistory as IMedHistory
-        });
-        setMedHistory(null);
+        addMedEvent(currentUser.id, newEntry);
     };
 
     useEffect(
@@ -106,15 +79,14 @@ export const Medical: FC = () => {
                             {intl.formatMessage({ id: section.msgId })}:
                         </span>
                         <ol className="medical__list">
-                            {medHistory?.[section.name].map((entry) => (
+                            {medHistory?.medEvents.filter(event => event.type === section.name).map((entry) => (
                                 <li className="medical__entry" key={entry.id}>
                                     <AdminEditableField
                                         type={FieldTypes.NUMBER}
-                                        value={entry.year}
+                                        value={dayjs(entry.timestamp).year()}
                                         className="medical__year"
                                         onChange={(val) =>
                                             updateData(
-                                                'pastTreatments',
                                                 'year',
                                                 entry.id,
                                                 val
@@ -127,7 +99,6 @@ export const Medical: FC = () => {
                                         className="medical__info"
                                         onChange={(val) =>
                                             updateData(
-                                                'pastTreatments',
                                                 'name',
                                                 entry.id,
                                                 val
@@ -141,13 +112,15 @@ export const Medical: FC = () => {
                                     )}
                                 </li>
                             ))}
-                            <li className="medical__entry">
-                                <NewEntry
-                                    onAdd={(name, year) =>
-                                        onAddEntry(section.name, name, year)
-                                    }
-                                />
-                            </li>
+                            {isAdmin && (
+                                <li className="medical__entry">
+                                    <NewEntry
+                                        onAdd={(name, year) =>
+                                            onAddEntry(name, year)
+                                        }
+                                    />
+                                </li>
+                            )}
                         </ol>
                     </section>
                 ))}

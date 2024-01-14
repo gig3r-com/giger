@@ -1,23 +1,30 @@
+import { IObscurableInfo } from "./general";
+
 export interface IMedHistory {
     userId: string;
-    drugsPrescribed: IObscurableMedInfo[];
-    implants: IImplant[];
-    pastTreatments: IObscurableMedInfo[];
-    currentState: string; //? awaiting clarification
+    medEvents: IMedEvent[];
 }
-
 /**
  * some information may be unknown to the player until they unlock it by performing a specific action ingame.
- * they will be given a QR code (TBD) to scan, which will unlock the information.
+ * they will be given a code to input, which will unlock the information.
  */
-export interface IObscurableMedInfo {
+export interface IMedEvent extends IObscurableInfo {
     id: string;
     name: string;
-    dataUnlockedBy?: string;
-    year: number;
+    timestamp: string; // ISO Date timestamp
+    type: MedicalEventType;
+    description: string;
+    status: MedicalEventStatus;
 }
 
-export interface IImplant extends IObscurableMedInfo {
-    status: 'ok' | 'broken' | 'malfunctioning';
+export enum MedicalEventType {
+    CYBERWARE = 'cyberware',
+    MEDICAL_DRUG = 'medical drug',
+    MEDICAL_PROCEDURE = 'medical procedure',
+    SYMPTOM = 'symptom'
 }
 
+export enum MedicalEventStatus {
+    CURRENT = 'current',
+    HISTORICAL = 'historical'
+}

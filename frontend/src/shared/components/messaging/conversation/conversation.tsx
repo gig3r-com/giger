@@ -15,7 +15,7 @@ export const Conversation: FC<{ convo: IConversation }> = ({ convo }) => {
             }}
         >
             {convo.messages.map((msg) => (
-                <Message key={msg.id} message={msg} />
+                <Message key={msg.id} message={msg} convoId={convo.id} />
             ))}
         </motion.div>
     );

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router';
 import {
     GigCategoryNames,
-    GigRepuation,
+    GigRepuationLevels,
     IDraftGig,
     reputationLabels
 } from '../../../models/gig';
@@ -23,11 +23,12 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const intl = useIntl();
     const { addNewGig } = useGigsService();
     const [gigName, setGigName] = useState<string>('');
+    const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const [publicDescription, setPublicDescription] = useState<string>('');
     const [privateMessage, setPrivateMessage] = useState<string>('');
     const [payout, setPayout] = useState<number>(0);
     const [selectedRepuation, setSelectedReputation] = useState<
-        GigRepuation | -1
+        GigRepuationLevels | -1
     >(-1);
     const [selectedCategory, setSelectedCategory] = useState<
         GigCategoryNames | ''
@@ -41,6 +42,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const gigReady = useMemo(() => {
         return (
             gigName !== '' &&
+            anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&
             payout !== 0 &&
@@ -48,22 +50,32 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             selectedRepuation !== -1 &&
             selectedCategory !== ''
         );
-    }, [gigName, publicDescription, privateMessage, payout, selectedCategory, selectedRepuation]);
+    }, [
+        gigName,
+        anonymize,
+        publicDescription,
+        privateMessage,
+        payout,
+        selectedCategory,
+        selectedRepuation
+    ]);
 
     const newGig: IDraftGig | undefined = useMemo(() => {
         return gigReady
-            ? {
+            ? ({
                   title: gigName!,
                   description: publicDescription!,
                   message: privateMessage,
                   payout: payout!,
-                  reputationRequired: selectedRepuation as GigRepuation,
+                  anonymizedAuthor: anonymize === 'YES',
+                  reputationRequired: selectedRepuation as GigRepuationLevels,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
-              } as IDraftGig
+              } as IDraftGig)
             : undefined;
     }, [
         gigName,
+        anonymize,
         publicDescription,
         privateMessage,
         payout,
@@ -74,6 +86,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
     const handleAddingNewGig = () => {
         setGigName('');
+        setAnonymize('');
         setPublicDescription('');
         setPrivateMessage('');
         setPayout(0);
@@ -93,6 +106,24 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 value={gigName}
                 onChange={(event) => setGigName(event.target.value)}
             />
+
+            <select
+                className="new-gig__input"
+                value={anonymize}
+                onChange={(event) =>
+                    setAnonymize(event.target.value as 'YES' | 'NO' | '')
+                }
+            >
+                <option value={''} disabled hidden>
+                    <MemoizedFormattedMessage id="ANONYMIZE_HANDLE" />
+                </option>
+                <option value={'NO'}>
+                    {intl.formatMessage({ id: 'NO' })}
+                </option>
+                <option value={'YES'}>
+                    {intl.formatMessage({ id: 'YES' })}
+                </option>
+            </select>
 
             <select
                 className="new-gig__input"
@@ -116,7 +147,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 value={selectedRepuation}
                 onChange={(event) =>
                     setSelectedReputation(
-                        parseInt(event.target.value) as GigRepuation
+                        parseInt(event.target.value) as GigRepuationLevels
                     )
                 }
             >
@@ -126,7 +157,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 {[0, 1, 2, 3, 4, 5].map((reputation) => (
                     <option key={reputation} value={reputation}>
                         {intl.formatMessage({
-                            id: reputationLabels.get(reputation as GigRepuation)
+                            id: reputationLabels.get(reputation as GigRepuationLevels)
                         })}
                     </option>
                 ))}

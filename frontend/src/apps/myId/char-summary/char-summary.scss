@@ -5,7 +5,7 @@
     margin-bottom: 1rem;
     clip-path: polygon(calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%, 0 0);
     position: relative;
-    font-size: 1.2rem;
+    font-size: 0.875rem;
 
     &:before {
         content: '';
@@ -16,6 +16,11 @@
         position: absolute;
         right: -4px;
         top: 9px;
+    }
+
+    &__data {
+        max-height: calc(#{$standard-viewport-height} - 225px);
+        overflow: scroll;
     }
 
     &__basic-data {
@@ -45,18 +50,32 @@
     &__entry {
         width: 50%;
         box-sizing: border-box;
-        border-bottom: 1px solid $base-text-color!important;
-        box-sizing: border-box;
+        border-bottom: 1px solid $base-text-color !important;
+        padding: 0.25rem 1rem;
+        color: white;
+
+        &--full-length {
+            width: 100%;
+        }
+
+        &--extended {
+            width: 60%;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
     }
 
     &__label {
         color: $base-text-color;
         padding-left: 1rem;
-    }
+        display: flex;
+        align-items: center;
 
-    &__entry {
-        padding: 0 1rem!important;
-        color: white;
+        &--short {
+            width: 40%;
+            padding-left: 0.25rem;
+        }
     }
 
     &__signature {

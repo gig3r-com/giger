@@ -21,6 +21,9 @@ export function useGigHelpers() {
             case GigStatus.COMPLETED:
                 statusColor = 'accent';
                 break;
+            case GigStatus.DISPUTE:
+                statusColor = 'accent';
+                break;
             case GigStatus.PENDING:
                 statusColor = 'accent';
                 break;
@@ -37,8 +40,10 @@ export function useGigHelpers() {
                 return intl.formatMessage({ id: 'ACCEPT_GIG' });
             case GigStatus.IN_PROGRESS:
                 return intl.formatMessage({ id: 'MARK_AS_DONE' });
+            case GigStatus.DISPUTE:
+                return intl.formatMessage({ id: 'DISPUTED' });
             case GigStatus.COMPLETED:
-                return 'VIEW GIG';
+                return intl.formatMessage({ id: 'VIEW GIG' });
         }
     };
 
@@ -50,7 +55,7 @@ export function useGigHelpers() {
             'gig--available': gig.status === GigStatus.AVAILABLE,
             'gig--selected': gigId === gig.id,
             'gig--other-selected': gigId !== gig.id && gigId !== undefined,
-            'gig--mine': gig.author.id === currentUser?.id
+            'gig--mine': gig.authorId === currentUser?.id
         });
 
     const gigSummaryClassName = (gig: IGig) =>
@@ -59,7 +64,8 @@ export function useGigHelpers() {
             'gig__summary--completed': gig.status === GigStatus.COMPLETED,
             'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
             'gig__summary--available': gig.status === GigStatus.AVAILABLE,
-            'gig__summary--mine': gig.author.id === currentUser?.id
+            'gig__summary--dispute': gig.status === GigStatus.DISPUTE,
+            'gig__summary--mine': gig.authorId === currentUser?.id
         });
 
     const secondButtonText = (gigTaken: boolean) => {

@@ -21,7 +21,7 @@ import './gig.scss';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const { currentUser } = useUserService();
+    const { currentUser, getHandleForConvo } = useUserService();
     const { acceptGig } = useGigsService();
     const {
         buttonColor,
@@ -37,8 +37,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         (state: RootState) => state.conversations.gigConversations
     );
     const isMine = useMemo(() => {
-        return gig.author.id === currentUser?.id;
+        return gig.authorId === currentUser?.id;
     }, [gig, currentUser]);
+
     const convo = useMemo(() => {
         return convos.find((c) => c.id === gig.id);
     }, [convos, gig]);
@@ -52,7 +53,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const showConvo = useMemo(() => {
         return (
             (gig.status !== GigStatus.AVAILABLE ||
-                gig.author.id === currentUser?.id) &&
+                gig.authorId === currentUser?.id) &&
             convo !== undefined
         );
     }, [gig, currentUser, convo]);
@@ -67,13 +68,13 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     );
 
     const wrapperClasses = classNames({
-        'gig__wrapper': true,
+        gig__wrapper: true,
         'gig__wrapper--small-margin': gig.status !== GigStatus.AVAILABLE,
         'gig__wrapper--no-margin': selectedId !== undefined
     });
 
     const statusClasses = classNames({
-        'gig__status': true,
+        gig__status: true,
         [`gig__status--${buttonColor(gig.status)}`]: true,
         'gig__status--shown': !selectedId
     });
@@ -85,7 +86,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     gig.id === selectedId ? 'gig__from--shown' : ''
                 }`}
             >
-                <FormattedMessage id={'FROM'} />: {gig.author.handle}
+                <FormattedMessage id={'FROM'} />:{' '}
+                {getHandleForConvo(gig.id, gig.authorId)}
             </span>
             <div className={gigClassname(gig)}>
                 <AnimatePresence>
@@ -124,9 +126,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
                             {isMine && (
                                 <BigButton
-                                    text={secondButtonText(!!gig.takenBy)}
+                                    text={secondButtonText(!!gig.takenById)}
                                     color="accent"
-                                    onClick={secondButtonAction(!!gig.takenBy)}
+                                    onClick={secondButtonAction(!!gig.takenById)}
                                 />
                             )}
 
@@ -137,7 +139,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             <AnimatePresence>
                                 {fetchingConvo && (
                                     <p key={gig.id + 'fetch'}>
-                                        Fetching conversation...
+                                        <FormattedMessage id="FETCHING_CONVERSTATION" />
                                     </p>
                                 )}
                                 {showConvo && convo && (
@@ -156,9 +158,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 </AnimatePresence>
             </div>
             {gig.status !== GigStatus.AVAILABLE && (
-                <div
-                    className={statusClasses}
-                >
+                <div className={statusClasses}>
                     {gig.status.replace('_', ' ')}
                 </div>
             )}

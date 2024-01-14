@@ -8,6 +8,11 @@
     padding: 1rem;
     background: #0e091a;
     box-sizing: border-box;
+    max-height: $standard-viewport-height;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 
     &__user {
         display: flex;
@@ -19,7 +24,7 @@
     }
 
     &__users {
-        height: calc(#{$standard-viewport-height} - 210px);
+        height: calc(#{$standard-viewport-height} - 292px);
         overflow: scroll;
     }
 

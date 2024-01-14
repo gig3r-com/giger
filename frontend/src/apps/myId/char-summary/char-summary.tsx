@@ -1,5 +1,14 @@
 import { FC } from 'react';
-import { IUser } from '../../../models/user';
+import { useIntl } from 'react-intl';
+import {
+    CharStat,
+    CyberwareLevel,
+    IUser,
+    SkillStat,
+    Vibe,
+    VibeEngagement,
+    WealthLevels
+} from '../../../models/user';
 import { ReactComponent as HumanSignature } from '../../../assets/id-human.svg';
 import { ReactComponent as AISignature } from '../../../assets/id-ai.svg';
 import { ReactComponent as AndroidSignature } from '../../../assets/id-android.svg';
@@ -11,9 +20,10 @@ import { useUserService } from '../../../shared/services/user.service';
 import './char-summary.scss';
 
 export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
+    const intl = useIntl();
     const { updateUserData } = useUserService();
     const signature = () => {
-        switch (user.type) {
+        switch (user.typePublic) {
             case 'human':
                 return <HumanSignature className="char-summary__signature" />;
             case 'ai':
@@ -44,111 +54,253 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                     onChange={(val) => updateUserData(user.id, { name: val })}
                 />
             </header>
-            <div className="char-summary__signature-and-basic-data">
-                {signature()}
-                <div className="char-summary__basic-data">
+            <div className="char-summary__data">
+                <div className="char-summary__signature-and-basic-data">
+                    {signature()}
+                    <div className="char-summary__basic-data">
+                        <span className="char-summary__label char-summary__label--short">
+                            <MemoizedFormattedMessage id="HANDLE" />:
+                        </span>
+                        <AdminEditableField
+                            type={FieldTypes.TEXT}
+                            className="char-summary__entry char-summary__entry--extended"
+                            value={user.handle}
+                            onChange={(val) =>
+                                updateUserData(user.id, { handle: val })
+                            }
+                        />
+
+                        <span className="char-summary__label char-summary__label--short">
+                            <MemoizedFormattedMessage id="AGE" />:
+                        </span>
+                        <AdminEditableField
+                            type={FieldTypes.NUMBER}
+                            className="char-summary__entry char-summary__entry--extended"
+                            value={user.age}
+                            onChange={(val) =>
+                                updateUserData(user.id, { age: val })
+                            }
+                        />
+
+                        <span className="char-summary__label char-summary__label--short">
+                            <MemoizedFormattedMessage id="CYBERWARE" />:
+                        </span>
+                        <AdminEditableField
+                            type={FieldTypes.NUMBER}
+                            className="char-summary__entry char-summary__entry--extended"
+                            value={user.cyberwareLevel}
+                            onChange={(val) =>
+                                updateUserData(user.id, {
+                                    cyberwareLevel: val as CyberwareLevel
+                                })
+                            }
+                        />
+                    </div>
+                </div>
+                <div className="char-summary__details">
                     <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="ALIAS" />:
+                        <MemoizedFormattedMessage id="VIBE" />:
+                    </span>
+                    <AdminEditableField
+                        type={FieldTypes.SELECT}
+                        className="char-summary__entry"
+                        options={[
+                            Vibe.DIGIEVO,
+                            Vibe.DIZORDERS,
+                            Vibe.HEDONIZERS,
+                            Vibe.OVERSEERS,
+                            Vibe.SW4RM,
+                            Vibe.NO_VIBE
+                        ]}
+                        value={user.vibe}
+                        onChange={(val) =>
+                            updateUserData(user.id, { vibe: val as Vibe })
+                        }
+                    />
+
+                    <span className="char-summary__label">
+                        <MemoizedFormattedMessage id="VIBE_ENGAGEMENT" />:
+                    </span>
+                    <AdminEditableField
+                        type={FieldTypes.SELECT}
+                        className="char-summary__entry"
+                        options={[
+                            VibeEngagement.DISINTERESTED,
+                            VibeEngagement.DOUBTING,
+                            VibeEngagement.INTERESTED,
+                            VibeEngagement.HYPED,
+                            VibeEngagement.FANATIC
+                        ]}
+                        value={user.vibe}
+                        onChange={(val) =>
+                            updateUserData(user.id, { vibe: val as Vibe })
+                        }
+                    />
+
+                    <span className="char-summary__label">
+                        <MemoizedFormattedMessage id="VIBE_FUNCTION" />:
                     </span>
                     <AdminEditableField
                         type={FieldTypes.TEXT}
                         className="char-summary__entry"
-                        value={user.alias}
+                        value={user.vibeFunction}
                         onChange={(val) =>
-                            updateUserData(user.id, { alias: val })
+                            updateUserData(user.id, { vibeFunction: val })
                         }
                     />
 
                     <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="INSURANCE" />:
+                        <MemoizedFormattedMessage id="PROFESSION" />:
                     </span>
                     <AdminEditableField
-                        type={FieldTypes.BOOLEAN}
+                        type={FieldTypes.TEXT}
                         className="char-summary__entry"
-                        value={user.insurance}
+                        value={user.professionPublic}
                         onChange={(val) =>
-                            updateUserData(user.id, { insurance: val })
+                            updateUserData(user.id, { professionPublic: val })
                         }
                     />
 
                     <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="AGE" />:
+                        <MemoizedFormattedMessage id="PROFESSION_ACTUAL" />:
                     </span>
                     <AdminEditableField
-                        type={FieldTypes.NUMBER}
+                        type={FieldTypes.TEXT}
                         className="char-summary__entry"
-                        value={user.age}
+                        value={user.professionActual}
                         onChange={(val) =>
-                            updateUserData(user.id, { age: val })
+                            updateUserData(user.id, { professionActual: val })
                         }
                     />
 
                     <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="CYBERWARE" />:
+                        <MemoizedFormattedMessage id="WEALTH" />:
                     </span>
                     <AdminEditableField
-                        type={FieldTypes.NUMBER}
+                        type={FieldTypes.SELECT}
                         className="char-summary__entry"
-                        value={user.cyberwarePercentage}
+                        value={user.wealthLevel}
+                        options={[
+                            WealthLevels.BROKE,
+                            WealthLevels.IMPOVERISHED,
+                            WealthLevels.STRUGGLING,
+                            WealthLevels.MODEST,
+                            WealthLevels.STABLE,
+                            WealthLevels.COMFORTABLE,
+                            WealthLevels.AFFLUENT,
+                            WealthLevels.ELITE
+                        ]}
                         onChange={(val) =>
                             updateUserData(user.id, {
-                                cyberwarePercentage: val
+                                wealthLevel: val as WealthLevels
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.hackingSkill}
+                        min={0}
+                        max={3}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'HACKING_SKILL' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                hackingSkill: parseInt(val) as SkillStat
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.combatSkill}
+                        min={0}
+                        max={3}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'COMBAT_SKILL' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                combatSkill: parseInt(val) as SkillStat
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.talkativeVsSilent}
+                        min={0}
+                        max={4}
+                        showMin={false}
+                        showMax={false}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'TALKATIVE' })}
+                        label2={intl.formatMessage({ id: 'SILENT' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                talkativeVsSilent: parseInt(val) as CharStat
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.confrontationVsNegotiation}
+                        min={0}
+                        max={4}
+                        showMin={false}
+                        showMax={false}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'CONFRONTATIONAL' })}
+                        label2={intl.formatMessage({ id: 'NEGOTIATOR' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                confrontationVsNegotiation: parseInt(
+                                    val
+                                ) as CharStat
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.cowardVsFighter}
+                        min={0}
+                        max={4}
+                        showMin={false}
+                        showMax={false}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'COWARD' })}
+                        label2={intl.formatMessage({ id: 'FIGHTER' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                cowardVsFighter: parseInt(val) as CharStat
+                            })
+                        }
+                    />
+
+                    <AdminEditableField
+                        type={FieldTypes.SLIDER}
+                        className="char-summary__entry char-summary__entry--full-length"
+                        value={user.thinkerVsDoer}
+                        min={0}
+                        max={4}
+                        showMin={false}
+                        showMax={false}
+                        showValue={false}
+                        label={intl.formatMessage({ id: 'THINKER' })}
+                        label2={intl.formatMessage({ id: 'DOER' })}
+                        onChange={(val) =>
+                            updateUserData(user.id, {
+                                thinkerVsDoer: parseInt(val) as CharStat
                             })
                         }
                     />
                 </div>
-            </div>
-            <div className="char-summary__details">
-                <span className="char-summary__label">
-                    <MemoizedFormattedMessage id="AFFILIATION" />:
-                </span>
-                <AdminEditableField
-                    type={FieldTypes.TEXT}
-                    className="char-summary__entry"
-                    value={user.affiliation}
-                    onChange={(val) =>
-                        updateUserData(user.id, { affiliation: val })
-                    }
-                />
-
-                <span className="char-summary__label">
-                    <MemoizedFormattedMessage id="PROFESSION" />:
-                </span>
-                <AdminEditableField
-                    type={FieldTypes.TEXT}
-                    className="char-summary__entry"
-                    value={user.profession}
-                    onChange={(val) =>
-                        updateUserData(user.id, { profession: val })
-                    }
-                />
-
-                <span className="char-summary__label">
-                    <MemoizedFormattedMessage id="NET_WORTH" />:
-                </span>
-                <AdminEditableField
-                    type={FieldTypes.NUMBER}
-                    className="char-summary__entry"
-                    value={user.netWorth}
-                    onChange={(val) =>
-                        updateUserData(user.id, { netWorth: val })
-                    }
-                />
-
-                <span className="char-summary__id-valid-section">
-                    <span className="char-summary__id-valid">
-                        <MemoizedFormattedMessage id="ID_VALID" />
-                    </span>
-
-                    <AdminEditableField
-                        type={FieldTypes.TEXT}
-                        className="char-summary__id-valid-to"
-                        value={user.IDValidTo}
-                        onChange={(val) =>
-                            updateUserData(user.id, { IDValidTo: val })
-                        }
-                    />
-                </span>
             </div>
         </section>
     );

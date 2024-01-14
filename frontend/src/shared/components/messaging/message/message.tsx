@@ -5,18 +5,22 @@ import { useUserService } from '../../../services/user.service';
 
 import './message.scss';
 
-export const Message: FC<{ message: IMessage }> = ({ message }) => {
-    const { currentUser } = useUserService();
+export const Message: FC<{ message: IMessage; convoId: string }> = ({
+    message,
+    convoId
+}) => {
+    const { currentUser, getHandleForConvo } = useUserService();
     const messageClassnames = classNames({
         message: true,
-        'message--own': currentUser?.id === message.sender.id
+        'message--own': currentUser?.id === message.sender
     });
 
     return (
         <p className={messageClassnames}>{`${new Date(
             message.date
-        ).toLocaleTimeString()} <@${message.sender.handle}> ${
-            message.text
-        }`}</p>
+        ).toLocaleTimeString()} <@${getHandleForConvo(
+            convoId,
+            message.sender
+        )}> ${message.text}`}</p>
     );
 };

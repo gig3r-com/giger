@@ -8,9 +8,9 @@ import { GigStatus } from '../../../models/gig';
 import { Controls } from '../../../shared/components/controls/controls';
 import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
+import { useGigsService } from '../../../shared/services/gigs.service';
 
 import './gigList.scss';
-import { useGigsService } from '../../../shared/services/gigs.service';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const { currentUser } = useUserService();
@@ -19,13 +19,14 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const intl = useIntl();
 
     const sortedGigs = [...gigs].sort((a, b) => {
-        const aIsOwn = a.author.id === currentUser?.id;
-        const bIsOwn = b.author.id === currentUser?.id;
+        const aIsOwn = a.authorId === currentUser?.id;
+        const bIsOwn = b.authorId === currentUser?.id;
         const statusesRank = {
-            [GigStatus.PENDING]: 0,
-            [GigStatus.IN_PROGRESS]: 1,
-            [GigStatus.AVAILABLE]: 2,
-            [GigStatus.COMPLETED]: 3
+            [GigStatus.DISPUTE]: 0,
+            [GigStatus.PENDING]: 1,
+            [GigStatus.IN_PROGRESS]: 2,
+            [GigStatus.AVAILABLE]: 3,
+            [GigStatus.COMPLETED]: 4
         };
         const aScore = aIsOwn ? -1 : statusesRank[a.status];
         const bScore = bIsOwn ? -1 : statusesRank[b.status];
