@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
+import { useIntl } from 'react-intl';
 import { Controls } from '../../shared/components/controls/controls';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { standardTimingFunction } from '../../shared/constants';
@@ -17,6 +18,7 @@ import { EventRecordType } from '../../models/events';
 import './my-id.scss';
 
 export const MyId: FC = () => {
+    const intl = useIntl();
     const { currentUser } = useUserService();
     const [userToShow, setUserToShow] = useState<IUser>();
     // const { userId } = useParams();
@@ -34,7 +36,7 @@ export const MyId: FC = () => {
         <div className="my-id__buttons">
             <BigButton
                 className="my-id__all-info"
-                text="see all the info"
+                text={intl.formatMessage({ id: 'SEE_ALL_THE_INFO' })}
                 color="primary"
                 onClick={() => navigate('/myid/details')}
             />

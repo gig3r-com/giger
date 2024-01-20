@@ -96,5 +96,7 @@
     "SUSPECT": "podejrzany",
     "WANTED": "poszukiwany",
     "WITNESS": "świadek",
-    "PUNISHMENT": "Kara"
+    "PUNISHMENT": "Kara",
+    "SEE_ALL_THE_INFO": "Zobacz wszystko",
+    "ADMIN_MODE": "Tryb admina"
 }

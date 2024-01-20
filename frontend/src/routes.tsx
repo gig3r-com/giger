@@ -13,6 +13,7 @@ import { useNotificationsService } from './shared/services/notifications.service
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
 import { useVersionService } from './shared/services/version.service';
+import { AdminMarker } from './shared/components/admin-marker/admin-marker';
 
 export const Router = () => {
     const { test } = useNotificationsService();
@@ -67,6 +68,7 @@ export const Router = () => {
                         {(t) => <ToastItem toast={t} />}
                     </Toaster>
                     <MainMenu />
+                    <AdminMarker />
                 </>
             ) : (
                 <Routes>
