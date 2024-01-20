@@ -107,5 +107,7 @@
     "SUSPECT": "suspect",
     "WANTED": "wanted",
     "WITNESS": "witness",
-    "PUNISHMENT": "punishment"
+    "PUNISHMENT": "punishment",
+    "SEE_ALL_THE_INFO": "See all the info",
+    "ADMIN_MODE": "Admin mode"
 }

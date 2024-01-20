@@ -1,0 +1,35 @@
+@import '../../../variables.scss';
+
+.admin-marker {
+    height: $standard-viewport-height;
+    position: fixed;
+    pointer-events: none;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    border: 1px solid $accent-color;
+    display: none;
+    box-sizing: border-box;
+
+    &--shown {
+        display: flex;
+    }
+
+    &__sign {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 100px;
+        height: 15px;
+        transform: translateX(-50%);
+        background: $accent-color;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+    }
+}

@@ -108,6 +108,13 @@
         text-transform: uppercase;
         color: $base-text-color;
     }
+
+    input,
+    select,
+    option {
+        font-size: 0.875rem;
+        padding: 0 0.7rem;
+    }
 }
 
 .controls,
