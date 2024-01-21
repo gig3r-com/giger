@@ -18,6 +18,9 @@ export type IAdminEditableFieldProps =
     | IAdminEditableFieldPropsSlider;
 
 export interface IAdminEditableFieldPropsBase {
+    /**
+     * type of the input
+     */
     type: FieldTypes;
     className?: string;
     onClick?: () => void;
@@ -84,7 +87,13 @@ export interface IAdminEditableFieldPropsSlider
     showValue?: boolean;
     showMin?: boolean;
     showMax?: boolean;
+    /**
+     * default label to be shown on the left side of the slider
+     */
     label: string;
+    /**
+     * optional label to be shown on the right side of the slider
+     */
     label2?: string;
     onChange: (value: string) => void;
 }

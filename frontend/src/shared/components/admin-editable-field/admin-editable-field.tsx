@@ -93,7 +93,10 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                 />
             )}
             {!isAdmin && !sliderInput && (
-                <span className={`admin-editable-field ${props.className}`} onClick={props.onClick}>
+                <span
+                    className={`admin-editable-field ${props.className}`}
+                    onClick={props.onClick}
+                >
                     {props.value}
                 </span>
             )}

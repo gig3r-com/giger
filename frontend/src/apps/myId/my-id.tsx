@@ -15,6 +15,8 @@ import { EventRecord } from './medical/event-record';
 import { useUserService } from '../../shared/services/user.service';
 import { EventRecordType } from '../../models/events';
 import { Relations } from './relations/relations';
+import { Goals } from './goals/goals';
+import { Meta } from './meta/meta';
 
 import './my-id.scss';
 
@@ -125,9 +127,19 @@ export const MyId: FC = () => {
                 ) : null;
                 break;
             case '/myid/goals':
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <Goals />
+                    </motion.div>
+                ) : null;
+                break;
             case '/myid/hacking':
             case '/myid/meta':
-                result = <div>not implemented</div>;
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <Meta />
+                    </motion.div>
+                ) : null;
                 break;
             default:
                 result = (

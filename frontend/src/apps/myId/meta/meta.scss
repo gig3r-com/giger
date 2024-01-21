@@ -1,9 +1,9 @@
 @import '../../../variables.scss';
 
-.relations {
+.meta {
     height: $standard-viewport-height;
     overflow: auto;
-
+    
     &__entry {
         display: flex;
         flex-direction: column;
@@ -13,7 +13,7 @@
         padding-left: 0.5rem;
     }
 
-    &__name {
+    &__type {
         color: $primary-color;
         font-family: 'JetBrains Mono', monospace;
     }
