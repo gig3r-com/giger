@@ -14,6 +14,7 @@ import { IUser } from '../../models/user';
 import { EventRecord } from './medical/event-record';
 import { useUserService } from '../../shared/services/user.service';
 import { EventRecordType } from '../../models/events';
+import { Relations } from './relations/relations';
 
 import './my-id.scss';
 
@@ -113,6 +114,13 @@ export const MyId: FC = () => {
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
                         <EventRecord type={EventRecordType.CRIMINAL} />
+                    </motion.div>
+                ) : null;
+                break;
+            case '/myid/relations':
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <Relations />
                     </motion.div>
                 ) : null;
                 break;

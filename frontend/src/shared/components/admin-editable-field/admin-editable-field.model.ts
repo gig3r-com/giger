@@ -22,6 +22,9 @@ export interface IAdminEditableFieldPropsBase {
     className?: string;
     onClick?: () => void;
     value: string | number | boolean;
+    /**
+     * is fired when the user completes changing the input
+     */
     onChange:
         | ((value: string) => void)
         | ((value: number) => void)

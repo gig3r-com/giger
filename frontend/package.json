@@ -16,6 +16,7 @@
         "classnames": "^2.3.2",
         "dayjs": "^1.11.10",
         "framer-motion": "^10.15.1",
+        "lodash-es": "^4.17.21",
         "material-icons": "^1.13.12",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -29,6 +30,7 @@
         "vite-plugin-svgr": "^3.2.0"
     },
     "devDependencies": {
+        "@types/lodash-es": "^4.17.12",
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
         "@types/uuid": "^9.0.2",

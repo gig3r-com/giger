@@ -1,0 +1,22 @@
+@import '../../../variables.scss';
+
+.relations {
+    &__entry {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid $primary-color;
+        padding-left: 0.5rem;
+    }
+
+    &__name {
+        color: $primary-color;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    &__description {
+        color: white;
+        font-family: 'Saira', sans-serif;
+    }
+}

@@ -1,3 +1,5 @@
+import { IObscurableInfo } from "./events";
+
 export interface IUserBase {
     id: string;
     name: string;
@@ -25,7 +27,6 @@ export interface IUser extends IUserBase {
     typePublic: UserTypes;
     typeActual: UserTypes;
     assets: string[];
-
     hackingSkill: SkillStat;
     confrontationVsNegotiation: CharStat;
     cowardVsFighter: CharStat;
@@ -36,6 +37,7 @@ export interface IUser extends IUserBase {
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
     wealthLevel: WealthLevels;
+    relations: IRelation[];
 }
 
 export interface IAnonymizedUser {
@@ -107,4 +109,10 @@ export enum WealthLevels {
     COMFORTABLE = 'COMFORTABLE',
     AFFLUENT = 'AFFLUENT',
     ELITE = 'ELITE'
+}
+
+export interface IRelation extends IObscurableInfo {
+    perspectiveOf: string; // userId
+    relationTo: string; // userId
+    description: string;
 }
