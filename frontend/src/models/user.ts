@@ -1,4 +1,4 @@
-import { IObscurableInfo } from "./events";
+import { IObscurableInfo } from './events';
 
 export interface IUserBase {
     id: string;
@@ -38,6 +38,8 @@ export interface IUser extends IUserBase {
     vibeEngagement: VibeEngagement;
     wealthLevel: WealthLevels;
     relations: IRelation[];
+    goals: IGoal[];
+    meta: IMeta[];
 }
 
 export interface IAnonymizedUser {
@@ -112,7 +114,30 @@ export enum WealthLevels {
 }
 
 export interface IRelation extends IObscurableInfo {
-    perspectiveOf: string; // userId
+    id: string;
+    userId: string;
     relationTo: string; // userId
     description: string;
+}
+
+export interface IGoal extends IObscurableInfo {
+    id: string;
+    userId: string;
+    title: string;
+    description: string;
+}
+
+export interface IMeta {
+    id: string;
+    type: MetaTypes;
+    description: string;
+    isLink?: boolean;
+}
+
+export enum MetaTypes {
+    ARCHETYPE = 'archetype',
+    MUSIC = 'music',
+    INSPIRATIONS = 'inspirations',
+    AESTHETICS = 'aesthetics',
+    PROCEDURE = 'procedure'
 }
