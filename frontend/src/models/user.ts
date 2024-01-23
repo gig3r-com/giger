@@ -40,6 +40,7 @@ export interface IUser extends IUserBase {
     relations: IRelation[];
     goals: IGoal[];
     meta: IMeta[];
+    privateRecords: IPrivateRecord[];
 }
 
 export interface IAnonymizedUser {
@@ -113,31 +114,45 @@ export enum WealthLevels {
     ELITE = 'ELITE'
 }
 
-export interface IRelation extends IObscurableInfo {
+export interface IUserRecord extends IObscurableInfo {
     id: string;
     userId: string;
+    description: string;
+    recordType: UserRecordTypes;
+}
+
+export interface IRelation extends IUserRecord {
     relationTo: string; // userId
-    description: string;
+    recordType: UserRecordTypes.RELATION;
 }
 
-export interface IGoal extends IObscurableInfo {
-    id: string;
-    userId: string;
+export interface IGoal extends IUserRecord {
     title: string;
-    description: string;
+    recordType: UserRecordTypes.GOAL;
 }
 
-export interface IMeta {
-    id: string;
+export interface IMeta extends IUserRecord {
     type: MetaTypes;
     description: string;
     isLink?: boolean;
+    recordType: UserRecordTypes.META;
 }
 
 export enum MetaTypes {
-    ARCHETYPE = 'archetype',
-    MUSIC = 'music',
-    INSPIRATIONS = 'inspirations',
-    AESTHETICS = 'aesthetics',
-    PROCEDURE = 'procedure'
+    ARCHETYPE = 'ARCHETYPE',
+    MUSIC = 'MUSIC',
+    INSPIRATIONS = 'INSPIRATIONS',
+    AESTHETICS = 'AESTHETICS',
+    PROCEDURE = 'PROCEDURE'
+}
+
+export interface IPrivateRecord extends IUserRecord {
+    title: string;
+}
+
+export enum UserRecordTypes {
+    RELATION = 'RELATION',
+    GOAL = 'GOAL',
+    META = 'META',
+    PRIVATE_RECORD = 'PRIVATE_RECORD'
 }

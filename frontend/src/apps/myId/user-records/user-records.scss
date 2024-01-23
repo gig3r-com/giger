@@ -1,6 +1,6 @@
 @import '../../../variables.scss';
 
-.meta {
+.user-records {
     height: $standard-viewport-height;
     overflow: auto;
     
@@ -13,7 +13,7 @@
         padding-left: 0.5rem;
     }
 
-    &__type {
+    &__title {
         color: $primary-color;
         font-family: 'JetBrains Mono', monospace;
     }
