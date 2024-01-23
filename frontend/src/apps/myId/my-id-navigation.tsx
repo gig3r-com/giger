@@ -15,13 +15,14 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
     });
     const items = [
         { name: 'contacts' },
-        { name: 'neotribe' },
+        { name: 'vibe' },
         { name: 'medical' },
         { name: 'criminal', isNew: true },
         { name: 'goals', isNew: true },
         { name: 'relations', isNew: true},
         { name: 'hacking' },
         { name: 'meta' },
+        { name: 'records'},
         { name: 'log out', onClickAction: () => logout() }
     ];
 

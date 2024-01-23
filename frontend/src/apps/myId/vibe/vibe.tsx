@@ -1,12 +1,13 @@
 import { FC } from 'react';
 import { IUser } from '../../../models/user';
-import './neotribe.scss';
+
+import './vibe.scss';
 
 export type NeotribeProps = {
     user: IUser | undefined;
 };
 
-export const Neotribe: FC<NeotribeProps> = ({ user }) => {
+export const Vibe: FC<NeotribeProps> = ({ user }) => {
     return (
         <section className="neotribe">
             <h1>{user?.name}</h1>

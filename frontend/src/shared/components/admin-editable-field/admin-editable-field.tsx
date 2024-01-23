@@ -25,10 +25,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     contentEditable={true}
                     suppressContentEditableWarning={true}
                     className={`${props.className} admin-editable-field admin-editable-field__text admin-editable-field__admin-mode`}
-                    onBlur={() => {
-                        console.log(value);
-                        props.onChange(value as string);
-                    }}
+                    onBlur={() => props.onChange(value as string)}
                     onInput={(event) =>
                         setValue(event.currentTarget.textContent ?? '')
                     }
@@ -41,10 +38,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     type="number"
                     className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={value as number}
-                    onBlur={() => {
-                        console.log(value);
-                        props.onChange(parseInt(value as string));
-                    }}
+                    onBlur={() => props.onChange(parseInt(value as string))}
                     onChange={(event) => {
                         setValue(event.target.value);
                     }}

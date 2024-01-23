@@ -96,6 +96,10 @@ export function useUserService() {
         return userList.find((user) => user.id === id);
     }
 
+    const getUserByHandle = (handle: string) => {
+        return userList.find((user) => user.handle === handle);
+    }
+
     const getHandleForConvo = (convoId: string, userId: string) => {
         const user = getUserById(userId);
 
@@ -112,6 +116,7 @@ export function useUserService() {
         getAnonymizedHandle,
         canAnonymizeChatHandle,
         getUserById,
+        getUserByHandle,
         getHandleForConvo
     };
 }

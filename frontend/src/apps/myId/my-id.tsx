@@ -3,26 +3,27 @@ import { useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { Controls } from '../../shared/components/controls/controls';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { standardTimingFunction } from '../../shared/constants';
 import { MyIdNavigation } from './my-id-navigation';
 import { Contacts } from './contacts/contacts';
-import { Neotribe } from './neotribe/neotribe';
+import { Vibe } from './vibe/vibe';
 import { CharSummary } from './char-summary/char-summary';
-import { IUser } from '../../models/user';
+import { IUser, MetaTypes, UserRecordTypes } from '../../models/user';
 import { EventRecord } from './medical/event-record';
 import { useUserService } from '../../shared/services/user.service';
 import { EventRecordType } from '../../models/events';
-import { Relations } from './relations/relations';
-import { Goals } from './goals/goals';
-import { Meta } from './meta/meta';
+import { UserRecords } from './user-records/user-records';
+import { selectUsers } from '../../store/users.slice';
 
 import './my-id.scss';
 
 export const MyId: FC = () => {
     const intl = useIntl();
     const { currentUser } = useUserService();
+    const users = useSelector(selectUsers);
     const [userToShow, setUserToShow] = useState<IUser>();
     // const { userId } = useParams();
     const navigate = useNavigate();
@@ -98,10 +99,10 @@ export const MyId: FC = () => {
                     </motion.div>
                 );
                 break;
-            case '/myid/neotribe':
+            case '/myid/vibe':
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        <Neotribe user={userToShow} />
+                        <Vibe user={userToShow} />
                     </motion.div>
                 ) : null;
                 break;
@@ -122,14 +123,21 @@ export const MyId: FC = () => {
             case '/myid/relations':
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        <Relations />
+                        <UserRecords
+                            mode={UserRecordTypes.RELATION}
+                            entries={userToShow.relations}
+                            titleOptions={users.map((user) => user.handle)}
+                        />
                     </motion.div>
                 ) : null;
                 break;
             case '/myid/goals':
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        <Goals />
+                        <UserRecords
+                            mode={UserRecordTypes.GOAL}
+                            entries={userToShow.goals}
+                        />
                     </motion.div>
                 ) : null;
                 break;
@@ -137,7 +145,21 @@ export const MyId: FC = () => {
             case '/myid/meta':
                 result = userToShow ? (
                     <motion.div key={location.pathname} {...contentMotionProps}>
-                        <Meta />
+                        <UserRecords
+                            mode={UserRecordTypes.META}
+                            entries={userToShow.meta}
+                            titleOptions={Object.values(MetaTypes)}
+                        />
+                    </motion.div>
+                ) : null;
+                break;
+            case '/myid/records':
+                result = userToShow ? (
+                    <motion.div key={location.pathname} {...contentMotionProps}>
+                        <UserRecords
+                            mode={UserRecordTypes.PRIVATE_RECORD}
+                            entries={userToShow.privateRecords}
+                        />
                     </motion.div>
                 ) : null;
                 break;

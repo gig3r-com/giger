@@ -41,4 +41,6 @@ export const { setUsers, setCurrentUser, setUser } = usersSlice.actions;
 export const selectCurrentUser = (state: { users: IUsersState }) =>
     state.users.users.find((user) => user.id === state.users.currentUserId);
 
+export const selectUsers = (state: { users: IUsersState }) => state.users.users;
+
 export default usersSlice.reducer;

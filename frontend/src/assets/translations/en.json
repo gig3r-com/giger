@@ -109,5 +109,10 @@
     "WITNESS": "witness",
     "PUNISHMENT": "punishment",
     "SEE_ALL_THE_INFO": "See all the info",
-    "ADMIN_MODE": "Admin mode"
+    "ADMIN_MODE": "Admin mode",
+    "ARCHETYPE": "archetype",
+    "MUSIC": "music",
+    "INSPIRATIONS": "inspirations",
+    "AESTHETICS": "aesthetics",
+    "PROCEDURE": "procedure"
 }
