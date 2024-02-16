@@ -3,10 +3,13 @@ import { cubicBezier, motion } from 'framer-motion';
 import { IConversation } from '../../../../models/message';
 import { Message } from '../message/message';
 
-export const Conversation: FC<{ convo: IConversation }> = ({ convo }) => {
+export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
+    convo,
+    className
+}) => {
     return (
         <motion.div
-            className="conversation"
+            className={`${className} conversation`}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0, transform: 'scale(0)' }}

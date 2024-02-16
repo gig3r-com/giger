@@ -1,14 +1,10 @@
-import { EventStatus } from '../models/events';
-import { IMedHistory, MedicalEventType } from '../models/events';
+import { EventStatus, IMedEvent } from '../models/events';
+import { MedicalEventType } from '../models/events';
 
-export const mockMedicalHistory: (userId: string) => IMedHistory = (
-    userId
-) => ({
-    userId,
-    entries: [
+export const mockMedicalHistory: IMedEvent[] = [
         // Cyberware Events
         {
-            userId,
+            
             id: '1',
             name: 'Neural Augmentation',
             timestamp: '2077-01-15T08:30:00Z',
@@ -18,7 +14,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.CURRENT
         },
         {
-            userId,
+            
             id: '2',
             name: 'Optical Enhancement Implants',
             timestamp: '2077-02-25T12:45:00Z',
@@ -28,7 +24,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.CURRENT
         },
         {
-            userId,
+            
             id: '3',
             name: 'Dermal Armor Upgrade',
             timestamp: '2077-04-08T15:20:00Z',
@@ -39,7 +35,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
         },
         // Medical Procedure Events
         {
-            userId,
+            
             id: '4',
             name: 'Synaptic Enhancement Procedure',
             timestamp: '2077-01-02T09:10:00Z',
@@ -49,7 +45,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         },
         {
-            userId,
+            
             id: '5',
             name: 'Bionic Limb Replacement',
             timestamp: '2077-03-17T14:00:00Z',
@@ -59,7 +55,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         },
         {
-            userId,
+            
             id: '6',
             name: 'Nano Blood Cleansing',
             timestamp: '2077-05-20T17:45:00Z',
@@ -69,7 +65,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
         },
         // Medical Drug Events
         {
-            userId,
+            
             id: '7',
             name: 'Pain Relief Injection',
             timestamp: '2077-02-10T11:30:00Z',
@@ -79,7 +75,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         },
         {
-            userId,
+            
             id: '8',
             name: 'Neural Relaxant Dose',
             timestamp: '2077-04-25T16:15:00Z',
@@ -89,7 +85,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         },
         {
-            userId,
+            
             id: '9',
             name: 'Immune Booster Medication',
             timestamp: '2077-06-30T18:50:00Z',
@@ -99,7 +95,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
         },
         // Symptom Events
         {
-            userId,
+            
             id: '10',
             name: 'Persistent Migraines',
             timestamp: '2077-03-05T13:40:00Z',
@@ -110,7 +106,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             revealCode: 'MIGR-2023' // A code to unlock this information
         },
         {
-            userId,
+            
             id: '11',
             name: 'Nanofiber Rejection',
             timestamp: '2077-05-15T14:55:00Z',
@@ -120,7 +116,7 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         },
         {
-            userId,
+            
             id: '12',
             name: 'Memory Flashes',
             timestamp: '2077-07-22T10:25:00Z',
@@ -130,4 +126,3 @@ export const mockMedicalHistory: (userId: string) => IMedHistory = (
             status: EventStatus.HISTORICAL
         }
     ]
-});

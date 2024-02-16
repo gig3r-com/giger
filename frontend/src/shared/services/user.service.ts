@@ -1,9 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useMemo } from 'react';
 import { v4 } from 'uuid';
-import { users } from '../../mocks/users';
-import { setCurrentUser, setUser } from '../../store/users.slice';
-import { IUser, UserRoles } from '../../models/user';
+import {
+    getUserPublicDataByHandle,
+    getUserPublicDataById,
+    users
+} from '../../mocks/users';
+import {
+    selectCurrentUser,
+    selectIsAdmin,
+    setCurrentUser,
+    setIsAdmin,
+    setRequiresAdminUserSelection,
+    setUser,
+    updateCurrentUser
+} from '../../store/users.slice';
+import { IUserPrivate, IUserPublic } from '../../models/user';
 import { RootState } from '../../store/store';
 
 /**
@@ -11,19 +22,14 @@ import { RootState } from '../../store/store';
  */
 export function useUserService() {
     const dispatch = useDispatch();
-    const currentUserId = useSelector(
-        (state: RootState) => state.users.currentUserId
-    );
     const userList = useSelector((state: RootState) => state.users.users);
-    const currentUser = useSelector((state: RootState) =>
-        state.users.users.find((user) => user.id === currentUserId)
-    );
-    const isAdmin = useMemo(() => {
-        return !!currentUser?.roles?.includes(UserRoles.ADMIN);
-    }, [currentUser]);
+    const currentUser = useSelector(selectCurrentUser);
+    const isAdmin = useSelector(selectIsAdmin);
 
     /**
      * completely mocked now, obviously the password test will take place on backend
+     * in case an admin user logs in, we set the requiresAdminUserSelection to true.
+     * also we return a token for the admin to use as authentication
      */
     const login = async (username: string, password: string) =>
         new Promise<void>((resolve, reject) => {
@@ -31,15 +37,16 @@ export function useUserService() {
                 console.log(`logging in ${username} with password ${password}`);
 
                 setTimeout(() => {
-                    dispatch(setCurrentUser(users[35].id));
+                    dispatch(setCurrentUser(users[35]));
                     saveLoginData(users[35]);
                     resolve();
                 }, 3000);
             } else if (username === 'admin' && password === 'admin') {
                 console.log(`logging in ${username} with password ${password}`);
                 setTimeout(() => {
-                    dispatch(setCurrentUser(users[36].id));
-                    saveLoginData(users[36]);
+                    dispatch(setRequiresAdminUserSelection(true));
+                    dispatch(setIsAdmin(true));
+                    saveIsAdmin(true);
                     resolve();
                 }, 3000);
             } else {
@@ -52,59 +59,109 @@ export function useUserService() {
             }
         });
 
-    const saveLoginData = (userData: IUser) => {
+    const saveLoginData = (userData: IUserPrivate) => {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
+    };
+
+    const saveIsAdmin = (isAdmin: boolean) => {
+        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
     };
 
     const retrieveLoginData = (): void => {
         const userData = localStorage.getItem('loggedInUser');
+        const isAdmin = localStorage.getItem('isAdmin');
 
         if (userData) {
-            dispatch(setCurrentUser(JSON.parse(userData).id));
+            dispatch(setCurrentUser(JSON.parse(userData)));
+        }
+
+        if (isAdmin) {
+            dispatch(setIsAdmin(JSON.parse(isAdmin)));
         }
     };
 
     const logout = (): void => {
         localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('isAdmin');
         dispatch(setCurrentUser(undefined));
     };
 
-    const updateUserData = (userId: string, userData: Partial<IUser>) => {
-        const user = users.find((user) => user.id === userId);
-
-        if (!user) {
+    const updateUserData = async (
+        userId: string,
+        userData: Partial<IUserPrivate>
+    ) => {
+        if (!userList.map((user) => user.id).includes(userId)) {
             throw new Error(`User with id ${userId} not found`);
         }
 
-        const updatedData: IUser = {
-            ...user,
+        const updatedData: Partial<IUserPrivate> = {
             ...userData
         };
-        dispatch(setUser({ ...updatedData }));
+
+        if (currentUser?.id === userId) {
+            dispatch(updateCurrentUser(updatedData));
+        } else {
+            dispatch(setUser({ ...updatedData }));
+        }
     };
 
     const canAnonymizeChatHandle = () => {
-        return currentUser && currentUser.hackingSkill >= 1 || isAdmin;
-    }
+        return (currentUser && currentUser.hackingSkill >= 1) || isAdmin;
+    };
 
     const getAnonymizedHandle = () => {
         const rand = v4().split('-');
         return [rand[0], rand[1]].join('');
+    };
+
+    async function getUserById(
+        userId: string,
+        type: 'private'
+    ): Promise<IUserPrivate>;
+    async function getUserById(
+        userId: string,
+        type: 'public'
+    ): Promise<IUserPublic>;
+    async function getUserById(
+        userId: string,
+        type: 'private' | 'public'
+    ): Promise<IUserPrivate | IUserPublic> {
+        switch (type) {
+            case 'private':
+                return users.find((user) => user.id === userId)!;
+            case 'public':
+                return getUserPublicDataById(userId);
+        }
     }
 
-    const getUserById = (id: string) => {
-        return userList.find((user) => user.id === id);
-    }
-
-    const getUserByHandle = (handle: string) => {
-        return userList.find((user) => user.handle === handle);
-    }
+    const getUserByHandle = async (
+        handle: string,
+        type: 'private' | 'public'
+    ) => {
+        return type === 'private'
+            ? userList.find((user) => user.handle === handle)
+            : getUserPublicDataByHandle(handle);
+    };
 
     const getHandleForConvo = (convoId: string, userId: string) => {
-        const user = getUserById(userId);
+        const user = userList.find((user) => userId === user.id);
 
         return user?.aliasMap[convoId] ?? user?.handle;
-    }
+    };
+
+    const toggleUserAsFavorite = async (favoriteUserId: string) => {
+        const favoriteUserIds = new Set(currentUser!.favoriteUserIds);
+
+        if (favoriteUserIds.has(favoriteUserId)) {
+            favoriteUserIds.delete(favoriteUserId);
+        } else {
+            favoriteUserIds.add(favoriteUserId);
+        }
+
+        await updateUserData(currentUser!.id, {
+            favoriteUserIds: Array.from(favoriteUserIds)
+        });
+    };
 
     return {
         login,
@@ -113,10 +170,12 @@ export function useUserService() {
         isAdmin,
         updateUserData,
         currentUser,
+        saveLoginData,
         getAnonymizedHandle,
         canAnonymizeChatHandle,
         getUserById,
         getUserByHandle,
-        getHandleForConvo
+        getHandleForConvo,
+        toggleUserAsFavorite
     };
 }

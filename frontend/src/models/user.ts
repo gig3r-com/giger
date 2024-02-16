@@ -1,4 +1,4 @@
-import { IObscurableInfo } from './events';
+import { ICriminalEvent, IMedEvent, IObscurableInfo } from './events';
 
 export interface IUserBase {
     id: string;
@@ -6,25 +6,21 @@ export interface IUserBase {
     handle: string;
     roles?: UserRoles[];
     aliasMap: IAliasMap;
+    active: boolean;
 }
 
-/**
- * A map of convo or gig ids to displayed names.
- * Used to anonymize users in conversations and gigs.
- */
-export interface IAliasMap {
-    [key: string]: string; // key: convo or gig id, value: displayedName
-}
-
-export interface IUser extends IUserBase {
-    id: string;
-    name: string;
+export interface IUserPublic extends IUserBase {
+    professionPublic: string;
+    typePublic: UserTypes;
     surname: string;
     age: number;
+    vibe: Vibe;
+    wealthLevel: WealthLevels;
+}
+
+export interface IUserPrivate extends IUserPublic {
     cyberwareLevel: CyberwareLevel;
-    professionPublic: string;
     professionActual: string;
-    typePublic: UserTypes;
     typeActual: UserTypes;
     assets: string[];
     hackingSkill: SkillStat;
@@ -33,14 +29,23 @@ export interface IUser extends IUserBase {
     talkativeVsSilent: CharStat;
     thinkerVsDoer: CharStat;
     combatSkill: SkillStat;
-    vibe: Vibe;
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
-    wealthLevel: WealthLevels;
+    favoriteUserIds: string[];
     relations: IRelation[];
     goals: IGoal[];
     meta: IMeta[];
     privateRecords: IPrivateRecord[];
+    criminalRecord: ICriminalEvent[];
+    medHistory: IMedEvent[];
+}
+
+/**
+ * A map of convo or gig ids to displayed names.
+ * Used to anonymize users in conversations and gigs.
+ */
+export interface IAliasMap {
+    [key: string]: string; // key: convo or gig id, value: displayedName
 }
 
 export interface IAnonymizedUser {

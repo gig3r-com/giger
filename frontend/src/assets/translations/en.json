@@ -114,5 +114,7 @@
     "MUSIC": "music",
     "INSPIRATIONS": "inspirations",
     "AESTHETICS": "aesthetics",
-    "PROCEDURE": "procedure"
+    "PROCEDURE": "procedure",
+    "FAVORITES": "favorites",
+    "OTHER_USERS": "Other users"
 }

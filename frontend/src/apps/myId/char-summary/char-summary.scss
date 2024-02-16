@@ -19,7 +19,7 @@
     }
 
     &__data {
-        max-height: calc(#{$standard-viewport-height} - 225px);
+        max-height: calc(#{$standard-viewport-height} - 185px);
         overflow: scroll;
     }
 
@@ -36,6 +36,12 @@
         border-bottom: 1px solid $base-text-color;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
+        display: flex;
+        align-items: center;
+
+        .select-user {
+            margin-left: 1rem;
+        }
     }
 
     &__name {
@@ -82,7 +88,6 @@
     &__signature-and-basic-data,
     &__details {
         display: flex;
-        margin-bottom: 1rem;
     }
 
     &__details {

@@ -10,6 +10,7 @@
     transition-property: height, min-height, margin-bottom;
     height: $summary-height;
     min-height: $summary-height;
+    max-height: calc(#{$standard-viewport-height} - 70px);
     overflow: hidden;
     position: relative;
 
@@ -114,6 +115,11 @@
             height: 100px;
             background: $primary-color;
         }
+    }
+
+    &__conversation {
+        max-height: calc(100vh - 430px);
+        overflow: auto;
     }
 
     &--in-progress &__title {

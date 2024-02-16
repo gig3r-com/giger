@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { FC, useState } from 'react';
+import { motion } from 'framer-motion';
 import { AdminEditableField } from '../../../../shared/components/admin-editable-field/admin-editable-field';
 import { FieldTypes } from '../../../../shared/components/admin-editable-field/admin-editable-field.model';
 import { EventRecordType, EventType } from '../../../../models/events';
@@ -14,10 +15,10 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
 }) => {
     const [expanded, setExpanded] = useState<boolean>(false);
     const { isAdmin, currentUser } = useUserService();
-    const { updateEvent } = useEventsService();
+    const { updateEvent, removeEvent } = useEventsService();
 
     const updateData = (
-        propToUpdate: 'year' | 'name',
+        propToUpdate: 'year' | 'name' | 'description',
         val: string | number
     ) => {
         if (!currentUser) return;
@@ -26,11 +27,15 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
             entry.name = propToUpdate === 'name' ? (val as string) : entry.name;
         }
 
-        updateEvent(currentUser.id, entry!.id, type, entry!);
+        updateEvent(entry!.id, type, entry!);
+    };
+
+    const removeEntry = () => {
+        removeEvent(entry.id, type);
     };
 
     return (
-        <>
+        <motion.article className="event-entry">
             <div className="event-entry__summary">
                 <AdminEditableField
                     type={FieldTypes.NUMBER}
@@ -53,7 +58,10 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
                     {expanded ? 'expand_less' : 'expand_more'}
                 </span>
                 {isAdmin && (
-                    <span className="event-entry__remove-entry material-icons">
+                    <span
+                        className="event-entry__remove-entry material-icons"
+                        onClick={removeEntry}
+                    >
                         delete
                     </span>
                 )}
@@ -63,8 +71,11 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
                     expanded && 'event-entry__description--expanded'
                 }`}
             >
-                {entry.eventDescription}
+                <AdminEditableField
+                    type={FieldTypes.TEXT}
+                    value={entry.eventDescription}
+                    onChange={(val) => updateData('description', val)} />
             </div>
-        </>
+        </motion.article>
     );
 };

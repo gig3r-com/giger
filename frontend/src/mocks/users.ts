@@ -1,17 +1,20 @@
 import {
-    IUser,
+    IUserPrivate,
+    IUserPublic,
     UserRoles,
     UserTypes,
     Vibe,
     VibeEngagement,
     WealthLevels
 } from '../models/user';
+import { mockCriminalRecord } from './criminal';
 import { goals } from './goals';
+import { mockMedicalHistory } from './medical';
 import { meta } from './meta';
 import { privateRecords } from './privateRecords';
 import { relations } from './relations';
 
-export const users: IUser[] = [
+export const users: IUserPrivate[] = [
     {
         id: 'user1',
         name: 'John',
@@ -31,7 +34,12 @@ export const users: IUser[] = [
         cowardVsFighter: 0,
         talkativeVsSilent: 0,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -58,7 +66,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -86,7 +99,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -114,7 +132,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -142,7 +165,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -170,7 +198,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -198,7 +231,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -226,7 +264,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -254,7 +297,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -282,7 +330,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -310,7 +363,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -338,7 +396,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -366,7 +429,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -394,7 +462,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -422,7 +495,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -450,7 +528,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -478,7 +561,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -506,7 +594,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -534,7 +627,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -562,7 +660,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -590,7 +693,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -618,7 +726,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -646,7 +759,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -674,7 +792,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -702,7 +825,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -730,7 +858,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -758,7 +891,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -786,7 +924,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -814,7 +957,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -842,7 +990,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -870,7 +1023,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -898,7 +1056,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -926,7 +1089,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -954,7 +1122,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -982,7 +1155,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: [],
         meta: [],
         goals: [],
@@ -1010,7 +1188,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: ['user3', 'user7', 'user18', 'user19', 'user20'],
+        active: true,
         privateRecords: privateRecords,
         meta: meta,
         goals: goals,
@@ -1039,7 +1222,12 @@ export const users: IUser[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+
         combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: true,
         privateRecords: privateRecords,
         meta: meta,
         goals: goals,
@@ -1051,7 +1239,7 @@ export const users: IUser[] = [
     }
 ];
 
-export const systemUser: IUser = {
+export const systemUser: IUserPrivate = {
     id: 'XXXX',
     aliasMap: {},
     handle: 'SYSTEM',
@@ -1069,7 +1257,12 @@ export const systemUser: IUser = {
     cowardVsFighter: 4,
     talkativeVsSilent: 4,
     thinkerVsDoer: 0,
+
     combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+    favoriteUserIds: [],
+    active: true,
     privateRecords: [],
     meta: [],
     goals: [],
@@ -1090,3 +1283,47 @@ export const merc = users[12];
 export const hiredGun = users[13];
 export const hacker = users[14];
 export const mockplayer = users[35];
+
+export const getUserPublicDataById = (userId: string): IUserPublic => {
+    const user = users.find((u) => u.id === userId);
+
+    if (!user) {
+        throw new Error(`User with id ${userId} not found`);
+    }
+
+    return {
+        id: user.id,
+        aliasMap: user.aliasMap,
+        handle: user.handle,
+        name: user.name,
+        surname: user.surname,
+        age: user.age,
+        professionPublic: user.professionPublic,
+        typePublic: user.typePublic,
+        active: user.active,
+        vibe: user.vibe,
+        wealthLevel: user.wealthLevel
+    };
+};
+
+export const getUserPublicDataByHandle = (handle: string): IUserPublic => {
+    const user = users.find((u) => u.handle === handle);
+
+    if (!user) {
+        throw new Error(`User with id ${handle} not found`);
+    }
+
+    return {
+        id: user.id,
+        aliasMap: user.aliasMap,
+        handle: user.handle,
+        name: user.name,
+        surname: user.surname,
+        age: user.age,
+        professionPublic: user.professionPublic,
+        typePublic: user.typePublic,
+        active: user.active,
+        vibe: user.vibe,
+        wealthLevel: user.wealthLevel
+    };
+};

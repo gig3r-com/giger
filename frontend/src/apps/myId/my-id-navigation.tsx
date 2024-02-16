@@ -19,10 +19,9 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
         { name: 'medical' },
         { name: 'criminal', isNew: true },
         { name: 'goals', isNew: true },
-        { name: 'relations', isNew: true},
-        { name: 'hacking' },
+        { name: 'relations', isNew: true },
         { name: 'meta' },
-        { name: 'records'},
+        { name: 'records' },
         { name: 'log out', onClickAction: () => logout() }
     ];
 
