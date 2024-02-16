@@ -1,4 +1,4 @@
-import { IGoal, IMeta, IPrivateRecord, IRelation, UserRecordTypes } from "../../../models/user";
+import { UserRecordTypes } from "../../../models/user";
 import { FieldTypes } from "../../../shared/components/admin-editable-field/admin-editable-field.model";
 
 export const modeMap = new Map<UserRecordTypes, IUserRecordsData>([
@@ -26,8 +26,7 @@ interface IUserRecordsData {
     entriesProperty: 'relations' | 'goals' | 'meta' | 'privateRecords';
 }
 
-export interface IUserRecordsProps<T = IRelation | IMeta | IPrivateRecord | IGoal> {
+export interface IUserRecordsProps {
     mode: UserRecordTypes;
-    entries: T[];
     titleOptions?: string[]
 }

@@ -23,16 +23,12 @@
 }
 
 .my-id-navigation {
-    position: absolute;
-    top: 2.6rem;
-    left: 0;
     height: $standard-viewport-height;
     
     display: flex;
     flex-direction: column;
     gap: 1rem;
     background: $app-background;
-    padding: 1rem;
 
     &__list {
         margin: 0;

@@ -128,7 +128,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 <BigButton
                                     text={secondButtonText(!!gig.takenById)}
                                     color="accent"
-                                    onClick={secondButtonAction(!!gig.takenById)}
+                                    onClick={secondButtonAction(
+                                        !!gig.takenById
+                                    )}
                                 />
                             )}
 
@@ -146,6 +148,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                     <Conversation
                                         key={convo.id + 'convo'}
                                         convo={convo}
+                                        className="gig__conversation"
                                     />
                                 )}
                             </AnimatePresence>

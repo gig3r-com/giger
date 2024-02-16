@@ -1,16 +1,14 @@
 import { FC } from 'react';
-import { IUser } from '../../../models/user';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './vibe.scss';
 
-export type NeotribeProps = {
-    user: IUser | undefined;
-};
+export const Vibe: FC = () => {
+    const { currentUser } = useUserService();
 
-export const Vibe: FC<NeotribeProps> = ({ user }) => {
     return (
         <section className="neotribe">
-            <h1>{user?.name}</h1>
+            <h1>{currentUser?.name}</h1>
             <span>{descriptionMock}</span>
         </section>
     );

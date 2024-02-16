@@ -1,9 +1,11 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useIntl } from 'react-intl';
+import { motion } from 'framer-motion';
 import {
     CharStat,
     CyberwareLevel,
-    IUser,
+    IUserPrivate,
+    IUserPublic,
     SkillStat,
     Vibe,
     VibeEngagement,
@@ -18,12 +20,23 @@ import { FieldTypes } from '../../../shared/components/admin-editable-field/admi
 import { useUserService } from '../../../shared/services/user.service';
 
 import './char-summary.scss';
+import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
+import { SelectUser } from '../select-user/select-user';
 
-export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
+export const CharSummary: FC<{
+    mode: 'public' | 'private';
+    userData?: IUserPublic;
+}> = ({ userData, mode }) => {
     const intl = useIntl();
-    const { updateUserData } = useUserService();
+    const isPrivate = mode === 'private';
+    const { updateUserData, currentUser } = useUserService();
+    const { generateAnimation } = useStandardizedAnimation();
+    const user = useMemo(
+        () => userData ?? currentUser,
+        [userData, currentUser]
+    );
     const signature = () => {
-        switch (user.typePublic) {
+        switch (user!.typePublic) {
             case 'human':
                 return <HumanSignature className="char-summary__signature" />;
             case 'ai':
@@ -36,23 +49,30 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
     };
 
     return (
-        <section className="char-summary">
+        <motion.section
+            {...generateAnimation('slideInRight')}
+            className="char-summary"
+            key={user?.id}
+        >
             <header className="char-summary__header">
                 <AdminEditableField
                     type={FieldTypes.TEXT}
-                    value={user.surname}
+                    value={user!.surname}
                     className="char-summary__surname"
-                    onChange={(val) =>
-                        updateUserData(user.id, { surname: val })
+                    onChange={async (val) =>
+                        await updateUserData(user!.id, { surname: val })
                     }
                 />
                 ,
                 <AdminEditableField
                     type={FieldTypes.TEXT}
                     className="char-summary__name"
-                    value={user.name}
-                    onChange={(val) => updateUserData(user.id, { name: val })}
+                    value={user!.name}
+                    onChange={async (val) =>
+                        await updateUserData(user!.id, { name: val })
+                    }
                 />
+                <SelectUser />
             </header>
             <div className="char-summary__data">
                 <div className="char-summary__signature-and-basic-data">
@@ -64,9 +84,9 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                         <AdminEditableField
                             type={FieldTypes.TEXT}
                             className="char-summary__entry char-summary__entry--extended"
-                            value={user.handle}
-                            onChange={(val) =>
-                                updateUserData(user.id, { handle: val })
+                            value={user!.handle}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, { handle: val })
                             }
                         />
 
@@ -76,25 +96,32 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                         <AdminEditableField
                             type={FieldTypes.NUMBER}
                             className="char-summary__entry char-summary__entry--extended"
-                            value={user.age}
-                            onChange={(val) =>
-                                updateUserData(user.id, { age: val })
+                            value={user!.age}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, { age: val })
                             }
                         />
 
-                        <span className="char-summary__label char-summary__label--short">
-                            <MemoizedFormattedMessage id="CYBERWARE" />:
-                        </span>
-                        <AdminEditableField
-                            type={FieldTypes.NUMBER}
-                            className="char-summary__entry char-summary__entry--extended"
-                            value={user.cyberwareLevel}
-                            onChange={(val) =>
-                                updateUserData(user.id, {
-                                    cyberwareLevel: val as CyberwareLevel
-                                })
-                            }
-                        />
+                        {isPrivate && (
+                            <>
+                                <span className="char-summary__label char-summary__label--short">
+                                    <MemoizedFormattedMessage id="CYBERWARE" />:
+                                </span>
+                                <AdminEditableField
+                                    type={FieldTypes.NUMBER}
+                                    className="char-summary__entry char-summary__entry--extended"
+                                    value={
+                                        (user as IUserPrivate).cyberwareLevel
+                                    }
+                                    onChange={async (val) =>
+                                        await updateUserData(user!.id, {
+                                            cyberwareLevel:
+                                                val as CyberwareLevel
+                                        })
+                                    }
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className="char-summary__details">
@@ -112,42 +139,57 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                             Vibe.SW4RM,
                             Vibe.NO_VIBE
                         ]}
-                        value={user.vibe}
-                        onChange={(val) =>
-                            updateUserData(user.id, { vibe: val as Vibe })
+                        value={user!.vibe}
+                        onChange={async (val) =>
+                            await updateUserData(user!.id, {
+                                vibe: val as Vibe
+                            })
                         }
                     />
 
-                    <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="VIBE_ENGAGEMENT" />:
-                    </span>
-                    <AdminEditableField
-                        type={FieldTypes.SELECT}
-                        className="char-summary__entry"
-                        options={[
-                            VibeEngagement.DISINTERESTED,
-                            VibeEngagement.DOUBTING,
-                            VibeEngagement.INTERESTED,
-                            VibeEngagement.HYPED,
-                            VibeEngagement.FANATIC
-                        ]}
-                        value={user.vibe}
-                        onChange={(val) =>
-                            updateUserData(user.id, { vibe: val as Vibe })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="VIBE_ENGAGEMENT" />
+                                :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                options={[
+                                    VibeEngagement.DISINTERESTED,
+                                    VibeEngagement.DOUBTING,
+                                    VibeEngagement.INTERESTED,
+                                    VibeEngagement.HYPED,
+                                    VibeEngagement.FANATIC
+                                ]}
+                                value={user!.vibe}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        vibe: val as Vibe
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="VIBE_FUNCTION" />:
-                    </span>
-                    <AdminEditableField
-                        type={FieldTypes.TEXT}
-                        className="char-summary__entry"
-                        value={user.vibeFunction}
-                        onChange={(val) =>
-                            updateUserData(user.id, { vibeFunction: val })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="VIBE_FUNCTION" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.TEXT}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate).vibeFunction}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        vibeFunction: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
                     <span className="char-summary__label">
                         <MemoizedFormattedMessage id="PROFESSION" />:
@@ -155,23 +197,32 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                     <AdminEditableField
                         type={FieldTypes.TEXT}
                         className="char-summary__entry"
-                        value={user.professionPublic}
-                        onChange={(val) =>
-                            updateUserData(user.id, { professionPublic: val })
+                        value={user!.professionPublic}
+                        onChange={async (val) =>
+                            await updateUserData(user!.id, {
+                                professionPublic: val
+                            })
                         }
                     />
 
-                    <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="PROFESSION_ACTUAL" />:
-                    </span>
-                    <AdminEditableField
-                        type={FieldTypes.TEXT}
-                        className="char-summary__entry"
-                        value={user.professionActual}
-                        onChange={(val) =>
-                            updateUserData(user.id, { professionActual: val })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="PROFESSION_ACTUAL" />
+                                :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.TEXT}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate).professionActual}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        professionActual: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
                     <span className="char-summary__label">
                         <MemoizedFormattedMessage id="WEALTH" />:
@@ -179,7 +230,7 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                     <AdminEditableField
                         type={FieldTypes.SELECT}
                         className="char-summary__entry"
-                        value={user.wealthLevel}
+                        value={user!.wealthLevel}
                         options={[
                             WealthLevels.BROKE,
                             WealthLevels.IMPOVERISHED,
@@ -190,118 +241,156 @@ export const CharSummary: FC<{ user: IUser }> = ({ user }) => {
                             WealthLevels.AFFLUENT,
                             WealthLevels.ELITE
                         ]}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
+                        onChange={async (val) =>
+                            await updateUserData(user!.id, {
                                 wealthLevel: val as WealthLevels
                             })
                         }
                     />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={(user as IUserPrivate).hackingSkill}
+                                min={0}
+                                max={3}
+                                showValue={false}
+                                label={intl.formatMessage({
+                                    id: 'HACKING_SKILL'
+                                })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        hackingSkill: parseInt(val) as SkillStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.hackingSkill}
-                        min={0}
-                        max={3}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'HACKING_SKILL' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                hackingSkill: parseInt(val) as SkillStat
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={(user as IUserPrivate).combatSkill}
+                                min={0}
+                                max={3}
+                                showValue={false}
+                                label={intl.formatMessage({
+                                    id: 'COMBAT_SKILL'
+                                })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        combatSkill: parseInt(val) as SkillStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.combatSkill}
-                        min={0}
-                        max={3}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'COMBAT_SKILL' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                combatSkill: parseInt(val) as SkillStat
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={(user as IUserPrivate).talkativeVsSilent}
+                                min={0}
+                                max={4}
+                                showMin={false}
+                                showMax={false}
+                                showValue={false}
+                                label={intl.formatMessage({ id: 'TALKATIVE' })}
+                                label2={intl.formatMessage({ id: 'SILENT' })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        talkativeVsSilent: parseInt(
+                                            val
+                                        ) as CharStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.talkativeVsSilent}
-                        min={0}
-                        max={4}
-                        showMin={false}
-                        showMax={false}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'TALKATIVE' })}
-                        label2={intl.formatMessage({ id: 'SILENT' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                talkativeVsSilent: parseInt(val) as CharStat
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={
+                                    (user as IUserPrivate)
+                                        .confrontationVsNegotiation
+                                }
+                                min={0}
+                                max={4}
+                                showMin={false}
+                                showMax={false}
+                                showValue={false}
+                                label={intl.formatMessage({
+                                    id: 'CONFRONTATIONAL'
+                                })}
+                                label2={intl.formatMessage({
+                                    id: 'NEGOTIATOR'
+                                })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        confrontationVsNegotiation: parseInt(
+                                            val
+                                        ) as CharStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.confrontationVsNegotiation}
-                        min={0}
-                        max={4}
-                        showMin={false}
-                        showMax={false}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'CONFRONTATIONAL' })}
-                        label2={intl.formatMessage({ id: 'NEGOTIATOR' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                confrontationVsNegotiation: parseInt(
-                                    val
-                                ) as CharStat
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={(user as IUserPrivate).cowardVsFighter}
+                                min={0}
+                                max={4}
+                                showMin={false}
+                                showMax={false}
+                                showValue={false}
+                                label={intl.formatMessage({ id: 'COWARD' })}
+                                label2={intl.formatMessage({ id: 'FIGHTER' })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        cowardVsFighter: parseInt(
+                                            val
+                                        ) as CharStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.cowardVsFighter}
-                        min={0}
-                        max={4}
-                        showMin={false}
-                        showMax={false}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'COWARD' })}
-                        label2={intl.formatMessage({ id: 'FIGHTER' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                cowardVsFighter: parseInt(val) as CharStat
-                            })
-                        }
-                    />
-
-                    <AdminEditableField
-                        type={FieldTypes.SLIDER}
-                        className="char-summary__entry char-summary__entry--full-length"
-                        value={user.thinkerVsDoer}
-                        min={0}
-                        max={4}
-                        showMin={false}
-                        showMax={false}
-                        showValue={false}
-                        label={intl.formatMessage({ id: 'THINKER' })}
-                        label2={intl.formatMessage({ id: 'DOER' })}
-                        onChange={(val) =>
-                            updateUserData(user.id, {
-                                thinkerVsDoer: parseInt(val) as CharStat
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <AdminEditableField
+                                type={FieldTypes.SLIDER}
+                                className="char-summary__entry char-summary__entry--full-length"
+                                value={(user as IUserPrivate).thinkerVsDoer}
+                                min={0}
+                                max={4}
+                                showMin={false}
+                                showMax={false}
+                                showValue={false}
+                                label={intl.formatMessage({ id: 'THINKER' })}
+                                label2={intl.formatMessage({ id: 'DOER' })}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        thinkerVsDoer: parseInt(val) as CharStat
+                                    })
+                                }
+                            />
+                        </>
+                    )}
                 </div>
             </div>
-        </section>
+        </motion.section>
     );
 };

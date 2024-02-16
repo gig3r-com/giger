@@ -1,44 +1,37 @@
 @import '../../../variables.scss';
+@import '../my-id-global.scss';
 
 .contacts {
     font-family: 'JetBrains Mono', monospace;
     height: calc(100vh - 117px);
     overflow: auto;
-    
-    & h2 {
-        font-weight: 400;
-        font-size: 16px;
-        color: $other-user-color;
-    }
 
-    & .contacts__list {
+    &__list {
         margin: 0 0 1rem 0;
         padding: 0;
         list-style: none;
     }
 
-    & .contacts__list-item {
+    &__list-item {
         position: relative;
         display: flex;
+        align-items: center;
         justify-content: space-between;
         margin: 0;
-        padding: 1rem 0;
+        font-family: 'Saira', sans-serif;
 
         &--name {
             color: $other-user-color;
         }
 
-        &--action {
+        &-action {
             display: inline-flex;
             align-items: center;
             color: $base-text-color;
+            padding: 0.75rem;
 
-            &::after {
-                margin-top: -0.250rem;
-                line-height: 1rem;
-                font-size: 2rem;
-                content: '\203A'; //todo: get correct icon
-                margin-left: 5px;
+            &--outline {
+                font-variation-settings: 'FILL' 0;
             }
         }
 
@@ -50,5 +43,12 @@
             height: 1px;
             border-bottom: solid 1px #868290; //todo: find color
         }
+    }
+
+    &__heading {
+        text-transform: capitalize;
+        color: $primary-color;
+        font-weight: 400;
+        font-size: 16px;
     }
 }

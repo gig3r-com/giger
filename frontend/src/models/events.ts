@@ -4,7 +4,6 @@ export interface IObscurableInfo {
 
 export interface IEvent extends IObscurableInfo {
     id: string;
-    userId: string;
     eventDescription: string;
     status: EventStatus;
     timestamp: string; // ISO Date timestamp
@@ -12,11 +11,6 @@ export interface IEvent extends IObscurableInfo {
 }
 
 export type EventType = IMedEvent | ICriminalEvent;
-
-export interface IEventRecord<EventType> {
-    userId: string;
-    entries: EventType[];
-}
 
 export enum EventStatus {
     CURRENT = 'current',
@@ -27,8 +21,6 @@ export enum EventRecordType {
     MEDICAL = 'medical',
     CRIMINAL = 'criminal'
 }
-
-export type ICriminalRecord = IEventRecord<ICriminalEvent>;
 
 export interface ICriminalEvent extends IEvent {
     type: CriminalEventType;
@@ -41,8 +33,6 @@ export enum CriminalEventType {
     WITNESS = 'witness',
     PUNISHMENT = 'punishment'
 }
-
-export type IMedHistory = IEventRecord<IMedEvent>;
 
 export interface IMedEvent extends IEvent {
     type: MedicalEventType;

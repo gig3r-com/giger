@@ -1,89 +1,122 @@
-import { useSelector } from 'react-redux';
-import { mockMedicalHistory } from '../../mocks/medical';
+import { cloneDeep } from 'lodash-es';
 import {
     IMedEvent,
     ICriminalEvent,
     EventRecordType,
-    EventType,
-    IEventRecord
+    EventType
 } from '../../models/events';
-import { RootState } from '../../store/store';
-import { mockCriminalRecord } from '../../mocks/criminal';
+import { useUserService } from './user.service';
+import { useDispatch } from 'react-redux';
+import { updateCurrentUser } from '../../store/users.slice';
+import { IUserPrivate } from '../../models/user';
 
 export const useEventsService = () => {
-    const userList = useSelector((state: RootState) => state.users.users);
-    const updateEvent: (
-        userId: string,
+    const dispatch = useDispatch();
+    const { currentUser } = useUserService();
+
+    function updateEvent(
         eventId: string,
         type: EventRecordType,
         updateData: Partial<EventType>
-    ) => void = async (userId, eventId, type, updateData) => {
-        const user = userList.find((user) => user.id === userId);
-
-        if (!user) {
+    ): void {
+        if (!currentUser) {
             throw new Error('User not found');
         }
 
-        const eventRecord = await getEventRecordForUser(userId, type);
-        const eventIndex = eventRecord.entries.findIndex(
+        const eventRecord = cloneDeep(getEventRecordForUser(type));
+        const eventIndex = eventRecord.findIndex(
             (event) => event.id === eventId
         );
+
+        if (!eventIndex === undefined) {
+            throw new Error('entry not found');
+        }
+
+        eventRecord.splice(eventIndex, 1, {
+            ...eventRecord[eventIndex],
+            ...updateData
+        });
+
+        registerChanges(eventRecord, type);
+    }
+
+    const addEvent: (
+        event: IMedEvent | ICriminalEvent,
+        type: EventRecordType
+    ) => void = async (event, type) => {
+        const updatedRecord = cloneDeep(getEventRecordForUser(type));
+
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        updatedRecord.push(event);
+        registerChanges(updatedRecord, type);
+    };
+
+    const removeEvent: (
+        eventId: string,
+        type: EventRecordType
+    ) => void = async (eventId, type) => {
+        const eventRecord = await getEventRecordForUser(type);
+        const eventIndex = eventRecord.findIndex(
+            (event) => event.id === eventId
+        );
+
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
 
         if (!eventIndex === undefined) {
             throw new Error('Medical entry not found');
         }
 
-        eventRecord.entries.splice(eventIndex, 1, {
-            ...eventRecord.entries[eventIndex],
-            ...updateData
-        });
+        eventRecord.splice(eventIndex, 1);
     };
 
-    const addEvent: (
-        userId: string,
-        event: IMedEvent | ICriminalEvent,
+    /**
+     * registers the updated event record in redux as a change in current user data
+     * @param updateData 
+     * @param type 
+     */
+    const registerChanges = (
+        updateData: EventType[],
         type: EventRecordType
-    ) => void = async (userId, event, type) => {
-        const user = userList.find((user) => user.id === userId);
-        const eventRecord = await getEventRecordForUser(userId, type);
+    ): void => {
+        let updatedRecord: Partial<
+            Pick<IUserPrivate, 'medHistory' | 'criminalRecord'>
+        >;
+        if (type === EventRecordType.CRIMINAL) {
+            updatedRecord = { criminalRecord: updateData as ICriminalEvent[] };
+        }
 
-        if (!user) {
+        if (type === EventRecordType.MEDICAL) {
+            updatedRecord = { medHistory: updateData as IMedEvent[] };
+        }
+
+        dispatch(updateCurrentUser(updatedRecord!));
+    };
+
+    const getEventRecordForUser = (type: EventRecordType): EventType[] => {
+        if (!currentUser) {
             throw new Error('User not found');
         }
 
-        eventRecord.entries.push(event);
+        if (type === EventRecordType.MEDICAL) {
+            return currentUser?.medHistory as IMedEvent[];
+        }
+
+        if (type === EventRecordType.CRIMINAL) {
+            return currentUser?.criminalRecord as ICriminalEvent[];
+        }
+
+        throw new Error('Invalid event record type');
     };
-
-    const getEventRecordForUser: (
-        userId: string,
-        type: EventRecordType
-    ) => Promise<IEventRecord<EventType>> = (
-        userId: string,
-        type: EventRecordType
-    ) =>
-        new Promise<IEventRecord<EventType>>((resolve, reject) => {
-            const user = userList.find((user) => user.id === userId);
-
-            if (!user) {
-                reject('User not found');
-            }
-
-            if (type === EventRecordType.MEDICAL) {
-                resolve(mockMedicalHistory(userId) as IEventRecord<IMedEvent>);
-            }
-
-            if (type === EventRecordType.CRIMINAL) {
-                resolve(
-                    mockCriminalRecord(userId) as IEventRecord<ICriminalEvent>
-                );
-            }
-
-            reject('Invalid event record type');
-        });
 
     return {
         getEventRecordForUser,
         updateEvent,
-        addEvent
+        addEvent,
+        removeEvent
     };
 };

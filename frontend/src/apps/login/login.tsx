@@ -1,12 +1,15 @@
 import { useState, FC, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useUserService } from '../../shared/services/user.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { ReactComponent as GigerLogo } from '../../assets/logo-giger.svg';
 import { DecodeText } from '../../shared/components/decode-text/decodeText';
 import LoginHelp from './login-help/login-help';
+import { SelectUser } from '../myId/select-user/select-user';
+import { selectRequiresAdminUserSelection } from '../../store/users.slice';
 
 import './login.scss';
 
@@ -17,6 +20,9 @@ export const Login: FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const requiresAdminUserSelection = useSelector(
+        selectRequiresAdminUserSelection
+    );
     const [error, setError] = useState('');
     const [showHelp, setShowHelp] = useState(false);
     const { login, retrieveLoginData } = useUserService();
@@ -131,6 +137,9 @@ export const Login: FC = () => {
             <section className={helpClasses}>
                 <LoginHelp onBack={() => setShowHelp(false)} />
             </section>
+            {requiresAdminUserSelection && (
+                <SelectUser showSelectionAtStart={true} />
+            )}
         </div>
     );
 };

@@ -1,22 +1,22 @@
-@import "../../../../variables.scss";
+@import '../../../../variables.scss';
 
 .new-entry {
-    color: white;
-    
+
     &__input {
         border: 0;
         background-color: rgba(84, 90, 233, 0.2);
         padding: 0.1rem;
+        color: white;
     }
 
     &__add {
-        width: 32px;
-        position: absolute;
-        right: 0;
-        height: 32px;
+        width: 52px;
+        margin-right: 0.5rem;
+        height: 100%;
         box-sizing: border-box;
         padding: 0;
         background: white;
+        border-radius: 0;
         color: $primary-color;
 
         &:disabled {
@@ -25,8 +25,10 @@
     }
 
     &__year {
+        margin-left: 0.5rem;
         width: 65px;
-        margin-right: 0.5rem;;
+        min-width: 65px;
+        margin-right: 0.5rem;
     }
 
     &__year-input {
@@ -35,5 +37,6 @@
 
     &__info {
         width: calc(100% - 112px);
+        margin-right: 0.5rem;
     }
 }

@@ -1,13 +1,12 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { v4 } from 'uuid';
 import dayjs from 'dayjs';
-import { Controls } from '../../../shared/components/controls/controls';
+import { motion } from 'framer-motion';
 import { useUserService } from '../../../shared/services/user.service';
 import {
     CriminalEventType,
     EventType,
-    IEventRecord,
     MedicalEventType
 } from '../../../models/events';
 import { criminalLists, medicalLists } from './event-lists';
@@ -25,58 +24,49 @@ import './event-record.scss';
  */
 export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
     const intl = useIntl();
-    const [eventRecord, setEventRecord] =
-        useState<IEventRecord<EventType> | null>(null);
     const { getEventRecordForUser, addEvent } = useEventsService();
     const { currentUser, isAdmin } = useUserService();
 
-    const onAddEntry = (name: string, year: number) => {
-        if (!currentUser || !eventRecord) return;
+    const onAddEntry = (
+        name: string,
+        year: number,
+        entryType: MedicalEventType | CriminalEventType
+    ) => {
+        if (!currentUser) return;
 
         const newEntry: EventType = {
-            userId: currentUser.id,
             id: v4(),
             timestamp: dayjs().set('year', year).toISOString(),
             name,
             status: EventStatus.HISTORICAL,
-            type:
-                type === 'medical'
-                    ? MedicalEventType.MEDICAL_PROCEDURE
-                    : CriminalEventType.SUSPECT,
+            type: entryType,
             eventDescription: ''
         };
 
-        addEvent(currentUser.id, newEntry, type);
+        addEvent(newEntry, type);
     };
 
     const getEventList = () => {
         return type === 'medical' ? medicalLists : criminalLists;
     };
 
-    useEffect(
-        function fetchEventRecord() {
-            currentUser &&
-                getEventRecordForUser(currentUser.id, type).then((res) => {
-                    setEventRecord(res);
-                });
-        },
-        [currentUser]
-    );
+    const eventRecord = useMemo(() => {
+        return currentUser && getEventRecordForUser(type);
+    }, [currentUser]);
 
     return (
-        <>
-            <Controls />
-            <div className="event-record">
-                {getEventList().map((section) => (
-                    <section
-                        className="event-record__section"
-                        key={section.name}
-                    >
-                        <span className="event-record__header">
-                            {intl.formatMessage({ id: section.msgId })}:
-                        </span>
-                        <ol className="event-record__list">
-                            {eventRecord?.entries
+        <motion.div
+            key="event-record"
+            className="event-record"
+        >
+            {getEventList().map((section) => (
+                <section className="event-record__section" key={section.name}>
+                    <span className="event-record__header">
+                        {intl.formatMessage({ id: section.msgId })}:
+                    </span>
+                    <ol className="event-record__list">
+                        {eventRecord &&
+                            eventRecord
                                 .filter((event) => event.type === section.name)
                                 .map((entry) => (
                                     <li
@@ -86,19 +76,18 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                                         <EventEntry entry={entry} type={type} />
                                     </li>
                                 ))}
-                            {isAdmin && (
-                                <li className="event-record__entry event-record__entry--new">
-                                    <NewEntry
-                                        onAdd={(name, year) =>
-                                            onAddEntry(name, year)
-                                        }
-                                    />
-                                </li>
-                            )}
-                        </ol>
-                    </section>
-                ))}
-            </div>
-        </>
+                        {isAdmin && (
+                            <li className="event-record__entry event-record__entry--new">
+                                <NewEntry
+                                    onAdd={(name, year) =>
+                                        onAddEntry(name, year, section.name)
+                                    }
+                                />
+                            </li>
+                        )}
+                    </ol>
+                </section>
+            ))}
+        </motion.div>
     );
 };
