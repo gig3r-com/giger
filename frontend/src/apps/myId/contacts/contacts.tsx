@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
-import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { RootState } from '../../../store/store';
@@ -29,14 +28,6 @@ export const Contacts: FC = () => {
         user && setSelectedUser(user);
     };
 
-    const starClasses = (userId: string) =>
-        classNames({
-            'contacts__list-item-action': true,
-            'material-icons': true,
-            'contacts__list-item-action--outline':
-                !currentUser?.favoriteUserIds.includes(userId)
-        });
-
     useEffect(
         function onNavigationBack() {
             if (!contactId) {
@@ -60,10 +51,12 @@ export const Contacts: FC = () => {
             </span>
             <div className="contacts__list-item-actions">
                 <span
-                    className={starClasses(user.id)}
+                    className='contacts__list-item-action material-icons'
                     onClick={() => toggleUserAsFavorite(user.id)}
                 >
-                    star
+                    {currentUser?.favoriteUserIds.includes(user.id)
+                        ? 'star'
+                        : 'star_outline'}
                 </span>
                 <span
                     className="contacts__list-item-action material-icons"
