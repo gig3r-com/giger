@@ -462,7 +462,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [UserRoles.INFLUENCER],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,

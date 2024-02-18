@@ -247,7 +247,7 @@ export const CharSummary: FC<{
                             })
                         }
                     />
-                    {isPrivate && (
+                    {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
                         <>
                             <AdminEditableField
                                 type={FieldTypes.SLIDER}

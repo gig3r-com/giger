@@ -28,6 +28,17 @@ export const Contacts: FC = () => {
         user && setSelectedUser(user);
     };
 
+    const sortedContacts = (contacts: IUserBase[]) =>
+        contacts.sort((a, b) => {
+            if (a.handle < b.handle) {
+                return -1;
+            }
+            if (a.handle > b.handle) {
+                return 1;
+            }
+            return 0;
+        });
+
     useEffect(
         function onNavigationBack() {
             if (!contactId) {
@@ -51,7 +62,7 @@ export const Contacts: FC = () => {
             </span>
             <div className="contacts__list-item-actions">
                 <span
-                    className='contacts__list-item-action material-icons'
+                    className="contacts__list-item-action material-icons"
                     onClick={() => toggleUserAsFavorite(user.id)}
                 >
                     {currentUser?.favoriteUserIds.includes(user.id)
@@ -76,13 +87,13 @@ export const Contacts: FC = () => {
                         <MemoizedFormattedMessage id="FAVORITES" />
                     </h2>
                     <ul className="contacts__list contacts__list--relation">
-                        {favorites.map(mapContacts)}
+                        {sortedContacts(favorites).map(mapContacts)}
                     </ul>
                     <h2 className="contacts__heading">
                         <MemoizedFormattedMessage id="OTHER_USERS" />
                     </h2>
                     <ul className="contacts__list contacts__list--all">
-                        {otherUsers.map(mapContacts)}
+                        {sortedContacts(otherUsers).map(mapContacts)}
                     </ul>
                 </motion.div>
             )}

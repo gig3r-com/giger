@@ -14,7 +14,7 @@ import {
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
-import { IUserPrivate, IUserPublic } from '../../models/user';
+import { IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
 
 /**
@@ -114,6 +114,12 @@ export function useUserService() {
         return [rand[0], rand[1]].join('');
     };
 
+    const isInfluencer = (userId: string) => {
+        const user = userList.find((user) => user.id === userId);
+
+        return user?.roles?.includes(UserRoles.INFLUENCER);
+    };
+
     async function getUserById(
         userId: string,
         type: 'private'
@@ -176,6 +182,7 @@ export function useUserService() {
         getUserById,
         getUserByHandle,
         getHandleForConvo,
-        toggleUserAsFavorite
+        toggleUserAsFavorite,
+        isInfluencer
     };
 }

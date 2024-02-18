@@ -60,7 +60,8 @@ export enum UserTypes {
 }
 
 export enum UserRoles {
-    ADMIN = 'admin'
+    ADMIN = 'admin',
+    INFLUENCER = 'influencer',
 }
 
 export interface ICharStats {
