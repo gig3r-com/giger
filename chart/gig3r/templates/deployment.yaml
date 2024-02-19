@@ -91,6 +91,8 @@ spec:
         env:
         - name: SWAGGER_JSON
           value: /tmp/swagger.yml
+        - name: BASE_URL
+          value: "/swagger"
         {{- if .Values.swagger.envs }}
         {{- range $key, $val := .Values.swagger.envs }}
         - name: {{ $key }}
