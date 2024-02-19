@@ -77,6 +77,7 @@ jobs:
             --set database.user=${{ env.HELM_ENVIRONMENT }} \
             --set database.admin.user=postgres \
             --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }}
+            --set-file swagger.config=./swagger.yml
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true
