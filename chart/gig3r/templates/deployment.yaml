@@ -70,21 +70,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: swagger
+  name: {{ include "gig3r.swagger.app" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: swagger
+      app: {{ include "gig3r.swagger.app" . }}
   template:
     metadata:
       labels:
-        app: swagger
+        app: {{ include "gig3r.swagger.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
       containers:
       - image: swaggerapi/swagger-ui
-        name: swagger
+        name: {{ include "gig3r.swagger.app" . }}
         ports:
         - containerPort: 8080
           protocol: TCP
@@ -106,8 +106,8 @@ spec:
           readOnly: true
       volumes:
       - name: config
-        secret:
-          secretName: swagger-config
+        configMap:
+          name: swagger-config
       restartPolicy: Always
 
 {{- end -}}

@@ -39,7 +39,7 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "gig3r.frontend.app" . }}
+            name: {{ include "gig3r.swagger.app" . }}
             port:
               number: 80
       {{- end }}

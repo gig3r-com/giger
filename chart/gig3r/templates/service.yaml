@@ -33,3 +33,24 @@ spec:
   selector:
     app: {{ include "gig3r.backend.app" . }}
   sessionAffinity: None
+
+---
+{{- if ne .Values.environment "app" -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.swagger.app" . }}
+  name: {{ include "gig3r.swagger.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.swagger.app" . }}
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: {{ include "gig3r.swagger.app" . }}
+  sessionAffinity: None
+
+{{- end -}}
