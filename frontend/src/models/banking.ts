@@ -1,9 +1,7 @@
-import { IUser } from "./user";
-
 export interface ITransaction {
     id: string;
-    to: IUser;
-    from: IUser;
+    to: string; //userId
+    from: string; //userId
     amount: number;
     date: string; // date timestamp
 }
@@ -12,7 +10,7 @@ export interface IAccount {
     balance: number;
     transactions: ITransaction[];
     id: string;
-    owner: IUser;
+    owner: string; //userId
     type: AccountType
     accountNumber: string;
 }
