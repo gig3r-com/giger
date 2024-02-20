@@ -1,14 +1,13 @@
 import { FC, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { MyIdNavigation } from '../my-id-navigation';
-import { useMyIdPresenceAnimation } from '../myIdPresenceAnimation.service';
 
 import '../my-id-global.scss';
 
 export const Details: FC = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const navHook = useRef<HTMLDivElement>(null);
-    const { myIdNavigate } = useMyIdPresenceAnimation();
 
     return (
         <div className="navigation-hook" key={location.pathname}>
@@ -17,7 +16,7 @@ export const Details: FC = () => {
                     <MyIdNavigation
                         active={true}
                         onItemClick={(item) =>
-                            myIdNavigate(`/myid/details/${item}`, navHook)
+                            navigate(`/myid/details/${item}`)
                         }
                     />
                 )}
