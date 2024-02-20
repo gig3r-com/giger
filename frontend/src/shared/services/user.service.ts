@@ -14,7 +14,7 @@ import {
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
-import { IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
+import { IUserBase, IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
 
 /**
@@ -149,6 +149,10 @@ export function useUserService() {
             : getUserPublicDataByHandle(handle);
     };
 
+    const getBasicUserDataById = (userId: string): IUserBase | undefined => {
+        return userList.find((user) => user.id === userId);
+    };
+
     const getHandleForConvo = (convoId: string, userId: string) => {
         const user = userList.find((user) => userId === user.id);
 
@@ -179,6 +183,7 @@ export function useUserService() {
         saveLoginData,
         getAnonymizedHandle,
         canAnonymizeChatHandle,
+        getBasicUserDataById,
         getUserById,
         getUserByHandle,
         getHandleForConvo,

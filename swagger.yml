@@ -100,6 +100,18 @@ components:
           enum:
             - intel
             - tech
+            - Guns & ammo
+            - drugs
+            - other merch
+            - Item acquisition
+            - android acquisition
+            - debt collection
+            - intimidation
+            - kidnapping
+            - bodyguard
+            - hit
+            - lover experience
+            - sex doll
             - delivery
             - quickie
             - first aid

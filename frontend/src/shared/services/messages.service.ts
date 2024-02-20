@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import { useIntl } from 'react-intl';
 import { IConversation, IMessage, IMessageStatus } from '../../models/message';
-import { IUser } from '../../models/user';
 import { users } from '../../mocks/users';
 import { mockConvos } from '../../mocks/convos';
 import {
@@ -12,7 +12,7 @@ import {
 import { RootState } from '../../store/store';
 import { mockUserConvos } from '../../mocks/userConvos';
 import { useUserService } from './user.service';
-import { useIntl } from 'react-intl';
+import { IUserBase } from '../../models/user';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -20,7 +20,7 @@ import { useIntl } from 'react-intl';
 export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
-    const { currentUser, updateUserData, getUserById } = useUserService();
+    const { currentUser, updateUserData, getBasicUserDataById } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -78,7 +78,7 @@ export function useMessagesService() {
     const createInitialMessages = (participants: string[]): IMessage[] => {
         const initialMessages: IMessage[] = [];
         participants.forEach((participant) => {
-            const handle = getUserById(participant)?.handle;
+            const handle = getBasicUserDataById(participant)?.handle;
             const message = createMessage(
                 `<@${handle} ${intl.formatMessage({
                     id: 'ENTERED_THE_CHAT'
@@ -151,7 +151,7 @@ export function useMessagesService() {
      * Returns a list of users that match the given string
      * @param name
      */
-    const findUserByName: (name: string) => IUser[] = (name) => {
+    const findUserByName: (name: string) => IUserBase[] = (name) => {
         console.log(name);
         return users.filter((user) =>
             user.name.toLowerCase().includes(name.toLowerCase())
