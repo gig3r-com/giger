@@ -16,3 +16,9 @@ database:
   admin:
     user: postgres
     password: superSecretPassword
+
+swagger:
+  config: |-
+    # put your swagger config here
+  envs:
+    SWAGGER_PORT: 80

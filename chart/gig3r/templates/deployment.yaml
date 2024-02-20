@@ -64,3 +64,50 @@ spec:
       restartPolicy: Always
 
 ---
+
+{{- if ne .Values.environment "app" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swagger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swagger
+  template:
+    metadata:
+      labels:
+        app: swagger
+        randstr: {{ randAlphaNum 20 }}
+    spec:
+      containers:
+      - image: swaggerapi/swagger-ui
+        name: swagger
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: SWAGGER_JSON
+          value: /tmp/swagger.yml
+        - name: BASE_URL
+          value: "/swagger"
+        {{- if hasKey (default dict .Values.swagger) "envs"  }}
+        {{- range $key, $val := .Values.swagger.envs }}
+        - name: {{ $key }}
+          value: {{ $val }}
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: /tmp/swagger.yml
+          name: config
+          subPath: "config"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: swagger-config
+      restartPolicy: Always
+
+{{- end -}}
