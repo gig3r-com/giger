@@ -56,6 +56,6 @@ false
 }
 {{- end }}
 
-{{- define "gig3r.backend.app" -}}
+{{- define "gig3r.swagger.app" -}}
 gig3r-swagger-{{ default "app" .Values.environment }}
 {{- end }}
