@@ -93,7 +93,7 @@ spec:
           value: /tmp/swagger.yml
         - name: BASE_URL
           value: "/swagger"
-        {{- if (.Values | dig "swagger" "envs" dict ) }}
+        {{- if hasKey (default dict .Values.swagger) "envs"  }}
         {{- range $key, $val := .Values.swagger.envs }}
         - name: {{ $key }}
           value: {{ $val }}
