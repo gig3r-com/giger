@@ -38,13 +38,13 @@ spec:
   - host: {{ include "gig3r.swagger.url" . }}
       http:
         paths:
-      - path: /(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.swagger.app" . }}
-            port:
-              number: 80
+        - path: /(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: {{ include "gig3r.swagger.app" . }}
+              port:
+                number: 80
   {{- end }}
   tls:
   - hosts:
