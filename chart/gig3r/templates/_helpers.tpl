@@ -6,11 +6,11 @@ Expand the name of the chart.
 {{- end }}
 
 {{- define "gig3r.frontend.app" -}}
-gig3r-front-{{ default "app" .Values.environment }}
+gig3r-{{ default "app" .Values.environment }}-front
 {{- end }}
 
 {{- define "gig3r.backend.app" -}}
-gig3r-api-{{ default "app" .Values.environment }}
+gig3r-{{ default "app" .Values.environment }}-api
 {{- end }}
 
 {{- define "gig3r.frontend.image" -}}
@@ -57,5 +57,9 @@ false
 {{- end }}
 
 {{- define "gig3r.swagger.app" -}}
-gig3r-swagger-{{ default "app" .Values.environment }}
+gig3r-{{ default "app" .Values.environment }}-swagger
+{{- end }}
+
+{{- define "gig3r.swagger.url" -}}
+{{- cat "swagger." (include "gig3r.host" .) | nospace -}}
 {{- end }}

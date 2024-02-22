@@ -48,7 +48,7 @@ spec:
   - name: {{ include "gig3r.swagger.app" . }}
     port: 80
     protocol: TCP
-    targetPort: 80
+    targetPort: 8080
   selector:
     app: {{ include "gig3r.swagger.app" . }}
   sessionAffinity: None
