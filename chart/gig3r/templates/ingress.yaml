@@ -34,8 +34,10 @@ spec:
             name: {{ include "gig3r.frontend.app" . }}
             port:
               number: 80
-    {{- if ne .Values.environment "app" }}
-    - host: {{ include "gig3r.swagger.url" . }}
+  {{- if ne .Values.environment "app" }}
+  - host: {{ include "gig3r.swagger.url" . }}
+      http:
+        paths:
       - path: /(.*)
         pathType: ImplementationSpecific
         backend:
@@ -43,7 +45,7 @@ spec:
             name: {{ include "gig3r.swagger.app" . }}
             port:
               number: 80
-      {{- end }}
+  {{- end }}
   tls:
   - hosts:
     - {{ include "gig3r.host" . }}
