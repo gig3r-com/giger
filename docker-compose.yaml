@@ -33,6 +33,17 @@ services:
     depends_on:
       - postgres
 
+  swagger:
+    image: swaggerapi/swagger-ui
+    restart: unless-stopped
+    ports:
+      - ${SWAGGER_PORT:-8090}:8080
+    volumes:
+      - ./swagger.yml:/tmp/swagger.yml
+    environment:
+      SWAGGER_JSON: "/tmp/swagger.yml"
+      BASE_URL: "/swagger"
+
   postgres:
     image: postgres:16-alpine
     environment:
