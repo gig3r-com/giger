@@ -159,6 +159,77 @@ paths:
                 properties:
                   message: 
                     type: string
+  /events:
+    post:
+      summary: Create a new event
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - MEDICAL
+              - CRIMINAL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/MedEvent'
+                - $ref: '#/components/schemas/CriminalEvent'
+      responses:
+        '201':
+          description: Gig created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+  /events/{eventId}:
+    patch:
+      summary: Update an event by id
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          description: ID of the event to update
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: updated event data
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/MedEvent'
+                - $ref: '#/components/schemas/CriminalEvent'
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+    delete:
+      summary: Remove an event by id
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          description: ID of the event to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Event deleted successfully
+
 components:
   schemas:
     Gig:

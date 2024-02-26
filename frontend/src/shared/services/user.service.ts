@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
 import {
-    getUserPublicDataByHandle,
     getUserPublicDataById,
     users
 } from '../../mocks/users';
@@ -140,15 +139,6 @@ export function useUserService() {
         }
     }
 
-    const getUserByHandle = async (
-        handle: string,
-        type: 'private' | 'public'
-    ) => {
-        return type === 'private'
-            ? userList.find((user) => user.handle === handle)
-            : getUserPublicDataByHandle(handle);
-    };
-
     const getBasicUserDataById = (userId: string): IUserBase | undefined => {
         return userList.find((user) => user.id === userId);
     };
@@ -185,7 +175,6 @@ export function useUserService() {
         canAnonymizeChatHandle,
         getBasicUserDataById,
         getUserById,
-        getUserByHandle,
         getHandleForConvo,
         toggleUserAsFavorite,
         isInfluencer
