@@ -1,5 +1,11 @@
 @import '../variables.scss';
 
+// disables the 'tap to search' feature on chrome mobile
+* { 
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -moz-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 input,
 textarea,
 select {
