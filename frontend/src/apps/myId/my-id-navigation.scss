@@ -1,0 +1,105 @@
+@import '../../variables.scss';
+
+@mixin bordercut($border-cut: 10px, $border-thickness: 1px, $border-color: $primary-color) {
+    border: $border-thickness solid $border-color;
+    border-bottom: calc($border-thickness + 1px) solid $border-color;
+    background:
+        linear-gradient(45deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) bottom left / 50%
+            50%,
+        linear-gradient(-45deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) bottom right/50%
+            50%,
+        linear-gradient(135deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) top left / 50% 50%,
+        linear-gradient(-135deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) top right / 50%
+            50%;
+    background-origin: border-box;
+    background-repeat: no-repeat;
+    -webkit-mask:
+        linear-gradient(45deg, transparent 0 $border-cut, $border-color 0) bottom left,
+        linear-gradient(-45deg, transparent 0 $border-cut, $border-color 0) bottom right,
+        linear-gradient(135deg, transparent 0 $border-cut, $border-color 0) top left,
+        linear-gradient(-135deg, transparent 0 $border-cut, $border-color 0) top right;
+    -webkit-mask-size: 50.5% 50.5%;
+    -webkit-mask-repeat: no-repeat;
+}
+
+.my-id-navigation {
+    height: $standard-viewport-height;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: $app-background;
+
+    &__list {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: stretch;
+        gap: 1rem;
+    }
+
+    &__item {
+        position: relative;
+        flex: 1 1 30%;
+        display: flex;
+        justify-content: center;
+        padding: 1.5rem;
+        border: 1px solid $primary-color; //fallback if bordercut mixin fails
+        border-radius: 1rem;
+        cursor: pointer;
+
+        font-size: 20px;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-stretch: semi-condensed;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+
+        @include bordercut;
+
+        &:active {
+            @include bordercut(10px, 2px, $text-color);
+        }
+
+        &--badge-new {
+            height: 1rem;
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            bottom: 0.25rem;
+            left: 0.5rem;
+
+            text-transform: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: $accent-color;
+
+            & .oval {
+                margin-inline: -0.5rem;
+                transform: scale(0.15);
+                position: relative;
+                width: 2rem;
+                height: 2rem;
+                border-radius: 50%;
+                background-color: $accent-color;
+
+                &::after {
+                    content: ' ';
+                    top: -1rem;
+                    left: -1rem;
+                    position: absolute;
+                    width: calc(100% + 1.8rem);
+                    height: calc(100% + 1.8rem);
+
+                    border: solid 1px $accent-color;
+                    border-radius: 50%;
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+}

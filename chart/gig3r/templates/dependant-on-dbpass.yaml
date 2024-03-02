@@ -6,7 +6,8 @@ kind: Secret
 metadata:
   name: gig3r-secret
   annotations:
-    app.kubernetes.io/managed-by: "Helm"
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-1000"
 data:
   DB_PASSWORD: "{{ $dbpass }}"
   backend_config.json: >-
@@ -20,6 +21,7 @@ metadata:
   name: db-creator
   annotations:
     helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-100"
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   template:
@@ -43,6 +45,75 @@ spec:
   backoffLimit: 4
 
 ---
+#this job initiates application database
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-initer
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "10"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-initer
+        image: {{ include "gig3r.backend.image" . }}
+        command: ["sh"]
+        args: 
+        - -c
+        - "flask db upgrade; {{ if ne .Values.environment "app" }}flask init staticdata; flask init backdoor;{{ end }}"
+        env:
+        - name: PGPASSWORD
+          value: "{{ .Values.database.admin.password }}"
+        volumeMounts:
+        - mountPath: /app/.config.json
+          name: config
+          subPath: "backend_config.json"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: gig3r-secret
+      restartPolicy: Never
+  backoffLimit: 4
+
+---
+
+# This job upgrades postgres database
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-updater
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "20"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-updater
+        image: {{ include "gig3r.backend.image" . }}
+        command: ["flask"]
+        args: 
+        - db
+        - upgrade
+        volumeMounts:
+        - mountPath: /app/.config.json
+          name: config
+          subPath: "backend_config.json"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: gig3r-secret
+      restartPolicy: Never
+  backoffLimit: 4
+
+---
 # This job deletes postgres database
 apiVersion: batch/v1
 kind: Job
@@ -50,6 +121,7 @@ metadata:
   name: db-deleter
   annotations:
     helm.sh/hook: post-delete
+    helm.sh/hook-weight: "100"
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   template:

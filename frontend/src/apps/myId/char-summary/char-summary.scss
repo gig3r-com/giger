@@ -5,7 +5,7 @@
     margin-bottom: 1rem;
     clip-path: polygon(calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%, 0 0);
     position: relative;
-    font-size: 1.2rem;
+    font-size: 0.875rem;
 
     &:before {
         content: '';
@@ -16,6 +16,11 @@
         position: absolute;
         right: -4px;
         top: 9px;
+    }
+
+    &__data {
+        max-height: calc(#{$standard-viewport-height} - 185px);
+        overflow: scroll;
     }
 
     &__basic-data {
@@ -31,13 +36,16 @@
         border-bottom: 1px solid $base-text-color;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
-    }
+        display: flex;
+        align-items: center;
 
-    &__surname {
-        margin-right: 0.5rem;
+        .select-user {
+            margin-left: 1rem;
+        }
     }
 
     &__name {
+        margin-left: 0.5rem;
         color: $base-text-color;
     }
 
@@ -45,17 +53,32 @@
     &__entry {
         width: 50%;
         box-sizing: border-box;
-        border-bottom: 1px solid $base-text-color;
-        box-sizing: border-box;
+        border-bottom: 1px solid $base-text-color !important;
+        padding: 0.25rem 1rem;
+        color: white;
+
+        &--full-length {
+            width: 100%;
+        }
+
+        &--extended {
+            width: 60%;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
     }
 
     &__label {
         color: $base-text-color;
         padding-left: 1rem;
-    }
+        display: flex;
+        align-items: center;
 
-    &__entry {
-        padding-right: 1rem;
+        &--short {
+            width: 40%;
+            padding-left: 0.25rem;
+        }
     }
 
     &__signature {
@@ -65,7 +88,6 @@
     &__signature-and-basic-data,
     &__details {
         display: flex;
-        margin-bottom: 1rem;
     }
 
     &__details {
@@ -87,6 +109,13 @@
     &__id-valid-to {
         text-transform: uppercase;
         color: $base-text-color;
+    }
+
+    input,
+    select,
+    option {
+        font-size: 0.875rem;
+        padding: 0 0.7rem;
     }
 }
 

@@ -1,0 +1,53 @@
+@import '../../../variables.scss';
+
+.event-record {
+    width: 100%;
+    height: calc(100vh - 137px);
+    overflow: auto;
+
+    &__list {
+        padding: 0;
+    }
+
+    &__entry {
+        list-style: none;
+        display: flex;
+        justify-content: flex-start;
+        position: relative;
+        flex-direction: column;
+
+        &--new {
+            flex-direction: row;
+            margin-top: 0.25rem;
+        }
+    }
+
+    &__header {
+        font-family: 'JetBrains Mono';
+        color: $primary-color;
+        margin-top: 1rem;
+        display: flex;
+        text-transform: capitalize;
+    }
+
+    &__section {
+        font-family: 'JetBrains Mono';
+
+        &:not(:last-of-type) {
+            border-bottom: 1px solid $primary-color;
+        }
+
+        &:first-of-type .medical__header {
+            margin-top: 0;
+        }
+    }
+
+    &__add-entry {
+        background-color: $primary-color;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

@@ -5,10 +5,15 @@ export interface IAnimationParams {
     delay: number;
 }
 
-export type animationType = 'fadeIn' | 'expandCollapse' | 'horExpand';
+export type animationType =
+    | 'fadeIn'
+    | 'expandCollapse'
+    | 'horExpand'
+    | 'slideInLeft'
+    | 'slideInRight';
 
 /**
- * A hook that returns a function that generates standardized animations used thorough the app. 
+ * A hook that returns a function that generates standardized animations used thorough the app.
  */
 export function useStandardizedAnimation() {
     const generateAnimation = (
@@ -42,6 +47,26 @@ export function useStandardizedAnimation() {
                     transition: {
                         delay: params?.delay || 0,
                         ease: params?.timingFunction || standardTimingFunction
+                    }
+                };
+            case 'slideInLeft':
+                return {
+                    initial: { x: '-100vw' },
+                    animate: { x: '0' },
+                    exit: { x: '100vw' },
+                    transition: {
+                        ease: params?.timingFunction || standardTimingFunction,
+                        duration: 2.6
+                    }
+                };
+            case 'slideInRight':
+                return {
+                    initial: { x: '100vw' },
+                    animate: { x: '0' },
+                    exit: { x: '-100vw' },
+                    transition: {
+                        ease: params?.timingFunction || standardTimingFunction,
+                        duration: 2.6
                     }
                 };
             default:

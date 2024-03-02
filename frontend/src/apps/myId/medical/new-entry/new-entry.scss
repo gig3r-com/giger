@@ -1,0 +1,42 @@
+@import '../../../../variables.scss';
+
+.new-entry {
+
+    &__input {
+        border: 0;
+        background-color: rgba(84, 90, 233, 0.2);
+        padding: 0.1rem;
+        color: white;
+    }
+
+    &__add {
+        width: 52px;
+        margin-right: 0.5rem;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 0;
+        background: white;
+        border-radius: 0;
+        color: $primary-color;
+
+        &:disabled {
+            opacity: 0.3;
+        }
+    }
+
+    &__year {
+        margin-left: 0.5rem;
+        width: 65px;
+        min-width: 65px;
+        margin-right: 0.5rem;
+    }
+
+    &__year-input {
+        text-align: center;
+    }
+
+    &__info {
+        width: calc(100% - 112px);
+        margin-right: 0.5rem;
+    }
+}

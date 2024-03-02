@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl';
-import { GigStatus, IGig } from '../../../models/gig';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { GigStatus, IGig } from '../../../models/gig';
+import { useUserService } from '../../../shared/services/user.service';
 
 export function useGigHelpers() {
     const intl = useIntl();
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser } = useUserService();
     const { gigId } = useParams();
     const navigate = useNavigate();
     const buttonColor = (status: GigStatus) => {
@@ -20,6 +19,9 @@ export function useGigHelpers() {
                 statusColor = 'secondary';
                 break;
             case GigStatus.COMPLETED:
+                statusColor = 'accent';
+                break;
+            case GigStatus.DISPUTE:
                 statusColor = 'accent';
                 break;
             case GigStatus.PENDING:
@@ -38,8 +40,10 @@ export function useGigHelpers() {
                 return intl.formatMessage({ id: 'ACCEPT_GIG' });
             case GigStatus.IN_PROGRESS:
                 return intl.formatMessage({ id: 'MARK_AS_DONE' });
+            case GigStatus.DISPUTE:
+                return intl.formatMessage({ id: 'DISPUTED' });
             case GigStatus.COMPLETED:
-                return 'VIEW GIG';
+                return intl.formatMessage({ id: 'VIEW GIG' });
         }
     };
 
@@ -51,7 +55,7 @@ export function useGigHelpers() {
             'gig--available': gig.status === GigStatus.AVAILABLE,
             'gig--selected': gigId === gig.id,
             'gig--other-selected': gigId !== gig.id && gigId !== undefined,
-            'gig--mine': gig.author.id === currentUser?.id
+            'gig--mine': gig.authorId === currentUser?.id
         });
 
     const gigSummaryClassName = (gig: IGig) =>
@@ -60,7 +64,8 @@ export function useGigHelpers() {
             'gig__summary--completed': gig.status === GigStatus.COMPLETED,
             'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
             'gig__summary--available': gig.status === GigStatus.AVAILABLE,
-            'gig__summary--mine': gig.author.id === currentUser?.id
+            'gig__summary--dispute': gig.status === GigStatus.DISPUTE,
+            'gig__summary--mine': gig.authorId === currentUser?.id
         });
 
     const secondButtonText = (gigTaken: boolean) => {

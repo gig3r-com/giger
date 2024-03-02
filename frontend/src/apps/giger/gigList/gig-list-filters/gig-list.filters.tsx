@@ -13,9 +13,6 @@ import { setCategories } from '../../../../store/gigs.slice';
 import { Controls } from '../../../../shared/components/controls/controls';
 
 import './gig-list-filters.scss';
-// import { ShaderPrecision } from '../../shared/shader-bg/shader.types';
-// import { ShaderBG } from '../../shared/shader-bg/shaderBg';
-// import { blackFlower } from '../../shared/shader-bg/shaders/blackFlower/blackFlower';
 
 export const GigListFilters: FC<IGigListFiltersProps> = ({
     toggleMenuState,
@@ -51,8 +48,6 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
 
     const save = () => {
         dispatch(setCategories([...newSelectedCategories]));
-        //setPreviousSelectedCategories(selectedCategories);
-        //onFiltersUpdate(selectedCategories);
         toggleMenuState();
     };
 
@@ -77,7 +72,6 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                         {categoryRow.map((category, catIndex) => (
                             <AnimatePresence key={category}>
                                 <Hexagon
-                                    //selected={selectedCategories.has(category)}
                                     select={selectCategory}
                                     category={category}
                                     delayMultiplier={catIndex}

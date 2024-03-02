@@ -46,16 +46,16 @@ jobs:
     secrets: inherit
 
   comment:
+    if: github.event_name == 'pull_request'
     runs-on: microk8s-runner-1
     needs: [ deploy-helm-chart ]
     steps:
       - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'PR had been deployed successfully. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
+              body: 'PR had been deployed successfully. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
             })

@@ -1,32 +1,36 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
 import { ITransaction } from '../../../models/banking';
-import { IUser } from '../../../models/user';
-import { RootState } from '../../../store/store';
+import { IUserPublic } from '../../../models/user';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './transaction.scss';
 
 export const Transaction: FC<{ transaction: ITransaction }> = ({
     transaction
 }) => {
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const { currentUser, getUserById } = useUserService();
+    const [otherParty, setOtherParty] = useState<IUserPublic | null>(null);
 
-    const otherParty: IUser =
-        transaction.to.id === currentUser?.id
-            ? transaction.from
-            : transaction.to;
+    useEffect(
+        function fetchOtherParty() {
+            const otherPartyId =
+                transaction.to === currentUser?.id
+                    ? transaction.from
+                    : transaction.to;
+            getUserById(otherPartyId, 'public').then(setOtherParty);
+        },
+        [transaction, currentUser]
+    );
 
-    const sign = transaction.to.id === currentUser?.id ? '+' : '-';
+    const sign = transaction.to === currentUser?.id ? '+' : '-';
 
     return (
-        <motion.li
-            className="transaction"
-        >
+        <motion.li className="transaction">
             <span className="transaction__direction"></span>
             <div className="transaction__meta">
                 <span className="transaction__other-party">
-                    {otherParty.name}
+                    {otherParty?.name}
                 </span>
                 <span className="transaction__date">
                     {new Date(transaction.date).toLocaleDateString()}

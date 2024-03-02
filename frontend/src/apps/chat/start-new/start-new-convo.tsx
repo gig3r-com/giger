@@ -1,24 +1,28 @@
 import { FC, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
+import { useNavigate } from 'react-router';
+import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RootState } from '../../../store/store';
-import { IUser } from '../../../models/user';
+import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import { UserSelect } from '../user-select/user-select';
+import { Controls } from '../../../shared/components/controls/controls';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './start-new-convo.scss';
-import { useNavigate } from 'react-router';
-import { Controls } from '../../../shared/components/controls/controls';
 
 export const StartNewConvo: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
+    const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const usersWrapper = useRef<HTMLDivElement>(null);
     const users = useSelector((state: RootState) => state.users.users);
     const { createConvo } = useMessagesService();
-    const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
+    const { canAnonymizeChatHandle } = useUserService();
+    const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
     const [searchString, setSearchString] = useState('');
 
     const filteredUsers = useMemo(() => {
@@ -27,7 +31,7 @@ export const StartNewConvo: FC = () => {
         );
     }, [users, searchString]);
 
-    const handleSelection = (user: IUser) => {
+    const handleSelection = (user: IUserBase) => {
         if (selectedUsers.includes(user)) {
             setSelectedUsers(selectedUsers.filter((u) => u !== user));
         } else {
@@ -36,21 +40,28 @@ export const StartNewConvo: FC = () => {
         adjustContainerSize();
     };
 
-    const adjustContainerSize = () => setTimeout(() => {
-        if (!usersWrapper.current) {
-            return;
-        }
-        const inputHeight = document.querySelector('.user-select')?.clientHeight;
+    const adjustContainerSize = () =>
+        setTimeout(() => {
+            if (!usersWrapper.current) {
+                return;
+            }
+            const inputHeight =
+                document.querySelector('.user-select')?.clientHeight;
 
-        if (inputHeight) {
-            usersWrapper.current.style.height = `calc(100vh - ${
-                inputHeight + 210
-            }px`;
-        }
-    }, 0);
+            if (inputHeight) {
+                usersWrapper.current.style.height = `calc(100vh - ${
+                    inputHeight + 210
+                }px`;
+            }
+        }, 0);
 
     const onConvoCreation = () => {
-        const id = createConvo(selectedUsers);
+        const id = createConvo(
+            selectedUsers.map((user) => user.id),
+            undefined,
+            undefined,
+            anonymize === 'YES'
+        );
         setSelectedUsers([]);
         setSearchString('');
         navigate(`/chat/${id}`);
@@ -59,18 +70,41 @@ export const StartNewConvo: FC = () => {
     return (
         <AnimatePresence>
             <motion.section
-                key='new-convo'
+                key="new-convo"
                 className="start-new-convo"
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
             >
-                <Controls key='controls' leftSideOption="back" />
+                <Controls key="controls" leftSideOption="back" />
                 <UserSelect
                     selected={selectedUsers}
                     onValueUpdate={setSearchString}
                     searchString={searchString}
                 />
+
+                {canAnonymizeChatHandle() && (
+                    <select
+                        className="start-new-convo__anonymize"
+                        value={anonymize}
+                        onChange={(event) =>
+                            setAnonymize(
+                                event.target.value as 'YES' | 'NO' | ''
+                            )
+                        }
+                    >
+                        <option value={''} disabled hidden>
+                            <MemoizedFormattedMessage id="ANONYMIZE_HANDLE" />
+                        </option>
+                        <option value={'NO'}>
+                            {intl.formatMessage({ id: 'NO' })}
+                        </option>
+                        <option value={'YES'}>
+                            {intl.formatMessage({ id: 'YES' })}
+                        </option>
+                    </select>
+                )}
+
                 <div className="start-new-convo__users" ref={usersWrapper}>
                     {filteredUsers.map((user) => (
                         <div key={user.id} className="start-new-convo__user">

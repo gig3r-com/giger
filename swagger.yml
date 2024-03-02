@@ -1,0 +1,580 @@
+openapi: '3.0.2'
+info:
+  title: Giger
+  version: '1.0'
+servers:
+  - url: https://dev.gig3r.com/api/v1
+
+paths:
+  /gigs:
+    get:
+      summary: Retrieve all gigs
+      responses:
+        '200':
+          description: A list of all gigs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gig'
+    post:
+      summary: Create a new gig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gig'
+      responses:
+        '201':
+          description: Gig created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+  /gigs/{gigId}:
+    get:
+      summary: Retrieve a gig by ID
+      parameters:
+        - in: path
+          name: gigId
+          required: true
+          description: ID of the gig to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The requested gig
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+    put:
+      summary: Update a gig by ID
+      parameters:
+        - in: path
+          name: gigId
+          required: true
+          description: ID of the gig to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gig'
+      responses:
+        '200':
+          description: Gig updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+    delete:
+      summary: Delete a gig by ID
+      parameters:
+        - in: path
+          name: gigId
+          required: true
+          description: ID of the gig to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Gig deleted successfully
+  /users:
+    get:
+      summary: Get basic info of all users
+      responses:
+        '200':
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserBase'
+  /user/{userId}:
+    get: 
+      summary: Get information about a user by id
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - base
+              - public
+              - private
+          description: type of the data to retrieve. private is only available to user in question, hackers, and directors
+      responses:
+        '200':
+          description: The requested user
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UserBase'
+                  - $ref: '#/components/schemas/UserPublic'
+                  - $ref: '#/components/schemas/UserPrivate'
+    patch:
+      summary: Update a user by id using partial data
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: ID of the user to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gig' 
+      responses:
+        '200':
+          description: updated user data
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UserBase'
+                  - $ref: '#/components/schemas/UserPublic'
+                  - $ref: '#/components/schemas/UserPrivate'
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+  /events:
+    post:
+      summary: Create a new event
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - MEDICAL
+              - CRIMINAL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/MedEvent'
+                - $ref: '#/components/schemas/CriminalEvent'
+      responses:
+        '201':
+          description: Gig created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+  /events/{eventId}:
+    patch:
+      summary: Update an event by id
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          description: ID of the event to update
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: updated event data
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/MedEvent'
+                - $ref: '#/components/schemas/CriminalEvent'
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+    delete:
+      summary: Remove an event by id
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          description: ID of the event to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Event deleted successfully
+
+components:
+  schemas:
+    Gig:
+      type: object
+      properties:
+        payout:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum:
+            - intel
+            - tech
+            - Guns & ammo
+            - drugs
+            - other merch
+            - Item acquisition
+            - android acquisition
+            - debt collection
+            - intimidation
+            - kidnapping
+            - bodyguard
+            - hit
+            - lover experience
+            - sex doll
+            - delivery
+            - quickie
+            - first aid
+            - cyberware
+            - medEvac
+            - renting location
+            - bank account manipulation
+            - spoofing
+            - security
+            - android hijack
+            - complaint
+        reputationRequired:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5]
+        id:
+          type: string
+        anonymizedAuthor:
+          type: boolean
+        status:
+          type: string
+          enum:
+            - available
+            - in_progress
+            - completed
+            - pending
+            - dispute
+        authorId:
+          type: string
+        takenById:
+          type: string
+      required:
+        - payout
+        - title
+        - description
+        - category
+        - id
+        - status
+        - authorId
+      example:
+        payout: 1000
+        title: "Sample Gig"
+        description: "Description of the gig"
+        category: "tech"
+        reputationRequired: 3
+        id: "123456"
+        anonymizedAuthor: false
+        status: "available"
+        authorId: "user123"
+        takenById: null
+    UserBase:
+      required:
+        - id
+        - name
+        - surname
+        - handle
+        - roles
+        - aliasMap
+        - active
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        surname: 
+          type: string
+        handle: 
+          type: string
+        active: 
+          type: boolean
+        aliasMap:
+          type: object
+        roles: 
+          type: string
+          enum: 
+            - admin
+            - influencer
+            - director
+    UserPublic:
+      allOf:
+        - $ref: '#/components/schemas/UserBase'
+        - type: object
+          properties:
+            professionPublic:
+              type: string
+            typePublic:
+              type: string
+              enum: 
+                - android
+                - human
+                - ai
+            age:
+              type: number
+            vibe: 
+              $ref: '#/components/schemas/Vibe'
+            wealthLevel:
+              $ref: '#/components/schemas/WealthLevels'
+    UserPrivate:
+      allOf:
+        - $ref: '#/components/schemas/UserPublic'
+        - type: object
+          properties:
+            cyberwareLevel: 
+              type: number
+            professionActual:
+              type: string
+            typeActual:
+              type: string
+              enum: 
+                - android
+                - human
+                - ai
+            hackingSkill:
+              type: number
+              enum: 
+                - 0
+                - 1
+                - 2
+                - 3
+            confrontationVsNegotiation:
+              $ref: '#/components/schemas/CharStat'
+            cowardVsFighter:
+              $ref: '#/components/schemas/CharStat'
+            talkativeVsSilent:
+              $ref: '#/components/schemas/CharStat'
+            thinkerVsDoer:
+              $ref: '#/components/schemas/CharStat'
+            combatSkill:
+              type: number
+              enum: 
+                - 0
+                - 1
+                - 2
+                - 3
+            vibeFunction: 
+              type: string
+            vibeEngagement:
+              $ref: '#/components/schemas/VibeEngagement'
+            favoriteUserIds:
+              type: array
+              items:
+                type: string
+            relations:
+              type: array
+              items: 
+                $ref: '#/components/schemas/Relation'
+            goals: 
+              type: array
+              items:
+                $ref: '#/components/schemas/Goal'
+            meta:
+              type: array
+              items: 
+                $ref: '#/components/schemas/Meta'
+            privateRecord:
+              type: array
+              items:
+                $ref: '#/components/schemas/PrivateRecord'
+            criminalRecord:
+              type: array
+              items: 
+                $ref: '#/components/schemas/CriminalEvent'
+            medHistory:
+              type: array
+              items: 
+                $ref: '#/components/schemas/MedEvent'                   
+    Vibe:
+      type: string
+      enum: 
+        - DIZORDERS
+        - S.W.4.R.M.
+        - OVERSEERS
+        - DIGIEVO
+        - HEDONIZERS
+        - NO_VIBE
+    VibeEngagement:
+      type: string
+      enum:
+        - HYPED
+        - DISINTERESTED
+        - DOUBTING
+        - INTERESTED
+        - FANATIC
+    WealthLevels:
+      type: string
+      enum:
+        - BROKE
+        - IMPOVERISHED
+        - STRUGGLING
+        - MODEST
+        - STABLE
+        - COMFORTABLE
+        - AFFLUENT
+        - ELITE
+    CharStat:
+      type: number
+      enum: 
+        - 0
+        - 1
+        - 2
+        - 3
+    ObscurableInfo:
+      type: object
+      properties: 
+        revealCode: 
+          type: string
+    UserRecord:
+      allOf:
+        - $ref: '#/components/schemas/ObscurableInfo'
+        - type: object
+          properties:
+            id: 
+              type: string
+            userId:
+              type: string
+            description:
+              type: string
+            recordType:
+              $ref: '#/components/schemas/UserRecordTypes'
+    UserRecordTypes:
+      type: string
+      enum: 
+        - RELATION
+        - GOAL
+        - META
+        - PRIVATE_RECORD
+    Relation:
+      allOf:
+        - $ref: '#/components/schemas/UserRecord'
+        - type: object
+          properties:
+            relationTo: 
+              type: string
+            recordType:
+              type: string
+              enum: 
+                - RELATION
+    Goal:
+      allOf:
+        - $ref: '#/components/schemas/UserRecord'
+        - type: object
+          properties:
+            title:
+              type: string
+            recordType:
+              type: string
+              enum:
+                - GOAL
+    Meta:
+      allOf:
+        - $ref: '#/components/schemas/UserRecord'
+        - type: object
+          properties:
+            description:
+              type: string
+            recordType:
+              type: string
+              enum:
+                - META
+            isLink: 
+              type: boolean
+            type:
+              type: string
+              enum:
+                - ARCHETYPE
+                - MUSIC
+                - INSPIRATION
+                - AESTHETICS
+                - PROCEDURE
+    PrivateRecord:
+      allOf:
+        - $ref: '#/components/schemas/UserRecord'
+        - type: object
+          properties:
+            title:
+              type: string
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/ObscurableInfo'
+        - type: object
+          properties:
+            id:
+              type: string
+            eventDescription:
+              type: string
+            status:
+              type: string
+              enum:
+                - CURRENT
+                - HISTORICAL
+            timestamp: 
+              type: string
+            name:
+              type: string
+    CriminalEvent: 
+      allOf:
+        - $ref: '#/components/schemas/Event'
+        - type: object
+          properties:
+            type: 
+              type: string
+              enum: 
+                - VICTIM
+                - SUSPECT
+                - WANTED
+                - WITNESS
+                - PUNISHMENT
+    MedEvent:
+      allOf:
+        - $ref: "#/components/schemas/Event"
+        - type: object
+          properties:
+            type: 
+              type: string
+              enum: 
+                - CYBERWARE
+                - MEDICAL_DRUG
+                - MEDICAL_PROCEDURE
+                - SYMPTOM
+

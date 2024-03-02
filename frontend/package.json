@@ -8,14 +8,19 @@
         "build": "tsc && vite build",
         "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "generate-pwa-assets": "pwa-assets-generator"
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.9.5",
         "classnames": "^2.3.2",
+        "dayjs": "^1.11.10",
         "framer-motion": "^10.15.1",
+        "lodash-es": "^4.17.21",
+        "material-icons": "^1.13.12",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-hot-toast": "^2.4.1",
         "react-intl": "^6.4.4",
         "react-redux": "^8.1.2",
         "react-router": "^6.14.2",
@@ -25,11 +30,13 @@
         "vite-plugin-svgr": "^3.2.0"
     },
     "devDependencies": {
+        "@types/lodash-es": "^4.17.12",
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
         "@types/uuid": "^9.0.2",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
+        "@vite-pwa/assets-generator": "^0.0.10",
         "@vitejs/plugin-react": "^4.0.3",
         "eslint": "^8.46.0",
         "eslint-plugin-react-hooks": "^4.6.0",
@@ -37,6 +44,7 @@
         "prettier": "^3.0.1",
         "sass": "^1.64.2",
         "typescript": "^5.0.2",
-        "vite": "^4.4.5"
+        "vite": "^4.4.5",
+        "vite-plugin-pwa": "^0.16.7"
     }
 }

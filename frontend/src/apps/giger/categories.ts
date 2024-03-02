@@ -11,11 +11,11 @@ import IconTech from '../../.../../assets/icon-tech.svg';
 
 export const categories: IGigCategory[] = [
     {
-        type: GigCategoryNames.RELATION,
+        type: GigCategoryNames.LOVER_EXPERIENCE,
         icon: IconRelation
     },
     {
-        type: GigCategoryNames.COMBAT,
+        type: GigCategoryNames.HIT,
         icon: IconCombat
     },
     {
@@ -23,23 +23,23 @@ export const categories: IGigCategory[] = [
         icon: IconTech
     },
     {
-        type: GigCategoryNames.INFO,
+        type: GigCategoryNames.INTEL,
         icon: IconInfo
     },
     {
-        type: GigCategoryNames.COURIER,
+        type: GigCategoryNames.DELIVERY,
         icon: IconCourier
     },
     {
-        type: GigCategoryNames.MEDICAL,
+        type: GigCategoryNames.FIRST_AID,
         icon: IconMed
     },
     {
-        type: GigCategoryNames.HACKING,
+        type: GigCategoryNames.BANK_ACCOUNT_MANIPULATION,
         icon: IconHack
     },
     {
-        type: GigCategoryNames.WEAPONS,
+        type: GigCategoryNames.GUNS_AND_AMMO,
         icon: IconAmmo
     },
     {

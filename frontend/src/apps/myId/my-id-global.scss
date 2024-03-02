@@ -1,0 +1,29 @@
+@import '../../variables.scss';
+
+.my-id-nav-entry {
+    animation: myIdNavEntry $standard-duration $standard-timing-function;
+}
+
+.my-id-nav-leave {
+    animation: myIdLeave $standard-duration $standard-timing-function;
+}
+
+@keyframes myIdNavEntry {
+    0% {
+        transform: translateX(100vw);
+    }
+    100% {
+        transform: translateX(0);
+    }
+    
+}
+
+@keyframes myIdLeave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100vw);
+    }
+    
+}

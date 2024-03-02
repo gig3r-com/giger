@@ -66,15 +66,22 @@ pip install -r requirements.txt
 
 Modify the necessary configuration files for your Flask-SocketIO backend application.
 
-## Step 6: Run the Application
+## Step 6: Run db upgrade
+
+Run db upgrade with every deployment.
+```bash
+flask db upgrade
+```
+
+## Step 7: Run the Application
 
 Start your Flask-SocketIO application:
 
 ```bash
-python main.py
+python app.py
 ```
 
-## Step 7: Access the Application
+## Step 8: Access the Application
 
 Your Flask-SocketIO backend application should now be running. You can access it by opening a web browser and navigating to the appropriate address (e.g., `http://localhost:5000`).
 

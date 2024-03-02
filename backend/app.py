@@ -1,7 +1,7 @@
-from main import create_app, socketio
+import main as m
 import config
 
-app = create_app(config.DB_INIT)
+app = m.create_app()
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0')
+    m.socketio.run(app, host='0.0.0.0')

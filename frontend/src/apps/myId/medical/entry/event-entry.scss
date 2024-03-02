@@ -1,0 +1,55 @@
+@import '../../../../variables.scss';
+
+.event-entry {
+    font-family: 'Saira', sans-serif;
+    margin-left: 0.5rem;
+
+    &__year {
+        color: $other-user-color;
+        width: 65px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+    }
+
+    &__info {
+        margin: 0.5rem;
+        color: white;
+        width: calc(100% - 117px);
+    }
+
+    &__remove-entry {
+        width: 32px;
+        height: 32px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__description {
+        max-height: 0;
+        opacity: 0;
+        padding-right: 1rem;
+        font-size: 0.875rem;
+        transition:
+            $standard-duration $standard-timing-function max-height,
+            $standard-duration $standard-timing-function opacity;
+
+        &--expanded {
+            max-height: 200px;
+            opacity: 1;
+        }
+
+        .admin-editable-field {
+            width: 100%;
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    &__summary {
+        display: flex;
+        align-items: center;
+    }
+}
