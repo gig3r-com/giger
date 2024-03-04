@@ -25,6 +25,7 @@ builder.Services.AddSingleton<ConversationService>();
 builder.Services.AddSingleton<EventService>();
 
 
+builder.Services.AddWebSocketManager();
 
 var app = builder.Build();
 
@@ -37,6 +38,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
+var webSocketOptions = new WebSocketOptions() { KeepAliveInterval = TimeSpan.FromSeconds(120) };
+app.UseWebSockets(webSocketOptions);
+app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
