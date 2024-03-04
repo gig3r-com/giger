@@ -2,8 +2,6 @@ using Giger.Connections.Handlers;
 using Giger.Connections.SocketsManagment;
 using Giger.Models;
 using Giger.Services;
-using System.Diagnostics;
-using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -17,13 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<GigService>();
-builder.Services.AddSingleton<AccountService>();
-builder.Services.AddSingleton<TransactionService>();
-builder.Services.AddSingleton<ConversationService>();
-builder.Services.AddSingleton<EventService>();
-
+builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();
 

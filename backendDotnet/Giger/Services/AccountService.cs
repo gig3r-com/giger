@@ -5,19 +5,13 @@ using MongoDB.Driver;
 
 namespace Giger.Services
 {
-    public class AccountService
+    public class AccountService : AbstractService
     { 
         private readonly IMongoCollection<Account> _accountsCollection;
 
-        public AccountService(IOptions<GigerDbSettings> gigerDatabaseSettings)
+        public AccountService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
-            var mongoClient = new MongoClient(
-                gigerDatabaseSettings.Value.ConnectionString);
-
-            var mongoDatabase = mongoClient.GetDatabase(
-                gigerDatabaseSettings.Value.DatabaseName);
-
-            _accountsCollection = mongoDatabase.GetCollection<Account>(
+            _accountsCollection = _mongoDatabase.GetCollection<Account>(
                 gigerDatabaseSettings.Value.GigsCollectionName);
         }
 

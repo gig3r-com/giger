@@ -5,20 +5,13 @@ using MongoDB.Driver;
 
 namespace Giger.Services
 {
-    public class UserService
+    public class UserService : AbstractService
     {
         private readonly IMongoCollection<UserPrivate> _usersCollection;
         
-        public UserService(
-            IOptions<GigerDbSettings> gigerDatabaseSettings)
+        public UserService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
-            var mongoClient = new MongoClient(
-                gigerDatabaseSettings.Value.ConnectionString);
-
-            var mongoDatabase = mongoClient.GetDatabase(
-                gigerDatabaseSettings.Value.DatabaseName);
-
-            _usersCollection = mongoDatabase.GetCollection<UserPrivate>(
+            _usersCollection = _mongoDatabase.GetCollection<UserPrivate>(
                 gigerDatabaseSettings.Value.UsersCollectionName);
         }
 

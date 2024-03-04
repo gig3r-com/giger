@@ -5,19 +5,13 @@ using MongoDB.Driver;
 
 namespace Giger.Services
 {
-    public class EventService
+    public class EventService : AbstractService
     { 
         private readonly IMongoCollection<Event> _eventsCollection;
 
-        public EventService(IOptions<GigerDbSettings> gigerDatabaseSettings)
+        public EventService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
-            var mongoClient = new MongoClient(
-                gigerDatabaseSettings.Value.ConnectionString);
-
-            var mongoDatabase = mongoClient.GetDatabase(
-                gigerDatabaseSettings.Value.DatabaseName);
-
-            _eventsCollection = mongoDatabase.GetCollection<Event>(
+            _eventsCollection = _mongoDatabase.GetCollection<Event>(
                 gigerDatabaseSettings.Value.GigsCollectionName);
         }
 
