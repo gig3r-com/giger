@@ -1,5 +1,4 @@
-﻿using Giger.Models.UserModels;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace Giger.Models.BankingModels
 {
@@ -7,7 +6,7 @@ namespace Giger.Models.BankingModels
     {
         [BsonId]
         public int Id { get; set; }
-        public User Owner { get; set; }
+        public int Owner { get; set; }
         public Transaction[] Transactions { get; set; }
         public AccountType Type { get; set; }
         public decimal Balance { get; set; }

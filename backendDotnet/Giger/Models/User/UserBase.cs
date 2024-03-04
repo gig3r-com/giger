@@ -1,5 +1,4 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using static Giger.Models.UserModels.UserPrivate;
 
 namespace Giger.Models.User
 {

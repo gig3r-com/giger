@@ -1,7 +1,6 @@
-﻿using Giger.Models.UserModels;
+﻿using Giger.Models.User;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson.IO;
 
 namespace Giger.Controllers
 {
@@ -13,10 +12,12 @@ namespace Giger.Controllers
 
         public UserController(UserService userService) => _userService = userService;
 
-        [HttpGet]
-        public async Task<List<UserPrivate>> Get() => await _userService.GetAsync();
+        #region PrivateUser
 
-        [HttpGet("{id:length(40)}")]
+        [HttpGet("private/all")]
+        public async Task<List<UserPrivate>> GetAllPrivateUsers() => await _userService.GetAllPrivateUsersAsync();
+            
+        [HttpGet("private/byId")]
         public async Task<ActionResult<UserPrivate>> Get(int id)
         {
             var user = await _userService.GetAsync(id);
@@ -28,10 +29,10 @@ namespace Giger.Controllers
             return user;
         }
 
-        [HttpGet("byName")]
-        public async Task<ActionResult<UserPrivate>> Get(string firstName)
+        [HttpGet("private/byName")]
+        public async Task<ActionResult<UserPrivate>> Get(string firstName, string surname)
         {
-            var user = await _userService.GetByFirstNameAsync(firstName);
+            var user = await _userService.GetByFirstNameAsync(firstName, surname);
             if (user is null)
             {
                 return NotFound();
@@ -40,44 +41,148 @@ namespace Giger.Controllers
             return user;
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<IActionResult> Post(UserPrivate newUser)
         {
             await _userService.CreateAsync(newUser);
-
             return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
         }
 
-        [HttpPut("{id:length(40)}")]
+
+        [HttpPut("byId")]
         public async Task<IActionResult> Update(int id, UserPrivate updatedUser)
         {
             var book = await _userService.GetAsync(id);
-
             if (book is null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             updatedUser.Id = book.Id;
-
-            await _userService.UpdateAsync(id, updatedUser);
-
-            return NoContent();
+            await _userService.UpsertAsync(id, updatedUser);
+            return Ok();
         }
 
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("byId")]
         public async Task<IActionResult> Delete(int id)
         {
             var book = await _userService.GetAsync(id);
-
             if (book is null)
+            {
+                return NoContent();
+            }
+
+            await _userService.RemoveAsync(id);
+            return Ok();
+        }
+        #endregion
+
+        #region PublicUser
+        [HttpGet("public/all")]
+        public async Task<List<UserPublic>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserPublic>().ToList());
+
+        [HttpGet("public/byId")]
+        public async Task<ActionResult<UserPublic>> GetPublicById(int id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
             {
                 return NotFound();
             }
 
-            await _userService.RemoveAsync(id);
-
-            return NoContent();
+            return user;
         }
+
+        [HttpGet("public/byName")]
+        public async Task<ActionResult<UserPublic>> GetPublicByName(string firstName, string surname)
+        {
+            var user = await _userService.GetByFirstNameAsync(firstName, surname);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+        #endregion
+
+        #region BaseUser
+        [HttpGet("general/all")]
+        public async Task<List<UserBase>> GetAllGeneralUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserBase>().ToList());
+
+        [HttpGet("general/byId")]
+        public async Task<ActionResult<UserBase>> GetBaseById(int id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
+        [HttpGet("general/byName")]
+        public async Task<ActionResult<UserBase>> GetBaseByName(string firstName, string surname)
+        {
+            var user = await _userService.GetByFirstNameAsync(firstName, surname);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+        #endregion
+
+        #region SingleProperties
+        [HttpGet("{id}/name")]
+        public async Task<ActionResult<string>> GetUserName(int id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            return user.Name;
+        }
+
+        [HttpPatch("{id}/name")]
+        public async Task<IActionResult> PatchUserName(int id, string newName)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.Name = newName;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/roles")]
+        public async Task<ActionResult<UserRoles[]>> GetUserRoles(int id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.Roles;
+        }
+
+        [HttpPatch("{id}/roles")]
+        public async Task<IActionResult> PatchUserRoles(int id, UserRoles[] newRoles)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.Roles = newRoles;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+        #endregion
     }
 }

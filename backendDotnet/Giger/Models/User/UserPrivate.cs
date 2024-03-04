@@ -1,11 +1,10 @@
 ﻿using Giger.Models.EventModels;
-using Giger.Models.User;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
 
-namespace Giger.Models.UserModels
+namespace Giger.Models.User
 {
-    public class UserPrivate : UserBase
+    public class UserPrivate : UserPublic
     {
         public int CyberwareLevel { get; set; }
         public string ProfessionActual { get; set; }

@@ -1,6 +1,4 @@
-﻿using static Giger.Models.UserModels.UserPrivate;
-
-namespace Giger.Models.User
+﻿namespace Giger.Models.User
 {
     public class UserPublic : UserBase
     {
@@ -10,6 +8,5 @@ namespace Giger.Models.User
         public int Age { get; set; }
         public Vibe Vibe { get; set; }
         public WealthLevels WealthLevel { get; set; }
-
     }
 }

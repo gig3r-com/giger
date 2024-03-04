@@ -1,5 +1,5 @@
 ﻿using Giger.Models;
-using Giger.Models.UserModels;
+using Giger.Models.User;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -8,28 +8,29 @@ namespace Giger.Services
     public class UserService
     {
         private readonly IMongoCollection<UserPrivate> _usersCollection;
-
+        
         public UserService(
-            IOptions<GigerDbSettings> bookStoreDatabaseSettings)
+            IOptions<GigerDbSettings> gigerDatabaseSettings)
         {
             var mongoClient = new MongoClient(
-                bookStoreDatabaseSettings.Value.ConnectionString);
+                gigerDatabaseSettings.Value.ConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(
-                bookStoreDatabaseSettings.Value.DatabaseName);
+                gigerDatabaseSettings.Value.DatabaseName);
 
             _usersCollection = mongoDatabase.GetCollection<UserPrivate>(
-                bookStoreDatabaseSettings.Value.UsersCollectionName);
+                gigerDatabaseSettings.Value.UsersCollectionName);
         }
 
-        public async Task<List<UserPrivate>> GetAsync() =>
+        public async Task<List<UserPrivate>> GetAllPrivateUsersAsync() =>
             await _usersCollection.Find(_ => true).ToListAsync();
 
         public async Task<UserPrivate?> GetAsync(int id) =>
             await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task<UserPrivate?> GetByFirstNameAsync(string firstName) =>
-            await _usersCollection.Find(x => x.FirstName == firstName).FirstOrDefaultAsync();
+        public async Task<UserPrivate?> GetByFirstNameAsync(string firstName, string surname) =>
+            await _usersCollection.Find(x => x.Name.Equals(firstName, StringComparison.OrdinalIgnoreCase)
+                  && x.Surname.Equals(surname, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
         public async Task CreateAsync(UserPrivate newBook) =>
             await _usersCollection.InsertOneAsync(newBook);
@@ -39,7 +40,6 @@ namespace Giger.Services
 
         public async Task UpsertAsync(int id, UserPrivate updatedBook) =>
             await _usersCollection.ReplaceOneAsync(x => x.Id == id, updatedBook, new ReplaceOptions() { IsUpsert = true });
-
 
         public async Task RemoveAsync(int id) =>
             await _usersCollection.DeleteOneAsync(x => x.Id == id);

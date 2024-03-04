@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace Giger.Models.UserModels
+namespace Giger.Models.User
 {
     public class UserFavorites
     {
