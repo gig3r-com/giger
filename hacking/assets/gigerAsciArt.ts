@@ -1,6 +1,4 @@
-import {useState} from "react";
-
-const gigerArt = [
+export const gigerArt = [
   '',
   '',
   `##########################################################################################`,
@@ -14,16 +12,3 @@ const gigerArt = [
   '',
   '',
 ]
-
-export function useLineStates() {
-  const [lines, setLines] = useState(gigerArt);
-  const [userLines, setUserLines] = useState([]);
-  const addLine = (line) => setLines(lines => [ ...lines, line]);
-  const addLines = (lines) => setLines(oldLines => [ ...oldLines, ...lines]);
-  const addUserLine = (line) => {
-    addLine(`<span class="user-line">${line}</span>`);
-    setUserLines(lines => [ ...lines, line]);
-  }
-
-  return { lines, setLines, userLines, setUserLines, addLine, addLines, addUserLine, };
-}

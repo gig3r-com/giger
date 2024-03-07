@@ -70,6 +70,8 @@ const createWindow = async () => {
   };
 
   mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
+    // fullscreen: true,
     show: false,
     width: 1024,
     height: 728,
@@ -98,8 +100,8 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  // const menuBuilder = new MenuBuilder(mainWindow);
+  // menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {

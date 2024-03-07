@@ -1,0 +1,68 @@
+@import "../variables.scss";
+
+body {
+  position: relative;
+  color: white;
+  background: #000;
+  font-family: "Courier New", monospace;
+}
+
+#root {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  white-space: pre-wrap;
+}
+
+.line {
+  color: $text-color;
+  font-size: 20px;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.user-line {
+  color: $base-text-color;
+}
+
+.secondary-color {
+  color: $secondary-color;
+}
+
+.accent-color {
+  color: $accent-color;
+}
+
+.accent-color-2 {
+  color: $accent-color-2;
+}
+
+.disabled-color {
+  color: $disabled-color;
+}
+
+.input-line {
+  display: flex;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  color: $base-text-color;
+}
+
+.input-prefix {
+  padding-right: 4px;
+}
+
+input {
+  background: black;
+  color: $base-text-color;
+  border: 0;
+  padding: 0 0 0 4px;
+  font-size: 18px;
+  width: 100%;
+}
+
+input:focus{
+  outline: none;
+}

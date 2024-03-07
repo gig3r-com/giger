@@ -1,41 +1,50 @@
-export const BREACH_VALUES = {
-    SUCCESS: 'success',
-    PARTIAL_SUCCESS: 'partial success',
-    FAIL: 'fail',
-}
+import * as COMMANDS from './commands';
+import { ProgramType, } from './types';
 
-export const programTypes = {
-    FIREWALL_BREACHER: 'firewall breacher',
-    OS_BREACHER: 'os breacher',
-}
+export const VIRTUAL_VAULT: ProgramType = {
+  name: 'VirtualVault',
+  type: 'firewall',
+};
 
-export const programs = {
-    A1: {
-        name: 'ProgramA1',
-        type: programTypes.FIREWALL_BREACHER,
-    },
-    B1: {
-        name: 'ProgramB1',
-        type: programTypes.FIREWALL_BREACHER,
-    },
-    C1: {
-        name: 'ProgramC1',
-        type: programTypes.FIREWALL_BREACHER,
-    },
-    W1: {
-        name: 'ProgramW1',
-        type: programTypes.OS_BREACHER,
-    },
-    X1: {
-        name: 'ProgramX1',
-        type: programTypes.OS_BREACHER,
-    },
-    Y1: {
-        name: 'ProgramY1',
-        type: programTypes.OS_BREACHER,
-    },
-    Z1: {
-        name: 'ProgramZ1',
-        type: programTypes.OS_BREACHER,
-    },
+export const ENCRYPT_GUARD: ProgramType = {
+  name: 'EncryptGuard',
+  type: 'firewall',
+};
+
+export const FIREWALL_X: ProgramType = {
+  name: 'FirewallX',
+  type: 'firewall',
+};
+
+export const FORCE_FIELD: ProgramType = {
+  name: 'ForceField',
+  type: 'encrypter',
+  timeOnPerfectBreach: 30000, // seconds
+  timeOnImperfectBreach: 15000, // seconds
+  encryptedCommands: [
+    COMMANDS.MAIN_COMMANDS.TRANSFER,
+    COMMANDS.MAIN_COMMANDS.COPYDATA,
+  ],
+};
+
+export const EVIL_TWIN: ProgramType = {
+  name: 'EvilTwin',
+  type: 'encrypter',
+  timeOnPerfectBreach: 20000, // seconds
+  timeOnImperfectBreach: 10000, // seconds
+  encryptedCommands: [
+    COMMANDS.MAIN_COMMANDS.TRANSFER,
+    COMMANDS.MAIN_COMMANDS.COPYDATA,
+  ],
+};
+
+export const JOAN_OF_ARC: ProgramType = {
+  name: 'JoanOfArc',
+  type: 'encrypter',
+  timeOnPerfectBreach: 20000, // seconds
+  timeOnImperfectBreach: 10000, // seconds
+  encryptedCommands: [
+    COMMANDS.MAIN_COMMANDS.TRANSFER,
+    COMMANDS.MAIN_COMMANDS.COPYDATA,
+  ],
 };

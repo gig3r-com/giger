@@ -1,55 +1,64 @@
-export const simpleCommands = {
-    CLEAR: 'clear',
-    END: 'end',
-}
+export const MAIN_COMMANDS = {
+  CLEAR: 'clear',
+  END: 'end',
+  LIST: 'list',
+  SCAN: 'scan',
+  RUN: 'run',
+  CONNECT: 'connect',
+  PROFILE: 'profile',
+  BALANCE: 'balance',
+  TRANSFER: 'transfer',
+  READDATA: 'readdata',
+  COPYDATA: 'copydata',
+  READMSG: 'readmsg',
+  SENDMSG: 'sendmsg',
+  LOG: 'log',
+};
 
-export const simpleCommandsDescriptions = {
-    [simpleCommands.CLEAR]: 'Clears console.',
-    [simpleCommands.END]: 'Ends connection to an address.'
-}
+export const LIST_COMMANDS = {
+  CMD: 'cmd',
+  PROG: 'prog',
+};
+const LIST_CMD = `${[MAIN_COMMANDS.LIST]} ${LIST_COMMANDS.CMD}`;
+const LIST_PROG = `${[MAIN_COMMANDS.LIST]} ${LIST_COMMANDS.PROG}`;
 
-export const complexCommands = {
-    LIST: 'list',
-    SCAN: 'scan',
-    RUN: 'run',
-    PROFILE: 'profile',
-}
+export const SCAN_COMMANDS = {
+  USERNAME: '[username]',
+  USER_ID: '[userId]',
+  SUBNETWORK_ID: '[subnetworkId]',
+};
+const SCAN_USERNAME = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.USERNAME}`;
+const SCAN_USER_ID = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.USER_ID}`;
+const SCAN_SUBNETWORK_ID = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.SUBNETWORK_ID}`;
 
-export const listCommands = {
-    CMD: 'cmd',
-    PROG: 'prog',
-}
+export const COMMANDS_DESCRIPTIONS = {
+  [MAIN_COMMANDS.CLEAR]: 'Clears console',
 
-export const scanCommands = {
-    USERNAME: '[username]',
-    USER_ID: '[userId]',
-    HASH_ID: '[hashId]',
-    ADDRESS: '[address]',
-}
+  [LIST_CMD]: 'Lists all available commands',
+  [LIST_PROG]: 'Lists all available exploits',
 
-export const runCommands = {
-    PROGRAM_ADDRESS: '[program] [address]',
-}
+  [SCAN_USERNAME]: 'Retrieve UserId',
+  [SCAN_USER_ID]: 'Retrieve user data',
+  [SCAN_SUBNETWORK_ID]: 'Retrieve subnetwork data',
+};
 
-export const profileCommands = {
-    ADDRESS: '[address]',
-}
+export const CONNECTED_COMMANDS_DESCRIPTIONS = {
+  [MAIN_COMMANDS.CLEAR]: 'Clears console',
+  [MAIN_COMMANDS.END]: 'Ends connection to a subnetwork',
 
-export const complexCommandsDescriptions = {
-    [complexCommands.LIST]: {
-        [listCommands.CMD]: 'Lists all available commands.',
-        [listCommands.PROG]: 'Lists all available exploits.',
-    },
-    [complexCommands.SCAN]: {
-        [scanCommands.USERNAME]: 'Retrieve UserId.',
-        [scanCommands.USER_ID]: 'Retrieve user data.',
-        [scanCommands.HASH_ID]: 'Retrieve user data.',
-        [scanCommands.ADDRESS]: 'Retrieve address data.',
-    },
-    [complexCommands.RUN]: {
-        [runCommands.PROGRAM_ADDRESS]: 'Run program on given address.',
-    },
-    [complexCommands.PROFILE]: {
-        [profileCommands.ADDRESS]: 'Run program on given address.',
-    },
-}
+  [LIST_CMD]: 'Lists all available commands',
+  [LIST_PROG]: 'Lists all available exploits',
+
+  [SCAN_USERNAME]: 'Retrieve UserId',
+  [SCAN_USER_ID]: 'Retrieve user data',
+  [SCAN_SUBNETWORK_ID]: 'Retrieve subnetwork data',
+
+  [MAIN_COMMANDS.PROFILE]: 'Retrive data about user in a subnetwork',
+  [MAIN_COMMANDS.BALANCE]: 'Receive accounts balances that this user has access to',
+  [MAIN_COMMANDS.TRANSFER]: 'Transfer funds',
+  [MAIN_COMMANDS.READDATA]: 'Reads data from users profile',
+  [MAIN_COMMANDS.COPYDATA]: 'Copy data from users profile to yours',
+  [MAIN_COMMANDS.READMSG]: 'Receive list of users hacked user was talking to',
+  [MAIN_COMMANDS.SENDMSG]: 'Send messages as hacked user',
+  [MAIN_COMMANDS.LOG]: 'Get all logs from subnetwork',
+};

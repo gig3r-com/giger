@@ -1,7 +1,5 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Terminal from './Terminal';
-import icon from '../../assets/icon.svg';
-import './App.css';
+import './App.scss';
 
 export default function App() {
   return (
