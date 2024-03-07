@@ -8,4 +8,19 @@
     &--own {
         color: $own-msg-color;
     }
+
+    &__sender {
+        margin: 0 0.5rem;
+
+        &--influencer {
+            color: $dark-text;
+            background-color: $other-user-color;
+            border-radius: 6px;
+            padding: 0 0.25rem;
+        }
+    }
+
+    &__text--influencer {
+        font-weight: 800;
+    }
 }

@@ -34,7 +34,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 0,
         talkativeVsSilent: 0,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -66,7 +66,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -99,7 +99,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -132,7 +132,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -165,7 +165,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -198,7 +198,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -231,7 +231,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -264,7 +264,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -297,7 +297,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -330,7 +330,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -364,6 +364,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
 
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -396,7 +397,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -429,7 +430,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -462,7 +463,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
-
+        roles: [UserRoles.INFLUENCER],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -495,6 +496,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -528,6 +530,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -561,6 +564,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -594,6 +598,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -627,6 +632,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -660,6 +666,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -693,6 +700,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -726,6 +734,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -759,6 +768,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -793,6 +803,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
 
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -825,6 +836,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -858,6 +870,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -891,6 +904,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -925,6 +939,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
 
+        roles: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -957,6 +972,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -990,6 +1006,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1023,6 +1040,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1056,6 +1074,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1089,6 +1108,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1122,6 +1142,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1155,6 +1176,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1188,6 +1210,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        roles: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1257,10 +1280,11 @@ export const systemUser: IUserPrivate = {
     cowardVsFighter: 4,
     talkativeVsSilent: 4,
     thinkerVsDoer: 0,
+    roles: [],
 
     combatSkill: 0,
-        criminalRecord: mockCriminalRecord,
-        medHistory: mockMedicalHistory,
+    criminalRecord: mockCriminalRecord,
+    medHistory: mockMedicalHistory,
     favoriteUserIds: [],
     active: true,
     privateRecords: [],
@@ -1302,6 +1326,7 @@ export const getUserPublicDataById = (userId: string): IUserPublic => {
         typePublic: user.typePublic,
         active: user.active,
         vibe: user.vibe,
+        roles: user.roles,
         wealthLevel: user.wealthLevel
     };
 };
@@ -1324,6 +1349,7 @@ export const getUserPublicDataByHandle = (handle: string): IUserPublic => {
         typePublic: user.typePublic,
         active: user.active,
         vibe: user.vibe,
+        roles: user.roles,
         wealthLevel: user.wealthLevel
     };
 };

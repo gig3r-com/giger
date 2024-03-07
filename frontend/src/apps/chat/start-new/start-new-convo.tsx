@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RootState } from '../../../store/store';
-import { IUser } from '../../../models/user';
+import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import { UserSelect } from '../user-select/user-select';
@@ -22,7 +22,7 @@ export const StartNewConvo: FC = () => {
     const users = useSelector((state: RootState) => state.users.users);
     const { createConvo } = useMessagesService();
     const { canAnonymizeChatHandle } = useUserService();
-    const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
     const [searchString, setSearchString] = useState('');
 
     const filteredUsers = useMemo(() => {
@@ -31,7 +31,7 @@ export const StartNewConvo: FC = () => {
         );
     }, [users, searchString]);
 
-    const handleSelection = (user: IUser) => {
+    const handleSelection = (user: IUserBase) => {
         if (selectedUsers.includes(user)) {
             setSelectedUsers(selectedUsers.filter((u) => u !== user));
         } else {
