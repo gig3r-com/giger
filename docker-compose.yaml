@@ -23,16 +23,30 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./backendDotnet/Giger
+      dockerfile: ../Dockerfile
     restart: unless-stopped
     expose:
-      - 80
+      - 8080
+    ports:
+      - 9090:8080
     volumes:
-      - ./docker/backend/config.json:/app/.config.json
-      - ./backend/migrations/:/app/migrations
+      - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
+    environment:
+      - GigerDB__ConnectionString=mongodb://mongo:27017
     depends_on:
-      - postgres
-
+      - mongo
+  
+  mongo:
+    image: mongo:latest
+    restart: unless-stopped
+    expose:
+      - 27017
+    volumes:
+      - ./docker/volumes/mongo:/data/db
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
   swagger:
     image: swaggerapi/swagger-ui
     restart: unless-stopped
@@ -44,9 +58,21 @@ services:
       SWAGGER_JSON: "/tmp/swagger.yml"
       BASE_URL: "/swagger"
 
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - ./docker/volumes/postgres:/var/lib/postgresql/data/
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   restart: unless-stopped
+  #   expose:
+  #     - 80
+  #   volumes:
+  #     - ./docker/backend/config.json:/app/.config.json
+  #     - ./backend/migrations/:/app/migrations
+  #   depends_on:
+  #     - postgres
+
+  # postgres:
+  #   image: postgres:16-alpine
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  #   volumes:
+  #     - ./docker/volumes/postgres:/var/lib/postgresql/data/
