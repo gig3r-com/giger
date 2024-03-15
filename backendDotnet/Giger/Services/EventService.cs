@@ -12,7 +12,7 @@ namespace Giger.Services
         public EventService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _eventsCollection = _mongoDatabase.GetCollection<Event>(
-                gigerDatabaseSettings.Value.GigsCollectionName);
+                gigerDatabaseSettings.Value.EventsCollectionName);
         }
 
         public async Task<List<Event>> GetAllAsync() =>

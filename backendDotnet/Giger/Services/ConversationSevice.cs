@@ -12,7 +12,7 @@ namespace Giger.Services
         public ConversationService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _conversationsCollection = _mongoDatabase.GetCollection<Conversation>(
-                gigerDatabaseSettings.Value.GigsCollectionName);
+                gigerDatabaseSettings.Value.ConversationsCollectionName);
         }
 
         public async Task<List<Conversation>> GetAllAsync() =>

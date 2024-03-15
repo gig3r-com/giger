@@ -12,7 +12,7 @@ namespace Giger.Services
         public AccountService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _accountsCollection = _mongoDatabase.GetCollection<Account>(
-                gigerDatabaseSettings.Value.GigsCollectionName);
+                gigerDatabaseSettings.Value.AccountsCollectionName);
         }
 
         public async Task<List<Account>> GetAllAsync() =>
