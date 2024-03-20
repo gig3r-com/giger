@@ -5,8 +5,9 @@ using Giger.Services;
 using System.Net.WebSockets;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -18,6 +19,15 @@ builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("Gi
 builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                      });
+});
 
 var app = builder.Build();
 
@@ -34,6 +44,7 @@ var webSocketOptions = new WebSocketOptions() { KeepAliveInterval = TimeSpan.Fro
 app.UseWebSockets(webSocketOptions);
 app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
 app.UseStaticFiles();
+app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
 
 app.Run();
