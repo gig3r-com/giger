@@ -1,6 +1,4 @@
-﻿using Giger.Models.EventModels;
-
-namespace Giger.Models.User.Records
+﻿namespace Giger.Models.User.Records
 {
     public class UserRecord : ObscurableInfo
     {
