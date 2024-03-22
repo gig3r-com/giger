@@ -6,11 +6,9 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GigController : Controller
+    public class GigController(GigService gigService, UserService userService, LoginService loginService) : AuthController(userService, loginService)
     {
-        private readonly GigService _gigService;
-
-        public GigController(GigService gigService) => _gigService = gigService;
+        private readonly GigService _gigService = gigService;
 
         [HttpGet]
         public async Task<List<Gig>> Get() => await _gigService.GetAllAsync();

@@ -6,11 +6,9 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController : Controller
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService) : AuthController(userService, loginService)
     {
-        private readonly AccountService _accountService;
-
-        public AccountController(AccountService accountService) => _accountService = accountService;
+        private readonly AccountService _accountService = accountService;
 
         [HttpGet]
         public async Task<List<Account>> Get() => await _accountService.GetAllAsync();

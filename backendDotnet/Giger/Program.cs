@@ -1,9 +1,11 @@
+using Giger;
 using Giger.Connections.Handlers;
 using Giger.Connections.SocketsManagment;
 using Giger.Models;
 using Giger.Services;
-using System.Net.WebSockets;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -13,7 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config =>
+{
+    config.OperationFilter<SwaggerHeaderFilter>();
+});
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
 builder.Services.AddDbServices();

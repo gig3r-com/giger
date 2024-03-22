@@ -6,12 +6,8 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UserController(UserService userService, LoginService loginService) : AuthController(userService, loginService)
     {
-        private readonly UserService _userService;
-
-        public UserController(UserService userService) => _userService = userService;
-
         #region PrivateUser
 
         [HttpGet("private/all")]
