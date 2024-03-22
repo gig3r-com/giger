@@ -71,6 +71,72 @@ namespace Giger.Controllers
             await _userService.RemoveAsync(id);
             return Ok();
         }
+
+        [HttpGet("favorites")]
+        public async Task<ActionResult<string[]>> GetFavorites(string userId)
+        {
+            if (!IsAuthorized(userId))
+            {
+                return Unauthorized();
+            }
+            var user = await _userService.GetAsync(userId);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            return user.FavoriteUserIds;
+        }
+
+        [HttpPut("favorites/add")]
+        public async Task<IActionResult> AddFavorite(string userId, string newFavorite)
+        {
+            if (!IsAuthorized(userId))
+            {
+                return Unauthorized();
+            }
+            var user = await _userService.GetAsync(userId);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            if (user.FavoriteUserIds.Contains(newFavorite))
+            {
+                return Ok();
+            }
+            user.FavoriteUserIds = [.. user.FavoriteUserIds, newFavorite];
+            await _userService.UpdateAsync(userId, user);
+            return Ok();
+        }
+
+        [HttpPut("favorites/remove")]
+        public async Task<IActionResult> RemoveFavorite(string userId, string oldFavorite)
+        {
+            if (!IsAuthorized(userId))
+            {
+                return Unauthorized();
+            }
+            var user = await _userService.GetAsync(userId);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.FavoriteUserIds = user.FavoriteUserIds.Where(f => f != oldFavorite).ToArray();
+            await _userService.UpdateAsync(userId, user);
+            return Ok();
+        }
+
+        [HttpPut("favorites")]
+        public async Task<IActionResult> UpdateFavorites(string userId, string[] newFavorites)
+        {
+            var user = await _userService.GetAsync(userId);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.FavoriteUserIds = newFavorites;
+            await _userService.UpdateAsync(userId, user);
+            return Ok();
+        }
         #endregion
 
         #region PublicUser
