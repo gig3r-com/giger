@@ -6,11 +6,9 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventController : Controller
+    public class EventController(UserService userService, LoginService loginService, EventService eventService) : AuthController(userService, loginService)
     {
-        private readonly EventService _gigerEventService;
-
-        public EventController(EventService gigerEventService) => _gigerEventService = gigerEventService;
+        private readonly EventService _gigerEventService = eventService;
 
         [HttpGet]
         public async Task<List<Event>> Get() => await _gigerEventService.GetAllAsync();

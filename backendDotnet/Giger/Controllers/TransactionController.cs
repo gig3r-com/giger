@@ -6,11 +6,9 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TransactionController : Controller
+    public class TransactionController(UserService userService, LoginService loginService, TransactionService transactionService) : AuthController(userService, loginService)
     {
-        private readonly TransactionService _transactionService;
-
-        public TransactionController(TransactionService transactionService) => _transactionService = transactionService;
+        private readonly TransactionService _transactionService = transactionService;
 
         [HttpGet]
         public async Task<List<Transaction>> Get() => await _transactionService.GetAllAsync();

@@ -6,11 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ConversationController : Controller
-    {
-        private readonly ConversationService _conversationService;
+    public class ConversationController(UserService userService, LoginService loginService, ConversationService conversationService) : AuthController(userService, loginService)
 
-        public ConversationController(ConversationService conversationService) => _conversationService = conversationService;
+    {
+        private readonly ConversationService _conversationService = conversationService;
 
         [HttpGet]
         public async Task<List<Conversation>> Get() => await _conversationService.GetAllAsync();
