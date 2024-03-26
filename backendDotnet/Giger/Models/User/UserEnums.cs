@@ -2,7 +2,9 @@
 {
     public enum UserRoles
     {
-        ADMIN
+        INFLUENCER,
+        ADMIN,
+        GOD
     }
 
     public enum UserTypes
