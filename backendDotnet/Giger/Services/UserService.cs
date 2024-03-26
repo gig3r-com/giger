@@ -18,23 +18,26 @@ namespace Giger.Services
         public async Task<List<UserPrivate>> GetAllPrivateUsersAsync() =>
             await _usersCollection.Find(_ => true).ToListAsync();
 
-        public async Task<UserPrivate?> GetAsync(int id) =>
-            await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<UserPrivate?> GetAsync(string userId) =>
+            await _usersCollection.Find(x => x.Id == userId).FirstOrDefaultAsync();
+
+        public async Task<UserPrivate?> GetByUserNameAsync(string userHandle) =>
+            await _usersCollection.Find(x => x.Handle == userHandle).FirstOrDefaultAsync();
 
         public async Task<UserPrivate?> GetByFirstNameAsync(string firstName, string surname) =>
             await _usersCollection.Find(x => x.Name.Equals(firstName, StringComparison.OrdinalIgnoreCase)
                   && x.Surname.Equals(surname, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(UserPrivate newBook) =>
-            await _usersCollection.InsertOneAsync(newBook);
+        public async Task CreateAsync(UserPrivate newUser) =>
+            await _usersCollection.InsertOneAsync(newUser);
 
-        public async Task UpdateAsync(int id, UserPrivate updatedBook) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == id, updatedBook );
+        public async Task UpdateAsync(string userId, UserPrivate updatedUser) =>
+            await _usersCollection.ReplaceOneAsync(x => x.Id == userId, updatedUser );
 
-        public async Task UpsertAsync(int id, UserPrivate updatedBook) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == id, updatedBook, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpsertAsync(string userId, UserPrivate updatedUser) =>
+            await _usersCollection.ReplaceOneAsync(x => x.Id == userId, updatedUser, new ReplaceOptions() { IsUpsert = true });
 
-        public async Task RemoveAsync(int id) =>
-            await _usersCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string userId) =>
+            await _usersCollection.DeleteOneAsync(x => x.Id == userId);
     }
 }

@@ -6,7 +6,7 @@ namespace Giger.Models.User
 {
     public class UserPrivate : UserPublic
     {
-        public int CyberwareLevel { get; set; }
+        public CyberwareLevel CyberwareLevel { get; set; } // changeable
         public string ProfessionActual { get; set; }
         public UserTypes TypeActual { get; set; }
         public string[] Assets { get; set; }
