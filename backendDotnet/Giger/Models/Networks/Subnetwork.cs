@@ -17,15 +17,27 @@ namespace Giger.Models.Networks
 
     public enum Firewall
     {
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("EncryptGuard")]
         EncryptGuard,
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("FirewallX")]
         FirewallX,
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("VirtualVault")]
         VirtualVault
     }
 
     public enum OperatingSystem
     {
-        ForceShield,
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("ForceField")]
+        ForceField,
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("EvilTwin")]
         EvilTwin,
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonElement("JoanOfArc")]
         JoanOfArc
     }
 
