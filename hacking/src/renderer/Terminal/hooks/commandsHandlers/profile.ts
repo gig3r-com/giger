@@ -1,22 +1,19 @@
 import ApiService from '../../../apiService/apiService';
 
 type UseProfileCommandsType = {
-  addLines: ([string]) => void,
-  addError: (string) => void,
-}
+  addLines: (lines: string[]) => void;
+  addErrors: (lines: string[]) => void;
+};
 
-export function useProfileCommands({ addLines, addError, }: UseProfileCommandsType) {
-  const executeProfileCommand = async (parsedCommand) => {
-    try {
-      parsedCommand.shift();
-      const subcommand = parsedCommand.join(' ');
-
-      throw new Error('Not implemented: ' + subcommand);
-
-    } catch (error) {
-      addError(error);
-    }
+export function useProfileCommands({
+  addLines,
+  addErrors,
+}: UseProfileCommandsType) {
+  const executeProfileCommand = async (parsedCommand: string[]): void => {
+    parsedCommand.shift();
+    const subcommand = parsedCommand.join(' ');
+    addLines(['Not Implemented Yet']);
   };
 
-  return { executeProfileCommand, };
+  return { executeProfileCommand };
 }

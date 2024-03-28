@@ -1,5 +1,5 @@
 import * as COMMANDS from './commands';
-import { ProgramType, } from './types';
+import { ProgramType } from './types';
 
 export const VIRTUAL_VAULT: ProgramType = {
   name: 'VirtualVault',

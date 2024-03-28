@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+const usb = require('usb');
 
 class AppUpdater {
   constructor() {
@@ -22,6 +23,23 @@ class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
+
+let windows = [];
+
+const webusb = new usb.WebUSB({
+  allowAllDevices: true,
+});
+
+const showDevices = async () => {
+  const devices = await webusb.getDevices();
+  const text = devices.map(d => `${d.vendorId}\t${d.productId}\t${d.serialNumber || '<no serial>'}`);
+  text.unshift('VID\tPID\tSerial\n-------------------------------------');
+  windows.forEach(win => {
+    if (win) {
+      win.webContents.send('devices', JSON.stringify(devices));
+    }
+  });
+};
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -71,7 +89,7 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
-    // fullscreen: true,
+    fullscreen: true,
     show: false,
     width: 1024,
     height: 728,
@@ -111,6 +129,7 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
+  windows.push(mainWindow);
   new AppUpdater();
 };
 
@@ -129,6 +148,8 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    webusb.addEventListener('connect', showDevices);
+    webusb.addEventListener('disconnect', showDevices);
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

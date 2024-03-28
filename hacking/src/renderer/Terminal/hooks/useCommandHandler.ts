@@ -1,8 +1,5 @@
 import { MAIN_COMMANDS } from '../data/commands';
 import {
-  useListCommands,
-  useScanCommands,
-  useRunCommands,
   useTransferCommands,
   useSendMsgCommands,
   useReadMsgCommands,
@@ -12,11 +9,15 @@ import {
   useCopyDataCommands,
   useBalanceCommands,
 } from './commandsHandlers';
+import useListCommands from './commandsHandlers/list';
+import useScanCommands from './commandsHandlers/scan';
+import useRunCommands from './commandsHandlers/run';
+import { unknownCommand } from '../responseLines/errors';
 
 type OnCommandHandleType = {
-  setLines: (line: string) => void;
-  addError: (line: string) => void;
-  addLines: (lines: []) => void;
+  setLines: (lines: string[]) => void;
+  addErrors: (line: string[]) => void;
+  addLines: (lines: string[]) => void;
   removeLastLine: () => void;
   connectToSubnetwork: () => void;
   isConnected: boolean;
@@ -24,11 +25,13 @@ type OnCommandHandleType = {
   isDecrypted: boolean;
   decryptSubnetwork: () => void;
   disconnectFromSubnetwork: () => void;
+  setInputDisabled: (inputDisabled: boolean) => void;
 };
+
 export default function useCommandHandler(props: OnCommandHandleType) {
   const {
     setLines,
-    addError,
+    addErrors,
     addLines,
     removeLastLine,
     connectToSubnetwork,
@@ -37,18 +40,36 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     isDecrypted,
     decryptSubnetwork,
     disconnectFromSubnetwork,
+    setInputDisabled,
   } = props;
+
+  /*
+   * List commands
+   */
   const { executeListCommand } = useListCommands({
     addLines,
-    addError,
+    addErrors,
     isConnected,
     isDecrypted,
     connectedSubnetwork,
+    setInputDisabled,
   });
-  const { executeScanCommand } = useScanCommands({ addLines, addError });
+
+  /*
+   * Scan commands
+   */
+  const { executeScanCommand } = useScanCommands({
+    addLines,
+    addErrors,
+    setInputDisabled,
+  });
+
+  /*
+   * Run commands
+   */
   const { executeRunCommand } = useRunCommands({
     addLines,
-    addError,
+    addErrors,
     removeLastLine,
     connectToSubnetwork,
     isConnected,
@@ -57,21 +78,21 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   });
   const { executeTransferCommand } = useTransferCommands({
     addLines,
-    addError,
+    addErrors,
   });
-  const { executeSendMsgCommand } = useSendMsgCommands({ addLines, addError });
-  const { executeReadMsgCommand } = useReadMsgCommands({ addLines, addError });
+  const { executeSendMsgCommand } = useSendMsgCommands({ addLines, addErrors });
+  const { executeReadMsgCommand } = useReadMsgCommands({ addLines, addErrors });
   const { executeReadDataCommand } = useReadDataCommands({
     addLines,
-    addError,
+    addErrors,
   });
-  const { executeProfileCommand } = useProfileCommands({ addLines, addError });
-  const { executeLogCommand } = useLogCommands({ addLines, addError });
+  const { executeProfileCommand } = useProfileCommands({ addLines, addErrors });
+  const { executeLogCommand } = useLogCommands({ addLines, addErrors });
   const { executeCopyDataCommand } = useCopyDataCommands({
     addLines,
-    addError,
+    addErrors,
   });
-  const { executeBalanceCommand } = useBalanceCommands({ addLines, addError });
+  const { executeBalanceCommand } = useBalanceCommands({ addLines, addErrors });
 
   const executeCommand = (command: string) => {
     const parsedCommand = command.toLowerCase().split(' ');
@@ -105,7 +126,7 @@ export default function useCommandHandler(props: OnCommandHandleType) {
       case MAIN_COMMANDS.LOG:
         return executeLogCommand(parsedCommand);
       default:
-        return addLines(['Command unknown']);
+        return addErrors(unknownCommand);
     }
   };
 

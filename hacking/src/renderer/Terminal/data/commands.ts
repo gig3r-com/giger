@@ -1,6 +1,7 @@
 export const MAIN_COMMANDS = {
   CLEAR: 'clear',
   END: 'end',
+  INSTALL: 'install',
   LIST: 'list',
   SCAN: 'scan',
   RUN: 'run',
@@ -25,14 +26,21 @@ const LIST_PROG = `${[MAIN_COMMANDS.LIST]} ${LIST_COMMANDS.PROG}`;
 export const SCAN_COMMANDS = {
   USERNAME: '[username]',
   USER_ID: '[userId]',
-  SUBNETWORK_ID: '[subnetworkId]',
+  SUBNETWORK_ID: '[subnetworkName]',
 };
 const SCAN_USERNAME = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.USERNAME}`;
 const SCAN_USER_ID = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.USER_ID}`;
-const SCAN_SUBNETWORK_ID = `${[MAIN_COMMANDS.SCAN]} ${SCAN_COMMANDS.SUBNETWORK_ID}`;
+const SCAN_SUBNETWORK_ID = `${[MAIN_COMMANDS.SCAN]} ${
+  SCAN_COMMANDS.SUBNETWORK_ID
+}`;
+
+const RUN = `${[MAIN_COMMANDS.RUN]} [subnetworkName] [programName]`;
+const PROFILE_SELF = `${[MAIN_COMMANDS.PROFILE]} .`;
+const LOG_SELF = `${[MAIN_COMMANDS.LOG]} .`;
 
 export const COMMANDS_DESCRIPTIONS = {
   [MAIN_COMMANDS.CLEAR]: 'Clears console',
+  [MAIN_COMMANDS.INSTALL]: 'Install program',
 
   [LIST_CMD]: 'Lists all available commands',
   [LIST_PROG]: 'Lists all available exploits',
@@ -40,6 +48,10 @@ export const COMMANDS_DESCRIPTIONS = {
   [SCAN_USERNAME]: 'Retrieve UserId',
   [SCAN_USER_ID]: 'Retrieve user data',
   [SCAN_SUBNETWORK_ID]: 'Retrieve subnetwork data',
+
+  [RUN]: 'Run program on specified subnetwork',
+  [PROFILE_SELF]: 'Get data from your own profile',
+  [LOG_SELF]: 'Get your own logs',
 };
 
 export const CONNECTED_COMMANDS_DESCRIPTIONS = {
@@ -54,7 +66,8 @@ export const CONNECTED_COMMANDS_DESCRIPTIONS = {
   [SCAN_SUBNETWORK_ID]: 'Retrieve subnetwork data',
 
   [MAIN_COMMANDS.PROFILE]: 'Retrive data about user in a subnetwork',
-  [MAIN_COMMANDS.BALANCE]: 'Receive accounts balances that this user has access to',
+  [MAIN_COMMANDS.BALANCE]:
+    'Receive accounts balances that this user has access to',
   [MAIN_COMMANDS.TRANSFER]: 'Transfer funds',
   [MAIN_COMMANDS.READDATA]: 'Reads data from users profile',
   [MAIN_COMMANDS.COPYDATA]: 'Copy data from users profile to yours',

@@ -1,12 +1,16 @@
-import { useState, } from 'react';
-import { addTimeline, } from '../utils/timelines';
-import { disconnected, } from '../responseLines/subnetwork';
+import { useState } from 'react';
+import { addTimeline } from '../utils/timelines';
+import { disconnected } from '../responseLines/subnetwork';
 
 type SystemHandlerProps = {
-  addLines: ([string]) => void,
-}
+  addLines: (lines: string[]) => void;
+  setPrefixType: (type: string) => void;
+};
 
-export function systemHandler({ addLines, setPrefixType, }: SystemHandlerProps) {
+export default function useSystemHandler({
+  addLines,
+  setPrefixType,
+}: SystemHandlerProps) {
   const [connectedSubnetwork, setConnectedSubnetwork] = useState(null);
   const [isDecrypted, setIsDecrypted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -17,17 +21,25 @@ export function systemHandler({ addLines, setPrefixType, }: SystemHandlerProps) 
     addLines(disconnected);
     setPrefixType('admin');
     setConnectedSubnetwork(null);
-  }
+  };
   const connectToSubnetwork = (subnetwork, timeInSubnetwork) => {
     setConnectedSubnetwork(subnetwork);
-    setPrefixType(subnetwork.name)
+    setPrefixType(subnetwork.name);
     setTimeLeft(timeInSubnetwork);
     addTimeline(timeInSubnetwork, step, disconnectFromSubnetwork);
-  }
-  const step = (timeLeft) => setTimeLeft(timeLeft);
+  };
+  const step = (timeLeft: number) => setTimeLeft(timeLeft);
   const decryptSubnetwork = () => {
     setIsDecrypted(true);
-  }
+  };
 
-  return { isConnected, connectedSubnetwork, timeLeft, connectToSubnetwork, disconnectFromSubnetwork, isDecrypted, decryptSubnetwork, };
+  return {
+    isConnected,
+    connectedSubnetwork,
+    timeLeft,
+    connectToSubnetwork,
+    disconnectFromSubnetwork,
+    isDecrypted,
+    decryptSubnetwork,
+  };
 }
