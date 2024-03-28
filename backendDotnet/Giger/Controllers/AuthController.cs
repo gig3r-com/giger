@@ -41,18 +41,34 @@ namespace Giger.Controllers
                 if (senderUser.Id == id)
                     return true;
 
-                if (senderUser.Roles != null)
-                {
-                    if (senderUser.Roles.Contains(UserRoles.GOD))
-                        return true;
+                if (senderUser.Roles.Contains(UserRoles.GOD))
+                    return true;
 
-                    if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
-                        return true;
-                }
+                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                    return true;
 
                 if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
                     return true;
             }
+
+            return false;
+        }
+
+        protected bool IsGodUser()
+        {
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return false;
+
+            var senderHandle = _loginService.GetByAuthTokenAsync(senderAuthToken).Result?.Username;
+            if (string.IsNullOrEmpty(senderHandle))
+                return false;
+
+            var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
+
+            var isGodUser = senderUser?.Roles.Contains(UserRoles.GOD);
+            if (isGodUser.HasValue && isGodUser.Value)
+                return true;
 
             return false;
         }

@@ -15,6 +15,8 @@
         public string EventsCollectionName { get; set; } = null!;
         public string ConversationsCollectionName { get; set; } = null!;
         public string MessagesCollectionName { get; set; } = null!;
+        public string NetworksCollectionName { get; set; } = null!;
+        public string SubnetworksCollectionName { get; set; } = null!;
 
     }
 }
