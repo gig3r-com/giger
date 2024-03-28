@@ -43,4 +43,11 @@
         AFFLUENT,
         ELITE
     }
+
+    public enum MindHacks
+    {
+        Enabled,
+        Disabled,
+        Banned
+    }
 }

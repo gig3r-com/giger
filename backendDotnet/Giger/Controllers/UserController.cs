@@ -120,7 +120,7 @@ namespace Giger.Controllers
             {
                 return NoContent();
             }
-            user.FavoriteUserIds = user.FavoriteUserIds.Where(f => f != oldFavorite).ToArray();
+            user.FavoriteUserIds = user.FavoriteUserIds.Except([oldFavorite]).ToArray();
             await _userService.UpdateAsync(userId, user);
             return Ok();
         }
