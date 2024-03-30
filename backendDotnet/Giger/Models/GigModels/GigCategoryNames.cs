@@ -1,5 +1,8 @@
-﻿namespace Giger.Models.GigModels
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.GigModels
 {
+    [JsonConverter(typeof(JsonStringEnumConverter<GigCategoryNames>))]
     public enum GigCategoryNames
     {
         INTEL,

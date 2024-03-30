@@ -15,7 +15,7 @@ namespace Giger.Controllers
         public async Task<List<Conversation>> Get() => await _conversationService.GetAllAsync();
 
         [HttpGet("id")]
-        public async Task<ActionResult<Conversation>> Get(int id)
+        public async Task<ActionResult<Conversation>> Get(string id)
         {
             var conversation = await _conversationService.GetAsync(id);
             if (conversation is null)
@@ -38,7 +38,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, Conversation updatedConversation)
+        public async Task<IActionResult> Update(string id, Conversation updatedConversation)
         {
             var conversation = await _conversationService.GetAsync(id);
 
@@ -55,7 +55,7 @@ namespace Giger.Controllers
         }
 
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var conversation = await _conversationService.GetAsync(id);
 

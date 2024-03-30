@@ -27,7 +27,7 @@ namespace Giger.Services
         public async Task UpdateAsync(Auths newAuth) =>
             await _authsCollection.ReplaceOneAsync(x => x.Id == newAuth.Id, newAuth);
 
-        public async Task RemoveAsync(int id) =>
+        public async Task RemoveAsync(string id) =>
             await _authsCollection.DeleteOneAsync(x => x.Id == id);
     }
 }

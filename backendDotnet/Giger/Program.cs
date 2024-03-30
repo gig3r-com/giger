@@ -2,10 +2,9 @@ using Giger;
 using Giger.Connections.Handlers;
 using Giger.Connections.SocketsManagment;
 using Giger.Models;
-using Giger.Services;
-using Microsoft.AspNetCore.Mvc;
+using Giger.Controllers;
 using System.Net;
-using System;
+using Giger.Services.Extensions;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
