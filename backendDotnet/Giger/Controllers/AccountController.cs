@@ -14,7 +14,7 @@ namespace Giger.Controllers
         public async Task<List<Account>> Get() => await _accountService.GetAllAsync();
 
         [HttpGet("id")]
-        public async Task<ActionResult<Account>> Get(int id)
+        public async Task<ActionResult<Account>> Get(string id)
         {
             var account = await _accountService.GetAsync(id);
             if (account is null)
@@ -26,7 +26,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("byParticipant")]
-        public async Task<ActionResult<Account>> GetOwner(int owner)
+        public async Task<ActionResult<Account>> GetOwner(string owner)
         {
             var account = await _accountService.GetByFirstNameAsync(owner);
             if (account is null)
@@ -46,7 +46,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, Account updatedAccount)
+        public async Task<IActionResult> Update(string id, Account updatedAccount)
         {
             var account = await _accountService.GetAsync(id);
 
@@ -63,7 +63,7 @@ namespace Giger.Controllers
         }
 
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var account = await _accountService.GetAsync(id);
 

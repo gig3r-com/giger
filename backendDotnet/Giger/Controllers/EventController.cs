@@ -14,7 +14,7 @@ namespace Giger.Controllers
         public async Task<List<Event>> Get() => await _gigerEventService.GetAllAsync();
 
         [HttpGet("id")]
-        public async Task<ActionResult<Event>> Get(int id)
+        public async Task<ActionResult<Event>> Get(string id)
         {
             var gigerEvent = await _gigerEventService.GetAsync(id);
             if (gigerEvent is null)
@@ -46,7 +46,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, Event updatedEvent)
+        public async Task<IActionResult> Update(string id, Event updatedEvent)
         {
             var gigerEvent = await _gigerEventService.GetAsync(id);
 
@@ -63,7 +63,7 @@ namespace Giger.Controllers
         }
 
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var gigerEvent = await _gigerEventService.GetAsync(id);
 
