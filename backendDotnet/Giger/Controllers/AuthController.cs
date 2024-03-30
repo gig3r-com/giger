@@ -10,7 +10,7 @@ namespace Giger.Controllers
         protected readonly UserService _userService = userService;
 
         // TODO: For testing purposes only
-        public static bool AuthEnabled { get; set; } = true;
+        public static bool AuthEnabled { get; set; } = false;
 
         protected bool IsAuthorized(string ownerId = "", short minimumHackingLevel = 1)
         {
