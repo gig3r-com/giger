@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "acriveHacker",
+    "Name": "Mike",
+    "AliasMap": [],
+    "Active": true,
+    "Handle": "mike_v",
+    "Roles": [],
+
+    "TypePublic": "HUMAN",
+    "ProfessionPublic": "",
+    "Surname": "V",
+    "Age": 42,
+    "Vibe": "OVERSEERS",
+    "WealthLevel": "COMFORTABLE",
+
+    "NetworkId": "",
+    "SubnetworkId": "",
+    "Exploits": [
+      "Cybercracker",
+      "Sledgehammer"
+    ],
+    "MindHack": "Banned",
+    "HackerName": "Oracle"
+  },
+  {
+    "_id": "7d708d5b-bc82-475c-8f78",
+    "Name": "John",
+    "AliasMap": [],
+    "Active": true,
+    "Handle": "john_doe",
+    "Roles": [],
+
+    "TypePublic": "HUMAN",
+    "ProfessionPublic": "",
+    "Surname": "Doe",
+    "Age": 42,
+    "Vibe": "OVERSEERS",
+    "WealthLevel": "COMFORTABLE",
+
+    "NetworkId": "qwerty",
+    "SubnetworkId": "qwertyironnet",
+    "Exploits": [],
+    "MindHack": "Disabled",
+    "HackerName": "",
+    "Assets": [],
+    "VibeEngagement": "DOUBTING",
+    "FavoriteUserIds": [],
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [],
+    "CriminalEvents": [],
+    "MedicalEvents": []
+  }
+]

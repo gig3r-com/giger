@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { usePrefix } from './hooks/usePrefix';
 import useCommandHandler from './hooks/useCommandHandler';
 import useKeyHandler from './hooks/useKeyHandler';
 import useLineStateHandler from './hooks/useLineStateHandler';
 import useSystemHandler from './hooks/useSystemHandler';
 import useAccessPointHandler from './hooks/useAccessPointHandler';
+import useLogin from './hooks/useLogin';
+import useDebugMode from './hooks/useDebugMode';
 import Loader from '../Loader';
 import apiService from '../apiService/apiService';
 
@@ -15,6 +17,7 @@ export default function Terminal() {
   const [inputDisabled, setInputDisabled] = useState(false);
   const changeInput = (e) => setInput(e.target.value);
   const stayFocused = (e) => e.target.focus();
+  const { toggleDebugMode } = useDebugMode();
   const {
     lines,
     setLines,
@@ -24,6 +27,8 @@ export default function Terminal() {
     removeLastLine,
     addErrors,
   } = useLineStateHandler({ prefixType });
+  const { enterPassword, isLoggedIn, logout, username, setUsername, userData } =
+    useLogin({ setInputDisabled, addLines, setPrefixType });
   const {
     isConnected,
     connectedSubnetwork,
@@ -45,8 +50,14 @@ export default function Terminal() {
     isDecrypted,
     decryptSubnetwork,
     setInputDisabled,
+    logout,
+    toggleDebugMode,
   });
   const { handleKey } = useKeyHandler({
+    username,
+    isLoggedIn,
+    setUsername,
+    enterPassword,
     addUserLine,
     setInput,
     executeCommand,
@@ -58,6 +69,9 @@ export default function Terminal() {
     timeLeft,
     connectedSubnetwork,
     accessPoint,
+    username,
+    isLoggedIn,
+    userData,
   });
   useAccessPointHandler({ setAccessPoint });
 
@@ -77,21 +91,15 @@ export default function Terminal() {
       >
         disableAuth
       </button>
-      <button
-        onClick={() => {
-          apiService.getGigs();
-        }}
-      >
-        CLICK ME
-      </button>
       {renderedLines}
       <div className="line input-line">
         {prefix}
         {inputDisabled ? (
-          <Loader/>
+          <Loader />
         ) : (
           <input
             autoFocus
+            type={!isLoggedIn && username ? 'password' : 'text'}
             value={input}
             onBlur={stayFocused}
             onChange={changeInput}

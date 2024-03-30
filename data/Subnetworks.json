@@ -1,0 +1,12 @@
+[
+  {
+    "_id": "qwertyironnet",
+    "Name": "Ironnet",
+    "NetworkId": "qwerty",
+    "Users": [],
+    "Firewall": "EncryptGuard",
+    "OperatingSystem": "ForceField",
+    "Ice": [],
+    "PastHacks": []
+  }
+]

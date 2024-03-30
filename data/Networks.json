@@ -1,0 +1,10 @@
+[
+  {
+    "_id": "qwerty",
+    "Name": "TakayamaNet",
+    "Subnetworks": [
+      "qwertyIronnet"
+    ],
+    "AdminId": "aaa"
+  }
+]

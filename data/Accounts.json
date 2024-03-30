@@ -1,0 +1,10 @@
+[
+  {
+    "_id": '34936f9c-bf94-4508-8977',
+    "owner": '7d708d5b-bc82-475c-8f78',
+    "transactions": [],
+    "type": "PRIVATE",
+    "balance": 10000,
+    "accountNumber": "1"
+  }
+]

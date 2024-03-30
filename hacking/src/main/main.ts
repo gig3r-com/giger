@@ -12,8 +12,10 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
 const usb = require('usb');
 
 class AppUpdater {
@@ -24,7 +26,7 @@ class AppUpdater {
   }
 }
 
-let windows = [];
+const windows = [];
 
 const webusb = new usb.WebUSB({
   allowAllDevices: true,
@@ -32,9 +34,11 @@ const webusb = new usb.WebUSB({
 
 const showDevices = async () => {
   const devices = await webusb.getDevices();
-  const text = devices.map(d => `${d.vendorId}\t${d.productId}\t${d.serialNumber || '<no serial>'}`);
+  const text = devices.map(
+    (d) => `${d.vendorId}\t${d.productId}\t${d.serialNumber || '<no serial>'}`,
+  );
   text.unshift('VID\tPID\tSerial\n-------------------------------------');
-  windows.forEach(win => {
+  windows.forEach((win) => {
     if (win) {
       win.webContents.send('devices', JSON.stringify(devices));
     }
@@ -42,11 +46,18 @@ const showDevices = async () => {
 };
 
 let mainWindow: BrowserWindow | null = null;
+const mainStore = new Store();
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.on('getUser', async (event) => {
+  const userData = mainStore.get('user');
+  event.reply('getUser', userData);
+});
+ipcMain.on('login', async (event, userData) => {
+  mainStore.set('user', userData);
+  event.reply('getUser', userData);
+});
+ipcMain.on('logout', async () => {
+  mainStore.set('user', null);
 });
 
 if (process.env.NODE_ENV === 'production') {

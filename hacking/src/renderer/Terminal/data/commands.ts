@@ -1,6 +1,8 @@
 export const MAIN_COMMANDS = {
   CLEAR: 'clear',
   END: 'end',
+  NAME: 'name',
+  LOOGUT: 'logout',
   INSTALL: 'install',
   LIST: 'list',
   SCAN: 'scan',
@@ -37,9 +39,12 @@ const SCAN_SUBNETWORK_ID = `${[MAIN_COMMANDS.SCAN]} ${
 const RUN = `${[MAIN_COMMANDS.RUN]} [subnetworkName] [programName]`;
 const PROFILE_SELF = `${[MAIN_COMMANDS.PROFILE]} .`;
 const LOG_SELF = `${[MAIN_COMMANDS.LOG]} .`;
+const NAME = `${[MAIN_COMMANDS.NAME]} [newName]`;
 
 export const COMMANDS_DESCRIPTIONS = {
   [MAIN_COMMANDS.CLEAR]: 'Clears console',
+  [NAME]: 'Change your hacker name',
+  [MAIN_COMMANDS.LOOGUT]: 'Logout from this terminal',
   [MAIN_COMMANDS.INSTALL]: 'Install program',
 
   [LIST_CMD]: 'Lists all available commands',

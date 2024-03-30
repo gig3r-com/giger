@@ -7,9 +7,17 @@ type KeyHandlerType = {
   executeCommand: (command: string) => void;
   userLines: string[];
   input: string;
+  username: string;
+  isLoggedIn: boolean;
+  setUsername: (value: string) => void;
+  enterPassword: (value: string) => void;
 };
 
 export default function useKeyHandler({
+  username,
+  isLoggedIn,
+  setUsername,
+  enterPassword,
   addUserLine,
   setInput,
   executeCommand,
@@ -24,9 +32,11 @@ export default function useKeyHandler({
     if (!element) return;
     element.classList.add(selectedTabClass);
     if (prevText) {
-      setInput(input.replace(prevText, '') + element.textContent);
+      setInput(input.replaceLast(prevText, '') + element.textContent);
     } else if (element.textContent.includes(element.textContent)) {
-      setInput(input.replace(element.textContent, '') + element.textContent);
+      setInput(
+        input.replaceLast(element.textContent, '') + element.textContent,
+      );
     }
   };
 
@@ -74,10 +84,16 @@ export default function useKeyHandler({
   };
 
   const enter = () => {
-    addUserLine(input);
+    if (isLoggedIn) {
+      addUserLine(input);
+      executeCommand(input);
+    } else if (username) {
+      enterPassword(input);
+    } else {
+      setUsername(input);
+    }
     setInput('');
     clear();
-    executeCommand(input);
   };
 
   const space = () => {
@@ -89,11 +105,20 @@ export default function useKeyHandler({
     event.preventDefault();
   };
 
+  const c = (event: KeyboardEvent) => {
+    if (!isLoggedIn && username && event.ctrlKey) {
+      setUsername('');
+      event.preventDefault();
+      setInput('');
+    }
+  };
+
   const keyMap: { [key: number]: (event: KeyboardEvent) => void } = {
     9: tab,
     13: enter,
     32: space,
     38: upArrow,
+    67: c,
   };
 
   const handleKey = (event: KeyboardEvent) => {

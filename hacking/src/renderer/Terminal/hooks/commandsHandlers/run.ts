@@ -34,10 +34,10 @@ export default function useRunCommands({
         parsedCommand[1],
         connectedSubnetwork,
       );
-      const subnetwork = await ApiService.getSubnetworkByName(subnetworkName);
+      const { data } = await ApiService.getSubnetworkById(subnetworkName);
       const exploit: ExploitType | undefined = getExploit(parsedCommand);
 
-      if (!subnetwork) return addErrors(subnetworkNotFound);
+      if (!data) return addErrors(subnetworkNotFound);
       if (!exploit) return addErrors(programNotFound);
 
       switch (exploit.type) {
@@ -48,7 +48,7 @@ export default function useRunCommands({
             exploit,
             isConnected,
             removeLastLine,
-            subnetwork,
+            subnetwork: data,
           });
           break;
         }
@@ -59,7 +59,7 @@ export default function useRunCommands({
             exploit,
             isConnected,
             removeLastLine,
-            subnetwork,
+            subnetwork: data,
           });
           break;
         }

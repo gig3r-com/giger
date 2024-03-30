@@ -16,6 +16,7 @@ module.exports = {
     'promise/always-return': 'off',
     'promise/catch-or-return': 'off',
     'no-use-before-define': 'off',
+    'class-methods-use-this': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

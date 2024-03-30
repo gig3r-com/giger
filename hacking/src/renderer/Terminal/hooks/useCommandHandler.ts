@@ -1,4 +1,5 @@
 import { MAIN_COMMANDS } from '../data/commands';
+import ApiService from '../../apiService/apiService';
 import {
   useTransferCommands,
   useSendMsgCommands,
@@ -41,6 +42,8 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     decryptSubnetwork,
     disconnectFromSubnetwork,
     setInputDisabled,
+    logout,
+    toggleDebugMode,
   } = props;
 
   /*
@@ -97,12 +100,24 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   const executeCommand = (command: string) => {
     const parsedCommand = command.toLowerCase().split(' ');
     const mainCommand = parsedCommand[0];
-
+console.log(mainCommand);
     switch (mainCommand) {
       case MAIN_COMMANDS.CLEAR:
         return setLines([]);
       case MAIN_COMMANDS.END:
         return disconnectFromSubnetwork();
+      case MAIN_COMMANDS.NAME:
+        setInputDisabled(true);
+        ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
+          (newHackerName) => {
+            setInputDisabled(false);
+            console.log({ newHackerName });
+            addLines(newHackerName);
+          },
+        );
+        break;
+      case MAIN_COMMANDS.LOOGUT:
+        return logout();
       case MAIN_COMMANDS.PROFILE:
         return executeProfileCommand(parsedCommand);
       case MAIN_COMMANDS.LIST:
@@ -125,6 +140,12 @@ export default function useCommandHandler(props: OnCommandHandleType) {
         return executeCopyDataCommand(parsedCommand);
       case MAIN_COMMANDS.LOG:
         return executeLogCommand(parsedCommand);
+      case 'hedinon':
+        toggleDebugMode(true);
+        break;
+      case 'hedinoff':
+        toggleDebugMode(false);
+        break;
       default:
         return addErrors(unknownCommand);
     }
