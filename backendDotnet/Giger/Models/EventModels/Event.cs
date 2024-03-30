@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Giger.Models.EventModels
@@ -8,10 +9,16 @@ namespace Giger.Models.EventModels
 
         [BsonId]
         public int Id { get; set; }
+        
         public string UserId { get; set; }
+        
         public string EventDescription { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
         public EventStatus Status { get; set; }
+        
         public DateTime TimeStamp { get; set; }
+        
         public string Name { get; set; }
     }
 

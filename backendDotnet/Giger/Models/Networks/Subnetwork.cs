@@ -13,8 +13,8 @@ namespace Giger.Models.Networks
         
         public string NetworkId { get; set; }
         
-        public string[] Users { get; set; }
-        
+        public string[] Users { get; set; } = [];
+
         [BsonRepresentation(BsonType.String)]
         public Firewall Firewall { get; set; }
         
@@ -22,9 +22,9 @@ namespace Giger.Models.Networks
         public OperatingSystem OperatingSystem { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public Ice[] Ice { get; set; }
-        
-        public string[] PastHacks { get; set; }
+        public Ice[] Ice { get; set; } = [];
+
+        public string[] PastHacks { get; set; } = [];
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]

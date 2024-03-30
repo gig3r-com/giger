@@ -15,9 +15,8 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public UserTypes TypeActual { get; set; }
         
-        public string[] Assets { get; set; } // changeable ?? TODO: DELETE?
+        public string[] Assets { get; set; } = []; // changeable ?? TODO: DELETE?
 
-        
         public SkillStat HackingSkills { get; set; } // changeable
         
         public CharStat ConfrontationVsNegotiation { get; set; } // changeable
@@ -35,19 +34,19 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public VibeEngagement VibeEngagement { get; set; }// changeable
 
-        public string[] FavoriteUserIds { get; set; } // changeable
+        public string[] FavoriteUserIds { get; set; } = []; // changeable
 
         // things below are obscured
-        public Relation[] Relations { get; set; } // changeable
-        
-        public Goal[] Goals { get; set; } // changeable
-        
-        public Meta[] Meta { get; set; } // changeable
-        
-        public PrivateRecord[] PrivateRecords { get; set; } // changeable
-        
-        public CriminalEvent[] CriminalEvents { get; set; } // changeable
-        
-        public MedicalEvent[] MedicalEvents { get; set; } // changeable
+        public Relation[] Relations { get; set; } = []; // changeable
+
+        public Goal[] Goals { get; set; } = []; // changeable
+
+        public Meta[] Meta { get; set; } = []; // changeable
+
+        public PrivateRecord[] PrivateRecords { get; set; } = []; // changeable
+
+        public CriminalEvent[] CriminalEvents { get; set; } = []; // changeable
+
+        public MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
     }
 }

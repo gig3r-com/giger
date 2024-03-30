@@ -25,8 +25,8 @@ namespace Giger.Models.User
 
         public string SubnetworkId { get; set; }
 
-        public string[] Exploits { get; set; }
-        
+        public string[] Exploits { get; set; } = [];
+
         [BsonRepresentation(BsonType.String)]
         public MindHacks MindHack { get; set; }
 
