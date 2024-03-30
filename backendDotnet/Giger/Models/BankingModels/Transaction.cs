@@ -5,11 +5,11 @@ namespace Giger.Models.BankingModels
     public class Transaction
     {
         [BsonId]
-        public int Id { get; set; }
+        public string Id { get; set; }
         
-        public int To { get; set; }
+        public string To { get; set; }
         
-        public int From { get; set; }
+        public string From { get; set; }
         
         public double Amount { get; set; }
         

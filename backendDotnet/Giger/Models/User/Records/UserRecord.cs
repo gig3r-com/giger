@@ -6,7 +6,7 @@ namespace Giger.Models.User.Records
 {
     public class UserRecord : ObscurableInfo
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         
         public string UserId { get; set; }
         

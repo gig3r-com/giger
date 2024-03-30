@@ -7,9 +7,9 @@ namespace Giger.Models.BankingModels
     public class Account
     {
         [BsonId]
-        public int Id { get; set; }
+        public string Id { get; set; }
         
-        public int Owner { get; set; }
+        public string Owner { get; set; }
 
         public Transaction[] Transactions { get; set; } = [];
         

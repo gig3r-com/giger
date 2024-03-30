@@ -5,7 +5,7 @@ namespace Giger.Models.MessageModels
     public class Conversation
     {
         [BsonId]
-        public int Id { get; set; }
+        public string Id { get; set; }
         
         public Message[] Messages { get; set; } = [];
 

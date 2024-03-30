@@ -6,7 +6,8 @@ namespace Giger.Models.GigModels
     public class GigBase
     {
         [BsonId]
-        public int Id { get; set; }
+        public string Id { get; set; }
+        
         public decimal Payout { get; set; }
         
         public string Title { get; set; }
