@@ -6,7 +6,9 @@ namespace Giger.Models.User
     {
         [BsonId]
         Guid Id { get; set; }
+        
         UserPrivate UserId { get; set; }
+        
         UserPrivate FavoriteUserId { get; set; }
     }
 }

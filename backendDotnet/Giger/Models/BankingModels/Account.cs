@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.BankingModels
 {
@@ -13,6 +14,7 @@ namespace Giger.Models.BankingModels
         public string AccountNumber { get; set; }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]
     public enum AccountType
     {
         PRIVATE,

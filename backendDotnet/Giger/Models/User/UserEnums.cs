@@ -1,5 +1,8 @@
-﻿namespace Giger.Models.User
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.User
 {
+    [JsonConverter(typeof(JsonStringEnumConverter<UserRoles>))]
     public enum UserRoles
     {
         INFLUENCER,
@@ -7,6 +10,7 @@
         GOD
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<UserTypes>))]
     public enum UserTypes
     {
         HUMAN,
@@ -14,6 +18,7 @@
         ANDROID
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<Vibe>))]
     public enum Vibe
     {
         DIZORDERS,
@@ -24,6 +29,7 @@
         NO_VIBE
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<VibeEngagement>))]
     public enum VibeEngagement
     {
         HYPED,
@@ -32,6 +38,8 @@
         INTERESTED,
         FANATIC
     }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<WealthLevels>))]
     public enum WealthLevels
     {
         BROKE,
@@ -44,6 +52,7 @@
         ELITE
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<MindHacks>))]
     public enum MindHacks
     {
         Enabled,

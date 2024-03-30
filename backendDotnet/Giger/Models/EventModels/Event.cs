@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.EventModels
 {
@@ -14,6 +15,7 @@ namespace Giger.Models.EventModels
         public string Name { get; set; }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<EventStatus>))]
     public enum EventStatus
     {
         CURRENT,
