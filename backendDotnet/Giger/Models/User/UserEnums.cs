@@ -2,7 +2,9 @@
 {
     public enum UserRoles
     {
-        ADMIN
+        INFLUENCER,
+        ADMIN,
+        GOD
     }
 
     public enum UserTypes
@@ -40,5 +42,12 @@
         COMFORTABLE,
         AFFLUENT,
         ELITE
+    }
+
+    public enum MindHacks
+    {
+        Enabled,
+        Disabled,
+        Banned
     }
 }

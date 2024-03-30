@@ -1,4 +1,4 @@
-﻿namespace Giger.Models.EventModels
+﻿namespace Giger.Models
 {
     public class ObscurableInfo
     {
