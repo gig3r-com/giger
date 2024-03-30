@@ -12,7 +12,7 @@ namespace Giger.Controllers
         // TODO: For testing purposes only
         public static bool AuthEnabled { get; set; } = true;
 
-        protected bool IsAuthorized(string id, short minimumHackingLevel = 1)
+        protected bool IsAuthorized(string ownerId = "", short minimumHackingLevel = 1)
         {
 #if DEBUG
             if (!AuthEnabled)
@@ -38,7 +38,7 @@ namespace Giger.Controllers
 
             if (senderUser != null)
             {
-                if (senderUser.Id == id)
+                if (senderUser.Id == ownerId)
                     return true;
 
                 if (senderUser.Roles.Contains(UserRoles.GOD))
