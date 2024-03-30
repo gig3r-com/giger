@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Giger.Services
+namespace Giger.Services.Extensions
 {
     public static class ServicesExtensions
     {
