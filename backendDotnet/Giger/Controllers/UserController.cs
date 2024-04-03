@@ -44,26 +44,29 @@ namespace Giger.Controllers
             return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
         }
 
-
-        [HttpPut("byId")]
-        public async Task<IActionResult> Update(string id, UserPrivate updatedUser)
+        [Obsolete("Should have endpoint for each change request")]
+        [HttpPut()]
+        public async Task<IActionResult> Update(UserPrivate updatedUser)
         {
-            var book = await _userService.GetAsync(id);
-            if (book is null)
+            if (!IsAuthorized(updatedUser.Id))
             {
-                return NoContent();
+                Forbid();
+            }
+            var user = await _userService.GetAsync(updatedUser.Id);
+            if (user is null)
+            {
+                return BadRequest();
             }
 
-            updatedUser.Id = book.Id;
-            await _userService.UpsertAsync(id, updatedUser);
+            await _userService.UpsertAsync(updatedUser.Id, updatedUser);
             return Ok();
         }
 
         [HttpDelete("byId")]
         public async Task<IActionResult> Delete(string id)
         {
-            var book = await _userService.GetAsync(id);
-            if (book is null)
+            var user = await _userService.GetAsync(id);
+            if (user is null)
             {
                 return NoContent();
             }
