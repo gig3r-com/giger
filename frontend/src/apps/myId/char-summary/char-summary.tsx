@@ -22,6 +22,7 @@ import { useUserService } from '../../../shared/services/user.service';
 import './char-summary.scss';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import { SelectUser } from '../select-user/select-user';
+import { Factions } from '../../../models/companies';
 
 export const CharSummary: FC<{
     mode: 'public' | 'private';
@@ -247,6 +248,24 @@ export const CharSummary: FC<{
                             })
                         }
                     />
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="FACTION" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                options={[...Object.values(Factions)]}
+                                value={user!.vibe}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        faction: val as Factions
+                                    })
+                                }
+                            />
+                        </>
+                    )}
                     {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
                         <>
                             <AdminEditableField

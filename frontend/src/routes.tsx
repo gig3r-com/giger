@@ -22,6 +22,7 @@ import { EventRecordType } from './models/events';
 import { UserRecords } from './apps/myId/user-records/user-records';
 import { UserRecordTypes } from './models/user';
 import { AnimatePresence, motion } from 'framer-motion';
+import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 
 export const Router = () => {
     const { test } = useNotificationsService();
@@ -51,7 +52,9 @@ export const Router = () => {
                                 <Route path=":chatId" element={<Chat />} />
                                 <Route path="new" element={<Chat />} />
                             </Route>
-                            <Route path="bank" element={<Bank />} />
+                            <Route path="bank" element={<Bank />}>
+                                <Route path="new" element={<NewTransaction />} />
+                            </Route>
                             <Route path="myid" element={<MyId />}>
                                 <Route path="details" element={<Details />}>
                                     <Route
