@@ -1,3 +1,4 @@
+import { Factions } from './companies';
 import { ICriminalEvent, IMedEvent, IObscurableInfo } from './events';
 
 export interface IUserBase {
@@ -38,6 +39,7 @@ export interface IUserPrivate extends IUserPublic {
     privateRecords: IPrivateRecord[];
     criminalRecord: ICriminalEvent[];
     medHistory: IMedEvent[];
+    faction: Factions
 }
 
 /**

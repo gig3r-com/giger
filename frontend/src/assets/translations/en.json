@@ -116,5 +116,17 @@
     "AESTHETICS": "aesthetics",
     "PROCEDURE": "procedure",
     "FAVORITES": "favorites",
-    "OTHER_USERS": "Other users"
+    "OTHER_USERS": "Other users",
+    "AMOUNT": "Amount",
+    "TITLE": "Title",
+    "PRIVATE": "Private",
+    "BUSINESS": "Business",
+    "FACTION": "Faction",
+    "Takayama": "Takayama",
+    "Lombard": "Lombard",
+    "Bordello": "Bordello",
+    "Gunners": "Gunners",
+    "CONTECH": "Contech",
+    "Contech": "Contech",
+    "Aesthetics": "Aesthetics"
 }

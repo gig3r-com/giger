@@ -8,7 +8,7 @@ import { RootState } from '../../../store/store';
 import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
-import { UserSelect } from '../user-select/user-select';
+import { UserSelect } from '../../../shared/user-select/user-select';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
 
@@ -78,9 +78,8 @@ export const StartNewConvo: FC = () => {
             >
                 <Controls key="controls" leftSideOption="back" />
                 <UserSelect
-                    selected={selectedUsers}
-                    onValueUpdate={setSearchString}
-                    searchString={searchString}
+                    mode='multi'
+                    onSelection={(val) => setSelectedUsers(val)}
                 />
 
                 {canAnonymizeChatHandle() && (

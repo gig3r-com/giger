@@ -1,36 +1,35 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { motion } from 'framer-motion';
-import { ITransaction } from '../../../models/banking';
-import { IUserPublic } from '../../../models/user';
+import { AccountType, ITransaction } from '../../../models/banking';
 import { useUserService } from '../../../shared/services/user.service';
+import { useBankingService } from '../../../shared/services/banking.service';
+import { ReactComponent as IncomingTransfer } from '../../../assets/incoming.svg';
+import { ReactComponent as OutgoingTransfer } from '../../../assets/outgoing.svg';
 
 import './transaction.scss';
 
-export const Transaction: FC<{ transaction: ITransaction }> = ({
-    transaction
-}) => {
-    const { currentUser, getUserById } = useUserService();
-    const [otherParty, setOtherParty] = useState<IUserPublic | null>(null);
-
-    useEffect(
-        function fetchOtherParty() {
-            const otherPartyId =
-                transaction.to === currentUser?.id
-                    ? transaction.from
-                    : transaction.to;
-            getUserById(otherPartyId, 'public').then(setOtherParty);
-        },
-        [transaction, currentUser]
-    );
-
+export const Transaction: FC<{
+    transaction: ITransaction;
+    accountType: AccountType;
+}> = ({ transaction, accountType }) => {
+    const { currentUser, getCurrentUserFaction } = useUserService();
+    const { getAccountHolderName } = useBankingService();
     const sign = transaction.to === currentUser?.id ? '+' : '-';
+    const ownId =
+        accountType === AccountType.PRIVATE
+            ? currentUser?.id
+            : getCurrentUserFaction();
+    const otherParty =
+        transaction.to === ownId ? transaction.from : transaction.to;
+    const image =
+        transaction.to === ownId ? <OutgoingTransfer /> : <IncomingTransfer />;
 
     return (
         <motion.li className="transaction">
-            <span className="transaction__direction"></span>
+            <span className="transaction__direction">{image}</span>
             <div className="transaction__meta">
                 <span className="transaction__other-party">
-                    {otherParty?.name}
+                    {getAccountHolderName(otherParty)}
                 </span>
                 <span className="transaction__date">
                     {new Date(transaction.date).toLocaleDateString()}

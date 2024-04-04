@@ -163,6 +163,10 @@ export function useUserService() {
         });
     };
 
+    const getCurrentUserFaction = () => {
+        return currentUser?.faction;
+    };
+
     return {
         login,
         logout,
@@ -177,6 +181,7 @@ export function useUserService() {
         getUserById,
         getHandleForConvo,
         toggleUserAsFavorite,
-        isInfluencer
+        isInfluencer,
+        getCurrentUserFaction
     };
 }
