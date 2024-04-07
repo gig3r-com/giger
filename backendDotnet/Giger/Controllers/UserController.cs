@@ -28,6 +28,11 @@ namespace Giger.Controllers
         [HttpGet("private/byName")]
         public async Task<ActionResult<UserPrivate>> Get(string firstName, string surname)
         {
+            if (IsAuthorized(null, 0) == false)
+            {
+                return Forbid();
+            }
+
             var user = await _userService.GetByFirstNameAsync(firstName, surname);
             if (user is null)
             {
@@ -80,7 +85,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(userId))
             {
-                return Unauthorized();
+                return Forbid();
             }
             var user = await _userService.GetAsync(userId);
             if (user is null)
@@ -95,7 +100,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(userId))
             {
-                return Unauthorized();
+                return Forbid();
             }
             var user = await _userService.GetAsync(userId);
             if (user is null)
@@ -116,7 +121,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(userId))
             {
-                return Unauthorized();
+                return Forbid();
             }
             var user = await _userService.GetAsync(userId);
             if (user is null)
@@ -171,39 +176,16 @@ namespace Giger.Controllers
         }
         #endregion
 
-        #region BaseUser
-        [HttpGet("general/all")]
-        public async Task<List<UserBase>> GetAllGeneralUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserBase>().ToList());
-
-        [HttpGet("general/byId")]
-        public async Task<ActionResult<UserBase>> GetBaseById(string id)
-        {
-            var user = await _userService.GetAsync(id);
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        [HttpGet("general/byName")]
-        public async Task<ActionResult<UserBase>> GetBaseByName(string firstName, string surname)
-        {
-            var user = await _userService.GetByFirstNameAsync(firstName, surname);
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-        #endregion
-
         #region SingleProperties
+
         [HttpGet("{id}/name")]
         public async Task<ActionResult<string>> GetUserName(string id)
         {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
@@ -215,6 +197,12 @@ namespace Giger.Controllers
         [HttpPatch("{id}/name")]
         public async Task<IActionResult> PatchUserName(string id, string newName)
         {
+            var user = await _userService.GetByFirstNameAsync(firstName, surname);
+            if (user is null)
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
@@ -225,9 +213,48 @@ namespace Giger.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}/hackerName")]
+        public async Task<ActionResult<string>> GetHackerName(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            return user.Name;
+        }
+
+        [HttpPatch("{id}/hackerName")]
+        public async Task<IActionResult> PatchHackerName(string id, string newName)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.HackerName = newName;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
         [HttpGet("{id}/roles")]
         public async Task<ActionResult<UserRoles[]>> GetUserRoles(string id)
         {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
@@ -239,12 +266,187 @@ namespace Giger.Controllers
         [HttpPatch("{id}/roles")]
         public async Task<IActionResult> PatchUserRoles(string id, UserRoles[] newRoles)
         {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
                 return NoContent();
             }
             user.Roles = newRoles;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/exploits")]
+        public async Task<ActionResult<string[]>> GetExploits(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.Exploits;
+        }
+
+        [HttpPatch("{id}/exploits")]
+        public async Task<IActionResult> PatchExploits(string id, string[] newExploits)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.Exploits = newExploits;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/mindHack")]
+        public async Task<ActionResult<MindHacks>> GetMindHacks(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.MindHack;
+        }
+
+        [HttpPatch("{id}/mindHack")]
+        public async Task<IActionResult> PatchMindHacks(string id, MindHacks newMindHack)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.MindHack = newMindHack;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/professionPublic")]
+        public async Task<ActionResult<string>> GetProfessionPublic(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.ProfessionPublic;
+        }
+
+        [HttpPatch("{id}/professionPublic")]
+        public async Task<IActionResult> PatchProfessionPublic(string id, string newProfession)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.ProfessionPublic = newProfession;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/userTypes")]
+        public async Task<ActionResult<UserTypes>> GetUserTypes(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.TypePublic;
+        }
+
+        [HttpPatch("{id}/userTypes")]
+        public async Task<IActionResult> PatchUserTypes(string id, UserTypes userTypes)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.TypePublic = userTypes;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/privateRecords")]
+        public async Task<ActionResult<PrivateRecord[]>> GetPrivateRecords(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.PrivateRecords;
+        }
+
+        [HttpPatch("{id}/privateRecords")]
+        public async Task<IActionResult> PatchPrivateRecords(string id, PrivateRecord[] privateRecords)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.PrivateRecords = privateRecords;
             await _userService.UpdateAsync(id, user);
             return Ok();
         }

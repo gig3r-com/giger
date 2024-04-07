@@ -48,5 +48,17 @@ namespace Giger.Models.User
         public CriminalEvent[] CriminalEvents { get; set; } = []; // changeable
 
         public MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
+
+        // hacker only
+        public string NetworkId { get; set; }
+
+        public string SubnetworkId { get; set; }
+
+        public string[] Exploits { get; set; } = [];
+
+        [BsonRepresentation(BsonType.String)]
+        public MindHacks MindHack { get; set; }
+
+        public string HackerName { get; set; }
     }
 }
