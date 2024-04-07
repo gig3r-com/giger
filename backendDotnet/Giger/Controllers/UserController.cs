@@ -197,8 +197,7 @@ namespace Giger.Controllers
         [HttpPatch("{id}/name")]
         public async Task<IActionResult> PatchUserName(string id, string newName)
         {
-            var user = await _userService.GetByFirstNameAsync(firstName, surname);
-            if (user is null)
+            if (!IsAuthorized(id))
             {
                 Forbid();
             }
