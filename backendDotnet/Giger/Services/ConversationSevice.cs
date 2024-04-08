@@ -18,7 +18,7 @@ namespace Giger.Services
         public async Task<List<Conversation>> GetAllAsync() =>
             await _conversationsCollection.Find(_ => true).ToListAsync();
 
-        public async Task<Conversation?> GetAsync(int id) =>
+        public async Task<Conversation?> GetAsync(string id) =>
             await _conversationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
@@ -27,13 +27,13 @@ namespace Giger.Services
         public async Task CreateAsync(Conversation newConversation) =>
             await _conversationsCollection.InsertOneAsync(newConversation);
 
-        public async Task UpdateAsync(int id, Conversation updatedConversation) =>
+        public async Task UpdateAsync(string id, Conversation updatedConversation) =>
             await _conversationsCollection.ReplaceOneAsync(x => x.Id == id, updatedConversation);
 
-        public async Task UpsertAsync(int id, Conversation updatedConversation) =>
+        public async Task UpsertAsync(string id, Conversation updatedConversation) =>
             await _conversationsCollection.ReplaceOneAsync(x => x.Id == id, updatedConversation, new ReplaceOptions() { IsUpsert = true });
 
-        public async Task RemoveAsync(int id) =>
+        public async Task RemoveAsync(string id) =>
             await _conversationsCollection.DeleteOneAsync(x => x.Id == id);
     }
 }

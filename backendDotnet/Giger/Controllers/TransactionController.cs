@@ -14,7 +14,7 @@ namespace Giger.Controllers
         public async Task<List<Transaction>> Get() => await _transactionService.GetAllAsync();
 
         [HttpGet("id")]
-        public async Task<ActionResult<Transaction>> Get(int id)
+        public async Task<ActionResult<Transaction>> Get(string id)
         {
             var transaction = await _transactionService.GetAsync(id);
             if (transaction is null)
@@ -26,7 +26,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("byFrom")]
-        public async Task<ActionResult<Transaction>> GetByFrom(int from)
+        public async Task<ActionResult<Transaction>> GetByFrom(string from)
         {
             var transaction = await _transactionService.GetByFromAsync(from);
             if (transaction is null)
@@ -38,7 +38,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("byTo")]
-        public async Task<ActionResult<Transaction>> GetByTo(int to)
+        public async Task<ActionResult<Transaction>> GetByTo(string to)
         {
             var transaction = await _transactionService.GetByToAsync(to);
             if (transaction is null)
@@ -58,7 +58,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, Transaction updatedTransaction)
+        public async Task<IActionResult> Update(string id, Transaction updatedTransaction)
         {
             var transaction = await _transactionService.GetAsync(id);
 
@@ -75,7 +75,7 @@ namespace Giger.Controllers
         }
 
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var transaction = await _transactionService.GetAsync(id);
 

@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.Networks
 {
@@ -6,41 +8,42 @@ namespace Giger.Models.Networks
     {
         [BsonId]
         public string Id { get; set; }
+        
         public string Name { get; set; }
+        
         public string NetworkId { get; set; }
-        public string[] Users { get; set; }
+        
+        public string[] Users { get; set; } = [];
+
+        [BsonRepresentation(BsonType.String)]
         public Firewall Firewall { get; set; }
+        
+        [BsonRepresentation(BsonType.String)]
         public OperatingSystem OperatingSystem { get; set; }
-        public Ice[] Ice { get; set; }
-        public string[] PastHacks { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        public Ice[] Ice { get; set; } = [];
+
+        public string[] PastHacks { get; set; } = [];
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]
     public enum Firewall
     {
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("EncryptGuard")]
         EncryptGuard,
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("FirewallX")]
         FirewallX,
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("VirtualVault")]
         VirtualVault
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<OperatingSystem>))]
     public enum OperatingSystem
     {
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("ForceField")]
         ForceField,
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("EvilTwin")]
         EvilTwin,
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        [BsonElement("JoanOfArc")]
         JoanOfArc
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
     public enum Ice
     {
 

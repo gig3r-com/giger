@@ -1,13 +1,22 @@
-﻿namespace Giger.Models.User.Records
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
+
+namespace Giger.Models.User.Records
 {
     public class UserRecord : ObscurableInfo
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
+        
         public string UserId { get; set; }
+        
         public string Description { get; set; }
+        
+        [BsonRepresentation(BsonType.String)]
         public UserRecordTypes RecordType { get; set; }
     }
-    
+
+    [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
     public enum UserRecordTypes
     {
         Relation,

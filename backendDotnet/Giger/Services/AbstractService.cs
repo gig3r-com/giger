@@ -16,7 +16,8 @@ namespace Giger.Services
                 Credential = MongoCredential.CreateCredential(
                     gigerDatabaseSettings.Value.DatabaseName,
                     gigerDatabaseSettings.Value.Username,
-                    gigerDatabaseSettings.Value.Password)
+                    gigerDatabaseSettings.Value.Password),
+                LinqProvider = MongoDB.Driver.Linq.LinqProvider.V3,
             };
             var mongoClient = new MongoClient(MongoSettings);
 
