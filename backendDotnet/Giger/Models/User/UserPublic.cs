@@ -15,7 +15,7 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public UserRoles[] Roles { get; set; } = []; // changeable
 
-        public Dictionary<string, string> AliasMap { get; set; } // changeable
+        public Dictionary<string, string> AliasMap { get; set; } = []; // changeable
 
         public bool Active { get; set; } // changeable
 
@@ -33,5 +33,9 @@ namespace Giger.Models.User
 
         [BsonRepresentation(BsonType.String)]
         public WealthLevels WealthLevel { get; set; }
+
+        public required string NetworkId { get; set; }
+
+        public required string SubnetworkId { get; set; }
     }
 }

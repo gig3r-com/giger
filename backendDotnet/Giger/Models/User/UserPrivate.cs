@@ -50,10 +50,6 @@ namespace Giger.Models.User
         public MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
 
         // hacker only
-        public string NetworkId { get; set; }
-
-        public string SubnetworkId { get; set; }
-
         public string[] Exploits { get; set; } = [];
 
         [BsonRepresentation(BsonType.String)]
