@@ -432,6 +432,7 @@ namespace Giger.Controllers
             return user.PrivateRecords;
         }
 
+        [Obsolete("Use the endpoint for each change request")]
         [HttpPatch("{id}/privateRecords")]
         public async Task<IActionResult> PatchPrivateRecords(string id, PrivateRecord[] privateRecords)
         {
@@ -448,6 +449,28 @@ namespace Giger.Controllers
             user.PrivateRecords = privateRecords;
             await _userService.UpdateAsync(id, user);
             return Ok();
+        }
+
+        [HttpPatch("{id}/privateRecord")]
+        public async Task<IActionResult> AddPrivateRecord(string id, PrivateRecord privateRecord)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            if (!user.PrivateRecords.Any(pr => pr.Id == privateRecord.Id))
+            {
+                user.PrivateRecords = [..user.PrivateRecords, privateRecord];
+                await _userService.UpdateAsync(id, user);
+                return Ok();
+            }
+            return BadRequest("Record already exists");
         }
         #endregion
     }
