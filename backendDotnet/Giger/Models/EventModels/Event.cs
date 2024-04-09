@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Giger.Models.Obscured;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
@@ -6,10 +7,6 @@ namespace Giger.Models.EventModels
 {
     public class Event : ObscurableInfo
     {
-
-        [BsonId]
-        public string Id { get; set; }
-        
         public string UserId { get; set; }
         
         public string EventDescription { get; set; }
