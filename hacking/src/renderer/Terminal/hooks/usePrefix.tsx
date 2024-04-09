@@ -1,16 +1,22 @@
-import { useEffect, useState } from 'react';
+import {ReactElement, useEffect, useState} from 'react';
+import {getConnectedSubnetworkData, getLoginUserData} from "../utils/store";
 
-export function usePrefix(props) {
+type UsePrefixType = {
+  isConnected: boolean;
+  timeLeft: number;
+  accessPoint: string;
+  username: string;
+  isLoggedIn: boolean;
+};
+export function usePrefix(props: UsePrefixType) {
   const {
     isConnected,
     timeLeft,
-    connectedSubnetwork,
     accessPoint,
     username,
     isLoggedIn,
-    userData,
   } = props;
-  const [prefix, setPrefix] = useState(null);
+  const [prefix, setPrefix] = useState<ReactElement[] | null>(null);
 
   useEffect(() => {
     const pref = [<span className="input-prefix">~</span>];
@@ -24,6 +30,7 @@ export function usePrefix(props) {
     } else if (!isLoggedIn) {
       pref.push(<span className="input-prefix">Enter username</span>);
     } else if (isConnected) {
+      const connectedSubnetworkData = getConnectedSubnetworkData();
       const connectionTimer =
         timeLeft > 100
           ? Math.floor(timeLeft / 100)
@@ -31,11 +38,12 @@ export function usePrefix(props) {
       pref.push(
         <span className="input-prefix">
           {accessPoint ? `${accessPoint}/` : ''}
-          {connectedSubnetwork.name}
+          {connectedSubnetworkData.name}
         </span>,
       );
       pref.push(<span className="input-prefix">{connectionTimer}s</span>);
     } else {
+      const userData = getLoginUserData();
       pref.push(
         <span className="input-prefix">
           {accessPoint ? `${accessPoint}/` : ''}
@@ -47,7 +55,7 @@ export function usePrefix(props) {
     pref.push(<span className="input-prefix">{'>'}</span>);
 
     setPrefix(pref);
-  }, [isConnected, timeLeft, accessPoint, isLoggedIn, username, userData?.hackerName]);
+  }, [isConnected, timeLeft, accessPoint, isLoggedIn, username]);
 
   return { prefix };
 }

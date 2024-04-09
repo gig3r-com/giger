@@ -5,6 +5,7 @@ import {
 } from '../../responseLines/runCommands';
 import { addTimeline, makeLoaderLine } from '../../utils/timelines';
 import { ExploitType, SubnetworkType } from '../../data/types';
+import * as Programs from '../../data/programs';
 
 export type RunBreacherType = {
   isConnected: boolean;
@@ -28,10 +29,11 @@ export function runBreacher({
     );
   addLines(connectingLines(subnetwork.name));
   const breachTime = 200;
-  const breachEffect = exploit.effect[subnetwork.firewall.name];
+  const breachEffect = exploit.effect[subnetwork.firewall];
+  const system = Programs[subnetwork.operatingSystem];
   const timeInSubnetwork = breachEffect.perfect
-    ? subnetwork.system.timeOnPerfectBreach
-    : subnetwork.system.timeOnImperfectBreach;
+    ? system.timeOnPerfectBreach
+    : system.timeOnImperfectBreach;
 
   addTimeline(breachTime, stepBreach, endBreach);
 

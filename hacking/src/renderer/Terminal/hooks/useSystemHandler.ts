@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { addTimeline } from '../utils/timelines';
 import { disconnected } from '../responseLines/subnetwork';
+import { SubnetworkType } from '../../apiService/types';
+import { setConnectedSubnetworkData } from '../utils/store';
 
 type SystemHandlerProps = {
   addLines: (lines: string[]) => void;
@@ -11,19 +13,21 @@ export default function useSystemHandler({
   addLines,
   setPrefixType,
 }: SystemHandlerProps) {
-  const [connectedSubnetwork, setConnectedSubnetwork] = useState(null);
-  const [isDecrypted, setIsDecrypted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
-
-  const isConnected = !!connectedSubnetwork;
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [isDecrypted, setIsDecrypted] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
   const disconnectFromSubnetwork = () => {
-    // todo: add name to disconnect message
     addLines(disconnected);
     setPrefixType('admin');
-    setConnectedSubnetwork(null);
+    setIsConnected(false);
+    setConnectedSubnetworkData(null);
   };
-  const connectToSubnetwork = (subnetwork, timeInSubnetwork) => {
-    setConnectedSubnetwork(subnetwork);
+  const connectToSubnetwork = (
+    subnetwork: SubnetworkType,
+    timeInSubnetwork: number,
+  ) => {
+    setIsConnected(true);
+    setConnectedSubnetworkData(subnetwork);
     setPrefixType(subnetwork.name);
     setTimeLeft(timeInSubnetwork);
     addTimeline(timeInSubnetwork, step, disconnectFromSubnetwork);
@@ -34,12 +38,11 @@ export default function useSystemHandler({
   };
 
   return {
-    isConnected,
-    connectedSubnetwork,
     timeLeft,
     connectToSubnetwork,
     disconnectFromSubnetwork,
     isDecrypted,
     decryptSubnetwork,
+    isConnected,
   };
 }

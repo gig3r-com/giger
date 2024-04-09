@@ -8,8 +8,8 @@ type LineStatHandlerTypes = {
 export default function useLineStateHandler({
   prefixType,
 }: LineStatHandlerTypes) {
-  const [lines, setLines] = useState(gigerArt);
-  const [userLines, setUserLines] = useState([]);
+  const [lines, setLines] = useState<any[]>(gigerArt);
+  const [userLines, setUserLines] = useState<any[]>([]);
 
   const mapLines = (linesToMap: string[]) => {
     return linesToMap.map((line) => ` ${line}`);
@@ -25,6 +25,7 @@ export default function useLineStateHandler({
   };
   const addLines = (linesToAdd: string[]) => {
     setTimeout(
+      // @ts-ignore
       () => window.scroll(0, document.getElementById('root').clientHeight),
       10,
     );
@@ -34,10 +35,15 @@ export default function useLineStateHandler({
     addLine(mapUserLine(userLineToAdd));
     setUserLines((oldUserLines) => [...oldUserLines, userLineToAdd]);
   };
-  const addErrors = (errorLines: string[]) => {
-    errorLines.forEach((line: string) => {
-      addLine(`<span class="error">${line}</span>`);
-    });
+  const addErrors = (errorLines: string[] | string) => {
+    console.error(errorLines);
+    if (Array.isArray(errorLines)) {
+      errorLines.forEach((line: string) => {
+        addLine(`<span class="error">${line}</span>`);
+      });
+    } else if (typeof errorLines === 'string') {
+      addLine(`<span class="error">${errorLines}</span>`);
+    }
   };
   const removeLastLine = () =>
     setLines((oldLines) => {

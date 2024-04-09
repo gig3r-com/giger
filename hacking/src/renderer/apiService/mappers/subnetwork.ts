@@ -1,6 +1,6 @@
 import { SubnetworkType } from '../types';
 
-export default function mapUser(data: any): SubnetworkType {
+export default function mapSubnetwork(data: any): SubnetworkType {
   return {
     id: data.id,
     name: data.name,

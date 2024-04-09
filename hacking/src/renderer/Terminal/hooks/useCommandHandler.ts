@@ -17,16 +17,17 @@ import { unknownCommand } from '../responseLines/errors';
 
 type OnCommandHandleType = {
   setLines: (lines: string[]) => void;
-  addErrors: (line: string[]) => void;
+  addErrors: (line: string[] | string) => void;
   addLines: (lines: string[]) => void;
   removeLastLine: () => void;
   connectToSubnetwork: () => void;
   isConnected: boolean;
-  connectedSubnetwork: {};
   isDecrypted: boolean;
   decryptSubnetwork: () => void;
   disconnectFromSubnetwork: () => void;
   setInputDisabled: (inputDisabled: boolean) => void;
+  logout: () => void;
+  toggleDebugMode: () => void;
 };
 
 export default function useCommandHandler(props: OnCommandHandleType) {
@@ -37,7 +38,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     removeLastLine,
     connectToSubnetwork,
     isConnected,
-    connectedSubnetwork,
     isDecrypted,
     decryptSubnetwork,
     disconnectFromSubnetwork,
@@ -54,7 +54,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     addErrors,
     isConnected,
     isDecrypted,
-    connectedSubnetwork,
     setInputDisabled,
   });
 
@@ -76,7 +75,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     removeLastLine,
     connectToSubnetwork,
     isConnected,
-    connectedSubnetwork,
     decryptSubnetwork,
   });
   const { executeTransferCommand } = useTransferCommands({
@@ -100,7 +98,7 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   const executeCommand = (command: string) => {
     const parsedCommand = command.toLowerCase().split(' ');
     const mainCommand = parsedCommand[0];
-console.log(mainCommand);
+    console.log('Command: ', mainCommand);
     switch (mainCommand) {
       case MAIN_COMMANDS.CLEAR:
         return setLines([]);
@@ -111,8 +109,7 @@ console.log(mainCommand);
         ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
           (newHackerName) => {
             setInputDisabled(false);
-            console.log({ newHackerName });
-            addLines(newHackerName);
+            addLines([newHackerName.hackerName]);
           },
         );
         break;

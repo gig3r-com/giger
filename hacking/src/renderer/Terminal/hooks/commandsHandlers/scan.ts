@@ -23,12 +23,8 @@ export default function useScanCommands({
       const subcommand = parsedCommand.join(' ');
       setInputDisabled(true);
 
-      const scanData = await Promise.any([
-        ApiService.getSubnetworkById(subcommand),
-        ApiService.getNetworkById(subcommand),
-        ApiService.getUserIdByName(subcommand),
-        ApiService.getUserById(subcommand),
-      ]);
+      const scanData = await ApiService.scan(subcommand);
+      console.log(scanData);
       switch (scanData.type) {
         case 'subnetwork': {
           addLines(getSubnetworkDataLines(scanData.data));
@@ -43,7 +39,7 @@ export default function useScanCommands({
           break;
         }
         case 'userId': {
-          addLines(getUserIdLines(scanData.data.id));
+          addLines(getUserIdLines(scanData.data));
           break;
         }
         default: {

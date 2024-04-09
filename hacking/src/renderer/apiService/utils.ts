@@ -1,6 +1,6 @@
 import { SubnetworkType } from './types';
 
-export function getSubnetworkData(subnetwork: SubnetworkType) {
+export function getSavedSubnetworkData(subnetwork: SubnetworkType) {
   const { id } = subnetwork;
   const scannerLvl = 1;
   const storageKey = `scanner-${scannerLvl}-subnetwork-${id}`;

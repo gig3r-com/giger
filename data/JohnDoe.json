@@ -1,0 +1,69 @@
+{
+  "id": "7d708d5b",
+  "name": "John",
+  "handle": "",
+  "roles": [],
+  "aliasMap": {},
+  "active": true,
+  "typePublic": "HUMAN",
+  "professionPublic": "CEO",
+  "surname": "Doe",
+  "age": 0,
+  "vibe": "OVERSEERS",
+  "wealthLevel": "ELITE",
+  "networkId": "4aadf272",
+  "subnetworkId": "6635a036",
+  "exploits": [],
+  "mindHack": "Disabled",
+  "hackerName": "",
+  "cyberwareLevel": { "stat": 2 },
+  "professionActual": "CEO",
+  "typeActual": "HUMAN",
+  "assets": [],
+  "hackingSkills": { "stat": 0 },
+  "confrontationVsNegotiation": { "stat": 5 },
+  "cowardVsFighter": { "stat": 1 },
+  "talkativeVsSilent": { "stat": 2 },
+  "thinkerVsDoer": { "stat": 1 },
+  "combatSkill": { "stat": 0 },
+  "vibeFunction": "None",
+  "vibeEngagement": "HYPED",
+  "favoriteUserIds": [],
+  "relations": [],
+  "goals": [],
+  "meta": [],
+  "privateRecords": [
+    {
+      "revealCode": "",
+      "id": "ab647802",
+      "userId": "7d708d5b",
+      "description": "Very Important Data.",
+      "recordType": "PrivateRecord",
+      "title": "Classified"
+    }
+  ],
+  "criminalEvents": [
+    {
+      "revealCode": "",
+      "id": "1310bab2",
+      "userId": "7d708d5b",
+      "eventDescription": "John Doe was a victim of a mugging.",
+      "status": "CURRENT",
+      "timeStamp": "2024-04-07T14:05:42.335Z",
+      "name": "VICTIM: Mugging",
+      "type": "VICTIM"
+    }
+  ],
+  "medicalEvents": [
+    {
+      "revealCode": "",
+      "id": "ccbf0526",
+      "userId": "7d708d5b",
+      "eventDescription": "John Doe got his cyberware installed.",
+      "status": "CURRENT",
+      "timeStamp": "2024-04-07T14:05:42.335Z",
+      "name": "Cyberware installment",
+      "type": "CYBERWARE"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ApiService from '../../apiService/apiService';
 import { loginSuccessful } from '../responseLines/login';
+import { getLoginUserData, setLoginUserData } from '../utils/store';
 
 type UseLoginType = {
   setInputDisabled: (value: boolean) => void;
@@ -20,10 +21,9 @@ export default function useLogin({
     setInputDisabled(true);
     if (username === 'test' && password === 'test') {
       setUsername('');
-      ApiService.getActiveUserProfile('acriveHacker').then(
+      ApiService.getActiveUserProfile('activeHacker').then(
         (hackerData: any) => {
-          window.electron.ipcRenderer.sendMessage('login', hackerData);
-          localStorage.setItem('activeUserId', hackerData.id);
+          setLoginUserData(hackerData);
           setUserData(hackerData);
           setIsLoggedIn(true);
           setInputDisabled(false);
@@ -35,20 +35,15 @@ export default function useLogin({
   }
 
   function logout() {
-    window.electron.ipcRenderer.sendMessage('logout');
-    setUserData(null);
+    setLoginUserData(null);
     setIsLoggedIn(false);
   }
 
   useEffect(() => {
-    window.electron.ipcRenderer.once('getUser', (startUserData: any) => {
-      setUserData(startUserData);
-      if (startUserData && typeof startUserData.id === 'string') {
-        setIsLoggedIn(true);
-      }
-    });
-
-    window.electron.ipcRenderer.sendMessage('getUser', 'user');
+    const loginUserData = getLoginUserData();
+    if (loginUserData && loginUserData.id) {
+      setIsLoggedIn(true);
+    }
   }, []);
 
   return { enterPassword, isLoggedIn, logout, username, setUsername, userData };

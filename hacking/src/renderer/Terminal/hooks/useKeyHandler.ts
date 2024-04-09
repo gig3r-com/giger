@@ -32,9 +32,15 @@ export default function useKeyHandler({
     if (!element) return;
     element.classList.add(selectedTabClass);
     if (prevText) {
+      // @ts-ignore
       setInput(input.replaceLast(prevText, '') + element.textContent);
-    } else if (element.textContent.includes(element.textContent)) {
+    } else if (
+      element &&
+      element.textContent &&
+      element.textContent.includes(element.textContent)
+    ) {
       setInput(
+        // @ts-ignore
         input.replaceLast(element.textContent, '') + element.textContent,
       );
     }
@@ -53,31 +59,37 @@ export default function useKeyHandler({
     if (event.ctrlKey) {
       for (let i = 0; i < elements.length; i++) {
         if (foundElement) {
+          // @ts-ignore
           selectTab(elements[i], foundElement);
           foundElement = '';
           noSelected = false;
         } else if (elements[i].classList.contains(selectedTabClass)) {
+          // @ts-ignore
           unselectTab(elements[i]);
           foundElement = elements[i].textContent || '';
         }
       }
 
       if (noSelected) {
+        // @ts-ignore
         selectTab(elements[0], elements[elements.length - 1].textContent);
       }
     } else {
       for (let i = elements.length - 1; i >= 0; i--) {
         if (foundElement) {
+          // @ts-ignore
           selectTab(elements[i], foundElement);
           foundElement = '';
           noSelected = false;
         } else if (elements[i].classList.contains(selectedTabClass)) {
+          // @ts-ignore
           unselectTab(elements[i]);
           foundElement = elements[i].textContent || '';
         }
       }
 
       if (noSelected) {
+        // @ts-ignore
         selectTab(elements[elements.length - 1], elements[0].textContent);
       }
     }

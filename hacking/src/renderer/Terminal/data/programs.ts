@@ -1,22 +1,22 @@
 import * as COMMANDS from './commands';
 import { ProgramType } from './types';
 
-export const VIRTUAL_VAULT: ProgramType = {
+export const VirtualVault: ProgramType = {
   name: 'VirtualVault',
   type: 'firewall',
 };
 
-export const ENCRYPT_GUARD: ProgramType = {
+export const EncryptGuard: ProgramType = {
   name: 'EncryptGuard',
   type: 'firewall',
 };
 
-export const FIREWALL_X: ProgramType = {
+export const FirewallX: ProgramType = {
   name: 'FirewallX',
   type: 'firewall',
 };
 
-export const FORCE_FIELD: ProgramType = {
+export const ForceField: ProgramType = {
   name: 'ForceField',
   type: 'encrypter',
   timeOnPerfectBreach: 30000, // seconds
@@ -27,7 +27,7 @@ export const FORCE_FIELD: ProgramType = {
   ],
 };
 
-export const EVIL_TWIN: ProgramType = {
+export const EvilTwin: ProgramType = {
   name: 'EvilTwin',
   type: 'encrypter',
   timeOnPerfectBreach: 20000, // seconds
@@ -38,7 +38,7 @@ export const EVIL_TWIN: ProgramType = {
   ],
 };
 
-export const JOAN_OF_ARC: ProgramType = {
+export const JoanOfArc: ProgramType = {
   name: 'JoanOfArc',
   type: 'encrypter',
   timeOnPerfectBreach: 20000, // seconds

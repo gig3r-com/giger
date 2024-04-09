@@ -6,7 +6,9 @@ export function getUserIdLines(userId: string): string[] {
   ];
 }
 export function getUserDataLines(data) {
-  const lines = [];
+  const lines = [
+    `<span class="secondary-color">User</span> found!`
+  ];
   Object.keys(data).map((key) => {
     if (data[key] && typeof data[key] === 'string')
       lines.push(
@@ -21,7 +23,9 @@ export function getUserDataLines(data) {
 }
 
 export function getSubnetworkDataLines(data) {
-  const lines = [];
+  const lines = [
+    `<span class="secondary-color">Subnetwork</span> found!`
+  ];
   Object.keys(data).map((key) => {
     if (data[key] && typeof data[key] === 'string')
       lines.push(
@@ -36,16 +40,25 @@ export function getSubnetworkDataLines(data) {
 }
 
 export function getNetworkDataLines(data) {
-  const lines = [];
+  console.log(data)
+  const lines = [
+    `<span class="secondary-color">Network</span> found!`
+  ];
   Object.keys(data).map((key) => {
     if (data[key] && typeof data[key] === 'string')
       lines.push(
         `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key]}</span>`,
       );
     if (data[key] && typeof data[key] === 'object')
-      lines.push(
-        `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].name}</span>`,
-      );
+      if (Array.isArray(data[key])) {
+        lines.push(
+          `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].join(`</span>, </span><span class="accent-color-2" ${canTabSelector}>`)}</span>`,
+        );
+      } else {
+        lines.push(
+          `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].name}</span>`,
+        );
+      }
   });
   return lines;
 }

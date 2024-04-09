@@ -1,4 +1,4 @@
-import ApiService from '../../../apiService/apiService';
+import { SubnetworkType } from '../../../apiService/types';
 
 type UseProfileCommandsType = {
   addLines: (lines: string[]) => void;
@@ -10,10 +10,19 @@ export function useProfileCommands({
   addErrors,
 }: UseProfileCommandsType) {
   const executeProfileCommand = async (parsedCommand: string[]): void => {
-    parsedCommand.shift();
-    const subcommand = parsedCommand.join(' ');
+    const subnetworkId = parsedCommand[1] === '.' ? '' : subnetworkId;
+    const userId = parsedCommand[2];
+
     addLines(['Not Implemented Yet']);
   };
 
   return { executeProfileCommand };
+
+  function getSubnetwork(subnetworkId: string): SubnetworkType | void {
+    if (subnetworkId === '.') {
+
+    } else {
+
+    }
+  }
 }

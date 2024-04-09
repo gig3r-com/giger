@@ -1,27 +1,64 @@
 [
   {
-    "_id": "acriveHacker",
+    "_id": "activeHacker",
     "Name": "Mike",
-    "AliasMap": [],
-    "Active": true,
     "Handle": "mike_v",
-    "Roles": [],
-
+    "Roles": [
+      "INFLUENCER"
+    ],
+    "AliasMap": {},
+    "Active": true,
     "TypePublic": "HUMAN",
-    "ProfessionPublic": "",
-    "Surname": "V",
-    "Age": 42,
-    "Vibe": "OVERSEERS",
-    "WealthLevel": "COMFORTABLE",
-
-    "NetworkId": "",
-    "SubnetworkId": "",
+    "ProfessionPublic": "Janitor",
+    "Surname": "Nowak",
+    "Age": 25,
+    "Vibe": "DIZORDERS",
+    "WealthLevel": "BROKE",
+    "NetworkId": "hakerNetwork",
+    "SubnetworkId": "HakerSubnetwork",
     "Exploits": [
       "Cybercracker",
       "Sledgehammer"
     ],
     "MindHack": "Banned",
-    "HackerName": "Oracle"
+    "HackerName": "oracle",
+    "CyberwareLevel": {
+      "Stat": 2
+    },
+    "ProfessionActual": "Hacker",
+    "TypeActual": "HUMAN",
+    "Assets": [
+      "asset 1"
+    ],
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationVsNegotiation": {
+      "Stat": 1
+    },
+    "CowardVsFighter": {
+      "Stat": 2
+    },
+    "TalkativeVsSilent": {
+      "Stat": 3
+    },
+    "ThinkerVsDoer": {
+      "Stat": 4
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "VibeFunction": "vibe functiion",
+    "VibeEngagement": "HYPED",
+    "FavoriteUserIds": [
+      "myFriendId"
+    ],
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [],
+    "CriminalEvents": [],
+    "MedicalEvents": []
   },
   {
     "_id": "7d708d5b-bc82-475c-8f78",

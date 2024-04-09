@@ -15,8 +15,8 @@ export default function Terminal() {
   const [accessPoint, setAccessPoint] = useState(null);
   const [prefixType, setPrefixType] = useState('admin');
   const [inputDisabled, setInputDisabled] = useState(false);
-  const changeInput = (e) => setInput(e.target.value);
-  const stayFocused = (e) => e.target.focus();
+  const changeInput = (e: Event) => setInput(e.target.value);
+  const stayFocused = (e: Event) => e.target.focus();
   const { toggleDebugMode } = useDebugMode();
   const {
     lines,
@@ -31,7 +31,6 @@ export default function Terminal() {
     useLogin({ setInputDisabled, addLines, setPrefixType });
   const {
     isConnected,
-    connectedSubnetwork,
     timeLeft,
     connectToSubnetwork,
     isDecrypted,
@@ -46,7 +45,6 @@ export default function Terminal() {
     connectToSubnetwork,
     disconnectFromSubnetwork,
     isConnected,
-    connectedSubnetwork,
     isDecrypted,
     decryptSubnetwork,
     setInputDisabled,
@@ -67,7 +65,6 @@ export default function Terminal() {
   const { prefix } = usePrefix({
     isConnected,
     timeLeft,
-    connectedSubnetwork,
     accessPoint,
     username,
     isLoggedIn,

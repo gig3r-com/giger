@@ -7,14 +7,14 @@ import {
   programNotFound,
   subnetworkNotFound,
 } from '../../responseLines/errors';
+import { getConnectedSubnetworkData } from '../../utils/store';
 
 export type UseRunCommandsType = {
   isConnected: boolean;
   addLines: (lines: string[]) => void;
-  addErrors: (lines: string[]) => void;
+  addErrors: (lines: string | string[]) => void;
   removeLastLine: () => void;
   connectToSubnetwork: (subnetwork: SubnetworkType, timer: number) => void;
-  connectedSubnetwork: any;
   decryptSubnetwork: () => void;
 };
 
@@ -24,20 +24,20 @@ export default function useRunCommands({
   removeLastLine,
   connectToSubnetwork,
   isConnected,
-  connectedSubnetwork,
   decryptSubnetwork,
 }: UseRunCommandsType) {
   const executeRunCommand = async (parsedCommand: string[]) => {
     try {
+      const connectedSubnetwork = getConnectedSubnetworkData();
       const subnetworkName = getSubnetworkName(
         isConnected,
-        parsedCommand[1],
+        parsedCommand[2],
         connectedSubnetwork,
       );
-      const { data } = await ApiService.getSubnetworkById(subnetworkName);
-      const exploit: ExploitType | undefined = getExploit(parsedCommand);
+      const subnetwork = await ApiService.getSubnetworkById(subnetworkName);
+      const exploit: ExploitType | undefined = getExploit(parsedCommand[1]);
 
-      if (!data) return addErrors(subnetworkNotFound);
+      if (!subnetwork) return addErrors(subnetworkNotFound);
       if (!exploit) return addErrors(programNotFound);
 
       switch (exploit.type) {
@@ -48,7 +48,7 @@ export default function useRunCommands({
             exploit,
             isConnected,
             removeLastLine,
-            subnetwork: data,
+            subnetwork,
           });
           break;
         }
@@ -59,31 +59,28 @@ export default function useRunCommands({
             exploit,
             isConnected,
             removeLastLine,
-            subnetwork: data,
+            subnetwork,
           });
           break;
         }
         default: {
-          throw new Error(programNotFound);
+          addErrors(programNotFound);
         }
       }
-    } catch (error) {
-      addErrors(error)
+    } catch (error: any) {
+      addErrors(error);
     }
   };
 
   return { executeRunCommand };
 }
 
-function getSubnetworkName(isConnected, commandStatement, connectedSubnetwork) {
-  if (isConnected && commandStatement === '.') return connectedSubnetwork.name;
+function getSubnetworkName(isConnected: boolean, commandStatement: string, connectedSubnetwork: SubnetworkType | null) {
+  if (isConnected && commandStatement === '.' && connectedSubnetwork) return connectedSubnetwork.name;
   return commandStatement;
 }
 
-function getExploit(parsedCommand) {
-  parsedCommand.shift();
-  parsedCommand.shift();
-  const programName = parsedCommand.join(' ').toLowerCase();
+function getExploit(programName: string) {
   return Object.values(EXPLOITS).find(
     (p) => p.name.toLowerCase() === programName,
   );

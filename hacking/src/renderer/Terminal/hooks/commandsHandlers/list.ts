@@ -7,13 +7,13 @@ import {
   getListCmdLines,
 } from '../../responseLines/listCommands';
 import { unknownCommand } from '../../responseLines/errors';
+import * as Programs from '../../data/programs';
 
 type UseListCommandType = {
   addLines: (lines: string[]) => void;
   addErrors: (line: string[]) => void;
   isConnected: boolean;
   isDecrypted: boolean;
-  connectedSubnetwork: any;
   setInputDisabled: (inputDisabled: boolean) => void;
 };
 
@@ -21,7 +21,6 @@ export default function useListCommands({
   addLines,
   addErrors,
   isConnected,
-  connectedSubnetwork,
   isDecrypted,
   setInputDisabled,
 }: UseListCommandType) {
@@ -31,12 +30,11 @@ export default function useListCommands({
         case LIST_COMMANDS.CMD: {
           if (!isConnected) addLines(getListCmdLines());
           else if (isDecrypted) addLines(getDecodedListCmdLines());
-          else
-            addLines(
-              getEncodedListCmdLines(
-                connectedSubnetwork.system.encryptedCommands,
-              ),
-            );
+          else {
+            // @ts-ignore
+            const system = Programs[connectedSubnetwork.operatingSystem];
+            addLines(getEncodedListCmdLines(system.encryptedCommands));
+          }
           break;
         }
         case LIST_COMMANDS.PROG: {

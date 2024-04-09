@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { AVAILABLE_PROGRAMS } from './mockData';
 import mapUser from './mappers/user';
 import mapProfile from './mappers/profile';
 import { UserType, ProfileType, NetworkType, SubnetworkType } from './types';
-import { getSubnetworkData } from './utils';
+import * as EXPLOITS from '../Terminal/data/exploits'
+import { getSavedSubnetworkData } from './utils';
+import mapSubnetwork from "./mappers/subnetwork";
 
 class ApiService {
   constructor() {}
@@ -42,19 +43,18 @@ class ApiService {
     return axios
       .put(`${gigerApiUrl}/User/byId?id=${profileRawData.id}`, profileRawData)
       .then((response) => {
-        console.log(response.data);
         localStorage.setItem(
           'activeUserProfileRaw',
-          JSON.stringify(response.data),
+          JSON.stringify(profileRawData),
         );
-        return mapProfile(response.data);
+        return mapProfile(profileRawData);
       });
   }
 
   getAvailablePrograms() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(AVAILABLE_PROGRAMS);
+        resolve([EXPLOITS.Cybercracker, EXPLOITS.Sledgehammer]);
       }, 300);
     });
   }
@@ -65,36 +65,36 @@ class ApiService {
    ************************************************************************************************
    */
 
-  getNetworkById(
+  scan(id: string): Promise<{ type: string; data: string | object }> {
+    return Promise.any([
+      this.scanForSubnetworkById(id),
+      this.scanForNetworkById(id),
+      this.scanForUserIdByName(id),
+      this.scanForUserById(id),
+    ]);
+  }
+
+  scanForNetworkById(
     networkId: string,
   ): Promise<{ type: string; data: NetworkType }> {
     const { gigerUrl } = this.getUrls();
-    const url = `${gigerUrl}/all`;
+    const url = `${gigerUrl}/network?id=${networkId}`;
     return axios.get(url).then((response) => {
-      const foundNetwork = response.data.find(
-        (network: any) => network.id === networkId,
-      );
-      if (foundNetwork) return { type: 'network', data: foundNetwork };
+      if (response.data) return { type: 'network', data: response.data };
       throw new Error(`Network with id ${networkId} not found`);
     });
   }
 
-  getSubnetworkById(
-    networkId: string,
+  scanForSubnetworkById(
+    subnetworkId: string,
   ): Promise<{ type: string; data: SubnetworkType }> {
-    const { gigerUrl } = this.getUrls();
-    const url = `${gigerUrl}/subnetwork/all`;
-    return axios.get(url).then((response) => {
-      const foundSubnetwork = response.data.find(
-        (subnetwork: any) => subnetwork.id === networkId,
-      );
-      if (foundSubnetwork)
-        return { type: 'subnetwork', data: getSubnetworkData(foundSubnetwork) };
-      throw new Error(`Subnetwork with id ${networkId} not found`);
-    });
+    return this.getSubnetworkById(subnetworkId).then((subnetwork) => ({
+      type: 'subnetwork',
+      data: getSavedSubnetworkData(subnetwork),
+    }));
   }
 
-  getUserById(userId: string): Promise<{ type: string; data: UserType }> {
+  scanForUserById(userId: string): Promise<{ type: string; data: UserType }> {
     const { gigerApiUrl } = this.getUrls();
     const url = `${gigerApiUrl}/User/public/byId?id=${userId}`;
     return axios.get(url).then((response) => {
@@ -102,12 +102,30 @@ class ApiService {
     });
   }
 
-  getUserIdByName(name: string): Promise<{ type: string; data: string }> {
+  scanForUserIdByName(name: string): Promise<{ type: string; data: string }> {
     const { gigerApiUrl } = this.getUrls();
     const names = name.split(' ');
     const url = `${gigerApiUrl}/User/public/byName?firstName=${names[0]}&surname=${names[1]}`;
     return axios.get(url).then((response) => {
-      return { type: 'user', data: response.data.id };
+      return { type: 'userId', data: response.data.id };
+    });
+  }
+
+  /*
+   ************************************************************************************************
+   * Networks
+   ************************************************************************************************
+   */
+
+  getSubnetworkById(subnetworkId: string): Promise<SubnetworkType | any> {
+    const { gigerUrl } = this.getUrls();
+    const url = `${gigerUrl}/subnetwork/all`;
+    return axios.get(url).then((response) => {
+      const foundSubnetwork = response.data.find(
+        (subnetwork: any) => subnetwork.id === subnetworkId,
+      );
+      if (foundSubnetwork) return mapSubnetwork(foundSubnetwork);
+      throw new Error(`Subnetwork with id ${subnetworkId} not found`);
     });
   }
 

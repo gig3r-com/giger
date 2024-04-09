@@ -8,5 +8,18 @@
     "OperatingSystem": "ForceField",
     "Ice": [],
     "PastHacks": []
+  },
+  {
+    "_id": "6635a036",
+    "Name": "SteelNet",
+    "NetworkId": "4aadf272",
+    "Users": [
+      "7d708d5b"
+    ],
+    "Firewall": "EncryptGuard",
+    "OperatingSystem": "ForceField",
+    "Ice": [],
+    "PastHacks": []
   }
+
 ]
