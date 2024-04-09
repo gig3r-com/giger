@@ -33,20 +33,44 @@ services:
     volumes:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
     environment:
-      - GigerDB__ConnectionString=mongodb://mongo:27017
+      #- GigerDB__ConnectionString=mongodb://mongo:27017
+      - GigerDB__Host=mongodb
+      - GigerDB__Port=27017
+      - GigerDB__Username=${GIGER_USERNAME:-giger}
+      - GigerDB__Password=${GIGER_PASSWORD:-giger}
+      - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
     depends_on:
-      - mongo
+      - mongodb 
   
-  mongo:
+  mongodb:
     image: mongo:latest
     restart: unless-stopped
     expose:
       - 27017
     volumes:
       - ./docker/volumes/mongo:/data/db
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
+      - ./docker/mongo_init:/docker-entrypoint-initdb.d
+    environment:
+      GIGER_DATABASE_NAME: ${GIGER_DATABASE:-giger}
+      GIGER_USERNAME: ${GIGER_USERNAME:-giger}
+      GIGER_PASSWORD: ${GIGER_PASSWORD:-giger}
+      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    depends_on:
+      - mongodb 
+
   swagger:
     image: swaggerapi/swagger-ui
     restart: unless-stopped
