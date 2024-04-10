@@ -36,6 +36,8 @@ namespace Giger.Models.User
 
         public string[] FavoriteUserIds { get; set; } = []; // changeable
 
+        public Factions Faction { get; set; } // changeable
+
         // things below are obscured
         public Relation[] Relations { get; set; } = []; // changeable
 
