@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Giger.Services;
+﻿using Giger.Services;
 using Giger.Models.BankingModels;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Giger.Controllers
 {
@@ -10,28 +11,53 @@ namespace Giger.Controllers
     {
         private readonly AccountService _accountService = accountService;
 
-        [HttpGet]
-        public async Task<List<Account>> Get() => await _accountService.GetAllAsync();
-
-        [HttpGet("id")]
+        #region Account
+        [HttpGet("byId")]
         public async Task<ActionResult<Account>> Get(string id)
         {
-            var account = await _accountService.GetAsync(id);
+            var account = await _accountService.GetByIdAsync(id);
             if (account is null)
             {
                 return NotFound();
             }
 
+            if (!IsAuthorized(account.Owner))
+            {
+                Forbid();
+            }
+
             return account;
         }
 
-        [HttpGet("byParticipant")]
-        public async Task<ActionResult<Account>> GetOwner(string owner)
+        [HttpGet("byOwner")]
+        public async Task<ActionResult<Account>> GetByOwner(string owner)
         {
-            var account = await _accountService.GetByFirstNameAsync(owner);
+            var account = await _accountService.GetByUserNameAsync(owner);
             if (account is null)
             {
                 return NotFound();
+            }
+
+            if (!IsAuthorized(owner))
+            {
+                Forbid();
+            }
+
+            return account;
+        }
+
+        [HttpGet("byAccountNumber")]
+        public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
+        {
+            var account = await _accountService.GetByUserNameAsync(accountNumber);
+            if (account is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(account.Owner))
+            {
+                Forbid();
             }
 
             return account;
@@ -40,41 +66,127 @@ namespace Giger.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Account newAccount)
         {
-            await _accountService.CreateAsync(newAccount);
+            if (IsGodUser())
+            {
+                Forbid();
+            }
 
+            newAccount.Id = ObjectId.GenerateNewId().ToString();
+            await _accountService.CreateAsync(newAccount);
             return CreatedAtAction(nameof(Get), new { id = newAccount.Id }, newAccount);
         }
 
-        [HttpPut("id")]
-        public async Task<IActionResult> Update(string id, Account updatedAccount)
+        [HttpPatch("{accountNo}/balance/add")]
+        public async Task<IActionResult> PatchAddBalance(string accountNo, decimal value)
         {
-            var account = await _accountService.GetAsync(id);
+            if (!IsGodUser())
+            {
+                return Forbid();
+            }
 
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
+            if (account is null)
+            {
+                return NotFound();
+            }
+            account.Balance += value;
+            await _accountService.UpdateAsync(accountNo, account);
+            return NoContent();
+        }
+
+        [HttpPatch("{accountNo}/balance/subtract")]
+        public async Task<IActionResult> PatchSubtractBalance(string accountNo, decimal value)
+        {
+            if (!IsGodUser())
+            {
+                return Forbid();
+            }
+
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
+            if (account is null)
+            {
+                return NotFound();
+            }
+            account.Balance -= value;
+            await _accountService.UpdateAsync(accountNo, account);
+            return NoContent();
+        }
+
+        [HttpDelete("{accountNo}")]
+        public async Task<IActionResult> Delete(string accountNo)
+        {
+            if (!IsGodUser())
+            {
+                return Forbid();
+            }
+
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
+            if (account is null)
+            {
+                return NotFound();
+            }
+            await _accountService.RemoveAsync(accountNo);
+            return NoContent();
+        }
+        #endregion
+
+        #region Transation
+        [HttpGet("{accountNo}/transaction/all")]
+        public async Task<ActionResult<List<Transaction>>> GetAll(string accountNo)
+        {
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
             if (account is null)
             {
                 return NotFound();
             }
 
-            updatedAccount.Id = account.Id;
-
-            await _accountService.UpdateAsync(id, updatedAccount);
-
-            return NoContent();
+            if (!IsAuthorized(account.Owner))
+            {
+                return Forbid();
+            }
+            return account.Transactions.ToList();
         }
 
-        [HttpDelete("id")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost("transaction")]
+        public async Task<IActionResult> Post(Transaction newTransaction)
         {
-            var account = await _accountService.GetAsync(id);
-
-            if (account is null)
+            if (!IsAuthorized(newTransaction.From))
             {
-                return NotFound();
+                return Forbid();
             }
 
-            await _accountService.RemoveAsync(id);
+            var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
+            var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
 
-            return NoContent();
+            if (giverAcc is null || receiverAcc is null)
+            {
+                return BadRequest("Wrong account number");
+            }
+
+            if (giverAcc.Id == receiverAcc.Id)
+            {
+                return BadRequest("Cannot transfer to yourself");
+            }
+
+            if (giverAcc.Balance < newTransaction.Amount)
+            {
+                return BadRequest("Not enough balance");
+            }
+
+            newTransaction.Id = ObjectId.GenerateNewId().ToString();
+            newTransaction.Date = DateTime.Now;
+
+            giverAcc.Transactions = [..giverAcc.Transactions, newTransaction];
+            
+            giverAcc.Balance -= newTransaction.Amount;
+            _accountService.UpdateAsync(giverAcc.Id, giverAcc);
+
+            receiverAcc.Transactions = [.. receiverAcc.Transactions, newTransaction];
+            receiverAcc.Balance += newTransaction.Amount;
+            _accountService.UpdateAsync(receiverAcc.Id, receiverAcc);
+
+            return CreatedAtAction(nameof(Post), new { id = newTransaction.Id }, newTransaction);
         }
+        #endregion
     }
 }

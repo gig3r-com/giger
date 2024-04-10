@@ -4,14 +4,15 @@ namespace Giger.Models.BankingModels
 {
     public class Transaction
     {
-        [BsonId]
-        public string Id { get; set; }
+        public required string Id { get; set; }
         
-        public string To { get; set; }
+        public required string To { get; set; }
         
-        public string From { get; set; }
-        
-        public double Amount { get; set; }
+        public required string From { get; set; }
+
+        [BsonIgnore]
+        private decimal _amount;
+        public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
         
         public DateTime Date { get; set; }
     }
