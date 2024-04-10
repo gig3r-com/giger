@@ -1,16 +1,34 @@
 [
   {
-    "_id": "qwerty",
-    "Name": "TakayamaNet",
+    "_id": "testnetworkid",
+    "Name": "TestNetwork",
     "Subnetworks": [
-      "qwertyIronnet"
+      "ironnetId"
     ],
-    "AdminId": "aaa"
+    "AdminId": ""
   },
   {
     "_id": "4aadf272",
-    "Name": "TakayamaNetwork",
-    "Subnetworks": [ "6635a036" ],
+    "Name": "Synapse",
+    "Subnetworks": [ "" ],
+    "AdminId": ""
+  },
+  {
+    "_id": "397047a3",
+    "Name": "TechNet",
+    "Subnetworks": [ "" ],
+    "AdminId": ""
+  },
+  {
+    "_id": "3a15640a",
+    "Name": "Neonode",
+    "Subnetworks": [ "" ],
+    "AdminId": ""
+  },
+  {
+    "_id": "3663d691",
+    "Name": "OpenNet",
+    "Subnetworks": [ "" ],
     "AdminId": ""
   }
 ]

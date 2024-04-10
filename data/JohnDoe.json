@@ -1,7 +1,7 @@
 {
   "id": "7d708d5b",
   "name": "John",
-  "handle": "",
+  "handle": "john_1",
   "roles": [],
   "aliasMap": {},
   "active": true,
@@ -11,8 +11,8 @@
   "age": 0,
   "vibe": "OVERSEERS",
   "wealthLevel": "ELITE",
-  "networkId": "4aadf272",
-  "subnetworkId": "6635a036",
+  "networkId": "testnetworkid",
+  "subnetworkId": "ironnetId",
   "exploits": [],
   "mindHack": "Disabled",
   "hackerName": "",
@@ -39,6 +39,8 @@
       "userId": "7d708d5b",
       "description": "Very Important Data.",
       "recordType": "PrivateRecord",
+      "RevealPriority": false,
+      "IsRevealed": 3,
       "title": "Classified"
     }
   ],
@@ -51,6 +53,8 @@
       "status": "CURRENT",
       "timeStamp": "2024-04-07T14:05:42.335Z",
       "name": "VICTIM: Mugging",
+      "RevealPriority": false,
+      "IsRevealed": 3,
       "type": "VICTIM"
     }
   ],
@@ -63,6 +67,8 @@
       "status": "CURRENT",
       "timeStamp": "2024-04-07T14:05:42.335Z",
       "name": "Cyberware installment",
+      "RevealPriority": true,
+      "IsRevealed": 0,
       "type": "CYBERWARE"
     }
   ]

@@ -154,10 +154,10 @@ class ApiService {
    * Utils
    */
   async disableAuth(): void {
-    const { gigerApiUrl } = this.getUrls();
+    const { gigerUrl } = this.getUrls();
     return axios({
       method: 'GET',
-      url: `${gigerApiUrl}/disableAuth`,
+      url: `${gigerUrl}/disableAuth`,
     }).then((response) => {
       console.log(response);
     });
