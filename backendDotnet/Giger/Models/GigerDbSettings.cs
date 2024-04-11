@@ -15,6 +15,7 @@
         public string NetworksCollectionName { get; set; } = null!;
         public string SubnetworksCollectionName { get; set; } = null!;
         public string AuthsCollectionName { get; set; } = null!;
+        public string AnonymizedCollectionName { get; set; } = null!;
         public string LogsCollectionName { get; set; } = null!;
     }
 }

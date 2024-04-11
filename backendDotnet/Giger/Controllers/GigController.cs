@@ -6,9 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GigController(GigService gigService, UserService userService, LoginService loginService) : AuthController(userService, loginService)
+    public class GigController(GigService gigService, UserService userService, LoginService loginService, AnonymizedService anonymizedService) : AuthController(userService, loginService)
     {
         private readonly GigService _gigService = gigService;
+        private readonly AnonymizedService _anonymizedService = anonymizedService;
 
         [HttpGet("get/all")]
         public async Task<List<Gig>> GetAll() => await _gigService.GetAllAsync();
@@ -30,6 +31,24 @@ namespace Giger.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Post(Gig newGig)
         {
+            if (!IsAuthorized(newGig.AuthorId))
+            {
+                return Forbid();
+            }
+
+            newGig.Id = ObjectId.GenerateNewId().ToString();
+            if (newGig.IsAnonymizedAuthor)
+            {
+                var anonymizedUserName = Guid.NewGuid().ToString();
+                var anonymizedUser = new AnonymizedUser
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    UserId = newGig.AuthorId,
+                    DisplyedAs = anonymizedUserName
+                };
+                await _anonymizedService.CreateAsync(anonymizedUser);
+                newGig.AuthorName = anonymizedUserName;
+            }
             await _gigService.CreateAsync(newGig);
             return CreatedAtAction(nameof(Post), new { id = newGig.Id }, newGig);
         }
