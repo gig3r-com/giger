@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Giger.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class LoginController : Controller
     {
         private readonly UserService _userService;  
@@ -32,11 +33,12 @@ namespace Giger.Controllers
             return "Auth enabled";
         }
 #endif
+
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpGet("giger")]
         public async Task<string> Login(string userName, string password)
         {
-            var userLoginData = _loginService.GetByUserNameAsync(userName).Result;
+            var userLoginData = await _loginService.GetByUserNameAsync(userName);
             if (userLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;
@@ -48,8 +50,8 @@ namespace Giger.Controllers
                 return "Wrong password";
             }
 
-            var user = _userService.GetByUserNameAsync(userName).Result;
-            if (user != null && user.Roles != null && user.Roles.Contains(Models.User.UserRoles.ADMIN))
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user != null && user.Roles.Contains(Models.User.UserRoles.ADMIN))
             {
                 if (userLoginData.AuthToken != null)
                 {
@@ -70,11 +72,45 @@ namespace Giger.Controllers
             return userLoginData.AuthToken;
         }
 
+        [HttpGet("hacker")]
+        public async Task<string> LoginHacker(string userName, string password)
+        {
+            var userLoginData = await _loginService.GetByUserNameAsync(userName);
+            if (userLoginData == null)
+            {
+                Response.StatusCode = StatusCodes.Status404NotFound;
+                return "User not found";
+            }
+            if (userLoginData.Password != password)
+            {
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return "Wrong password";
+            }
+
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user != null && (user.Roles.Contains(Models.User.UserRoles.ADMIN) ||
+                user.HackingSkills.Stat >= 1))
+            {
+                if (userLoginData.AuthToken != null)
+                {
+                    Response.StatusCode = StatusCodes.Status200OK;
+                    return userLoginData.AuthToken;
+                }
+                else
+                {
+                    Response.StatusCode = StatusCodes.Status400BadRequest;
+                    return "Please login to Gig3r first";
+                }
+            }
+            Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return "You are not authorized to use this service";
+        }
+
         [HttpGet("logout")]
         public async Task<string> Logout(string userName)
         {
             Request.Headers.TryGetValue("AuthToken", out var authToken);
-            var userLoginData = _loginService.GetByUserNameAsync(userName).Result;
+            var userLoginData = await _loginService.GetByUserNameAsync(userName);
             if (userLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;
@@ -91,10 +127,10 @@ namespace Giger.Controllers
             return "Logged out";
         }
 
-        [HttpGet("password")]
+        [HttpGet("changePassword")]
         public async Task<string> ChangePassword(string userName, string oldPassword, string newPassword)
         {
-            var userLoginData = _loginService.GetByUserNameAsync(userName).Result;
+            var userLoginData = await _loginService.GetByUserNameAsync(userName);
             if (userLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;

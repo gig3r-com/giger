@@ -12,7 +12,7 @@ namespace Giger.Services
         public LoginService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _authsCollection = _mongoDatabase.GetCollection<Auths>(
-                gigerDatabaseSettings.Value.TransactionsCollectionName);
+                gigerDatabaseSettings.Value.AuthsCollectionName);
         }
 
         public async Task<Auths?> GetByUserNameAsync(string userName) =>

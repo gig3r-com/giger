@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Giger.Models.Obscured
 {
@@ -7,8 +8,13 @@ namespace Giger.Models.Obscured
         [BsonId]
         public required string Id { get; set; }
 
-        public required bool RevealPriority { get; set; }
+        public required int RevealPriority { get; set; }
 
-        public required int IsRevealed { get; set; }
+        public required bool IsRevealed { get; set; }
+
+        [BsonIgnore]
+        protected const string REDACTED = "********REDACTED********";
+
+        public virtual void Obscure() { } // nothing to obscure here
     }
 }

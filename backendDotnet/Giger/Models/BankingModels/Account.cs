@@ -7,18 +7,20 @@ namespace Giger.Models.BankingModels
     public class Account
     {
         [BsonId]
-        public string Id { get; set; }
+        public required string Id { get; set; }
         
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
+
+        public required string OwnerId { get; set; }
 
         public Transaction[] Transactions { get; set; } = [];
         
         [BsonRepresentation(BsonType.String)]
-        public AccountType Type { get; set; }
+        public required AccountType Type { get; set; }
         
         public decimal Balance { get; set; }
         
-        public string AccountNumber { get; set; }
+        public required string AccountNumber { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]

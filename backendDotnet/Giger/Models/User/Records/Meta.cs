@@ -7,23 +7,30 @@ namespace Giger.Models.User.Records
     public class Meta : UserRecord
     {
         [BsonRepresentation(BsonType.String)]
-        MetaTypes Type { get; set; }
-        
-        string Description { get; set; }
-        
-        bool IsLink { get; set; }
+        public MetaTypes Type { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        UserRecordTypes RecordType = UserRecordTypes.Meta;
+        public bool IsLink { get; set; }
+
+        public Meta()
+        {
+            RecordType = UserRecordTypes.Meta;
+        }
+
+        public override void Obscure()
+        {
+            base.Obscure();
+            Type = MetaTypes.REDACTED;
+        }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<MetaTypes>))]
     public enum MetaTypes
     {
+        REDACTED,
         Archetype,
         Music,
         Inspirations,
         Aesthetics,
-        Procedure
+        Procedure,
     }
 }

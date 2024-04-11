@@ -1,17 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Giger.Services;
+﻿using Giger.Services;
 using Giger.Models.GigModels;
+using Giger.Models.User;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GigController(GigService gigService, UserService userService, LoginService loginService) : AuthController(userService, loginService)
+    public class GigController(GigService gigService, UserService userService, LoginService loginService, AnonymizedService anonymizedService, AccountService accountService)
+        : AuthController(userService, loginService)
     {
+        private readonly AccountService _accountService = accountService;
+        private readonly AnonymizedService _anonymizedService = anonymizedService;
         private readonly GigService _gigService = gigService;
 
         [HttpGet("get/all")]
         public async Task<List<Gig>> GetAll() => await _gigService.GetAllAsync();
+
+        [HttpGet("get/allAvailable")]
+        public async Task<List<Gig>> GetAllAvailable() => await _gigService.GetAllAvailableAsync();
+
+        [HttpGet("get/allInProgress")]
+        public async Task<List<Gig>> GetAllAvailable(string takenById) => await _gigService.GetAllInProgressAsync(takenById);
 
         [HttpGet("get/byId")]
         public async Task<ActionResult<Gig>> GetById(string id)
@@ -30,6 +41,24 @@ namespace Giger.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Post(Gig newGig)
         {
+            if (!IsAuthorized(newGig.AuthorId))
+            {
+                return Forbid();
+            }
+
+            newGig.Id = ObjectId.GenerateNewId().ToString();
+            if (newGig.IsAnonymizedAuthor)
+            {
+                var anonymizedUserName = Guid.NewGuid().ToString();
+                var anonymizedUser = new AnonymizedUser
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    UserId = newGig.AuthorId,
+                    DisplyedAs = anonymizedUserName
+                };
+                await _anonymizedService.CreateAsync(anonymizedUser);
+                newGig.AuthorName = anonymizedUserName;
+            }
             await _gigService.CreateAsync(newGig);
             return CreatedAtAction(nameof(Post), new { id = newGig.Id }, newGig);
         }
@@ -41,11 +70,51 @@ namespace Giger.Controllers
             {
                 return Forbid();
             }
-            await _gigService.UpsertAsync(updatedGig);
+
+            if (_gigService.GetAsync(updatedGig.Id) is null)
+            {
+                return NotFound();
+            }
+
+            await _gigService.UpdateAsync(updatedGig.Id, updatedGig);
             return Ok();
         }
 
-        [HttpDelete("remove/{id}")]
+        [HttpPatch("{id}/complete")]
+        public async Task<IActionResult> PatchCompleteGig(string id)
+        {
+            var gig = await _gigService.GetAsync(id);
+            if (gig is null)
+            {
+                return NotFound();
+            }
+
+            if (gig.TakenById is null)
+            {
+                return BadRequest("Gig is not taken");
+            }
+
+            if (!IsAuthorized(gig.TakenById))
+            {
+                return Forbid();
+            }
+
+            gig.Status = GigStatus.COMPLETED;
+
+            var clientAccount = await _accountService.GetByUserIdAsync(gig.TakenById);
+            if (clientAccount is null)
+            {
+                return NotFound("Client account not found. Cannot complete Gig.");
+            }
+
+            clientAccount.Balance += gig.Payout;
+            await _accountService.UpdateAsync(clientAccount.Id, clientAccount);
+            await _gigService.UpdateAsync(id, gig);
+            
+            return Ok();
+        }
+
+        [HttpDelete("{id}/remove")]
         public async Task<IActionResult> Remove(string id)
         {
             var gig = await _gigService.GetAsync(id);
@@ -61,8 +130,8 @@ namespace Giger.Controllers
             return NoContent();
         }
 
-        [HttpPatch("update/{id}/takenBy")]
-        public async Task<IActionResult> PatchTakenBy(string id, string value)
+        [HttpPatch("{id}/takenBy")]
+        public async Task<IActionResult> PatchTakenBy(string id, string takenBy)
          {
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
@@ -75,14 +144,14 @@ namespace Giger.Controllers
             }
             if (gig.TakenById != null)
             {
-                // gig taken reponse
+                return BadRequest("Gig is already taken");
             }
-            gig.TakenById = value;
+            gig.TakenById = takenBy;
             await _gigService.UpdateAsync(id, gig);
             return Ok();
         }
 
-        [HttpPatch("update/{id}/status")]
+        [HttpPatch("{id}/status")]
         public async Task<IActionResult> PatchStatus(string id, GigStatus value)
         {
             var gig = await _gigService.GetAsync(id);
