@@ -19,7 +19,10 @@ namespace Giger.Controllers
         public async Task<List<Gig>> GetAll()
         {
             var allGigs = await _gigService.GetAllAsync();
-            allGigs.ForEach(ObscureGig);
+            if (!IsGodUser())
+            {
+                allGigs.ForEach(ObscureGig);
+            }
             return allGigs;
         }
 
@@ -27,7 +30,10 @@ namespace Giger.Controllers
         public async Task<List<Gig>> GetAllAvailable()
         {
             var allAvailableGigs = await _gigService.GetAllAvailableAsync();
-            allAvailableGigs.ForEach(ObscureGig);
+            if (!IsGodUser())
+            {
+                allAvailableGigs.ForEach(ObscureGig);
+            }
             return allAvailableGigs;
         }
 
@@ -35,7 +41,10 @@ namespace Giger.Controllers
         public async Task<List<Gig>> GetAllOwn(string takenById)
         {
             var allOwnGigs = await _gigService.GetAllOwnAsync(takenById);
-            allOwnGigs.ForEach(ObscureGig);
+            if (!IsGodUser())
+            {
+                allOwnGigs.ForEach(ObscureGig);
+            }
             return allOwnGigs;
         }
 
@@ -47,7 +56,10 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            ObscureGig(gig);
+            if (!IsGodUser())
+            {
+                ObscureGig(gig);
+            }
             return gig;
         }
 
