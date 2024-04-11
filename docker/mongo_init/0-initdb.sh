@@ -1,3 +1,5 @@
+mongosh <<EOF
+
 db = db.getSiblingDB(process.env.MONGO_INITDB_DATABASE).auth(
     process.env.MONGO_INITDB_ROOT_USERNAME,
     process.env.MONGO_INITDB_ROOT_PASSWORD
@@ -18,4 +20,6 @@ db.createCollection('Messages')
 db.createCollection('Auths')
 db.createCollection('Networks')
 db.createCollection('Subnetworks')
-db.Auths.insert({Id: 1, Username: 'admin', Password: 'admin'})
+db.Auths.insert({_id: '1fe35579-5ce7-46ec-89e0-7e7236700297', Username: 'admin', Password: 'admin'})
+
+EOF
