@@ -177,6 +177,18 @@ namespace Giger.Controllers
 
             return user;
         }
+
+        [HttpGet("public/byUsername")]
+        public async Task<ActionResult<UserPublic>> GetPublicByUsername(string username)
+        {
+            var user = await _userService.GetByUserNameAsync(username);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
         #endregion
 
         #region SingleProperties

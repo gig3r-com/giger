@@ -7,6 +7,7 @@ using OperatingSystem = Giger.Models.Networks.OperatingSystem;
 namespace Giger.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class NetworksController(UserService userService, LoginService loginService,
         NetworksService networkService) : AuthController(userService, loginService)
     {
