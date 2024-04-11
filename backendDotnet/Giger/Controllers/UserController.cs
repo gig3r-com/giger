@@ -25,6 +25,13 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
+            if (!IsAuthorized(user.Id))
+            {
+                return Forbid();
+            }
+
+            user = FilterObscurableData(user);
+
             return user;
         }
 
@@ -488,5 +495,34 @@ namespace Giger.Controllers
             return BadRequest("Record already exists");
         }
         #endregion
+
+        private UserPrivate FilterObscurableData(UserPrivate user)
+        {
+            if (IsGodUser())
+            {
+                return user;
+            }
+
+            user.PrivateRecords = (PrivateRecord[])FilterObscurableField(user.PrivateRecords);
+            user.MedicalEvents = (MedicalEvent[])FilterObscurableField(user.MedicalEvents);
+            user.CriminalEvents = (CriminalEvent[])FilterObscurableField(user.CriminalEvents);
+            user.Relations = (Relation[])FilterObscurableField(user.Relations);
+            user.Meta = (Meta[])FilterObscurableField(user.Meta);
+            user.Goals = (Goal[])FilterObscurableField(user.Goals);
+
+            return user;
+        }
+
+        private ObscurableInfo[] FilterObscurableField(IEnumerable<ObscurableInfo> obscurableFields)
+        {
+            foreach (var element in obscurableFields)
+            {
+                if (!element.IsRevealed)
+                {
+                    element.Obscure();
+                }
+            }
+            return null;
+        }
     }
 }
