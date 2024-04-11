@@ -1,13 +1,18 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace Giger.Models.User.Records
+﻿namespace Giger.Models.User.Records
 {
     public class Goal : UserRecord
     {
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public UserRecordTypes RecordType  => UserRecordTypes.Goal;
+        public Goal()
+        {
+            RecordType = UserRecordTypes.Goal;
+        }
+
+        public override void Obscure()
+        {
+            base.Obscure();
+            Title = REDACTED;
+        }
     }
 }

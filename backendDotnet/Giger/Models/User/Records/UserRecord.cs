@@ -5,22 +5,27 @@ using System.Text.Json.Serialization;
 
 namespace Giger.Models.User.Records
 {
-    public class UserRecord : ObscurableInfo
+    public abstract class UserRecord : ObscurableInfo
     {
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
         
-        public string Description { get; set; }
+        public required string Description { get; set; }
         
         [BsonRepresentation(BsonType.String)]
         public UserRecordTypes RecordType { get; set; }
-    }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
-    public enum UserRecordTypes
-    {
-        Relation,
-        Goal,
-        Meta,
-        PrivateRecord
+        public override void Obscure()
+        {
+            Description = REDACTED;
+        }
+
+        [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
+        public enum UserRecordTypes
+        {
+            Relation,
+            Goal,
+            Meta,
+            PrivateRecord
+        }
     }
 }

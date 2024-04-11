@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Giger.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class LoginController : Controller
     {
         private readonly UserService _userService;  
@@ -34,7 +35,7 @@ namespace Giger.Controllers
 #endif
 
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpGet("giger")]
         public async Task<string> Login(string userName, string password)
         {
             var userLoginData = await _loginService.GetByUserNameAsync(userName);
@@ -60,7 +61,7 @@ namespace Giger.Controllers
             }
 
             var newAuthToken = Guid.NewGuid().ToString();
-            while (_loginService.GetByAuthTokenAsync(newAuthToken) != null)
+            while (_loginService.GetByAuthTokenAsync(newAuthToken).Result != null)
             {
                 newAuthToken = Guid.NewGuid().ToString();
             }
@@ -71,7 +72,7 @@ namespace Giger.Controllers
             return userLoginData.AuthToken;
         }
 
-        [HttpGet("login/hacker")]
+        [HttpGet("hacker")]
         public async Task<string> LoginHacker(string userName, string password)
         {
             var userLoginData = await _loginService.GetByUserNameAsync(userName);
@@ -126,7 +127,7 @@ namespace Giger.Controllers
             return "Logged out";
         }
 
-        [HttpGet("password")]
+        [HttpGet("changePassword")]
         public async Task<string> ChangePassword(string userName, string oldPassword, string newPassword)
         {
             var userLoginData = await _loginService.GetByUserNameAsync(userName);

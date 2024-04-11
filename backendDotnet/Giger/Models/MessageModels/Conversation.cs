@@ -9,7 +9,7 @@ namespace Giger.Models.MessageModels
         
         public Message[] Messages { get; set; } = [];
 
-        public string[] Participants { get; set; } = [];
+        public string[] Participants { get; set; } = []; // UserNames
 
         public bool GigConversation { get; set; }
     }

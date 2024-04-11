@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Giger.Services;
+﻿using Giger.Services;
 using Giger.Models.MessageModels;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ConversationController(UserService userService, LoginService loginService, ConversationService conversationService) : AuthController(userService, loginService)
-
     {
         private readonly ConversationService _conversationService = conversationService;
 
-        [HttpGet]
-        public async Task<List<Conversation>> Get() => await _conversationService.GetAllAsync();
-
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)
         {
             var conversation = await _conversationService.GetAsync(id);
@@ -26,35 +23,53 @@ namespace Giger.Controllers
             return conversation;
         }
 
-        [HttpGet("byOwner")]
-        public async Task<List<Conversation>> GetAllConversationOfParticipant(string owner) => await _conversationService.GetAllWithParticipantAsync(owner);
+        [HttpGet("byParticipant")]
+        public async Task<ActionResult<List<Conversation>>> GetAllConversationOfParticipant(string participant)
+        {
+            if (!IsAuthorized(participant))
+            {
+                Forbid();
+            }
+
+            var conversation = await _conversationService.GetAllWithParticipantAsync(participant);
+            if (conversation is null)
+            {
+                return NotFound();
+            }
+            return conversation;
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(Conversation newConversation)
         {
+            newConversation.Id = ObjectId.GenerateNewId().ToString();
             await _conversationService.CreateAsync(newConversation);
 
-            return CreatedAtAction(nameof(Get), new { id = newConversation.Id }, newConversation);
+            return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
         }
 
-        [HttpPut("id")]
-        public async Task<IActionResult> Update(string id, Conversation updatedConversation)
+        [HttpPatch("{id}/participants")]
+        public async Task<IActionResult> Update(string id, string userName)
         {
             var conversation = await _conversationService.GetAsync(id);
-
             if (conversation is null)
             {
                 return NotFound();
             }
 
-            updatedConversation.Id = conversation.Id;
+            var newParticipant = _userService.GetByUserNameAsync(userName);
+            if (newParticipant is null)
+            {
+                return NotFound();
+            }
 
-            await _conversationService.UpdateAsync(id, updatedConversation);
+            conversation.Participants = [..conversation.Participants, userName];
+            await _conversationService.UpdateAsync(id, conversation);
 
             return NoContent();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var conversation = await _conversationService.GetAsync(id);
