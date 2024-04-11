@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Giger.Services;
+﻿using Giger.Services;
 using Giger.Models.GigModels;
+using Giger.Models.User;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Giger.Controllers
 {
@@ -13,6 +15,12 @@ namespace Giger.Controllers
 
         [HttpGet("get/all")]
         public async Task<List<Gig>> GetAll() => await _gigService.GetAllAsync();
+
+        [HttpGet("get/allAvailable")]
+        public async Task<List<Gig>> GetAllAvailable() => await _gigService.GetAllAvailableAsync();
+
+        [HttpGet("get/allInProgress")]
+        public async Task<List<Gig>> GetAllAvailable(string takenById) => await _gigService.GetAllInProgressAsync(takenById);
 
         [HttpGet("get/byId")]
         public async Task<ActionResult<Gig>> GetById(string id)
@@ -60,11 +68,17 @@ namespace Giger.Controllers
             {
                 return Forbid();
             }
-            await _gigService.UpsertAsync(updatedGig);
+
+            if (_gigService.GetAsync(updatedGig.Id) is null)
+            {
+                return NotFound();
+            }
+
+            await _gigService.UpdateAsync(updatedGig.Id, updatedGig);
             return Ok();
         }
 
-        [HttpDelete("remove/{id}")]
+        [HttpDelete("{id}/remove")]
         public async Task<IActionResult> Remove(string id)
         {
             var gig = await _gigService.GetAsync(id);
@@ -80,8 +94,8 @@ namespace Giger.Controllers
             return NoContent();
         }
 
-        [HttpPatch("update/{id}/takenBy")]
-        public async Task<IActionResult> PatchTakenBy(string id, string value)
+        [HttpPatch("{id}/takenBy")]
+        public async Task<IActionResult> PatchTakenBy(string id, string takenBy)
          {
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
@@ -94,14 +108,14 @@ namespace Giger.Controllers
             }
             if (gig.TakenById != null)
             {
-                // gig taken reponse
+                return BadRequest("Gig is already taken");
             }
-            gig.TakenById = value;
+            gig.TakenById = takenBy;
             await _gigService.UpdateAsync(id, gig);
             return Ok();
         }
 
-        [HttpPatch("update/{id}/status")]
+        [HttpPatch("{id}/status")]
         public async Task<IActionResult> PatchStatus(string id, GigStatus value)
         {
             var gig = await _gigService.GetAsync(id);

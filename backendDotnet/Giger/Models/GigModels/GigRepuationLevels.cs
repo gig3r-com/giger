@@ -1,6 +1,6 @@
 ﻿namespace Giger.Models.GigModels
 {
-    public class GigRepuationLevels
+    public struct GigRepuationLevels
     {
         private const short MINVALUE = 0;
         private const short MAXVALUE = 5;
