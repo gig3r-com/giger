@@ -61,7 +61,7 @@ namespace Giger.Controllers
             }
 
             var newAuthToken = Guid.NewGuid().ToString();
-            while (_loginService.GetByAuthTokenAsync(newAuthToken) != null)
+            while (_loginService.GetByAuthTokenAsync(newAuthToken).Result != null)
             {
                 newAuthToken = Guid.NewGuid().ToString();
             }
