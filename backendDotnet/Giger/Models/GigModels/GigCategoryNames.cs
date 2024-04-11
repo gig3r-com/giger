@@ -5,6 +5,7 @@ namespace Giger.Models.GigModels
     [JsonConverter(typeof(JsonStringEnumConverter<GigCategoryNames>))]
     public enum GigCategoryNames
     {
+        REDACTED,
         INTEL,
         TECH,
         DELIVERY,
