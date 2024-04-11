@@ -24,6 +24,9 @@ namespace Giger.Services
         public async Task<Account?> GetByUserNameAsync(string owner) =>
             await _accountsCollection.Find(x => x.Owner == owner).FirstOrDefaultAsync();
 
+        public async Task<Account?> GetByUserIdAsync(string ownerId) =>
+            await _accountsCollection.Find(x => x.Owner == ownerId).FirstOrDefaultAsync();
+
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
             await _accountsCollection.Find(x => x.AccountNumber == accountNumber).FirstOrDefaultAsync();
 

@@ -11,6 +11,8 @@ namespace Giger.Models.BankingModels
         
         public required string Owner { get; set; }
 
+        public required string OwnerId { get; set; }
+
         public Transaction[] Transactions { get; set; } = [];
         
         [BsonRepresentation(BsonType.String)]
