@@ -7,6 +7,7 @@ type UsePrefixType = {
   accessPoint: string;
   username: string;
   isLoggedIn: boolean;
+  forceRefresh: boolean;
 };
 export function usePrefix(props: UsePrefixType) {
   const {
@@ -15,6 +16,7 @@ export function usePrefix(props: UsePrefixType) {
     accessPoint,
     username,
     isLoggedIn,
+    forceRefresh,
   } = props;
   const [prefix, setPrefix] = useState<ReactElement[] | null>(null);
 
@@ -55,7 +57,7 @@ export function usePrefix(props: UsePrefixType) {
     pref.push(<span className="input-prefix">{'>'}</span>);
 
     setPrefix(pref);
-  }, [isConnected, timeLeft, accessPoint, isLoggedIn, username]);
+  }, [isConnected, timeLeft, accessPoint, isLoggedIn, username, forceRefresh]);
 
   return { prefix };
 }

@@ -1,15 +1,15 @@
 import { ProfileType, SubnetworkType } from '../../apiService/types';
 
 const loginUserKey: string = 'loginUser';
-const connectedSubnetworkKey: string = 'loginUser';
+const connectedSubnetworkKey: string = 'connectedSubnetwork';
 
 export function setLoginUserData(data: ProfileType | null): void {
-  if (data) localStorage.setItem(loginUserKey, JSON.stringify(data));
+  localStorage.setItem(loginUserKey, JSON.stringify(data));
 }
 
 export function getLoginUserData(): ProfileType | null {
   const rawData = localStorage.getItem(loginUserKey);
-  if (rawData) return JSON.parse(rawData)
+  if (rawData) return JSON.parse(rawData);
   return null;
 }
 
@@ -19,7 +19,7 @@ export function setConnectedSubnetworkData(data: SubnetworkType | null): void {
 
 export function getConnectedSubnetworkData(): SubnetworkType | null {
   const rawData = localStorage.getItem(connectedSubnetworkKey);
-  if (rawData) return JSON.parse(rawData)
+  if (rawData) return JSON.parse(rawData);
   return null;
 }
 

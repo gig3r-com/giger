@@ -27,7 +27,9 @@ type OnCommandHandleType = {
   disconnectFromSubnetwork: () => void;
   setInputDisabled: (inputDisabled: boolean) => void;
   logout: () => void;
-  toggleDebugMode: () => void;
+  toggleDebugMode: (debugModeOn: boolean) => void;
+  refreshPrefix: () => void;
+  isLoggedIn: boolean;
 };
 
 export default function useCommandHandler(props: OnCommandHandleType) {
@@ -44,6 +46,8 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     setInputDisabled,
     logout,
     toggleDebugMode,
+    refreshPrefix,
+    isLoggedIn,
   } = props;
 
   /*
@@ -83,22 +87,38 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   });
   const { executeSendMsgCommand } = useSendMsgCommands({ addLines, addErrors });
   const { executeReadMsgCommand } = useReadMsgCommands({ addLines, addErrors });
+
+  /*
+   * Read data commands
+   */
   const { executeReadDataCommand } = useReadDataCommands({
     addLines,
     addErrors,
+    setInputDisabled,
   });
-  const { executeProfileCommand } = useProfileCommands({ addLines, addErrors });
+
+  /*
+   * Profile commands
+   */
+  const { executeProfileCommand } = useProfileCommands({
+    addLines,
+    addErrors,
+  });
   const { executeLogCommand } = useLogCommands({ addLines, addErrors });
+
+  /*
+   * Read data commands
+   */
   const { executeCopyDataCommand } = useCopyDataCommands({
     addLines,
     addErrors,
+    setInputDisabled,
   });
   const { executeBalanceCommand } = useBalanceCommands({ addLines, addErrors });
 
   const executeCommand = (command: string) => {
     const parsedCommand = command.toLowerCase().split(' ');
     const mainCommand = parsedCommand[0];
-    console.log('Command: ', mainCommand);
     switch (mainCommand) {
       case MAIN_COMMANDS.CLEAR:
         return setLines([]);
@@ -106,13 +126,13 @@ export default function useCommandHandler(props: OnCommandHandleType) {
         return disconnectFromSubnetwork();
       case MAIN_COMMANDS.NAME:
         setInputDisabled(true);
-        ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
+        return ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
           (newHackerName) => {
             setInputDisabled(false);
             addLines([newHackerName.hackerName]);
+            refreshPrefix();
           },
         );
-        break;
       case MAIN_COMMANDS.LOOGUT:
         return logout();
       case MAIN_COMMANDS.PROFILE:

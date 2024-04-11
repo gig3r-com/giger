@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import { usePrefix } from './hooks/usePrefix';
 import useCommandHandler from './hooks/useCommandHandler';
 import useKeyHandler from './hooks/useKeyHandler';
@@ -15,6 +15,11 @@ export default function Terminal() {
   const [accessPoint, setAccessPoint] = useState(null);
   const [prefixType, setPrefixType] = useState('admin');
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [forceRefresh, setForceRefresh] = useState(false);
+  const refreshPrefix = () => setForceRefresh(true);
+  useEffect(() => {
+    if (forceRefresh) setForceRefresh(false);
+  }, [forceRefresh]);
   const changeInput = (e: Event) => setInput(e.target.value);
   const stayFocused = (e: Event) => e.target.focus();
   const { toggleDebugMode } = useDebugMode();
@@ -50,6 +55,8 @@ export default function Terminal() {
     setInputDisabled,
     logout,
     toggleDebugMode,
+    refreshPrefix,
+    isLoggedIn,
   });
   const { handleKey } = useKeyHandler({
     username,
@@ -69,6 +76,7 @@ export default function Terminal() {
     username,
     isLoggedIn,
     userData,
+    forceRefresh,
   });
   useAccessPointHandler({ setAccessPoint });
 

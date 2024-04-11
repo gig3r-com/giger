@@ -8,6 +8,7 @@ import {
 } from '../../responseLines/listCommands';
 import { unknownCommand } from '../../responseLines/errors';
 import * as Programs from '../../data/programs';
+import { getConnectedSubnetworkData } from '../../utils/store';
 
 type UseListCommandType = {
   addLines: (lines: string[]) => void;
@@ -31,6 +32,7 @@ export default function useListCommands({
           if (!isConnected) addLines(getListCmdLines());
           else if (isDecrypted) addLines(getDecodedListCmdLines());
           else {
+            const connectedSubnetwork = getConnectedSubnetworkData();
             // @ts-ignore
             const system = Programs[connectedSubnetwork.operatingSystem];
             addLines(getEncodedListCmdLines(system.encryptedCommands));

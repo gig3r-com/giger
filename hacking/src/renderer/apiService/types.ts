@@ -22,9 +22,6 @@ export type ProfileType = UserType & {
   professionActual: string;
   typeActual: 'HUMAN' | 'AI' | 'ANDROID';
   assets: string[];
-  hackingSkills: {
-    stat: number;
-  };
   favoriteUserIds: string[];
   relations: [
     {
@@ -60,13 +57,16 @@ export type SubnetworkType = {
   pastHacks: string[];
 };
 
-type EventType = {
-  id: number;
-  userId: string;
+export type EventType = {
+  id: string;
+  type: string;
   name: string;
   description: string;
-  timeStamp: number;
+  date: string;
   status: 'CURRENT' | 'HISTORICAL';
+  additionalData?: {
+    type: 'hacking' | 'mindExploit',
+  }
 };
 
 export type CriminalEventType = EventType & {
@@ -78,7 +78,7 @@ export type MedicalEventType = EventType & {
 };
 
 export type PrivateRecordType = {
-  id: number;
+  id: string;
   userId: string;
   title: string;
   description: string;

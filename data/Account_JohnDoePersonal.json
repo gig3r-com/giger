@@ -1,0 +1,16 @@
+{
+  "id": "c88ecf3a",
+  "owner": "7d708d5b",
+  "transactions": [
+    {
+      "id": "string",
+      "to": "string",
+      "from": "c88ecf3a",
+      "amount": 200,
+      "date": "2024-04-10T22:55:53.225Z"
+    }
+  ],
+  "type": "PRIVATE",
+  "balance": 3420,
+  "accountNumber": "5b87-4908-acf6"
+}

@@ -84,6 +84,13 @@ input:focus{
   }
 }
 
+table.profile-table {
+  td {
+    padding: 0 10px;
+  }
+  margin: 0 20px;
+}
+
 @keyframes loading {
   0% {
     content: '-';

@@ -19,9 +19,9 @@ export default function useLogin({
   const [username, setUsername] = useState<string>('');
   function enterPassword(password: string): void {
     setInputDisabled(true);
-    if (username === 'test' && password === 'test') {
+    if (username === 'mike_v' && password === 'test') {
       setUsername('');
-      ApiService.getActiveUserProfile('activeHacker').then(
+      ApiService.getActiveUserProfile('e4ad03a7').then(
         (hackerData: any) => {
           setLoginUserData(hackerData);
           setUserData(hackerData);

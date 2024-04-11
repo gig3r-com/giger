@@ -2,9 +2,11 @@ import axios from 'axios';
 import mapUser from './mappers/user';
 import mapProfile from './mappers/profile';
 import { UserType, ProfileType, NetworkType, SubnetworkType } from './types';
-import * as EXPLOITS from '../Terminal/data/exploits'
+import * as EXPLOITS from '../Terminal/data/exploits';
 import { getSavedSubnetworkData } from './utils';
-import mapSubnetwork from "./mappers/subnetwork";
+import mapSubnetwork from './mappers/subnetwork';
+import mapRecordToApi from './mappers/record';
+import { getLoginUserData, setLoginUserData } from '../Terminal/utils/store';
 
 class ApiService {
   constructor() {}
@@ -21,33 +23,29 @@ class ApiService {
    * ACTIVE USER PROFILE METHODS
    ************************************************************************************************
    */
-  getActiveUserProfile(userId: string): Promise<string> {
+  getActiveUserProfile(userId: string): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();
+
     return axios
       .get(`${gigerApiUrl}/User/private/byId?id=${userId}`)
       .then((response) => {
-        localStorage.setItem(
-          'activeUserProfileRaw',
-          JSON.stringify(response.data),
-        );
         return mapProfile(response.data);
       });
   }
 
-  changeActiveUserHackingName(hackingName: string): Promise<string> {
+  changeActiveUserHackingName(hackerName: string): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();
-    const profileRawData = JSON.parse(
-      localStorage.getItem('activeUserProfileRaw'),
-    );
-    profileRawData.hackerName = hackingName;
+    const loginUserData = getLoginUserData();
+    if (!loginUserData) throw new Error('No active login user');
+    loginUserData.hackerName = hackerName;
+
     return axios
-      .put(`${gigerApiUrl}/User/byId?id=${profileRawData.id}`, profileRawData)
-      .then((response) => {
-        localStorage.setItem(
-          'activeUserProfileRaw',
-          JSON.stringify(profileRawData),
-        );
-        return mapProfile(profileRawData);
+      .patch(
+        `${gigerApiUrl}/User/${loginUserData.id}/hackerName?newName=${hackerName}`,
+      )
+      .then(() => {
+        setLoginUserData(loginUserData);
+        return mapProfile(loginUserData);
       });
   }
 
@@ -122,7 +120,8 @@ class ApiService {
     const url = `${gigerUrl}/subnetwork/all`;
     return axios.get(url).then((response) => {
       const foundSubnetwork = response.data.find(
-        (subnetwork: any) => subnetwork.id === subnetworkId,
+        (subnetwork: any) =>
+          subnetwork.id.toLowerCase() === subnetworkId.toLowerCase(),
       );
       if (foundSubnetwork) return mapSubnetwork(foundSubnetwork);
       throw new Error(`Subnetwork with id ${subnetworkId} not found`);
@@ -131,9 +130,26 @@ class ApiService {
 
   /*
    ************************************************************************************************
-   * TODO
+   * Profile
    ************************************************************************************************
    */
+  getUserProfile(userId: string): Promise<ProfileType> {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/User/private/byId?id=${userId}`;
+    return axios.get(url).then((response) => {
+      return mapProfile(response.data);
+    });
+  }
+
+  addRecordToLoginUser(record): Promise<ProfileType> {
+    const { gigerApiUrl } = this.getUrls();
+    const loginUserData = getLoginUserData();
+    const url = `${gigerApiUrl}/User/${loginUserData.id}/privateRecord`;
+    return axios.patch(url, mapRecordToApi(record, loginUserData.id)).then((response) => {
+      console.log({response});
+      return mapProfile(response.data);
+    });
+  }
 
   getCrawler() {}
 
