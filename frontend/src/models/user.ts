@@ -3,8 +3,9 @@ import { ICriminalEvent, IMedEvent, IObscurableInfo } from './events';
 export interface IUserBase {
     id: string;
     name: string;
+    surname: string;
     handle: string;
-    roles?: UserRoles[];
+    roles: UserRoles[];
     aliasMap: IAliasMap;
     active: boolean;
 }
@@ -12,7 +13,6 @@ export interface IUserBase {
 export interface IUserPublic extends IUserBase {
     professionPublic: string;
     typePublic: UserTypes;
-    surname: string;
     age: number;
     vibe: Vibe;
     wealthLevel: WealthLevels;
@@ -60,7 +60,9 @@ export enum UserTypes {
 }
 
 export enum UserRoles {
-    ADMIN = 'admin'
+    ADMIN = 'admin',
+    INFLUENCER = 'influencer',
+    DIRECTOR = 'director',
 }
 
 export interface ICharStats {

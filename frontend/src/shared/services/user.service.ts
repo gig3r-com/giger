@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
 import {
-    getUserPublicDataByHandle,
     getUserPublicDataById,
     users
 } from '../../mocks/users';
@@ -14,7 +13,7 @@ import {
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
-import { IUserPrivate, IUserPublic } from '../../models/user';
+import { IUserBase, IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
 
 /**
@@ -114,6 +113,12 @@ export function useUserService() {
         return [rand[0], rand[1]].join('');
     };
 
+    const isInfluencer = (userId: string) => {
+        const user = userList.find((user) => user.id === userId);
+
+        return user?.roles?.includes(UserRoles.INFLUENCER);
+    };
+
     async function getUserById(
         userId: string,
         type: 'private'
@@ -134,13 +139,8 @@ export function useUserService() {
         }
     }
 
-    const getUserByHandle = async (
-        handle: string,
-        type: 'private' | 'public'
-    ) => {
-        return type === 'private'
-            ? userList.find((user) => user.handle === handle)
-            : getUserPublicDataByHandle(handle);
+    const getBasicUserDataById = (userId: string): IUserBase | undefined => {
+        return userList.find((user) => user.id === userId);
     };
 
     const getHandleForConvo = (convoId: string, userId: string) => {
@@ -173,9 +173,10 @@ export function useUserService() {
         saveLoginData,
         getAnonymizedHandle,
         canAnonymizeChatHandle,
+        getBasicUserDataById,
         getUserById,
-        getUserByHandle,
         getHandleForConvo,
-        toggleUserAsFavorite
+        toggleUserAsFavorite,
+        isInfluencer
     };
 }
