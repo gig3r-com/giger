@@ -16,26 +16,63 @@ namespace Giger.Controllers
         private readonly GigService _gigService = gigService;
 
         [HttpGet("get/all")]
-        public async Task<List<Gig>> GetAll() => await _gigService.GetAllAsync();
+        public async Task<List<Gig>> GetAll()
+        {
+            var allGigs = await _gigService.GetAllAsync();
+            if (!IsGodUser())
+            {
+                allGigs.ForEach(ObscureGig);
+            }
+            return allGigs;
+        }
 
         [HttpGet("get/allAvailable")]
-        public async Task<List<Gig>> GetAllAvailable() => await _gigService.GetAllAvailableAsync();
+        public async Task<List<Gig>> GetAllAvailable()
+        {
+            var allAvailableGigs = await _gigService.GetAllAvailableAsync();
+            if (!IsGodUser())
+            {
+                allAvailableGigs.ForEach(ObscureGig);
+            }
+            return allAvailableGigs;
+        }
 
-        [HttpGet("get/allInProgress")]
-        public async Task<List<Gig>> GetAllAvailable(string takenById) => await _gigService.GetAllInProgressAsync(takenById);
+        [HttpGet("get/allOwn")]
+        public async Task<List<Gig>> GetAllOwn(string takenById)
+        {
+            var allOwnGigs = await _gigService.GetAllOwnAsync(takenById);
+            if (!IsGodUser())
+            {
+                allOwnGigs.ForEach(ObscureGig);
+            }
+            return allOwnGigs;
+        }
 
         [HttpGet("get/byId")]
         public async Task<ActionResult<Gig>> GetById(string id)
         {
             var gig = await _gigService.GetAsync(id);
-            return gig != null ? gig : NotFound();
+            if (gig is null)
+            {
+                return NotFound();
+            }
+            if (!IsGodUser())
+            {
+                ObscureGig(gig);
+            }
+            return gig;
         }
 
         [HttpGet("get/byTitle")]
         public async Task<ActionResult<Gig>> GetByTitle(string title)
         {
             var gig = await _gigService.GetByFirstNameAsync(title);
-            return gig != null ? gig : NotFound();
+            if (gig is null)
+            {
+                return NotFound();
+            }
+            ObscureGig(gig);
+            return gig;
         }
 
         [HttpPost("create")]
@@ -167,6 +204,14 @@ namespace Giger.Controllers
             gig.Status = value;
             await _gigService.UpdateAsync(id, gig);
             return Ok();
+        }
+
+        private void ObscureGig(Gig gig)
+        {
+            if (!gig.IsRevealed)
+            {
+                gig.Obscure();
+            }
         }
     }
 }

@@ -10,10 +10,16 @@ namespace Giger.Services
 
         public AbstractService(IOptions<GigerDbSettings> gigerDatabaseSettings)
         {
-            var settings = MongoClientSettings.FromConnectionString(gigerDatabaseSettings.Value.ConnectionString);
-            settings.LinqProvider = MongoDB.Driver.Linq.LinqProvider.V3;
-
-            var mongoClient = new MongoClient(settings);
+            var MongoSettings = new MongoClientSettings()
+            {
+                Server = new MongoServerAddress(gigerDatabaseSettings.Value.Host, gigerDatabaseSettings.Value.Port),
+                Credential = MongoCredential.CreateCredential(
+                    gigerDatabaseSettings.Value.DatabaseName,
+                    gigerDatabaseSettings.Value.Username,
+                    gigerDatabaseSettings.Value.Password),
+                LinqProvider = MongoDB.Driver.Linq.LinqProvider.V3,
+            };
+            var mongoClient = new MongoClient(MongoSettings);
 
             _mongoDatabase = mongoClient.GetDatabase(
                 gigerDatabaseSettings.Value.DatabaseName);
