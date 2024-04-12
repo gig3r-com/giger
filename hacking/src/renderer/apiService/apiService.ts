@@ -75,8 +75,8 @@ class ApiService {
   scanForNetworkById(
     networkId: string,
   ): Promise<{ type: string; data: NetworkType }> {
-    const { gigerUrl } = this.getUrls();
-    const url = `${gigerUrl}/network?id=${networkId}`;
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/network?id=${networkId}`;
     return axios.get(url).then((response) => {
       if (response.data) return { type: 'network', data: response.data };
       throw new Error(`Network with id ${networkId} not found`);
@@ -116,8 +116,8 @@ class ApiService {
    */
 
   getSubnetworkById(subnetworkId: string): Promise<SubnetworkType | any> {
-    const { gigerUrl } = this.getUrls();
-    const url = `${gigerUrl}/subnetwork/all`;
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/subnetwork/all`;
     return axios.get(url).then((response) => {
       const foundSubnetwork = response.data.find(
         (subnetwork: any) =>
@@ -145,10 +145,12 @@ class ApiService {
     const { gigerApiUrl } = this.getUrls();
     const loginUserData = getLoginUserData();
     const url = `${gigerApiUrl}/User/${loginUserData.id}/privateRecord`;
-    return axios.patch(url, mapRecordToApi(record, loginUserData.id)).then((response) => {
-      console.log({response});
-      return mapProfile(response.data);
-    });
+    return axios
+      .patch(url, mapRecordToApi(record, loginUserData.id))
+      .then((response) => {
+        console.log({ response });
+        return mapProfile(response.data);
+      });
   }
 
   getCrawler() {}
@@ -167,13 +169,33 @@ class ApiService {
   }
 
   /*
-   * Utils
+   * Authentication
    */
-  async disableAuth(): void {
-    const { gigerUrl } = this.getUrls();
+  async disableAuth(): Promise<void> {
+    const { gigerApiUrl } = this.getUrls();
     return axios({
       method: 'GET',
-      url: `${gigerUrl}/disableAuth`,
+      url: `${gigerApiUrl}/Login/disableAuth`,
+    }).then((response) => {
+      console.log(response);
+    });
+  }
+
+  async login(username: string, password: string): Promise<void> {
+    const { gigerApiUrl } = this.getUrls();
+    return axios({
+      method: 'GET',
+      url: `${gigerApiUrl}/Login/hacker?userName=${username}&password=${password}`,
+    }).then((response) => {
+      console.log(response);
+    });
+  }
+
+  async logout(): Promise<void> {
+    const { gigerApiUrl } = this.getUrls();
+    return axios({
+      method: 'GET',
+      url: `${gigerApiUrl}/Login/logout`,
     }).then((response) => {
       console.log(response);
     });
