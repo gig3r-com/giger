@@ -1,5 +1,6 @@
 ﻿using Giger.Services;
 using Giger.Models.BankingModels;
+using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
@@ -7,9 +8,12 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService) : AuthController(userService, loginService)
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService) 
+        : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
+        private readonly LogService _logService = logService;
+        private readonly NetworksService _networksService = networksService;
 
         #region Account
         [HttpGet("byId")]
@@ -185,8 +189,54 @@ namespace Giger.Controllers
             receiverAcc.Balance += newTransaction.Amount;
             _accountService.UpdateAsync(receiverAcc.Id, receiverAcc);
 
+            LogTransaction(newTransaction, giverAcc.OwnerId, receiverAcc.OwnerId);
+
             return CreatedAtAction(nameof(Post), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
+
+        private async void LogTransaction(Transaction transaction, string giverId, string receiverId)
+        {
+            // giver and receiver are not null at this point
+            var giver = await _userService.GetByUserNameAsync(giverId);
+            var receiver = await _userService.GetByUserNameAsync(receiverId);
+            var giverSubNetwork = await _networksService.GetSubnetworkByIdAsync(giver.SubnetworkId);
+            var receiverSubNetwork = await _networksService.GetSubnetworkByIdAsync(receiver.SubnetworkId);
+
+            var log = new Log
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Timestamp = DateTime.Now,
+                SourceUserId = giver.Id,
+                SourceUserName = giver.Handle,
+                TargetUserId = receiver.Id,
+                TargetUserName = receiver.Handle,
+                LogType = LogType.Transfer,
+                LogData = $"Transaction from {transaction.From} to {transaction.To} on {DateTime.Now}",
+                SubnetworkId = giver.SubnetworkId,
+                SubnetworkName = giverSubNetwork.Name
+            };
+
+            _logService.CreateAsync(log);
+
+            if (giverSubNetwork.Id != receiverSubNetwork.Id)
+            {
+                log = new Log
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Timestamp = DateTime.Now,
+                    SourceUserId = giver.Id,
+                    SourceUserName = giver.Handle,
+                    TargetUserId = receiver.Id,
+                    TargetUserName = receiver.Handle,
+                    LogType = LogType.Transfer,
+                    LogData = $"Transaction from {transaction.From} to {transaction.To} on {DateTime.Now}",
+                    SubnetworkId = receiver.SubnetworkId,
+                    SubnetworkName = receiverSubNetwork.Name
+                };
+
+                _logService.CreateAsync(log);
+            }
+        }
     }
 }
