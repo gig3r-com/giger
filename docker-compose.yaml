@@ -25,6 +25,8 @@ services:
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile
+      args:
+        - ASPNETCORE_CONFIGURATION=Debug
     restart: unless-stopped
     expose:
       - 8080
@@ -39,6 +41,7 @@ services:
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
       - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - mongo
   
@@ -71,16 +74,16 @@ services:
     depends_on:
       - mongo
 
-  swagger:
-    image: swaggerapi/swagger-ui
-    restart: unless-stopped
-    ports:
-      - ${SWAGGER_PORT:-8090}:8080
-    volumes:
-      - ./swagger.yml:/tmp/swagger.yml
-    environment:
-      SWAGGER_JSON: "/tmp/swagger.yml"
-      BASE_URL: "/swagger"
+  # swagger:
+  #   image: swaggerapi/swagger-ui
+  #   restart: unless-stopped
+  #   ports:
+  #     - ${SWAGGER_PORT:-8090}:8080
+  #   volumes:
+  #     - ./swagger.yml:/tmp/swagger.yml
+  #   environment:
+  #     SWAGGER_JSON: "/tmp/swagger.yml"
+  #     BASE_URL: "/swagger"
 
   # backend:
   #   build:
