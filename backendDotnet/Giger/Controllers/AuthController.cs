@@ -18,14 +18,6 @@ namespace Giger.Controllers
             if (!AuthEnabled)
                 return true;
 #endif
-            // map - user to token - check token
-            // db - add table user id with passwords
-            // research - try OAuth
-            // else on login create token and send it back
-            // login controller
-            // localhost:5000/api/login?username=...&password=...
-
-
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
                 return false;
