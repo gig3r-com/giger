@@ -11,7 +11,7 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
 }) => {
     const dispatch = useDispatch();
     const ref = useRef<HTMLSelectElement>(null);
-    const { isAdmin, getUserById, saveLoginData } = useUserService();
+    const { isGod, getUserById, saveLoginData } = useUserService();
     const users = useSelector((state: RootState) => state.users.users);
     const [showSelection, setShowSelection] = useState(false);
 
@@ -35,7 +35,7 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
 
     return (
         <>
-            {isAdmin && (
+            {isGod && (
                 <div
                     className="select-user material-icons material-symbols-outlined"
                     onClick={() => setShowSelection(true)}

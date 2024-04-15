@@ -18,6 +18,8 @@ import GigReputation from '../gig-reputation/gig-reputation';
 import { useUserService } from '../../../shared/services/user.service';
 
 import './gig.scss';
+import { UserRoles } from '../../../models/user';
+import { ComplaintDetails } from '../complaint-details/complaint-details';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
@@ -36,6 +38,13 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
+    const showComplaint = useMemo(() => {
+        const inDispute = gig.status === GigStatus.DISPUTE;
+        const userIsModerator = currentUser?.roles.includes(UserRoles.ADMIN);
+        const isCompainer = gig.takenById === currentUser?.id;
+
+        return inDispute && (userIsModerator || isCompainer);
+    }, [gig])
     const isMine = useMemo(() => {
         return gig.authorId === currentUser?.id;
     }, [gig, currentUser]);
@@ -137,6 +146,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             <p className="gig__description">
                                 {gig.description}
                             </p>
+
+                            {showComplaint && <ComplaintDetails gig={gig} />}
 
                             <AnimatePresence>
                                 {fetchingConvo && (

@@ -1,5 +1,6 @@
 import { Factions } from './companies';
-import { ICriminalEvent, IMedEvent, IObscurableInfo } from './events';
+import { ICriminalEvent, IMedEvent } from './events';
+import { IObscurableInfo } from './general';
 
 export interface IUserBase {
     id: string;
@@ -39,7 +40,13 @@ export interface IUserPrivate extends IUserPublic {
     privateRecords: IPrivateRecord[];
     criminalRecord: ICriminalEvent[];
     medHistory: IMedEvent[];
-    faction: Factions
+    faction: Factions;
+    revealCodes: IRevealCode[];
+}
+
+export interface IRevealCode {
+    code: string;
+    seen: boolean;
 }
 
 /**
@@ -65,6 +72,7 @@ export enum UserRoles {
     ADMIN = 'admin',
     INFLUENCER = 'influencer',
     DIRECTOR = 'director',
+    GOD = 'god'
 }
 
 export interface ICharStats {

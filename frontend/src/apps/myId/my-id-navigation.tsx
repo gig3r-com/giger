@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import { FC } from 'react';
-import './my-id-navigation.scss';
 import { useUserService } from '../../shared/services/user.service';
+
+import './my-id-navigation.scss';
 
 export type MyIdNavigationProps = {
     active?: boolean;
@@ -22,6 +23,7 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
         { name: 'relations', isNew: true },
         { name: 'meta' },
         { name: 'records' },
+        { name: 'code' },
         { name: 'log out', onClickAction: () => logout() }
     ];
 

@@ -1,4 +1,6 @@
 export interface IGigBase {
+    createdAt: string; //ISO date string
+    acceptedAt?: string; //ISO date string
     payout: number;
     title: string;
     description: string;
@@ -16,6 +18,7 @@ export interface IGig extends IGigBase {
     status: GigStatus;
     authorId: string;
     takenById?: string;
+    markedAsComplaintAt?: string; //ISO date string
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;

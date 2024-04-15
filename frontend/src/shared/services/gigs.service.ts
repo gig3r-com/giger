@@ -14,6 +14,7 @@ import { mockGigs } from '../../mocks/gigs';
 import { useMessagesService } from './messages.service';
 import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
+import dayjs from 'dayjs';
 
 /**
  * TODO: connect it to the backend.
@@ -27,6 +28,7 @@ export function useGigsService() {
     const { displayToast } = useNotificationsService();
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
+        createdAt: dayjs().toISOString(),
         title: draftGig.title,
         category: draftGig.category,
         description: draftGig.description,

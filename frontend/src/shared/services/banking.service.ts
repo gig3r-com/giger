@@ -19,6 +19,7 @@ type Holder = {
 export function useBankingService() {
     const dispatch = useDispatch();
     const userList = useSelector((state: RootState) => state.users.users);
+    const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const accounts = useSelector((state: RootState) => ({
         private: state.bank.account,
         business: state.bank.businessAccount
@@ -48,7 +49,12 @@ export function useBankingService() {
                 amount,
                 title,
                 id: v4(),
-                date: dayjs().toISOString()
+                date: dayjs().toISOString(),
+                ...(fromAccount === AccountType.BUSINESS
+                    ? {
+                          orderingParty: currentUser?.id
+                      }
+                    : {})
             };
 
             console.log('Sending transaction', transaction);

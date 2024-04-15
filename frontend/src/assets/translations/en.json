@@ -109,7 +109,7 @@
     "WITNESS": "witness",
     "PUNISHMENT": "punishment",
     "SEE_ALL_THE_INFO": "See all the info",
-    "ADMIN_MODE": "Admin mode",
+    "GOD_MODE": "God mode",
     "ARCHETYPE": "archetype",
     "MUSIC": "music",
     "INSPIRATIONS": "inspirations",
@@ -128,5 +128,8 @@
     "Gunners": "Gunners",
     "CONTECH": "Contech",
     "Contech": "Contech",
-    "Aesthetics": "Aesthetics"
+    "Aesthetics": "Aesthetics",
+    "DEVTOOLS_WARNING": "This is not where you're supposed to do your hacking. Remember, don't be an asshole. :)",
+    "CODE_ENTRY": "Code entry",
+    "ENTER": "Enter"
 }

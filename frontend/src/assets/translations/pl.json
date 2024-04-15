@@ -98,7 +98,7 @@
     "WITNESS": "świadek",
     "PUNISHMENT": "Kara",
     "SEE_ALL_THE_INFO": "Zobacz wszystko",
-    "ADMIN_MODE": "Tryb admina",
+    "GOD_MODE": "God mode",
     "ARCHETYPE": "Archetyp",
     "MUSIC": "Muzyka",
     "INSPIRATIONS": "Inspiracje",
@@ -117,5 +117,8 @@
     "Gunners": "Gunners",
     "CONTECH": "Contech",
     "Contech": "Contech",
-    "Aesthetics": "Aesthetics"
+    "Aesthetics": "Aesthetics",
+    "DEVTOOLS_WARNING": "Nie tu masz hackować. Pamietaj, nie bądź dupkiem.",
+    "CODE_ENTRY": "Wpisz kod",
+    "ENTER": "Wprowadź"
 }
