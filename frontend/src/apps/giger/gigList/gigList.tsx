@@ -15,7 +15,9 @@ import './gigList.scss';
 
 export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const { currentUser } = useUserService();
-    const fetchingGigs = useSelector((state: RootState) => state.gigs.fetchingGigs);
+    const fetchingGigs = useSelector(
+        (state: RootState) => state.gigs.fetchingGigs
+    );
     const { gigId } = useParams();
     const intl = useIntl();
 
@@ -24,10 +26,11 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
         const bIsOwn = b.authorId === currentUser?.id;
         const statusesRank = {
             [GigStatus.DISPUTE]: 0,
-            [GigStatus.PENDING]: 1,
+            [GigStatus.PENDING_CONFIRMATION]: 1,
             [GigStatus.IN_PROGRESS]: 2,
             [GigStatus.AVAILABLE]: 3,
-            [GigStatus.COMPLETED]: 4
+            [GigStatus.COMPLETED]: 4,
+            [GigStatus.EXPIRED]: 5
         };
         const aScore = aIsOwn ? -1 : statusesRank[a.status];
         const bScore = bIsOwn ? -1 : statusesRank[b.status];

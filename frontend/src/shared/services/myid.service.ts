@@ -17,6 +17,12 @@ export function useMyIdService() {
             })
         );
         console.log(`Reveal code: ${code}`);
+
+        // !MOCK
+        if (code === 'TEST') {
+            return 'success';
+        }
+        return 'wrongCode';
     };
 
     return {

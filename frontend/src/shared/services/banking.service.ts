@@ -18,6 +18,12 @@ type Holder = {
 
 export function useBankingService() {
     const dispatch = useDispatch();
+    const currentPrivateBalance = useSelector(
+        (state: RootState) => state.bank.account?.balance ?? 0
+    );
+    const currentBusinessBalance = useSelector(
+        (state: RootState) => state.bank.businessAccount?.balance ?? 0
+    );
     const userList = useSelector((state: RootState) => state.users.users);
     const currentUser = useSelector((state: RootState) => state.users.currentUser);
     const accounts = useSelector((state: RootState) => ({
@@ -82,6 +88,8 @@ export function useBankingService() {
         accounts,
         fetchAccounts,
         sendTransfer,
-        getAccountHolderName
+        getAccountHolderName,
+        currentPrivateBalance,
+        currentBusinessBalance
     };
 }

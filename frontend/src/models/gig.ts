@@ -7,6 +7,7 @@ export interface IGigBase {
     category: GigCategoryNames;
     reputationRequired?: GigRepuationLevels;
     id: string;
+    accountId: string;
     anonymizedAuthor?: boolean;
 }
 
@@ -19,6 +20,7 @@ export interface IGig extends IGigBase {
     authorId: string;
     takenById?: string;
     markedAsComplaintAt?: string; //ISO date string
+    complaintReason?: string;
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;
@@ -60,8 +62,9 @@ export enum GigStatus {
     AVAILABLE = 'available',
     IN_PROGRESS = 'in_progress',
     COMPLETED = 'completed',
-    PENDING = 'pending',
-    DISPUTE = 'dispute'
+    PENDING_CONFIRMATION = 'pending',
+    DISPUTE = 'dispute',
+    EXPIRED = 'expired'
 }
 
 export const reputationLabels = new Map<GigRepuationLevels, string>([

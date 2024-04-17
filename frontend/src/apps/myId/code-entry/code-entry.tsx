@@ -9,11 +9,13 @@ export const CodeEntry: FC = () => {
     const intl = useIntl();
     const [code, setCode] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-    const [messageToShow, setMessageToShow] = useState<'success' | 'wrongCode' | null>(null);
+    const [messageToShow, setMessageToShow] = useState<
+        'success' | 'wrongCode' | null
+    >(null);
     const { enterRevealCode } = useMyIdService();
     const onEntry = async () => {
         setLoading(true);
-        await enterRevealCode(code);
+        setMessageToShow(await enterRevealCode(code));
         setCode('');
         setLoading(false);
     };
@@ -29,6 +31,19 @@ export const CodeEntry: FC = () => {
                 onChange={(event) => setCode(event.target.value)}
                 className="code-entry__input"
             />
+
+            {messageToShow === 'success' && (
+                <div className="code-entry__success">
+                    <FormattedMessage id="SUCCESS" />
+                </div>
+            )}
+
+            {messageToShow === 'wrongCode' && (
+                <div className="code-entry__wrong-code">
+                    <FormattedMessage id="WRONG_CODE" />
+                </div>
+            )}
+
             <BigButton
                 disabled={code === ''}
                 onClick={() => onEntry()}
@@ -40,19 +55,6 @@ export const CodeEntry: FC = () => {
                     <FormattedMessage id="LOADING" />
                 </div>
             )}
-
-            {messageToShow === 'success' && (
-                <div className="code-entry__success">
-                    <FormattedMessage id="SUCCESS" />
-                </div>
-            )}
-
-            {messageToShow === 'wrongCode' && (
-                <div className="code-entry__error">
-                    <FormattedMessage id="WRONG_CODE" />
-                </div>
-            )}
-            
         </div>
     );
 };

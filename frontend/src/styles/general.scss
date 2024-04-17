@@ -49,3 +49,7 @@ select option {
     background: $dark-background;
     color: $input-text-color;
 }
+
+textarea {
+    min-height: 6rem;
+}

@@ -6,6 +6,7 @@ import {
 } from '../../mocks/users';
 import {
     selectCurrentUser,
+    selectIsAdmin,
     selectIsGod,
     setCurrentUser,
     setIsGod,
@@ -24,6 +25,7 @@ export function useUserService() {
     const userList = useSelector((state: RootState) => state.users.users);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
+    const isAdmin = useSelector(selectIsAdmin)
 
     /**
      * completely mocked now, obviously the password test will take place on backend
@@ -172,6 +174,7 @@ export function useUserService() {
         logout,
         retrieveLoginData,
         isGod,
+        isAdmin,
         updateUserData,
         currentUser,
         saveLoginData,

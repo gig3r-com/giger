@@ -35,7 +35,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 0,
         talkativeVsSilent: 0,
         thinkerVsDoer: 0,
-        roles: [],
+        roles: [UserRoles.ADMIN],
         revealCodes: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,

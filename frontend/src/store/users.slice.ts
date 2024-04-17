@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IUserBase, IUserPrivate } from '../models/user';
+import { IUserBase, IUserPrivate, UserRoles } from '../models/user';
 import { users } from '../mocks/users';
 import { cloneDeep } from 'lodash-es';
 
@@ -79,10 +79,10 @@ export const {
 export const selectCurrentUser = (state: { users: IUsersState }) =>
     state.users.currentUser;
 export const selectUsers = (state: { users: IUsersState }) => state.users.users;
-export const selectIsGod = (state: { users: IUsersState }) =>
-    state.users.isGod;
-export const selectRequiresGodUserSelection = (state: {
-    users: IUsersState;
-}) => state.users.requiresGodUserSelection;
+export const selectIsGod = (state: { users: IUsersState }) => state.users.isGod;
+export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
+    state.users.requiresGodUserSelection;
+export const selectIsAdmin = (state: { users: IUsersState }) =>
+    state.users.currentUser?.roles.includes(UserRoles.ADMIN) ?? false;
 
 export default usersSlice.reducer;

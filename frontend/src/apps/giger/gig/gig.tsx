@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
@@ -16,35 +16,34 @@ import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import GigReputation from '../gig-reputation/gig-reputation';
 import { useUserService } from '../../../shared/services/user.service';
-
-import './gig.scss';
 import { UserRoles } from '../../../models/user';
 import { ComplaintDetails } from '../complaint-details/complaint-details';
+import { getButtons } from './button-definitions';
+
+import './gig.scss';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
-    const { currentUser, getHandleForConvo } = useUserService();
-    const { acceptGig } = useGigsService();
-    const {
-        buttonColor,
-        buttonText,
-        gigClassname,
-        gigSummaryClassName,
-        secondButtonText,
-        secondButtonAction
-    } = useGigHelpers();
+    const intl = useIntl();
+    const { currentUser, getHandleForConvo, isAdmin, isGod } = useUserService();
+    const { handleButtonAction } = useGigsService();
+    const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
     const showComplaint = useMemo(() => {
-        const inDispute = gig.status === GigStatus.DISPUTE;
+        const correctStatus =
+            gig.status === GigStatus.DISPUTE ||
+            gig.status === GigStatus.COMPLETED;
         const userIsModerator = currentUser?.roles.includes(UserRoles.ADMIN);
-        const isCompainer = gig.takenById === currentUser?.id;
+        const interestedParty =
+            gig.takenById === currentUser?.id ||
+            gig.authorId === currentUser?.id;
 
-        return inDispute && (userIsModerator || isCompainer);
-    }, [gig])
+        return correctStatus && (userIsModerator || interestedParty);
+    }, [gig]);
     const isMine = useMemo(() => {
         return gig.authorId === currentUser?.id;
     }, [gig, currentUser]);
@@ -52,12 +51,6 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const convo = useMemo(() => {
         return convos.find((c) => c.id === gig.id);
     }, [convos, gig]);
-
-    const handleButtonClick = () => {
-        if (gig.status === GigStatus.AVAILABLE) {
-            acceptGig(gig.id);
-        }
-    };
 
     const showConvo = useMemo(() => {
         return (
@@ -84,7 +77,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
     const statusClasses = classNames({
         gig__status: true,
-        [`gig__status--${buttonColor(gig.status)}`]: true,
+        [`gig__status--${buttonColor(gig.status, isMine)}`]: true,
         'gig__status--shown': !selectedId
     });
 
@@ -114,7 +107,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             {gig.reputationRequired !== undefined && (
                                 <GigReputation
                                     reputation={gig.reputationRequired}
-                                    color={buttonColor(gig.status)}
+                                    color={buttonColor(gig.status, isMine)}
                                 />
                             )}
                         </span>
@@ -124,22 +117,42 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 <AnimatePresence>
                     {selectedId === gig.id && (
                         <motion.article
-                            className="gig_details"
+                            className="gig__details"
                             {...generateAnimation('expandCollapse')}
                         >
-                            <BigButton
-                                text={buttonText(gig.status)}
-                                color={buttonColor(gig.status)}
-                                onClick={handleButtonClick}
-                            />
+                            {getButtons(gig.status, isMine, isAdmin).map(
+                                (button) => (
+                                    <BigButton
+                                        key={button.label}
+                                        text={intl.formatMessage({
+                                            id: button.label
+                                        })}
+                                        color={isMine ? 'accent' : button.color}
+                                        onClick={() =>
+                                            handleButtonAction(
+                                                gig.id,
+                                                button.actionId
+                                            )
+                                        }
+                                    />
+                                )
+                            )}
 
-                            {isMine && (
+                            {isGod && (
                                 <BigButton
-                                    text={secondButtonText(!!gig.takenById)}
-                                    color="accent"
-                                    onClick={secondButtonAction(
-                                        !!gig.takenById
+                                    text={intl.formatMessage({
+                                        id: 'SET_AS_EXPIRED'
+                                    })}
+                                    color={buttonColor(
+                                        GigStatus.EXPIRED,
+                                        isMine
                                     )}
+                                    onClick={() =>
+                                        handleButtonAction(
+                                            gig.id,
+                                            'SET_AS_EXPIRED'
+                                        )
+                                    }
                                 />
                             )}
 
@@ -173,7 +186,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
             </div>
             {gig.status !== GigStatus.AVAILABLE && (
                 <div className={statusClasses}>
-                    {gig.status.replace('_', ' ')}
+                    {gig.status.replace('_', ' ')}{' '}
+                    {isMine && <FormattedMessage id="MY_GIG" />}
                 </div>
             )}
         </li>

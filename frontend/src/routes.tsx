@@ -51,6 +51,10 @@ export const Router = () => {
                             <Route path="giger" element={<Giger />}>
                                 <Route path="new-gig" element={<Giger />} />
                                 <Route path=":gigId" element={<Giger />} />
+                                <Route
+                                    path="report-problem"
+                                    element={<ReportProblem />}
+                                />
                             </Route>
                             <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />
@@ -150,10 +154,6 @@ export const Router = () => {
                                     />
                                 </Route>
                             </Route>
-                            <Route
-                                path="report-problem"
-                                element={<ReportProblem />}
-                            />
                         </Routes>
                         <Toaster
                             position="bottom-center"
