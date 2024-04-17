@@ -2,6 +2,11 @@
 {
     public struct GigRepuationLevels
     {
+        public GigRepuationLevels(int i)
+        {
+            Level = (short)i;
+        }
+
         private const short MINVALUE = 0;
         private const short MAXVALUE = 5;
 
@@ -25,5 +30,8 @@
                 }
             }
         }
+
+        public static implicit operator int(GigRepuationLevels cl) => cl.Level;
+        public static implicit operator GigRepuationLevels(int i) => new(i);
     }
 }
