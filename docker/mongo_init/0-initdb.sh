@@ -8,18 +8,20 @@ db = db.getSiblingDB(process.env.GIGER_DATABASE_NAME)
 db.createUser({
   user: process.env.GIGER_USERNAME,
   pwd: process.env.GIGER_USERNAME,
-  roles: [{ role: 'readWrite', db: process.env.GIGER_DATABASE_NAME }],
+  roles: [ { role: "userAdminAnyDatabase", db: process.env.GIGER_DATABASE_NAME }, 
+             { role: "dbAdminAnyDatabase", db: process.env.GIGER_DATABASE_NAME }, 
+             { role: "readWriteAnyDatabase", db: process.env.GIGER_DATABASE_NAME } ]
 });
-db.createCollection('Users')
-db.createCollection('Gigs')
-db.createCollection('Transactions')
 db.createCollection('Accounts')
-db.createCollection('Events')
-db.createCollection('Conversations')
-db.createCollection('Messages')
+db.createCollection('Anonymized')
 db.createCollection('Auths')
+db.createCollection('Conversations')
+db.createCollection('Gigs')
+db.createCollection('Implants')
 db.createCollection('Networks')
+db.createCollection('ObscuredData')
 db.createCollection('Subnetworks')
+db.createCollection('Users')
 db.Auths.insert({_id: '1fe35579-5ce7-46ec-89e0-7e7236700297', Username: 'admin', Password: 'admin'})
 
 EOF
