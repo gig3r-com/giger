@@ -1,4 +1,4 @@
 export interface IObscurableInfo {
-    revealPriority?: number;
+    revealCode?: string;
     seen?: boolean;
 }

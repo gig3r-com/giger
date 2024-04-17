@@ -31,6 +31,7 @@ export const goals: IGoal[] = [
         title: 'Find out who I am',
         recordType: UserRecordTypes.GOAL,
         description: 'I have no idea who I am. I want to find out.',
-        revealCode: 'MMSIZ'
+        revealCode: 'MMSIZ',
+        seen: false
     }
 ];
