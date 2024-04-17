@@ -8,8 +8,6 @@ namespace Giger.Models.Obscured
         [BsonId]
         public required string Id { get; set; }
 
-        public required int RevealPriority { get; set; }
-
         public required bool IsRevealed { get; set; }
 
         [BsonIgnore]

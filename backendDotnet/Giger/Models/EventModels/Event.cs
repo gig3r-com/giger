@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Giger.Models.EventModels
 {
-    public class Event : ObscurableInfo
+    public abstract class Event : ObscurableInfo
     {
         public string UserId { get; set; }
         
