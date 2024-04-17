@@ -1,6 +1,4 @@
-export interface IObscurableInfo {
-    revealCode?: string;
-}
+import { IObscurableInfo } from "./general";
 
 export interface IEvent extends IObscurableInfo {
     id: string;

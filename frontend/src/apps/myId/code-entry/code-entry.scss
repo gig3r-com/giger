@@ -1,0 +1,18 @@
+@import '../../../variables.scss';
+
+.code-entry {
+    &__heading {
+        text-transform: capitalize;
+        color: $primary-color;
+        font-weight: 400;
+        font-size: 16px;
+    }
+
+    &__input {
+        margin-bottom: 1rem;
+    }
+
+    &__wrong-code {
+        color: $secondary-color;
+    }
+}

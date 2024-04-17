@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { IGig } from '../../models/gig';
@@ -14,12 +14,11 @@ export const Giger: FC = () => {
     const location = useLocation();
     const { gigId } = useParams();
     const navigate = useNavigate();
-    const { fetchGigs } = useGigsService();
-    const gigs = useSelector((state: RootState) => state.gigs.gigs);
+    const { fetchGigs, gigsVisibleToTheUser } = useGigsService();
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
-    const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigs);
+    const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigsVisibleToTheUser);
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
@@ -27,6 +26,8 @@ export const Giger: FC = () => {
     useEffect(function mountSetup() {
         fetchGigs();
     }, []);
+
+    const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);
 
     useEffect(
         function onFiltersUpdate() {

@@ -8,6 +8,7 @@ import { EventRecord } from './medical/event-record';
 import { MyId } from './my-id';
 import { UserRecords } from './user-records/user-records';
 import { Vibe } from './vibe/vibe';
+import { CodeEntry } from './code-entry/code-entry';
 
 export const MyIdRoutes: FC = () => {
     return (
@@ -46,6 +47,7 @@ export const MyIdRoutes: FC = () => {
                 path="relations"
                 element={<UserRecords mode={UserRecordTypes.RELATION} />}
             />
+            <Route path="code-entry" element={<CodeEntry />} />
         </Route>
     );
 };

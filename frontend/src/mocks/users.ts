@@ -35,7 +35,8 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 0,
         talkativeVsSilent: 0,
         thinkerVsDoer: 0,
-        roles: [],
+        roles: [UserRoles.ADMIN],
+        revealCodes: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -70,6 +71,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -102,6 +104,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        revealCodes: [],
         roles: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
@@ -137,6 +140,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
         roles: [],
+        revealCodes: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -172,6 +176,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -204,6 +209,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        revealCodes: [],
         roles: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
@@ -237,6 +243,7 @@ export const users: IUserPrivate[] = [
         confrontationVsNegotiation: 0,
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
+        revealCodes: [],
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
@@ -269,6 +276,7 @@ export const users: IUserPrivate[] = [
         assets: ['Corporate Espionage Toolkit', 'Advanced Stealth Suit'],
         hackingSkill: 3,
         confrontationVsNegotiation: 0,
+        revealCodes: [],
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
@@ -305,6 +313,7 @@ export const users: IUserPrivate[] = [
         confrontationVsNegotiation: 0,
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
+        revealCodes: [],
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
@@ -340,6 +349,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        revealCodes: [],
         roles: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
@@ -373,6 +383,7 @@ export const users: IUserPrivate[] = [
         confrontationVsNegotiation: 0,
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
+        revealCodes: [],
         thinkerVsDoer: 0,
 
         roles: [],
@@ -414,6 +425,7 @@ export const users: IUserPrivate[] = [
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
+        revealCodes: [],
         favoriteUserIds: [],
         active: true,
         privateRecords: [],
@@ -442,6 +454,7 @@ export const users: IUserPrivate[] = [
         confrontationVsNegotiation: 0,
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
+        revealCodes: [],
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
@@ -478,6 +491,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
         roles: [UserRoles.INFLUENCER],
+        revealCodes: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -513,6 +527,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -548,6 +563,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -583,6 +599,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -617,6 +634,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
         roles: [],
+        revealCodes: [],
         faction: Factions.BORDELLO,
 
         combatSkill: 0,
@@ -653,6 +671,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -688,6 +707,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -723,6 +743,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -758,6 +779,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -793,6 +815,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -827,6 +850,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
 
+        revealCodes: [],
         roles: [],
         faction: Factions.BORDELLO,
         combatSkill: 0,
@@ -863,6 +887,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -898,6 +923,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -933,6 +959,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -966,6 +993,7 @@ export const users: IUserPrivate[] = [
         cowardVsFighter: 1,
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
+        revealCodes: [],
 
         roles: [],
         faction: Factions.BORDELLO,
@@ -1003,6 +1031,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1038,6 +1067,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1073,6 +1103,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1108,6 +1139,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1143,6 +1175,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1178,6 +1211,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.BORDELLO,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1219,6 +1253,7 @@ export const users: IUserPrivate[] = [
         medHistory: mockMedicalHistory,
         favoriteUserIds: [],
         active: true,
+        revealCodes: [],
         privateRecords: [],
         meta: [],
         goals: [],
@@ -1248,6 +1283,7 @@ export const users: IUserPrivate[] = [
         thinkerVsDoer: 0,
         roles: [],
         faction: Factions.TAKAYAMA,
+        revealCodes: [],
 
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
@@ -1264,7 +1300,7 @@ export const users: IUserPrivate[] = [
         wealthLevel: WealthLevels.AFFLUENT
     },
     {
-        id: '55566ssaa5ADMIN',
+        id: '55566ssaa5GOD',
         aliasMap: {},
         handle: 'NeonTiger69',
         name: 'Johnny',
@@ -1275,7 +1311,7 @@ export const users: IUserPrivate[] = [
         professionPublic: 'Cook',
         typeActual: UserTypes.HUMAN,
         typePublic: UserTypes.HUMAN,
-        roles: [UserRoles.ADMIN],
+        roles: [UserRoles.GOD],
         assets: ['Retro Computer Collection', 'Hacker Manifesto'],
         hackingSkill: 3,
         confrontationVsNegotiation: 0,
@@ -1283,6 +1319,7 @@ export const users: IUserPrivate[] = [
         talkativeVsSilent: 4,
         thinkerVsDoer: 0,
         faction: Factions.TAKAYAMA,
+        revealCodes: [],
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -1319,6 +1356,7 @@ export const systemUser: IUserPrivate = {
     thinkerVsDoer: 0,
     roles: [],
     faction: Factions.BORDELLO,
+    revealCodes: [],
 
     combatSkill: 0,
     criminalRecord: mockCriminalRecord,
