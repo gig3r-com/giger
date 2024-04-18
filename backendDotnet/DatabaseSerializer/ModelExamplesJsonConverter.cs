@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace DatabaseSerializer
@@ -14,7 +15,7 @@ namespace DatabaseSerializer
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            var o = JObject.FromObject(value);
+            var o = JObject.FromObject(value, JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } }));
             if (o != null)
             {
                 var Id = o.SelectToken("Id");
