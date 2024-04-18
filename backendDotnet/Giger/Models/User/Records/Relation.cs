@@ -2,7 +2,7 @@
 {
     public class Relation : UserRecord
     {
-        public required string Title { get; set; }
+        public required string UserId { get; set; }
 
         public Relation()
         {
@@ -11,8 +11,8 @@
 
         public override void Obscure()
         {
+            UserId = REDACTED;
             base.Obscure();
-            Title = REDACTED;
         }
     }
 }
