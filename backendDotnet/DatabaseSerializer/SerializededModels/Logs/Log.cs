@@ -7,7 +7,7 @@ namespace Giger.SerializededModels.Logs
         public Log()
         {
             Id = ObjectId.GenerateNewId().ToString();
-            Timestamp = DateTime.Now;
+            Timestamp = GigerDateTime.Now;
             SourceUserId = "123456";
             SourceUserName = "jsilver";
             SourceHackerName = null;

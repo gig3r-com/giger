@@ -84,7 +84,7 @@ namespace Giger.SerializededModels.User
                     Name = "Killed the corporation manager",
                     EventDescription = "Killed the boss of the rival gang",
                     Status = EventStatus.HISTORICAL,
-                    TimeStamp = DateTime.Now.Subtract(TimeSpan.FromDays(10)),
+                    TimeStamp = GigerDateTime.Now.Subtract(TimeSpan.FromDays(10)),
                     IsRevealed = true,
                 }
             ];
@@ -96,7 +96,7 @@ namespace Giger.SerializededModels.User
                     EventDescription = "Got shot in the leg",
                     Status = EventStatus.HISTORICAL,
                     Type = MedicalEventType.SYMPTOM,
-                    TimeStamp = DateTime.Now.Subtract(TimeSpan.FromDays(2)),
+                    TimeStamp = GigerDateTime.Now.Subtract(TimeSpan.FromDays(2)),
                     IsRevealed = true
                 }
             ];

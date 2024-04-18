@@ -39,6 +39,7 @@ namespace Giger.Controllers
                 return "Target user not found";
             }
 
+            implantData.TimeStamp = GigerDateTime.Now;
             targetUser.MedicalEvents = [.. targetUser.MedicalEvents, implantData];
             await _userService.UpdateAsync(userId, targetUser);
 
