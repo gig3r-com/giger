@@ -2,9 +2,9 @@
 
 namespace Giger.SerializededModels.MessageModels
 {
-    public class Conversation : Models.MessageModels.Conversation
+    public class Conversations : Models.MessageModels.Conversation
     {
-        public Conversation()
+        public Conversations()
         {
             Id = ObjectId.GenerateNewId().ToString();
             Messages = [ 

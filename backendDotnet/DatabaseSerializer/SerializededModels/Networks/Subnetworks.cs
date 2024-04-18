@@ -1,8 +1,8 @@
 ﻿namespace Giger.SerializededModels.Networks
 {
-    public class Subnetwork : Models.Networks.Subnetwork
+    public class Subnetworks : Models.Networks.Subnetwork
     {
-        public Subnetwork()
+        public Subnetworks()
         {
             Id = "SN999";
             Name = "Test Subnetwork";

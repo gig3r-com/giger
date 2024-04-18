@@ -1,8 +1,8 @@
 ﻿namespace Giger.SerializededModels.Networks
 {
-    public class Network : Models.Networks.Network
+    public class Networks : Models.Networks.Network
     {
-        public Network()
+        public Networks()
         {
             Id = "N666";
             Name = "The Matrix";

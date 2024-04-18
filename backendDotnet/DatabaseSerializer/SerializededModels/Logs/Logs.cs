@@ -2,9 +2,9 @@
 
 namespace Giger.SerializededModels.Logs
 {
-    public class Log : Models.Logs.Log
+    public class Logs : Models.Logs.Log
     {
-        public Log()
+        public Logs()
         {
             Id = ObjectId.GenerateNewId().ToString();
             Timestamp = GigerDateTime.Now;

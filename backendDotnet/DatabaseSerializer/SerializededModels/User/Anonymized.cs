@@ -2,10 +2,10 @@
 
 namespace Giger.SerializededModels.User
 {
-    public class AnonymizedUser : Models.User.AnonymizedUser
+    public class Anonymized : Models.User.AnonymizedUser
     {
 
-        public AnonymizedUser()
+        public Anonymized()
         {
             Id = ObjectId.GenerateNewId().ToString();
             UserId = "123456";

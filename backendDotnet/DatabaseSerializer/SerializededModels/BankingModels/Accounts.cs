@@ -2,9 +2,9 @@
 
 namespace Giger.SerializededModels.BankingModels
 {
-    public class Account : Models.BankingModels.Account
+    public class Accounts : Models.BankingModels.Account
     {
-        public Account()
+        public Accounts()
         {
             Id = ObjectId.GenerateNewId().ToString();
             Owner = "jsilver";

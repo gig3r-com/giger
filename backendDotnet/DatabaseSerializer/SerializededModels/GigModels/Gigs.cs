@@ -2,22 +2,23 @@
 
 namespace Giger.SerializededModels.GigModels
 {
-    public class Gig : Models.GigModels.Gig
+    public class Gigs : Models.GigModels.Gig
     {
-        public Gig()
+        public Gigs()
         {
-            Id = ObjectId.GenerateNewId().ToString();
-            IsRevealed = true;
+            Id = "987456";
+            IsRevealed = false;
             Payout = 100;
             Title = "Test Gig";
             Description = "This is a test gig.";
             Category = Models.GigModels.GigCategoryNames.INTEL;
             RepurationRequired = 1;
             IsAnonymizedAuthor = true;
-            Status = Models.GigModels.GigStatus.AVAILABLE;
+            Status = Models.GigModels.GigStatus.COMPLETED;
             AuthorId = "123456";
             AuthorName = "jsilver";
             TakenById = null;
+            IsRevealedByClient = false;
         }
     }
 }

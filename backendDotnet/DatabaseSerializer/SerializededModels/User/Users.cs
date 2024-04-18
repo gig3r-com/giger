@@ -3,9 +3,9 @@ using MongoDB.Bson;
 
 namespace Giger.SerializededModels.User
 {
-    public class UserPrivate : Models.User.UserPrivate
+    public class Users : Models.User.UserPrivate
     {
-        public UserPrivate()
+        public Users()
         {
             Id = "123456";
             Name = "Johnny";
