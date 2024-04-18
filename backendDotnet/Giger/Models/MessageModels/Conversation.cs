@@ -6,12 +6,12 @@ namespace Giger.Models.MessageModels
     {
         [BsonId]
         [BsonElement("_id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         public Message[] Messages { get; set; } = [];
 
-        public string[] Participants { get; set; } = []; // UserNames
+        public required string[] Participants { get; set; } = []; // UserNames
 
-        public bool GigConversation { get; set; }
+        public required bool GigConversation { get; set; }
     }
 }

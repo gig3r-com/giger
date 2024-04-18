@@ -9,7 +9,7 @@ namespace Giger.Models.User
         [BsonElement("_id")]
         public required string Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public required string Handle { get; set; } // username
 
@@ -21,19 +21,19 @@ namespace Giger.Models.User
         public bool Active { get; set; } // changeable
 
         [BsonRepresentation(BsonType.String)]
-        public UserTypes TypePublic { get; set; } // changeable
+        public required UserTypes TypePublic { get; set; } // changeable
 
-        public string ProfessionPublic { get; set; } // changeable
+        public required string ProfessionPublic { get; set; } // changeable
 
         public required string Surname { get; set; }
 
-        public int Age { get; set; }
+        public required int Age { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public Vibe Vibe { get; set; } // changeable ??
+        public required Vibe Vibe { get; set; } // changeable ??
 
         [BsonRepresentation(BsonType.String)]
-        public WealthLevels WealthLevel { get; set; }
+        public required WealthLevels WealthLevel { get; set; }
 
         public required string NetworkId { get; set; }
 

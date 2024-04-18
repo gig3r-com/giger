@@ -8,19 +8,19 @@ namespace Giger.Models.Networks
     {
         [BsonId]
         [BsonElement("_id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
-        public string Name { get; set; }
-        
-        public string NetworkId { get; set; }
-        
-        public string[] Users { get; set; } = [];
+        public required string Name { get; set; }
+
+        public required string NetworkId { get; set; }
+
+        public required string[] Users { get; set; } = [];
 
         [BsonRepresentation(BsonType.String)]
-        public Firewall Firewall { get; set; }
+        public Firewall? Firewall { get; set; }
         
         [BsonRepresentation(BsonType.String)]
-        public OperatingSystem OperatingSystem { get; set; }
+        public OperatingSystem? OperatingSystem { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public Ice[] Ice { get; set; } = [];

@@ -8,7 +8,7 @@ namespace Giger.Models.GigModels
 {
     public class Gig : ObscurableInfo
     {
-        public decimal Payout { get; set; }
+        public required decimal Payout { get; set; }
 
         public required string Title { get; set; }
 

@@ -6,11 +6,11 @@ namespace Giger.Models.Auths
     {
         [BsonId]
         [BsonElement("_id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
-        public string Username { get; set; } // UserBase.Handle
-        
-        public string Password { get; set; }
+        public required string Username { get; set; } // UserBase.Handle
+
+        public required string Password { get; set; }
         
         public string? AuthToken { get; set; }
     }

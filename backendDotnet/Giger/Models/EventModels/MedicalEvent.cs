@@ -7,7 +7,7 @@ namespace Giger.Models.EventModels
     public class MedicalEvent: Event
     {
         [BsonRepresentation(BsonType.String)]
-        public MedicalEventType? Type { get; set; }
+        public required MedicalEventType? Type { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<MedicalEventType>))]

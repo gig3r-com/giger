@@ -16,16 +16,16 @@ namespace Giger.Models.Logs
 
         public required string SourceUserName { get; set; }
 
-        public string SourceHackerName { get; set; }
+        public string? SourceHackerName { get; set; }
 
-        public string TargetUserId { get; set; }
+        public string? TargetUserId { get; set; }
 
-        public string TargetUserName { get; set; }
+        public string? TargetUserName { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public required LogType LogType { get; set; }
 
-        public string LogData { get; set; }
+        public required string LogData { get; set; }
 
         public required string SubnetworkId { get; set; }
 

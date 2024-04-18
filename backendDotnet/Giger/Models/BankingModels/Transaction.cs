@@ -13,7 +13,7 @@ namespace Giger.Models.BankingModels
         [BsonIgnore]
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
-        
-        public DateTime Date { get; set; }
+
+        public required DateTime Date { get; set; }
     }
 }

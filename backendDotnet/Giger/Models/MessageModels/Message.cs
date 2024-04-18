@@ -6,16 +6,16 @@ namespace Giger.Models.MessageModels
 {
     public class Message
     {
-        public string Id { get; set; }
-        
-        public DateTime Date { get; set; }
-        
-        public string Sender { get; set; } // UserName
-        
-        public string Text { get; set; }
+        public required string Id { get; set; }
+
+        public required DateTime Date { get; set; }
+
+        public required string Sender { get; set; } // UserName
+
+        public required string Text { get; set; }
         
         [BsonRepresentation(BsonType.String)]
-        public MessageStatus Status { get; set; }
+        public required MessageStatus Status { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<MessageStatus>))]

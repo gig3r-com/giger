@@ -7,14 +7,15 @@ namespace Giger.Models.EventModels
 {
     public abstract class Event : ObscurableInfo
     {
-        public string EventDescription { get; set; }
+        public required string Name { get; set; }
+
+        public required string EventDescription { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public EventStatus Status { get; set; }
+        public required EventStatus Status { get; set; }
         
-        public DateTime TimeStamp { get; set; }
+        public DateTime? TimeStamp { get; set; }
         
-        public string Name { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<EventStatus>))]
