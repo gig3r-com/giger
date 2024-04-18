@@ -17,7 +17,6 @@ namespace Giger.SerializededModels.Logs
             LogData = $"Transaction from {SourceUserName} to {TargetUserName} on {Timestamp}";
             SubnetworkId = "SN999";
             SubnetworkName = "Test Subnetwork";
-
         }
     }
 }

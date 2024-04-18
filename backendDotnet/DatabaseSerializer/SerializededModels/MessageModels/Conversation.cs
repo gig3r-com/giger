@@ -33,6 +33,8 @@ namespace Giger.SerializededModels.MessageModels
                     Status = Models.MessageModels.MessageStatus.SENT
                 }
             ];
+            Participants = ["jsilver", "adude"];
+            GigConversation = false;
         }
     }
 }

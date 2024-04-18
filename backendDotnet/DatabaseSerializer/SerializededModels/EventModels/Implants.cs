@@ -7,10 +7,12 @@ namespace Giger.SerializededModels.EventModels
         public Implants()
         {
             Id = ObjectId.GenerateNewId().ToString();
-            Type = Models.EventModels.MedicalEventType.CYBERWARE;
-            Status = Models.EventModels.EventStatus.CURRENT;
-            EventDescription = "You have been implanted with a cyberware.";
+            IsRevealed = true;
             Name = "Cyberware Implantation";
+            EventDescription = "You have been implanted with a cyberware.";
+            Status = Models.EventModels.EventStatus.CURRENT;
+            TimeStamp = null;
+            Type = Models.EventModels.MedicalEventType.CYBERWARE;
         }
     }
 }
