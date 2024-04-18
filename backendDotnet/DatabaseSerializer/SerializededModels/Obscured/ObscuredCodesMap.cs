@@ -9,6 +9,7 @@ namespace Giger.SerializededModels.Obscured
             Id = ObjectId.GenerateNewId().ToString();
             ObscurableId = "661737df07174e02083a9ef5";
             ExpectedRevealCode = "q12we34r";
+            IsUsed = false;
         }
     }
 }

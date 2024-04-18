@@ -10,5 +10,7 @@ namespace Giger.Models.Obscured
         public required string ObscurableId { get; set; }
 
         public required string ExpectedRevealCode { get; set; }
+
+        public bool IsUsed { get; set; } = false;
     }
 }
