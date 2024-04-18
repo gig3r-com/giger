@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
 import { RootState } from '../../../store/store';
 import { setCurrentUser } from '../../../store/users.slice';
@@ -49,8 +50,10 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
                     <select
                         ref={ref}
                         className="select-user__select"
+                        value={''}
                         onChange={(event) => onSelection(event.target.value)}
                     >
+                        <option disabled hidden value={''}><FormattedMessage id="SELECT_USER" /></option>
                         {users.map((user) => (
                             <option key={user.id} value={user.id}>
                                 {user.handle}

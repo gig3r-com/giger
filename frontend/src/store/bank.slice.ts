@@ -1,5 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AccountType, IBusinessAccount, IPrivateAccount, ITransaction } from '../models/banking';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+    AccountType,
+    IBusinessAccount,
+    IPrivateAccount,
+    ITransaction
+} from '../models/banking';
 
 export interface BankState {
     account: IPrivateAccount | null;
@@ -18,12 +23,23 @@ export const bankSlice = createSlice({
         setAccount: (state, action: PayloadAction<IPrivateAccount>) => {
             state.account = action.payload;
         },
-        setBusinessAccount: (state, action: PayloadAction<IBusinessAccount>) => {
+        setBusinessAccount: (
+            state,
+            action: PayloadAction<IBusinessAccount>
+        ) => {
             state.businessAccount = action.payload;
         },
-        addTransaction: (state, action: PayloadAction<{accountType: AccountType, transaction: ITransaction}>) => {
+        addTransaction: (
+            state,
+            action: PayloadAction<{
+                accountType: AccountType;
+                transaction: ITransaction;
+            }>
+        ) => {
             if (action.payload.accountType === AccountType.BUSINESS) {
-                state.businessAccount!.transactions.push(action.payload.transaction);
+                state.businessAccount!.transactions.push(
+                    action.payload.transaction
+                );
             } else {
                 state.account!.transactions.push(action.payload.transaction);
             }
@@ -31,6 +47,17 @@ export const bankSlice = createSlice({
     }
 });
 
-export const { setAccount, setBusinessAccount, addTransaction } = bankSlice.actions;
+export const { setAccount, setBusinessAccount, addTransaction } =
+    bankSlice.actions;
+
+export const selectAccounts = createSelector(
+    (state: { bank: BankState }) => state.bank,
+    (bank) => {
+        return {
+            private: bank.account,
+            business: bank.businessAccount
+        };
+    }
+);
 
 export default bankSlice.reducer;

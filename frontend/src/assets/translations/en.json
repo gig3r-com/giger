@@ -147,5 +147,9 @@
     "SET_AS_EXPIRED": "Set as expired",
     "NOT_ENOUGH_MONEY": "You don't have the funds required to cover the payout and Gig3r's comission",
     "SELECT_ACCOUNT": "Select account",
-    "MY_GIG": "(my gig)"
+    "MY_GIG": "(my gig)",
+    "SELECT_USER": "Select user",
+    "CATEGORY": "Category",
+    "DELETE_GIG": "Delete gig",
+    "LOADING": "Loading"
 }

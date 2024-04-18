@@ -16,11 +16,13 @@ import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 
 /**
  * TODO: connect it to the backend.
  */
 export function useGigsService() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
@@ -141,15 +143,20 @@ export function useGigsService() {
      * @param id gig id
      */
     const reportAProblem = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
+        navigate(`report-problem/${id}`);
+    };
+
+    const sendComplaint = (gigId: string, complaint: string) => {
+        const gig = currentGigs.find((gig) => gig.id === gigId);
         const updatedGig: IGig = {
             ...gig!,
-            status: GigStatus.DISPUTE,
-            markedAsComplaintAt: dayjs().toISOString()
+            complaintReason: complaint,
+            status: GigStatus.DISPUTE
         };
 
         // ! API CALL REQUIRED
         updateGig(updatedGig);
+        navigate(`../${gigId}`);
     };
 
     /**
@@ -252,6 +259,7 @@ export function useGigsService() {
         getReputationLevel,
         handleButtonAction,
         gigerCommission,
-        gigsVisibleToTheUser
+        gigsVisibleToTheUser,
+        sendComplaint
     };
 }
