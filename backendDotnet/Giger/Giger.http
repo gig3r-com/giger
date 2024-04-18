@@ -1,0 +1,6 @@
+@Giger_HostAddress = http://localhost:5174
+
+GET {{Giger_HostAddress}}/giger/
+Accept: application/json
+
+###

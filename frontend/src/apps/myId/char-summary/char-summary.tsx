@@ -248,7 +248,7 @@ export const CharSummary: FC<{
                             })
                         }
                     />
-                    {isPrivate && (
+                    {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
                         <>
                             <span className="char-summary__label">
                                 <MemoizedFormattedMessage id="FACTION" />:

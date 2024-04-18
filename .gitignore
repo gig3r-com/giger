@@ -1,1 +1,8 @@
-.env
+backendDotnet/.vs/*
+backendDotnet/Giger/obj/*
+backendDotnet/Giger/bin/*
+backendDotnet/TestWebSocketClientChat/obj/*
+backendDotnet/TestWebSocketClientChat/bin/*
+backendDotnet/DatabaseSerializer/obj/*
+backendDotnet/DatabaseSerializer/bin/*
+backendDotnet/Models/*
