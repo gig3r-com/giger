@@ -7,8 +7,6 @@ namespace Giger.Models.EventModels
 {
     public abstract class Event : ObscurableInfo
     {
-        public string UserId { get; set; }
-        
         public string EventDescription { get; set; }
 
         [BsonRepresentation(BsonType.String)]

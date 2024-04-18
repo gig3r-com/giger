@@ -14,7 +14,11 @@ namespace Giger.Controllers
         #region PrivateUser
 
         [HttpGet("private/all")]
-        public async Task<List<UserPrivate>> GetAllPrivateUsers() => await _userService.GetAllPrivateUsersAsync();
+        public async Task<List<UserPrivate>> GetAllPrivateUsers()
+        {
+            var allUsers = await _userService.GetAllPrivateUsersAsync();
+            return FilterOutAllGodUsers(allUsers);
+        }
             
         [HttpGet("private/byId")]
         public async Task<ActionResult<UserPrivate>> Get(string id)
@@ -30,9 +34,8 @@ namespace Giger.Controllers
                 return Forbid();
             }
 
-            user = FilterObscurableData(user);
-
-            return user;
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
         }
 
         [HttpGet("private/byName")]
@@ -49,7 +52,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            return user;
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
         }
 
         [HttpPost()]
@@ -496,24 +500,22 @@ namespace Giger.Controllers
         }
         #endregion
 
-        private UserPrivate FilterObscurableData(UserPrivate user)
+        private void FilterObscurableData(UserPrivate user)
         {
             if (IsGodUser())
             {
-                return user;
+                return;
             }
 
-            user.PrivateRecords = (PrivateRecord[])FilterObscurableField(user.PrivateRecords);
-            user.MedicalEvents = (MedicalEvent[])FilterObscurableField(user.MedicalEvents);
-            user.CriminalEvents = (CriminalEvent[])FilterObscurableField(user.CriminalEvents);
-            user.Relations = (Relation[])FilterObscurableField(user.Relations);
-            user.Meta = (Meta[])FilterObscurableField(user.Meta);
-            user.Goals = (Goal[])FilterObscurableField(user.Goals);
-
-            return user;
+            FilterObscurableField(user.PrivateRecords);
+            FilterObscurableField(user.MedicalEvents);
+            FilterObscurableField(user.CriminalEvents);
+            FilterObscurableField(user.Relations);
+            FilterObscurableField(user.Meta);
+            FilterObscurableField(user.Goals);
         }
 
-        private ObscurableInfo[] FilterObscurableField(IEnumerable<ObscurableInfo> obscurableFields)
+        private void FilterObscurableField(IEnumerable<ObscurableInfo> obscurableFields)
         {
             foreach (var element in obscurableFields)
             {
@@ -521,6 +523,19 @@ namespace Giger.Controllers
                 {
                     element.Obscure();
                 }
+            }
+        }
+
+        private List<UserPrivate> FilterOutAllGodUsers(IEnumerable<UserPrivate> users)
+        {
+            return users.Where(u => !u.Roles.Contains(UserRoles.GOD)).ToList();
+        }
+
+        private UserPrivate FilterOutGodUser(UserPrivate user)
+        {
+            if (!user.Roles.Contains(UserRoles.GOD))
+            {
+                return user;
             }
             return null;
         }

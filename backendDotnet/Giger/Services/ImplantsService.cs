@@ -7,27 +7,30 @@ namespace Giger.Services
 {
     public class ImplantsService : AbstractService
     { 
-        private readonly IMongoCollection<MedicalEvent> _eventsCollection;
+        private readonly IMongoCollection<MedicalEvent> _implantsCollection;
 
         public ImplantsService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
-            _eventsCollection = _mongoDatabase.GetCollection<MedicalEvent>(
-                gigerDatabaseSettings.Value.EventsCollectionName);
+            _implantsCollection = _mongoDatabase.GetCollection<MedicalEvent>(
+                gigerDatabaseSettings.Value.ImplantsCollectionName);
         }
 
         public async Task<List<MedicalEvent>> GetAllAsync() =>
-            await _eventsCollection.Find(_ => true).ToListAsync();
+            await _implantsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<List<MedicalEvent>> GetByFirstNameAsync(string name) =>
+            await _implantsCollection.Find(i => i.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        
         public async Task<MedicalEvent?> GetAsync(string id) =>
-            await _eventsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            await _implantsCollection.Find(i => i.Id == id).FirstOrDefaultAsync();
 
         public async Task CreateAsync(MedicalEvent newEvent) =>
-            await _eventsCollection.InsertOneAsync(newEvent);
+            await _implantsCollection.InsertOneAsync(newEvent);
 
         public async Task UpdateAsync(string id, MedicalEvent updatedEvent) =>
-            await _eventsCollection.ReplaceOneAsync(x => x.Id == id, updatedEvent);
+            await _implantsCollection.ReplaceOneAsync(x => x.Id == id, updatedEvent);
 
         public async Task RemoveAsync(string id) =>
-            await _eventsCollection.DeleteOneAsync(x => x.Id == id);
+            await _implantsCollection.DeleteOneAsync(x => x.Id == id);
     }
 }
