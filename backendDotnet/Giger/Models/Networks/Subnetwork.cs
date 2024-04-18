@@ -46,6 +46,6 @@ namespace Giger.Models.Networks
     [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
     public enum Ice
     {
-
+        ToBeProvided
     }
 }
