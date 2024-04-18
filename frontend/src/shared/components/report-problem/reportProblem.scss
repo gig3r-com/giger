@@ -5,8 +5,14 @@
     height: calc($standard-viewport-height - $controlsHeight);
     display: flex;
     flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: $app-background;
+    padding-top: 1rem;
 
-    &-body {
+    &__body {
         display: flex;
         flex-direction: column;
         flex: 1;

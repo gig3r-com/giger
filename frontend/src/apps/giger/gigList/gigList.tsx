@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -21,22 +21,26 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
     const { gigId } = useParams();
     const intl = useIntl();
 
-    const sortedGigs = [...gigs].sort((a, b) => {
-        const aIsOwn = a.authorId === currentUser?.id;
-        const bIsOwn = b.authorId === currentUser?.id;
-        const statusesRank = {
-            [GigStatus.DISPUTE]: 0,
-            [GigStatus.PENDING_CONFIRMATION]: 1,
-            [GigStatus.IN_PROGRESS]: 2,
-            [GigStatus.AVAILABLE]: 3,
-            [GigStatus.COMPLETED]: 4,
-            [GigStatus.EXPIRED]: 5
-        };
-        const aScore = aIsOwn ? -1 : statusesRank[a.status];
-        const bScore = bIsOwn ? -1 : statusesRank[b.status];
+    const sortedGigs = useMemo(
+        () =>
+            [...gigs].sort((a, b) => {
+                const aPriority = a.authorId === currentUser?.id && a.status !== GigStatus.EXPIRED;
+                const bIsOwn = b.authorId === currentUser?.id && a.status !== GigStatus.EXPIRED;
+                const statusesRank = {
+                    [GigStatus.DISPUTE]: 0,
+                    [GigStatus.PENDING_CONFIRMATION]: 1,
+                    [GigStatus.IN_PROGRESS]: 2,
+                    [GigStatus.AVAILABLE]: 3,
+                    [GigStatus.COMPLETED]: 4,
+                    [GigStatus.EXPIRED]: 5
+                };
+                const aScore = aPriority ? -1 : statusesRank[a.status];
+                const bScore = bIsOwn ? -1 : statusesRank[b.status];
 
-        return aScore - bScore;
-    });
+                return aScore - bScore;
+            }),
+        [gigs, currentUser]
+    );
 
     return (
         <section className="gig-list">

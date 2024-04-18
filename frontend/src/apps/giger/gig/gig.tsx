@@ -138,15 +138,12 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 )
                             )}
 
-                            {isGod && (
+                            {isGod && gig.status !== GigStatus.EXPIRED && (
                                 <BigButton
                                     text={intl.formatMessage({
                                         id: 'SET_AS_EXPIRED'
                                     })}
-                                    color={buttonColor(
-                                        GigStatus.EXPIRED,
-                                        isMine
-                                    )}
+                                    color={buttonColor(gig.status, isMine)}
                                     onClick={() =>
                                         handleButtonAction(
                                             gig.id,

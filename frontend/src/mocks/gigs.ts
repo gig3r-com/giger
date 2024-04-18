@@ -76,6 +76,7 @@ export const mockGigs: IGig[] = [
         reputationRequired: 4,
         authorId: 'user15',
         accountId: 'user15',
+        takenById: 'user4',
         description:
             'Assassinate a corporate executive during a high-profile event.',
         category: GigCategoryNames.HIT,
@@ -89,6 +90,7 @@ export const mockGigs: IGig[] = [
         reputationRequired: 1,
         authorId: 'user2',
         accountId: 'user2',
+        takenById: 'user3',
         description: "Sabotage a rival gang's illegal cybernetics operation.",
         category: GigCategoryNames.TECH,
 
@@ -139,8 +141,9 @@ export const mockGigs: IGig[] = [
         title: 'Corporate Data Heist',
         payout: 500,
         reputationRequired: 5,
-        authorId: 'user35',
-        accountId: 'user35',
+        authorId: '55566ssaa5',
+        accountId: '55566ssaa5',
+        takenById: 'user6',
         description:
             'Retrieve confidential data from a heavily guarded corporate server.',
         category: GigCategoryNames.SPOOFING,
@@ -154,6 +157,7 @@ export const mockGigs: IGig[] = [
         reputationRequired: 2,
         authorId: 'user5',
         accountId: 'user5',
+        takenById: '55566ssaa5',
         description:
             'Deliver a mysterious package to an undisclosed location without asking questions.',
         category: GigCategoryNames.DELIVERY,
@@ -169,6 +173,7 @@ export const mockGigs: IGig[] = [
         reputationRequired: 4,
         authorId: 'user16',
         accountId: 'user16',
+        takenById: '55566ssaa5',
         description:
             'Infiltrate a high-security lab and steal experimental tech prototype.',
         category: GigCategoryNames.TECH,

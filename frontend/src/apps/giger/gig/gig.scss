@@ -54,7 +54,7 @@
             border-color: $secondary-color;
         }
         &--mine {
-            border-color: $accent-color;
+            border-color: $accent-color!important;
         }
         &--pending {
             border-color: $secondary-color;
@@ -78,7 +78,7 @@
         }
         &--mine:before,
         &--mine:after {
-            background-color: $accent-color;
+            background-color: $accent-color!important;
         }
 
         &--dispute:before,
@@ -171,7 +171,7 @@
 
     &--mine &__title {
         &:before {
-            background: $accent-color;
+            background: $accent-color!important;
         }
     }
 
