@@ -17,17 +17,17 @@ namespace Giger.Models.User
         
         public string[] Assets { get; set; } = []; // changeable ?? TODO: DELETE?
 
-        public SkillStat HackingSkills { get; set; } // changeable
+        public SkillStat HackingSkills { get; set; }
         
-        public CharStat ConfrontationVsNegotiation { get; set; } // changeable
+        public CharStat ConfrontationVsNegotiation { get; set; } 
         
-        public CharStat CowardVsFighter { get; set; }// changeable
+        public CharStat CowardVsFighter { get; set; }
+
+        public CharStat TalkativeVsSilent { get; set; }
         
-        public CharStat TalkativeVsSilent { get; set; }// changeable
+        public CharStat ThinkerVsDoer { get; set; }
         
-        public CharStat ThinkerVsDoer { get; set; }// changeable
-        
-        public SkillStat CombatSkill { get; set; }// changeable
+        public SkillStat CombatSkill { get; set; }
         
         public string VibeFunction { get; set; } // changeable
         
