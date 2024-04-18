@@ -18,50 +18,36 @@ namespace Giger.Controllers
         [HttpGet("get/all")]
         public async Task<List<Gig>> GetAll()
         {
-            var allGigs = await _gigService.GetAllAsync();
-            allGigs.ForEach(ObscureGig);
-            return allGigs;
+            if (IsGodUser())
+            {
+                return await _gigService.GetAllAsync();
+            }
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
+            if (userName == null)
+            {
+                Forbid("User authentication token expired");
+            }
+            var requestSender = await _userService.GetByUserNameAsync(userName);
+            var gigs = await _gigService.GetAllAvailableAsync(requestSender.Id);
+            gigs.ForEach(gig => ObscureGig(gig, requestSender.Id));
+            return gigs;
         }
 
+        [Obsolete("Use /all instead")]
         [HttpGet("get/allAvailable")]
         public async Task<List<Gig>> GetAllAvailable()
         {
-            var allAvailableGigs = await _gigService.GetAllAvailableAsync();
-            allAvailableGigs.ForEach(ObscureGig);
-            return allAvailableGigs;
-        }
-
-        [HttpGet("get/allOwn")]
-        public async Task<List<Gig>> GetAllOwn(string takenById)
-        {
-            var allOwnGigs = await _gigService.GetAllOwnAsync(takenById);
-            allOwnGigs.ForEach(ObscureGig);
-            return allOwnGigs;
-        }
-
-        [HttpGet("get/byId")]
-        public async Task<ActionResult<Gig>> GetById(string id)
-        {
-            var gig = await _gigService.GetAsync(id);
-            if (gig is null)
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
+            if (userName == null)
             {
-                return NotFound();
+                Forbid("User authentication token expired");
             }
-            
-            ObscureGig(gig);
-            return gig;
-        }
-
-        [HttpGet("get/byTitle")]
-        public async Task<ActionResult<Gig>> GetByTitle(string title)
-        {
-            var gig = await _gigService.GetByFirstNameAsync(title);
-            if (gig is null)
-            {
-                return NotFound();
-            }
-            ObscureGig(gig);
-            return gig;
+            var requestSender = _userService.GetByUserNameAsync(userName).Result;
+            var gigs = await _gigService.GetAllAvailableAsync(requestSender.Id);
+            gigs.ForEach(gig => ObscureGig(gig, requestSender.Id));
+            return gigs;
         }
 
         [HttpPost("create")]
@@ -195,17 +181,29 @@ namespace Giger.Controllers
             return Ok();
         }
 
-        private void ObscureGig(Gig gig)
+        private void ObscureGig(Gig gig, string requestSenderId)
         {
             if (IsGodUser())
             {
                 return;
             }
 
-            if (!gig.IsRevealed)
+            if (gig.IsRevealed && gig.IsRevealedByClient)
             {
-                gig.Obscure();
+                return;
             }
+
+            if (gig.IsRevealed && gig.AuthorId == requestSenderId)
+            {
+                return;
+            }
+
+            if (gig.IsRevealedByClient && gig.TakenById == requestSenderId)
+            {
+                return;
+            }
+
+            gig.Obscure();
         }
     }
 }

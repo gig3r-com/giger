@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using ThirdParty.Json.LitJson;
 
 namespace Giger.Models.Obscured
 {
@@ -9,7 +10,7 @@ namespace Giger.Models.Obscured
         [BsonElement("_id")]
         public required string Id { get; set; }
 
-        public required bool IsRevealed { get; set; }
+        public required bool IsRevealed { get; set; } = true;
 
         [BsonIgnore]
         protected const string REDACTED = "********REDACTED********";
