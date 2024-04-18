@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { IGig } from '../../models/gig';
 import { GigList } from './gigList/gigList';
@@ -18,13 +18,16 @@ export const Giger: FC = () => {
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
-    const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigsVisibleToTheUser);
+    const [filteredGigs, setFilteredGigs] =
+        useState<IGig[]>(gigsVisibleToTheUser);
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
 
     useEffect(function mountSetup() {
-        fetchGigs();
+        if (filteredGigs.length === 0) {
+            fetchGigs();
+        }
     }, []);
 
     const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);
@@ -73,6 +76,7 @@ export const Giger: FC = () => {
                 active={menuState === 'filters'}
             />
             <NewGig active={menuState === 'newGig'} />
+            <Outlet />
         </article>
     );
 };

@@ -136,5 +136,9 @@
     "SET_AS_EXPIRED": "Ustaw jako wygasłe",
     "NOT_ENOUGH_MONEY": "Nie masz wystarczająco pieniędzy żeby pokryć wybraną wypłatę i prowizję Gig3ra",
     "SELECT_ACCOUNT": "Wybierz konto",
-    "MY_GIG": "(mój gig)"
+    "MY_GIG": "(mój gig)",
+    "SELECT_USER": "Wybierz użytkownika",
+    "CATEGORY": "Kategoria",
+    "DELETE_GIG": "Usuń giga",
+    "LOADING": "Ładowanie"
 }

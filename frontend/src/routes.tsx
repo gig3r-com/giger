@@ -54,7 +54,9 @@ export const Router = () => {
                                 <Route
                                     path="report-problem"
                                     element={<ReportProblem />}
-                                />
+                                >
+                                    <Route path=":gigId" element={<Giger />} />
+                                </Route>
                             </Route>
                             <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />
