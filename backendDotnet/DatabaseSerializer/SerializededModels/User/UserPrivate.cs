@@ -62,6 +62,7 @@ namespace Giger.SerializededModels.User
                     Id = ObjectId.GenerateNewId().ToString(),
                     Title = "Use this code if you took LSD drug",
                     Description = "q12we34r",
+                    Type = Models.User.Records.MetaTypes.Inspirations,
                     IsLink = false,
                     IsRevealed = true
                 }

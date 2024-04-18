@@ -12,7 +12,7 @@ namespace Giger.Models.User.Records
         public required string Description { get; set; }
         
         [BsonRepresentation(BsonType.String)]
-        public required UserRecordTypes RecordType { get; set; }
+        public UserRecordTypes RecordType { get; set; }
 
         public override void Obscure()
         {
