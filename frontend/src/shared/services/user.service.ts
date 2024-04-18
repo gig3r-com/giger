@@ -7,9 +7,10 @@ import {
 import {
     selectCurrentUser,
     selectIsAdmin,
+    selectIsGod,
     setCurrentUser,
-    setIsAdmin,
-    setRequiresAdminUserSelection,
+    setIsGod,
+    setRequiresGodUserSelection,
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
@@ -23,12 +24,13 @@ export function useUserService() {
     const dispatch = useDispatch();
     const userList = useSelector((state: RootState) => state.users.users);
     const currentUser = useSelector(selectCurrentUser);
-    const isAdmin = useSelector(selectIsAdmin);
+    const isGod = useSelector(selectIsGod);
+    const isAdmin = useSelector(selectIsAdmin)
 
     /**
      * completely mocked now, obviously the password test will take place on backend
-     * in case an admin user logs in, we set the requiresAdminUserSelection to true.
-     * also we return a token for the admin to use as authentication
+     * in case an godmode user logs in, we set the requiresGodUserSelection to true.
+     * also we return a token for the godmode to use as authentication
      */
     const login = async (username: string, password: string) =>
         new Promise<void>((resolve, reject) => {
@@ -40,12 +42,12 @@ export function useUserService() {
                     saveLoginData(users[35]);
                     resolve();
                 }, 3000);
-            } else if (username === 'admin' && password === 'admin') {
+            } else if (username === 'god' && password === 'god') {
                 console.log(`logging in ${username} with password ${password}`);
                 setTimeout(() => {
-                    dispatch(setRequiresAdminUserSelection(true));
-                    dispatch(setIsAdmin(true));
-                    saveIsAdmin(true);
+                    dispatch(setRequiresGodUserSelection(true));
+                    dispatch(setIsGod(true));
+                    saveIsGod(true);
                     resolve();
                 }, 3000);
             } else {
@@ -62,26 +64,26 @@ export function useUserService() {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
     };
 
-    const saveIsAdmin = (isAdmin: boolean) => {
-        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+    const saveIsGod = (isGod: boolean) => {
+        localStorage.setItem('isGod', JSON.stringify(isGod));
     };
 
     const retrieveLoginData = (): void => {
         const userData = localStorage.getItem('loggedInUser');
-        const isAdmin = localStorage.getItem('isAdmin');
+        const isGod = localStorage.getItem('isGod');
 
         if (userData) {
             dispatch(setCurrentUser(JSON.parse(userData)));
         }
 
-        if (isAdmin) {
-            dispatch(setIsAdmin(JSON.parse(isAdmin)));
+        if (isGod) {
+            dispatch(setIsGod(JSON.parse(isGod)));
         }
     };
 
     const logout = (): void => {
         localStorage.removeItem('loggedInUser');
-        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('isGod');
         dispatch(setCurrentUser(undefined));
     };
 
@@ -105,7 +107,7 @@ export function useUserService() {
     };
 
     const canAnonymizeChatHandle = () => {
-        return (currentUser && currentUser.hackingSkill >= 1) || isAdmin;
+        return (currentUser && currentUser.hackingSkill >= 1) || isGod;
     };
 
     const getAnonymizedHandle = () => {
@@ -163,10 +165,15 @@ export function useUserService() {
         });
     };
 
+    const getCurrentUserFaction = () => {
+        return currentUser?.faction;
+    };
+
     return {
         login,
         logout,
         retrieveLoginData,
+        isGod,
         isAdmin,
         updateUserData,
         currentUser,
@@ -177,6 +184,7 @@ export function useUserService() {
         getUserById,
         getHandleForConvo,
         toggleUserAsFavorite,
-        isInfluencer
+        isInfluencer,
+        getCurrentUserFaction
     };
 }
