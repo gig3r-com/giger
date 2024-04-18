@@ -1,0 +1,10 @@
+@import '../../../variables.scss';
+
+.new-transaction {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    max-height: $standard-viewport-height;
+    box-sizing: border-box;
+}

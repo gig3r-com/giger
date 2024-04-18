@@ -14,7 +14,7 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
     type
 }) => {
     const [expanded, setExpanded] = useState<boolean>(false);
-    const { isAdmin, currentUser } = useUserService();
+    const { isGod, currentUser } = useUserService();
     const { updateEvent, removeEvent } = useEventsService();
 
     const updateData = (
@@ -57,7 +57,7 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
                 >
                     {expanded ? 'expand_less' : 'expand_more'}
                 </span>
-                {isAdmin && (
+                {isGod && (
                     <span
                         className="event-entry__remove-entry material-icons"
                         onClick={removeEntry}

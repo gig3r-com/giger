@@ -49,7 +49,8 @@ export const relations: IRelation[] = [
       relationTo: 'user32',
       description: 'Mentor in the world of advanced hacking techniques.',
       recordType: UserRecordTypes.RELATION,
-      revealCode: 'SVNOW'
+      revealCode: 'SVNOW',
+      seen: false
     },
     {
       id: '343aaaa4',

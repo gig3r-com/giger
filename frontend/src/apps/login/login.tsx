@@ -9,7 +9,7 @@ import { ReactComponent as GigerLogo } from '../../assets/logo-giger.svg';
 import { DecodeText } from '../../shared/components/decode-text/decodeText';
 import LoginHelp from './login-help/login-help';
 import { SelectUser } from '../myId/select-user/select-user';
-import { selectRequiresAdminUserSelection } from '../../store/users.slice';
+import { selectRequiresGodUserSelection } from '../../store/users.slice';
 
 import './login.scss';
 
@@ -20,8 +20,8 @@ export const Login: FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const requiresAdminUserSelection = useSelector(
-        selectRequiresAdminUserSelection
+    const requiresGodUserSelection = useSelector(
+        selectRequiresGodUserSelection
     );
     const [error, setError] = useState('');
     const [showHelp, setShowHelp] = useState(false);
@@ -137,7 +137,7 @@ export const Login: FC = () => {
             <section className={helpClasses}>
                 <LoginHelp onBack={() => setShowHelp(false)} />
             </section>
-            {requiresAdminUserSelection && (
+            {requiresGodUserSelection && (
                 <SelectUser showSelectionAtStart={true} />
             )}
         </div>

@@ -103,7 +103,8 @@ export const mockMedicalHistory: IMedEvent[] = [
             eventDescription:
                 'Experiencing persistent migraines, cause unknown.',
             status: EventStatus.HISTORICAL,
-            revealCode: 'MIGR-2023' // A code to unlock this information
+            revealCode: 'MIGR-2023',// A code to unlock this information
+            seen: false 
         },
         {
             

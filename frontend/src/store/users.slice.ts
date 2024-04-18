@@ -1,20 +1,20 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IUserBase, IUserPrivate } from '../models/user';
+import { IUserBase, IUserPrivate, UserRoles } from '../models/user';
 import { users } from '../mocks/users';
 import { cloneDeep } from 'lodash-es';
 
 export interface IUsersState {
     users: IUserBase[];
     currentUser?: IUserPrivate;
-    isAdmin: boolean;
-    requiresAdminUserSelection: boolean;
+    isGod: boolean;
+    requiresGodUserSelection: boolean;
 }
 
 const initialState: IUsersState = {
     users: JSON.parse(JSON.stringify(users)),
     currentUser: undefined,
-    isAdmin: false,
-    requiresAdminUserSelection: false
+    isGod: false,
+    requiresGodUserSelection: false
 };
 
 export const usersSlice = createSlice({
@@ -44,14 +44,14 @@ export const usersSlice = createSlice({
         ) => {
             state.currentUser = action.payload;
         },
-        setIsAdmin: (state, action: PayloadAction<boolean>) => {
-            state.isAdmin = action.payload;
+        setIsGod: (state, action: PayloadAction<boolean>) => {
+            state.isGod = action.payload;
         },
-        setRequiresAdminUserSelection: (
+        setRequiresGodUserSelection: (
             state,
             action: PayloadAction<boolean>
         ) => {
-            state.requiresAdminUserSelection = action.payload;
+            state.requiresGodUserSelection = action.payload;
         },
         updateCurrentUser: (
             state,
@@ -72,17 +72,17 @@ export const {
     setCurrentUser,
     setUser,
     updateCurrentUser,
-    setIsAdmin,
-    setRequiresAdminUserSelection
+    setIsGod,
+    setRequiresGodUserSelection
 } = usersSlice.actions;
 
 export const selectCurrentUser = (state: { users: IUsersState }) =>
     state.users.currentUser;
 export const selectUsers = (state: { users: IUsersState }) => state.users.users;
+export const selectIsGod = (state: { users: IUsersState }) => state.users.isGod;
+export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
+    state.users.requiresGodUserSelection;
 export const selectIsAdmin = (state: { users: IUsersState }) =>
-    state.users.isAdmin;
-export const selectRequiresAdminUserSelection = (state: {
-    users: IUsersState;
-}) => state.users.requiresAdminUserSelection;
+    state.users.currentUser?.roles.includes(UserRoles.ADMIN) ?? false;
 
 export default usersSlice.reducer;

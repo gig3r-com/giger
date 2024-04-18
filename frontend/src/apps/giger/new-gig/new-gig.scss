@@ -22,11 +22,23 @@
         margin-bottom: 1rem;
     }
 
+    &__inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        overflow: auto;
+        max-height: calc(#{$standard-viewport-height} - 100px);
+    }
+
     .big-button {
         margin-top: 1rem;
     }
 
     &__slider {
         border: 1px solid $primary-color;
+    }
+
+    &__warning {
+        color: $accent-color;
     }
 }

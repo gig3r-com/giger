@@ -25,7 +25,7 @@ import './event-record.scss';
 export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
     const intl = useIntl();
     const { getEventRecordForUser, addEvent } = useEventsService();
-    const { currentUser, isAdmin } = useUserService();
+    const { currentUser, isGod } = useUserService();
 
     const onAddEntry = (
         name: string,
@@ -76,7 +76,7 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                                         <EventEntry entry={entry} type={type} />
                                     </li>
                                 ))}
-                        {isAdmin && (
+                        {isGod && (
                             <li className="event-record__entry event-record__entry--new">
                                 <NewEntry
                                     onAdd={(name, year) =>

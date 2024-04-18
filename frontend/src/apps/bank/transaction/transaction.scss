@@ -19,10 +19,11 @@
         width: calc(100% - 280px);
         display: flex;
         justify-content: flex-end;
+        min-width: 70px;
     }
 
     &__other-party,
-    &__amount{
+    &__amount {
         color: white;
         font-size: 0.875rem;
     }
@@ -37,5 +38,8 @@
         width: 34px;
         height: 34px;
         margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
