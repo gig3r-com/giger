@@ -18,8 +18,8 @@ namespace Giger.Services
         public async Task<List<MedicalEvent>> GetAllAsync() =>
             await _implantsCollection.Find(_ => true).ToListAsync();
 
-        public async Task<List<MedicalEvent>> GetByFirstNameAsync(string name) =>
-            await _implantsCollection.Find(i => i.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        public async Task<MedicalEvent> GetByFirstNameAsync(string name) =>
+            await _implantsCollection.Find(i => i.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync();
         
         public async Task<MedicalEvent?> GetAsync(string id) =>
             await _implantsCollection.Find(i => i.Id == id).FirstOrDefaultAsync();
