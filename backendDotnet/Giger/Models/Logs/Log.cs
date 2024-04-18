@@ -7,6 +7,7 @@ namespace Giger.Models.Logs
     public class Log
     {
         [BsonId]
+        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public DateTime Timestamp { get; set; }

@@ -6,6 +6,7 @@ namespace Giger.Models.Obscured
     public abstract class ObscurableInfo
     {
         [BsonId]
+        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public required bool IsRevealed { get; set; }

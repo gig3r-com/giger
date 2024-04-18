@@ -6,6 +6,7 @@ namespace Giger.Models.User
     public class UserPublic
     {
         [BsonId]
+        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public string Name { get; set; }

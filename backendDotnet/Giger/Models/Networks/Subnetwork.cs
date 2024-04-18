@@ -7,8 +7,9 @@ namespace Giger.Models.Networks
     public class Subnetwork
     {
         [BsonId]
+        [BsonElement("_id")]
         public string Id { get; set; }
-        
+
         public string Name { get; set; }
         
         public string NetworkId { get; set; }

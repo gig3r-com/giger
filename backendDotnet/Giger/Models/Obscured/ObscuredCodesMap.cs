@@ -5,6 +5,7 @@ namespace Giger.Models.Obscured
     public class ObscuredCodesMap
     {
         [BsonId]
+        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public required string ObscurableId { get; set; }
