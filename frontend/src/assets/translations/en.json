@@ -151,5 +151,8 @@
     "SELECT_USER": "Select user",
     "CATEGORY": "Category",
     "DELETE_GIG": "Delete gig",
-    "LOADING": "Loading"
+    "LOADING": "Loading",
+    "PROVIDER_OR_CLIENT": "Provider or client?",
+    "PROVIDER": "Provider",
+    "CLIENT": "Client"
 }

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
 import classNames from 'classnames';
-import { GigStatus } from '../../../models/gig';
+import { GigModes, GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
@@ -18,7 +18,7 @@ import GigReputation from '../gig-reputation/gig-reputation';
 import { useUserService } from '../../../shared/services/user.service';
 import { UserRoles } from '../../../models/user';
 import { ComplaintDetails } from '../complaint-details/complaint-details';
-import { getButtons } from './button-definitions';
+import { ActionId, getButtons } from './button-definitions';
 
 import './gig.scss';
 
@@ -26,7 +26,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const intl = useIntl();
     const { currentUser, getHandleForConvo, isAdmin, isGod } = useUserService();
-    const { handleButtonAction } = useGigsService();
+    const { handleButtonAction, userGigMode } = useGigsService();
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
@@ -103,6 +103,11 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     >
                         <h3 className="gig__title">{gig.title}</h3>
                         <span className="gig__payout">{gig.payout} ¤</span>
+                        <span className="gig__mode">
+                            {userGigMode(gig) === GigModes.CLIENT
+                                ? 'CLIENT'
+                                : 'PROVIDER'}
+                        </span>
                         <span className="gig__reputation">
                             {gig.reputationRequired !== undefined && (
                                 <GigReputation
@@ -120,23 +125,26 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             className="gig__details"
                             {...generateAnimation('expandCollapse')}
                         >
-                            {getButtons(gig.status, isMine, isAdmin).map(
-                                (button) => (
-                                    <BigButton
-                                        key={button.label}
-                                        text={intl.formatMessage({
-                                            id: button.label
-                                        })}
-                                        color={isMine ? 'accent' : button.color}
-                                        onClick={() =>
-                                            handleButtonAction(
-                                                gig.id,
-                                                button.actionId
-                                            )
-                                        }
-                                    />
-                                )
-                            )}
+                            {getButtons(
+                                gig.status,
+                                isMine,
+                                isAdmin,
+                                gig.mode
+                            ).map((button) => (
+                                <BigButton
+                                    key={button.label}
+                                    text={intl.formatMessage({
+                                        id: button.label
+                                    })}
+                                    color={isMine ? 'accent' : button.color}
+                                    onClick={() =>
+                                        handleButtonAction(
+                                            gig.id,
+                                            button.actionId
+                                        )
+                                    }
+                                />
+                            ))}
 
                             {isGod && gig.status !== GigStatus.EXPIRED && (
                                 <BigButton
@@ -147,7 +155,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                     onClick={() =>
                                         handleButtonAction(
                                             gig.id,
-                                            'SET_AS_EXPIRED'
+                                            ActionId.MARK_AS_EXPIRED
                                         )
                                     }
                                 />
