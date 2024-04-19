@@ -63,10 +63,10 @@
             border-color: $accent-color-2;
         }
         &--completed {
-            border-color: $primary-color;
+            border-color: $muted-accent;
         }
         &--expired {
-            border-color: $primary-color;
+            border-color: $muted-accent;
         }
         &--available:before,
         &--available:after {
@@ -93,12 +93,12 @@
 
         &--completed:before,
         &--completed:after {
-            background-color: $primary-color;
+            background-color: $muted-accent;
         }
 
         &--expired:before,
         &--expired:after {
-            background-color: $primary-color;
+            background-color: $muted-accent;
         }
 
         &::before {
@@ -165,7 +165,7 @@
 
     &--completed &__title {
         &:before {
-            background: $primary-color;
+            background: $muted-accent;
         }
     }
 
@@ -189,7 +189,7 @@
 
     &--expired &__title {
         &::before {
-            background: $primary-color;
+            background: $muted-accent;
         }
     }
 
@@ -276,5 +276,8 @@
 
         &--accent2 { color: $accent-color-2 }
         &--accent2::before { background-color: $accent-color-2 }
+        
+        &--muted-accent { color: $muted-accent }
+        &--muted-accent::before { background-color: $muted-accent }
     }
 }

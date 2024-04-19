@@ -140,5 +140,8 @@
     "SELECT_USER": "Wybierz użytkownika",
     "CATEGORY": "Kategoria",
     "DELETE_GIG": "Usuń giga",
-    "LOADING": "Ładowanie"
+    "LOADING": "Ładowanie",
+    "PROVIDER_OR_CLIENT": "Dostawca czy klient?",
+    "PROVIDER": "Dostawca",
+    "CLIENT": "Klient"
 }

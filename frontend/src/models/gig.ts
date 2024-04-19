@@ -9,6 +9,7 @@ export interface IGigBase {
     id: string;
     accountId: string;
     anonymizedAuthor?: boolean;
+    mode: GigModes;
 }
 
 export interface IDraftGig extends IGigBase {
@@ -65,6 +66,11 @@ export enum GigStatus {
     PENDING_CONFIRMATION = 'pending',
     DISPUTE = 'dispute',
     EXPIRED = 'expired'
+}
+
+export enum GigModes {
+    PROVIDER = 'provider',
+    CLIENT = 'client'
 }
 
 export const reputationLabels = new Map<GigRepuationLevels, string>([

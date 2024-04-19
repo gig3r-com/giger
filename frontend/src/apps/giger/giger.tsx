@@ -6,6 +6,7 @@ import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
 import { RootState } from '../../store/store';
+import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
 
 import './giger.scss';
@@ -75,7 +76,9 @@ export const Giger: FC = () => {
                 toggleMenuState={toggleMenuState}
                 active={menuState === 'filters'}
             />
-            <NewGig active={menuState === 'newGig'} />
+            <AnimatePresence>
+                <NewGig active={menuState === 'newGig'} />
+            </AnimatePresence>
             <Outlet />
         </article>
     );

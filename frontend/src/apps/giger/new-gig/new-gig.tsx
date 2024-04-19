@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router';
 import {
     GigCategoryNames,
+    GigModes,
     GigRepuationLevels,
     IDraftGig,
     reputationLabels
@@ -17,6 +18,7 @@ import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Controls } from '../../../shared/components/controls/controls';
 import { Slider } from '../../../shared/components/slider/slider';
 import { useBankingService } from '../../../shared/services/banking.service';
+import { AccountType } from '../../../models/banking';
 
 import './new-gig.scss';
 
@@ -26,14 +28,13 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const { currentPrivateBalance, currentBusinessBalance } =
         useBankingService();
     const { addNewGig, gigerCommission } = useGigsService();
-    const [fromAccount, setFromAccount] = useState<'PRIVATE' | 'BUSINESS' | ''>(
-        ''
-    );
+    const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
     const [gigName, setGigName] = useState<string>('');
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const [publicDescription, setPublicDescription] = useState<string>('');
     const [privateMessage, setPrivateMessage] = useState<string>('');
     const [payout, setPayout] = useState<number>(0);
+    const [mode, setMode] = useState<GigModes | ''>('');
     const [notEnoughMoneyWarning, setNotEnoughMoneyWarning] =
         useState<boolean>(false);
     const [selectedRepuation, setSelectedReputation] = useState<
@@ -49,13 +50,17 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     });
 
     const onPayoutChange = (payout: number) => {
+        checkBalance();
+        setPayout(payout);
+    };
+
+    const checkBalance = () => {
         const balance =
-            fromAccount === 'PRIVATE'
+            fromAccount === AccountType.PRIVATE
                 ? currentPrivateBalance
                 : currentBusinessBalance;
         const hasEnoughMoney = payout + payout * gigerCommission <= balance;
         setNotEnoughMoneyWarning(!hasEnoughMoney);
-        setPayout(payout);
     };
 
     const gigReady = useMemo(() => {
@@ -68,7 +73,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             payout !== undefined &&
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
-            fromAccount !== ''
+            fromAccount !== '' &&
+            mode !== ''
         );
     }, [
         gigName,
@@ -78,7 +84,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         payout,
         selectedCategory,
         selectedRepuation,
-        fromAccount
+        fromAccount,
+        mode
     ]);
 
     const newGig: IDraftGig | undefined = useMemo(() => {
@@ -150,20 +157,37 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
                 <select
                     className="new-gig__input"
-                    value={fromAccount}
+                    value={mode}
                     onChange={(event) =>
-                        setFromAccount(
-                            event.target.value as 'PRIVATE' | 'BUSINESS'
-                        )
+                        setMode(event.target.value as GigModes)
                     }
+                >
+                    <option value={''} disabled hidden>
+                        <MemoizedFormattedMessage id="PROVIDER_OR_CLIENT" />
+                    </option>
+                    <option value={GigModes.PROVIDER}>
+                        <MemoizedFormattedMessage id="PROVIDER" />
+                    </option>
+                    <option value={GigModes.CLIENT}>
+                        <MemoizedFormattedMessage id="CLIENT" />
+                    </option>
+                </select>
+
+                <select
+                    className="new-gig__input"
+                    value={fromAccount}
+                    onChange={(event) => {
+                        setFromAccount(event.target.value as AccountType);
+                        checkBalance();
+                    }}
                 >
                     <option value={''} disabled hidden>
                         <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
                     </option>
-                    <option value="PRIVATE">
+                    <option value={AccountType.PRIVATE}>
                         <MemoizedFormattedMessage id="PRIVATE" />
                     </option>
-                    <option value="BUSINESS">
+                    <option value={AccountType.BUSINESS}>
                         <MemoizedFormattedMessage id="BUSINESS" />
                     </option>
                 </select>
