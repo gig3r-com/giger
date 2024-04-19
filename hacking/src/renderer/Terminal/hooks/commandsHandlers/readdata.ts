@@ -5,7 +5,7 @@ import { ProfileType } from '../../../apiService/types';
 
 type UseReadDataCommandsType = {
   addLines: (lines: string[]) => void;
-  addErrors: (error: string | string[]) => void;
+  addErrors: (line: string[] | string) => void;
   setInputDisabled: (inputDisabled: boolean) => void;
 };
 
@@ -15,20 +15,24 @@ export function useReadDataCommands({
   setInputDisabled,
 }: UseReadDataCommandsType) {
   const executeReadDataCommand = async (parsedCommand: string[]) => {
-    const userId = parsedCommand[1];
-    const eventId = parsedCommand[2];
-
-    setInputDisabled(true);
-    if (userId === '.') {
-      const loginUserData = getLoginUserData();
-      if (!loginUserData) return addErrors('No login user');
-      printEvent(loginUserData, eventId);
-    } else {
-      const profile = await apiService.getUserProfile(userId);
-      printEvent(profile, eventId);
+    try {
+      setInputDisabled(true);
+      const userId = parsedCommand[1];
+      const eventId = parsedCommand[2];
+      if (userId === '.') {
+        const loginUserData = getLoginUserData();
+        if (!loginUserData) return addErrors('No login user');
+        printEvent(loginUserData, eventId);
+      } else {
+        const profile = await apiService.getUserProfile(userId);
+        printEvent(profile, eventId);
+      }
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
-    
-    setInputDisabled(false);
   };
 
   return { executeReadDataCommand };

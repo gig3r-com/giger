@@ -46,7 +46,7 @@ export function runBreacher({
     }
   }
 
-  function stepBreach(time) {
+  function stepBreach(time: number) {
     if (time !== breachTime) removeLastLine();
     addLines([makeLoaderLine(time, breachTime)]);
     if (time === 0) removeLastLine();

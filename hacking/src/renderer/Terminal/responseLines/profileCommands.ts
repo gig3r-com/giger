@@ -4,17 +4,17 @@ import { MINDHACK_TYPE, HACKING_TYPE } from '../../apiService/mappers/profile';
 
 export function getBaseProfileLines(data: ProfileType): string[] {
   const lines = [
-    `${printTabField('id')}, ${printTabField('handle')}, ${printTabField(
+    `${printTabField('id')}, ${printTabField('handle')}, ${printField(
       'name',
-    )}, ${printTabField('surname')}`,
+    )}, ${printField('surname')}`,
     `${printTabField('networkId', 'network')}, ${printTabField(
       'subnetworkId',
       'subnetwork',
     )}`,
-    `${printTabField('typeActual', 'type')}, ${printTabField(
+    `${printField('typeActual', 'type')}, ${printField(
       'professionActual',
       'profession',
-    )}, ${printTabField('age')}, ${printTabField('wealthLevel', 'wealth')}`,
+    )}, ${printField('age')}, ${printField('wealthLevel', 'wealth')}`,
   ];
 
   // Events
@@ -24,10 +24,15 @@ export function getBaseProfileLines(data: ProfileType): string[] {
   if (data.privateRecords.length) tableContent = tableContent + `${printRecordTablePart('Records', data.privateRecords)}`;
   if (tableContent) lines.push(`<table class="profile-table">${tableContent}</table>`);
 
+  // Accounts
+
   return lines;
 
   function printTabField(key: string, alias?: string): string {
     return `<span>${alias || key}:</span> ${withTab(data[key])}`;
+  }
+  function printField(key: string, alias?: string): string {
+    return `<span>${alias || key}:</span> <span>${data[key]}</span>`;
   }
 
   function withTab(children: string): string {

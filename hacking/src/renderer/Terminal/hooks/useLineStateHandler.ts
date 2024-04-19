@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { gigerArt } from '../../../../assets/gigerAsciArt';
+import { gigerArt } from '../data/gigerAsciArt';
 
 type LineStatHandlerTypes = {
   prefixType: string;
@@ -35,13 +35,14 @@ export default function useLineStateHandler({
     addLine(mapUserLine(userLineToAdd));
     setUserLines((oldUserLines) => [...oldUserLines, userLineToAdd]);
   };
-  const addErrors = (errorLines: string[] | string) => {
-    console.error(errorLines);
+  const addErrors = (errorLines: string[] | string | object) => {
     if (Array.isArray(errorLines)) {
       errorLines.forEach((line: string) => {
         addLine(`<span class="error">${line}</span>`);
       });
     } else if (typeof errorLines === 'string') {
+      addLine(`<span class="error">${errorLines}</span>`);
+    } else if (typeof errorLines?.message === 'string') {
       addLine(`<span class="error">${errorLines}</span>`);
     }
   };

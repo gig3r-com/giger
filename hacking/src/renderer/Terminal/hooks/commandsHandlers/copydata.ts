@@ -1,31 +1,35 @@
-import ApiService from '../../../apiService/apiService';
-import {getLoginUserData} from "../../utils/store";
-import apiService from "../../../apiService/apiService";
-import {ProfileType} from "../../../apiService/types";
-import {getEventProfileLines} from "../../responseLines/profileCommands";
+import apiService from '../../../apiService/apiService';
+import { ProfileType } from '../../../apiService/types';
 
 type UseCopyDataCommandsType = {
   addLines: (lines: string[]) => void;
-  addErrors: (error: string | string[]) => void;
+  addErrors: (line: string[] | string) => void;
   setInputDisabled: (inputDisabled: boolean) => void;
-}
+};
 
-export function useCopyDataCommands({ addLines, addErrors, setInputDisabled }: UseCopyDataCommandsType) {
+export function useCopyDataCommands({
+  addLines,
+  addErrors,
+  setInputDisabled,
+}: UseCopyDataCommandsType) {
   const executeCopyDataCommand = async (parsedCommand: string[]) => {
-    const userId = parsedCommand[1];
-    const eventId = parsedCommand[2];
-
-    setInputDisabled(true);
-    if (userId === '.') {
-      return addErrors('Cant copy from your own profile');
-    } else {
-      const profile = await apiService.getUserProfile(userId);
-      const event = getEvent(profile, eventId);
-      await apiService.addRecordToLoginUser(event);
-      console.log(event);
+    try {
+      setInputDisabled(true);
+      const userId = parsedCommand[1];
+      const eventId = parsedCommand[2];
+      if (userId === '.') {
+        throw 'Cant copy from your own profile';
+      } else {
+        const profile = await apiService.getUserProfile(userId);
+        const event = getEvent(profile, eventId);
+        await apiService.addRecordToLoginUser(event);
+      }
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
-
-    setInputDisabled(false);
   };
 
   return { executeCopyDataCommand };

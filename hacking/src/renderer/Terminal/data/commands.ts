@@ -42,21 +42,30 @@ const LOG_SELF = `${[MAIN_COMMANDS.LOG]} .`;
 const NAME = `${[MAIN_COMMANDS.NAME]} [newName]`;
 
 export const COMMANDS_DESCRIPTIONS = {
-  [MAIN_COMMANDS.CLEAR]: 'Clears console',
-  [NAME]: 'Change your hacker name',
-  [MAIN_COMMANDS.LOOGUT]: 'Logout from this terminal',
-  [MAIN_COMMANDS.INSTALL]: 'Install program',
-
   [LIST_CMD]: 'Lists all available commands',
   [LIST_PROG]: 'Lists all available exploits',
+  '': '',
+
+  [MAIN_COMMANDS.CLEAR]: 'Clears console',
+  [MAIN_COMMANDS.LOOGUT]: 'Logout from this terminal',
+  ' ': '',
+
+  [NAME]: 'Change your hacker name',
+  [MAIN_COMMANDS.INSTALL]: 'Install program',
+  '  ': '',
 
   [SCAN_USERNAME]: 'Retrieve UserId',
-  [SCAN_USER_ID]: 'Retrieve user data',
-  [SCAN_SUBNETWORK_ID]: 'Retrieve subnetwork data',
+  'scan [id]': 'Retrieve data with provided id',
+  '   ': '',
 
-  [RUN]: 'Run program on specified subnetwork',
   [PROFILE_SELF]: 'Get data from your own profile',
-  [LOG_SELF]: 'Get your own logs',
+  'readdata . [dataId]': '',
+  'balance . [accountId]': '',
+  'log .': 'Get your own logs',
+  '    ': '',
+
+  'run [programName] [subnetworkId]': 'Run program on specified subnetwork',
+  'connect [programName] [subnetworkId]': 'Run program on specified subnetwork',
 };
 
 export const CONNECTED_COMMANDS_DESCRIPTIONS = {

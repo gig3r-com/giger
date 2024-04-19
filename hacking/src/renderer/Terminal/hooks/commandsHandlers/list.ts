@@ -7,12 +7,12 @@ import {
   getListCmdLines,
 } from '../../responseLines/listCommands';
 import { unknownCommand } from '../../responseLines/errors';
-import * as Programs from '../../data/programs';
+import * as PROGRAMS from '../../data/programs';
 import { getConnectedSubnetworkData } from '../../utils/store';
 
 type UseListCommandType = {
   addLines: (lines: string[]) => void;
-  addErrors: (line: string[]) => void;
+  addErrors: (line: string[] | string) => void;
   isConnected: boolean;
   isDecrypted: boolean;
   setInputDisabled: (inputDisabled: boolean) => void;
@@ -25,8 +25,9 @@ export default function useListCommands({
   isDecrypted,
   setInputDisabled,
 }: UseListCommandType) {
-  const executeListCommand = (parsedCommand: string[]): void => {
+  const executeListCommand = async (parsedCommand: string[]) => {
     try {
+      setInputDisabled(true);
       switch (parsedCommand[1]) {
         case LIST_COMMANDS.CMD: {
           if (!isConnected) addLines(getListCmdLines());
@@ -34,15 +35,13 @@ export default function useListCommands({
           else {
             const connectedSubnetwork = getConnectedSubnetworkData();
             // @ts-ignore
-            const system = Programs[connectedSubnetwork.operatingSystem];
+            const system = PROGRAMS[connectedSubnetwork.operatingSystem];
             addLines(getEncodedListCmdLines(system.encryptedCommands));
           }
           break;
         }
         case LIST_COMMANDS.PROG: {
-          setInputDisabled(true);
           ApiService.getAvailablePrograms().then((programs) => {
-            setInputDisabled(false);
             addLines(getListProgramLines(programs));
           });
           break;
@@ -51,8 +50,11 @@ export default function useListCommands({
           addErrors(unknownCommand);
         }
       }
-    } catch (error: any) {
-      addErrors(error);
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
   };
 

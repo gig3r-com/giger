@@ -43,8 +43,8 @@
       "recordType": "PrivateRecord",
       "userId": "e4ad03a7",
       "revealCode": "",
-      "revealPriority": false,
-      "isRevealed": 3
+      "revealPriority": 0,
+      "isRevealed": true
     }
   ],
   "criminalEvents": [],
@@ -57,8 +57,8 @@
       "status": "CURRENT",
       "timeStamp": "2024-04-07T14:05:42.335Z",
       "userId": "e4ad03a7",
-      "revealPriority": true,
-      "isRevealed": 0,
+      "revealPriority": 0,
+      "isRevealed": true,
       "revealCode": ""
     },
     {
@@ -69,8 +69,8 @@
       "status": "CURRENT",
       "timeStamp": "2024-04-07T14:05:42.335Z",
       "userId": "e4ad03a7",
-      "revealPriority": true,
-      "isRevealed": 0,
+      "revealPriority": 0,
+      "isRevealed": true,
       "revealCode": ""
     },
     {
@@ -81,8 +81,8 @@
       "status": "CURRENT",
       "timeStamp": "2024-04-07T14:05:42.335Z",
       "userId": "e4ad03a7",
-      "revealPriority": true,
-      "isRevealed": 0,
+      "revealPriority": 0,
+      "isRevealed": true,
       "revealCode": ""
     }
   ]

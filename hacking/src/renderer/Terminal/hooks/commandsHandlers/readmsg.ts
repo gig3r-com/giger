@@ -1,22 +1,25 @@
-import ApiService from '../../../apiService/apiService';
-
 type UseReadMsgCommandsType = {
-  addLines: ([string]) => void,
-  addError: (string) => void,
-}
+  addLines: (lines: string[]) => void;
+  addErrors: (line: string[] | string) => void;
+  setInputDisabled: (inputDisabled: boolean) => void;
+};
 
-export function useReadMsgCommands({ addLines, addError, }: UseReadMsgCommandsType) {
-  const executeReadMsgCommand = async (parsedCommand) => {
+export function useReadMsgCommands({
+  addLines,
+  addErrors,
+  setInputDisabled,
+}: UseReadMsgCommandsType) {
+  const executeReadMsgCommand = async (parsedCommand: string[]) => {
     try {
-      parsedCommand.shift();
-      const subcommand = parsedCommand.join(' ');
-
-      throw new Error('Not implemented: ' + subcommand);
-
-    } catch (error) {
-      addError(error);
+      setInputDisabled(true);
+      addLines(['NOT IMPLEMENTED']);
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
   };
 
-  return { executeReadMsgCommand, };
+  return { executeReadMsgCommand };
 }

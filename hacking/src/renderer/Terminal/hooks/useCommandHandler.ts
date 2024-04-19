@@ -80,6 +80,7 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     connectToSubnetwork,
     isConnected,
     decryptSubnetwork,
+    setInputDisabled,
   });
   const { executeTransferCommand } = useTransferCommands({
     addLines,
@@ -103,6 +104,7 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   const { executeProfileCommand } = useProfileCommands({
     addLines,
     addErrors,
+    setInputDisabled,
   });
   const { executeLogCommand } = useLogCommands({ addLines, addErrors });
 

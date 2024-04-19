@@ -1,22 +1,25 @@
-import ApiService from '../../../apiService/apiService';
-
 type UseBalanceCommandsType = {
-  addLines: ([string]) => void,
-  addError: (string) => void,
-}
+  addLines: (lines: string[]) => void;
+  addErrors: (line: string[] | string) => void;
+  setInputDisabled: (inputDisabled: boolean) => void;
+};
 
-export function useBalanceCommands({ addLines, addError, }: UseBalanceCommandsType) {
-  const executeBalanceCommand = async (parsedCommand) => {
+export function useBalanceCommands({
+  addLines,
+  addErrors,
+  setInputDisabled,
+}: UseBalanceCommandsType) {
+  const executeBalanceCommand = async (parsedCommand: string[]) => {
     try {
-      parsedCommand.shift();
-      const subcommand = parsedCommand.join(' ');
-
-      throw new Error('Not implemented: ' + subcommand);
-
-    } catch (error) {
-      addError(error);
+      setInputDisabled(true);
+      addLines(['NOT IMPLEMENTED']);
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
   };
 
-  return { executeBalanceCommand, };
+  return { executeBalanceCommand };
 }

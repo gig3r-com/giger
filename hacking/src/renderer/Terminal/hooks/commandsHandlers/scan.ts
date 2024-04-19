@@ -8,7 +8,7 @@ import {
 
 type UseScanCommandsType = {
   addLines: (lines: string[]) => void;
-  addErrors: (error: string[]) => void;
+  addErrors: (error: string[] | string) => void;
   setInputDisabled: (inputDisabled: boolean) => void;
 };
 
@@ -19,12 +19,11 @@ export default function useScanCommands({
 }: UseScanCommandsType) {
   const executeScanCommand = async (parsedCommand: string[]) => {
     try {
+      setInputDisabled(true);
       parsedCommand.shift();
       const subcommand = parsedCommand.join(' ');
-      setInputDisabled(true);
-
       const scanData = await ApiService.scan(subcommand);
-      console.log(scanData);
+      if (!scanData) throw 'No data was found'; // todo: error msg
       switch (scanData.type) {
         case 'subnetwork': {
           addLines(getSubnetworkDataLines(scanData.data));
@@ -43,12 +42,14 @@ export default function useScanCommands({
           break;
         }
         default: {
-          throw new Error(`Unrecognized scan`);
+          throw `Unrecognized scan`;
         }
       }
       setInputDisabled(false);
-    } catch (error: any) {
+    } catch (err) {
       setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
   };
 

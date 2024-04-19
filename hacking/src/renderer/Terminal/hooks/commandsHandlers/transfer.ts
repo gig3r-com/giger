@@ -1,22 +1,25 @@
-import ApiService from '../../../apiService/apiService';
-
 type UseTransferCommandsType = {
-  addLines: ([string]) => void,
-  addError: (string) => void,
-}
+  addLines: (lines: string[]) => void;
+  addErrors: (line: string[] | string) => void;
+  setInputDisabled: (inputDisabled: boolean) => void;
+};
 
-export function useTransferCommands({ addLines, addError, }: UseTransferCommandsType) {
-  const executeTransferCommand = async (parsedCommand) => {
+export function useTransferCommands({
+  addLines,
+  addErrors,
+  setInputDisabled,
+}: UseTransferCommandsType) {
+  const executeTransferCommand = async (parsedCommand: string[]) => {
     try {
-      parsedCommand.shift();
-      const subcommand = parsedCommand.join(' ');
-
-      throw new Error('Not implemented: ' + subcommand);
-
-    } catch (error) {
-      addError(error);
+      setInputDisabled(true);
+      addLines(['NOT IMPLEMENTED']);
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      // @ts-ignore
+      addErrors(err);
     }
   };
 
-  return { executeTransferCommand, };
+  return { executeTransferCommand };
 }

@@ -16,6 +16,7 @@ export type UseRunCommandsType = {
   removeLastLine: () => void;
   connectToSubnetwork: (subnetwork: SubnetworkType, timer: number) => void;
   decryptSubnetwork: () => void;
+  setInputDisabled: (value: boolean) => void;
 };
 
 export default function useRunCommands({
@@ -25,58 +26,54 @@ export default function useRunCommands({
   connectToSubnetwork,
   isConnected,
   decryptSubnetwork,
+  setInputDisabled,
 }: UseRunCommandsType) {
   const executeRunCommand = async (parsedCommand: string[]) => {
     try {
-      const connectedSubnetwork = getConnectedSubnetworkData();
-      const subnetworkName = getSubnetworkName(
-        isConnected,
-        parsedCommand[2],
-        connectedSubnetwork,
-      );
-      const subnetwork = await ApiService.getSubnetworkById(subnetworkName);
+      setInputDisabled(true);
+      const subnetworkId = getSubnetworkId(isConnected, parsedCommand[2]);
+      const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
       const exploit: ExploitType | undefined = getExploit(parsedCommand[1]);
 
-      if (!subnetwork) return addErrors(subnetworkNotFound);
       if (!exploit) return addErrors(programNotFound);
+      if (!subnetwork) return addErrors(subnetworkNotFound);
+
+      const runProgramProps = {
+        addLines,
+        exploit,
+        isConnected,
+        removeLastLine,
+        subnetwork,
+        setInputDisabled,
+      };
 
       switch (exploit.type) {
         case 'breacher': {
-          runBreacher({
-            addLines,
-            connectToSubnetwork,
-            exploit,
-            isConnected,
-            removeLastLine,
-            subnetwork,
-          });
+          runBreacher({ connectToSubnetwork, ...runProgramProps });
           break;
         }
         case 'decrypter': {
-          runDecrypter({
-            addLines,
-            decryptSubnetwork,
-            exploit,
-            isConnected,
-            removeLastLine,
-            subnetwork,
-          });
+          runDecrypter({ decryptSubnetwork, ...runProgramProps });
           break;
         }
         default: {
           addErrors(programNotFound);
         }
       }
-    } catch (error: any) {
-      addErrors(error);
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      addErrors(String(err));
     }
   };
 
   return { executeRunCommand };
 }
 
-function getSubnetworkName(isConnected: boolean, commandStatement: string, connectedSubnetwork: SubnetworkType | null) {
-  if (isConnected && commandStatement === '.' && connectedSubnetwork) return connectedSubnetwork.name;
+function getSubnetworkId(isConnected: boolean, commandStatement: string) {
+  const connectedSubnetwork = getConnectedSubnetworkData();
+  if (isConnected && commandStatement === '.' && connectedSubnetwork)
+    return connectedSubnetwork?.id;
   return commandStatement;
 }
 

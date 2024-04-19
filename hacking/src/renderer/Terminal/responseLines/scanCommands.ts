@@ -1,6 +1,6 @@
 import { canTabSelector } from '../hooks/useKeyHandler';
 
-export function getUserIdLines(userId: string): string[] {
+export function getUserIdLines(userId: string | object): string[] {
   return [
     `User ID: <span class="accent-color-2" ${canTabSelector}>${userId}</span>`,
   ];
