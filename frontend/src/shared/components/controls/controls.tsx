@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { IControlsProps } from './controls.model';
 import { standardTimingFunction } from '../../constants';
-import { ReactComponent as ChevronLeft } from '../../../assets/chevron-left-solid.svg';
+import ChevronLeft from '../../../assets/chevron-left-solid.svg?react';
 
 import './controls.scss';
 
