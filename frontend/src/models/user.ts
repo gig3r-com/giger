@@ -133,7 +133,7 @@ export enum WealthLevels {
 
 export interface IUserRecord extends IObscurableInfo {
     id: string;
-    userId: string;
+    userId?: string;
     description: string;
     recordType: UserRecordTypes;
 }

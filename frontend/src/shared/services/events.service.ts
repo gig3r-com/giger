@@ -7,14 +7,25 @@ import {
 } from '../../models/events';
 import { useUserService } from './user.service';
 import { useDispatch } from 'react-redux';
-import { updateCurrentUser } from '../../store/users.slice';
-import { IUserPrivate } from '../../models/user';
+import {
+    addEvent,
+    addRecord,
+    updateEvent} from '../../store/users.slice';
+import {
+    IGoal,
+    IMeta,
+    IPrivateRecord,
+    IRelation,
+    MetaTypes,
+    UserRecordTypes
+} from '../../models/user';
+import { v4 } from 'uuid';
 
 export const useEventsService = () => {
     const dispatch = useDispatch();
     const { currentUser } = useUserService();
 
-    function updateEvent(
+    function updateUserEvent(
         eventId: string,
         type: EventRecordType,
         updateData: Partial<EventType>
@@ -37,21 +48,20 @@ export const useEventsService = () => {
             ...updateData
         });
 
-        registerChanges(eventRecord, type);
+        dispatch(updateEvent({ type, eventId, updateData }));
     }
 
-    const addEvent: (
+    const addUserEvent: (
         event: IMedEvent | ICriminalEvent,
         type: EventRecordType
     ) => void = async (event, type) => {
-        const updatedRecord = cloneDeep(getEventRecordForUser(type));
 
         if (!currentUser) {
             throw new Error('User not found');
         }
 
-        updatedRecord.push(event);
-        registerChanges(updatedRecord, type);
+        //! API CALL
+        dispatch(addEvent({ event, type }));
     };
 
     const removeEvent: (
@@ -72,30 +82,52 @@ export const useEventsService = () => {
         }
 
         eventRecord.splice(eventIndex, 1);
+        //! API CALL
     };
 
-    /**
-     * registers the updated event record in redux as a change in current user data
-     * @param updateData 
-     * @param type 
-     */
-    const registerChanges = (
-        updateData: EventType[],
-        type: EventRecordType
-    ): void => {
-        let updatedRecord: Partial<
-            Pick<IUserPrivate, 'medHistory' | 'criminalRecord'>
-        >;
-        if (type === EventRecordType.CRIMINAL) {
-            updatedRecord = { criminalRecord: updateData as ICriminalEvent[] };
-        }
-
-        if (type === EventRecordType.MEDICAL) {
-            updatedRecord = { medHistory: updateData as IMedEvent[] };
-        }
-
-        dispatch(updateCurrentUser(updatedRecord!));
+    const addRelation = (relationToId: string, description: string): void => {
+        const record: IRelation = {
+            id: v4(),
+            relationTo: relationToId,
+            description,
+            recordType: UserRecordTypes.RELATION
+        };
+        //! API CALL
+        dispatch(addRecord({ type: UserRecordTypes.RELATION, record }));
     };
+
+    const addPrivateRecord = (title: string, description: string): void => {
+        const record: IPrivateRecord = {
+            id: v4(),
+            title,
+            description,
+            recordType: UserRecordTypes.PRIVATE_RECORD
+        };
+        //! API CALL
+        dispatch(addRecord({ type: record.recordType, record }));
+    }
+
+    const addMeta = (type: MetaTypes, description: string): void => {
+        const record: IMeta = {
+            id: v4(),
+            type,
+            description,
+            recordType: UserRecordTypes.META
+        };
+        //! API CALL
+        dispatch(addRecord({ type: record.recordType, record }));
+    }
+
+    const addGoal = (title: string, description: string): void => {
+        const record: IGoal = {
+            id: v4(),
+            title,
+            description,
+            recordType: UserRecordTypes.GOAL
+        };
+        //! API CALL
+        dispatch(addRecord({ type: record.recordType, record }));
+    }
 
     const getEventRecordForUser = (type: EventRecordType): EventType[] => {
         if (!currentUser) {
@@ -115,8 +147,12 @@ export const useEventsService = () => {
 
     return {
         getEventRecordForUser,
-        updateEvent,
-        addEvent,
-        removeEvent
+        updateUserEvent,
+        addUserEvent,
+        removeEvent,
+        addRelation,
+        addPrivateRecord,
+        addMeta,
+        addGoal
     };
 };
