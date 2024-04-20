@@ -5,6 +5,7 @@ import {
     users
 } from '../../mocks/users';
 import {
+    selectActiveUsers,
     selectCurrentUser,
     selectIsAdmin,
     selectIsGod,
@@ -23,6 +24,7 @@ import { RootState } from '../../store/store';
 export function useUserService() {
     const dispatch = useDispatch();
     const userList = useSelector((state: RootState) => state.users.users);
+    const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
     const isAdmin = useSelector(selectIsAdmin)
@@ -169,6 +171,8 @@ export function useUserService() {
         return currentUser?.faction;
     };
 
+    const visibleUsers = isGod ? userList : activeUsers;
+
     return {
         login,
         logout,
@@ -185,6 +189,7 @@ export function useUserService() {
         getHandleForConvo,
         toggleUserAsFavorite,
         isInfluencer,
-        getCurrentUserFaction
+        getCurrentUserFaction,
+        visibleUsers
     };
 }

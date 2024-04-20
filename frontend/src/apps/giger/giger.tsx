@@ -1,11 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import { IGig } from '../../models/gig';
 import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
-import { RootState } from '../../store/store';
 import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
 
@@ -15,12 +12,7 @@ export const Giger: FC = () => {
     const location = useLocation();
     const { gigId } = useParams();
     const navigate = useNavigate();
-    const { fetchGigs, gigsVisibleToTheUser } = useGigsService();
-    const selectedCategories = useSelector(
-        (state: RootState) => state.gigs.selectedCategories
-    );
-    const [filteredGigs, setFilteredGigs] =
-        useState<IGig[]>(gigsVisibleToTheUser);
+    const { fetchGigs, gigsVisibleToTheUser, filteredGigs } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
@@ -32,18 +24,6 @@ export const Giger: FC = () => {
     }, []);
 
     const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);
-
-    useEffect(
-        function onFiltersUpdate() {
-            const filteredList = gigs.filter((gig) =>
-                selectedCategories.includes(gig.category)
-            );
-            setFilteredGigs(
-                selectedCategories.length === 0 ? gigs : filteredList
-            );
-        },
-        [selectedCategories, gigs]
-    );
 
     const toggleMenuState = () => {
         setMenuState(menuState === 'filters' ? 'list' : 'filters');
@@ -71,7 +51,7 @@ export const Giger: FC = () => {
 
     return (
         <article className="giger">
-            <GigList gigs={filteredGigs} toggleMenuState={toggleMenuState} />
+            <GigList toggleMenuState={toggleMenuState} />
             <GigListFilters
                 toggleMenuState={toggleMenuState}
                 active={menuState === 'filters'}

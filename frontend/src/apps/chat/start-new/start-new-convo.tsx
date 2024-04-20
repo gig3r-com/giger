@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AnimatePresence, motion } from 'framer-motion';
-import { RootState } from '../../../store/store';
 import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
@@ -13,13 +12,14 @@ import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
 
 import './start-new-convo.scss';
+import { selectActiveUsers } from '../../../store/users.slice';
 
 export const StartNewConvo: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const usersWrapper = useRef<HTMLDivElement>(null);
-    const users = useSelector((state: RootState) => state.users.users);
+    const users = useSelector(selectActiveUsers);
     const { createConvo } = useMessagesService();
     const { canAnonymizeChatHandle } = useUserService();
     const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);

@@ -2,14 +2,14 @@ import { FC, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Hexagon } from '../hexagon/hexagon';
-import { GigCategoryNames } from '../../../../models/gig';
+import { GigCategoryNames, GigModes } from '../../../../models/gig';
 import { categoriesByRows } from '../../categories';
 import { BigButton } from '../../../../shared/components/big-button/big-button';
 import { IGigListFiltersProps } from './gig-list-filters.model';
 import { RootState } from '../../../../store/store';
-import { setCategories } from '../../../../store/gigs.slice';
+import { setCategories, setMode } from '../../../../store/gigs.slice';
 import { Controls } from '../../../../shared/components/controls/controls';
 
 import './gig-list-filters.scss';
@@ -23,6 +23,10 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
     const currentCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
+    const currentMode = useSelector(
+        (state: RootState) => state.gigs.selectedMode
+    );
+    const [gigMode, setGigMode] = useState<GigModes | 'all'>(currentMode);
     const [newSelectedCategories, setNewSelectedCategories] = useState<
         Set<GigCategoryNames>
     >(new Set(currentCategories));
@@ -48,6 +52,7 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
 
     const save = () => {
         dispatch(setCategories([...newSelectedCategories]));
+        dispatch(setMode(gigMode as GigModes | 'all'));
         toggleMenuState();
     };
 
@@ -63,6 +68,21 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                 onRightSideClick={cancel}
             />
 
+            <select
+                className="gig-list-filters__mode-select"
+                value={gigMode}
+                onChange={(e) => setGigMode(e.target.value as GigModes | 'all')}
+            >
+                <option value="all">
+                    <FormattedMessage id="ALL" />
+                </option>
+                <option value={GigModes.CLIENT}>
+                    <FormattedMessage id="CLIENT" />
+                </option>
+                <option value={GigModes.PROVIDER}>
+                    <FormattedMessage id="PROVIDER" />
+                </option>
+            </select>
             <div className="gig-list-filters__body">
                 {categoriesByRows.map((categoryRow, index) => (
                     <div
@@ -80,7 +100,7 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                         ))}
                     </div>
                 ))}
-                <BigButton text="SAVE" onClick={save} color='primary' />
+                <BigButton text="SAVE" onClick={save} color="primary" />
             </div>
         </section>
     );

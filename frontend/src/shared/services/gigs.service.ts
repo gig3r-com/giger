@@ -16,7 +16,7 @@ import { useMessagesService } from './messages.service';
 import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
 
@@ -29,13 +29,19 @@ export function useGigsService() {
     const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
+    const selectedCategories = useSelector(
+        (state: RootState) => state.gigs.selectedCategories
+    );
+    const selectedMode = useSelector(
+        (state: RootState) => state.gigs.selectedMode
+    );
     const intl = useIntl();
     const { displayToast } = useNotificationsService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
         ...draftGig,
-        createdAt: dayjs().toISOString(),
+        createdAt: dayjs().add(100, 'days').toISOString(),
         convo: createConvo(
             [currentUser!.id],
             createMessage(draftGig.message),
@@ -92,13 +98,15 @@ export function useGigsService() {
     /**
      * Accepts the gig and marks it as in progress.
      * @param id
+     * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
      */
-    const acceptGig = (id: string) => {
+    const acceptGig = (id: string, asCompany: boolean) => {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = {
             ...gig!,
             status: GigStatus.IN_PROGRESS,
-            takenById: currentUser?.id
+            takenById: currentUser?.id,
+            ...(asCompany && { takenByCompany: currentUser?.faction })
         };
 
         // ! API CALL REQUIRED
@@ -157,6 +165,7 @@ export function useGigsService() {
         const updatedGig: IGig = {
             ...gig!,
             complaintReason: complaint,
+            markedAsComplaintAt: dayjs().add(100, 'years').toISOString(),
             status: GigStatus.DISPUTE
         };
 
@@ -225,7 +234,10 @@ export function useGigsService() {
                 deleteGig(id);
                 break;
             case ActionId.ACCEPT:
-                acceptGig(id);
+                acceptGig(id, false);
+                break;
+            case ActionId.ACCEPT_AS_COMPANY:
+                acceptGig(id, true);
                 break;
             case ActionId.MARK_AS_EXPIRED:
                 setAsExpired(id);
@@ -265,17 +277,31 @@ export function useGigsService() {
      * @param gig - gig to check
      * @returns GigMode
      */
-    const userGigMode = (gig: IGig): GigModes => {
-        const userIsAuthor = gig.authorId === currentUser?.id;
+    const userGigMode = useCallback(
+        (gig: IGig): GigModes => {
+            const userIsAuthor = gig.authorId === currentUser?.id;
 
-        if (userIsAuthor) {
-            return gig.mode;
-        }
+            if (userIsAuthor) {
+                return gig.mode;
+            }
 
-        return gig.mode === GigModes.CLIENT
-            ? GigModes.PROVIDER
-            : GigModes.CLIENT;
-    };
+            return gig.mode === GigModes.CLIENT
+                ? GigModes.PROVIDER
+                : GigModes.CLIENT;
+        },
+        [currentUser?.id]
+    );
+
+    const filteredGigs = useMemo(() => {
+        return gigsVisibleToTheUser.filter((gig) => {
+            const categoryMatching =
+                selectedCategories.includes(gig.category) ||
+                selectedCategories.length === 0;
+            const modeMatching =
+                selectedMode === userGigMode(gig) || selectedMode === 'all';
+            return categoryMatching && modeMatching;
+        });
+    }, [gigsVisibleToTheUser, selectedCategories, selectedMode, userGigMode]);
 
     return {
         addNewGig,
@@ -288,6 +314,7 @@ export function useGigsService() {
         gigerCommission,
         gigsVisibleToTheUser,
         sendComplaint,
-        userGigMode
+        userGigMode,
+        filteredGigs
     };
 }

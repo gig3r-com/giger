@@ -143,5 +143,8 @@
     "LOADING": "Ładowanie",
     "PROVIDER_OR_CLIENT": "Dostawca czy klient?",
     "PROVIDER": "Dostawca",
-    "CLIENT": "Klient"
+    "CLIENT": "Klient",
+    "ACCEPT_AS_COMPANY": "Akceptuj jako firma",
+    "ALL": "Wszystkie",
+    "ACTIVE": "Aktywny"
 }

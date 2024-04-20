@@ -24,6 +24,11 @@
         margin-bottom: 0;
     }
 
+    &__payout {
+        text-transform: uppercase;
+        color: $muted-text;
+    }
+
     &__summary {
         position: relative;
         transform-origin: left;

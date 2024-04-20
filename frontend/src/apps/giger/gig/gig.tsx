@@ -26,7 +26,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const intl = useIntl();
     const { currentUser, getHandleForConvo, isAdmin, isGod } = useUserService();
-    const { handleButtonAction, userGigMode } = useGigsService();
+    const { handleButtonAction } = useGigsService();
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
@@ -81,6 +81,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         'gig__status--shown': !selectedId
     });
 
+    const wantsOrPays = gig.mode === GigModes.CLIENT ? 'PAYS' : 'WANTS';
+
     return (
         <li className={wrapperClasses}>
             <span
@@ -102,11 +104,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                         })}
                     >
                         <h3 className="gig__title">{gig.title}</h3>
-                        <span className="gig__payout">{gig.payout} ¤</span>
-                        <span className="gig__mode">
-                            {userGigMode(gig) === GigModes.CLIENT
-                                ? 'CLIENT'
-                                : 'PROVIDER'}
+                        <span className="gig__payout">
+                            <FormattedMessage id={wantsOrPays} /> {gig.payout} ¤
                         </span>
                         <span className="gig__reputation">
                             {gig.reputationRequired !== undefined && (

@@ -154,5 +154,10 @@
     "LOADING": "Loading",
     "PROVIDER_OR_CLIENT": "Provider or client?",
     "PROVIDER": "Provider",
-    "CLIENT": "Client"
+    "CLIENT": "Client",
+    "ACCEPT_AS_COMPANY": "Accept as company",
+    "ALL": "All",
+    "WANTS": "wants",
+    "PAYS": "pays",
+    "ACTIVE": "Active"
 }

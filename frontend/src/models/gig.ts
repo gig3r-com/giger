@@ -1,3 +1,5 @@
+import { Factions } from "./companies";
+
 export interface IGigBase {
     createdAt: string; //ISO date string
     acceptedAt?: string; //ISO date string
@@ -20,6 +22,7 @@ export interface IGig extends IGigBase {
     status: GigStatus;
     authorId: string;
     takenById?: string;
+    takenForCompany?: Factions;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;
 }

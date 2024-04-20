@@ -21,6 +21,11 @@
         transform: translateY(-100vh);
     }
 
+    &__mode-select {
+        width: 80%;
+        margin-bottom: 1rem;
+    }
+
     &__filter-row {
         display: flex;
         width: 100%;

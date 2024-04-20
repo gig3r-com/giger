@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { AccountType, ITransaction } from '../../../models/banking';
 import { useUserService } from '../../../shared/services/user.service';
 import { useBankingService } from '../../../shared/services/banking.service';
-import { ReactComponent as IncomingTransfer } from '../../../assets/incoming.svg';
-import { ReactComponent as OutgoingTransfer } from '../../../assets/outgoing.svg';
+import IncomingTransfer from '../../../assets/incoming.svg?react';
+import OutgoingTransfer from '../../../assets/outgoing.svg?react';
 
 import './transaction.scss';
 
