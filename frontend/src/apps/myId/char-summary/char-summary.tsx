@@ -18,17 +18,18 @@ import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AdminEditableField } from '../../../shared/components/admin-editable-field/admin-editable-field';
 import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 import { useUserService } from '../../../shared/services/user.service';
-
-import './char-summary.scss';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import { SelectUser } from '../select-user/select-user';
 import { Factions } from '../../../models/companies';
+
+import './char-summary.scss';
 
 export const CharSummary: FC<{
     mode: 'public' | 'private';
     userData?: IUserPublic;
 }> = ({ userData, mode }) => {
     const intl = useIntl();
+    const { isGod } = useUserService();
     const isPrivate = mode === 'private';
     const { updateUserData, currentUser } = useUserService();
     const { generateAnimation } = useStandardizedAnimation();
@@ -266,6 +267,26 @@ export const CharSummary: FC<{
                             />
                         </>
                     )}
+
+                    {isPrivate && isGod && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="ACTIVE" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                value={user!.active ? 'YES' : 'NO'}
+                                options={['YES', 'NO']}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        active: val === 'YES'
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
                     {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
                         <>
                             <AdminEditableField

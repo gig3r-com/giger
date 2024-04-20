@@ -10,11 +10,13 @@ import { Controls } from '../../../shared/components/controls/controls';
 import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
 import { RootState } from '../../../store/store';
+import { useGigsService } from '../../../shared/services/gigs.service';
 
 import './gigList.scss';
 
-export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
+export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
     const { currentUser } = useUserService();
+    const { filteredGigs } = useGigsService();
     const fetchingGigs = useSelector(
         (state: RootState) => state.gigs.fetchingGigs
     );
@@ -23,9 +25,13 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
 
     const sortedGigs = useMemo(
         () =>
-            [...gigs].sort((a, b) => {
-                const aPriority = a.authorId === currentUser?.id && a.status !== GigStatus.EXPIRED;
-                const bIsOwn = b.authorId === currentUser?.id && a.status !== GigStatus.EXPIRED;
+            [...filteredGigs].sort((a, b) => {
+                const aPriority =
+                    a.authorId === currentUser?.id &&
+                    a.status !== GigStatus.EXPIRED;
+                const bIsOwn =
+                    b.authorId === currentUser?.id &&
+                    a.status !== GigStatus.EXPIRED;
                 const statusesRank = {
                     [GigStatus.DISPUTE]: 0,
                     [GigStatus.PENDING_CONFIRMATION]: 1,
@@ -39,7 +45,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
 
                 return aScore - bScore;
             }),
-        [gigs, currentUser]
+        [filteredGigs, currentUser]
     );
 
     return (
@@ -48,8 +54,9 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                 leftSideOption={
                     gigId
                         ? 'back'
-                        : `${gigs.length} ${
-                              gigs.length > 1 || gigs.length === 0
+                        : `${filteredGigs.length} ${
+                              filteredGigs.length > 1 ||
+                              filteredGigs.length === 0
                                   ? intl.formatMessage({ id: 'GIG_PLURAL' })
                                   : intl.formatMessage({ id: 'GIG_PLURAL' })
                           }`
@@ -57,7 +64,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                 rightSideOption={gigId ? undefined : 'FILTERS'}
                 onRightSideClick={gigId ? undefined : toggleMenuState}
             />
-            {gigs.length === 0 && !fetchingGigs && <NoGigFound />}
+            {filteredGigs.length === 0 && !fetchingGigs && <NoGigFound />}
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
                     {sortedGigs.map((gig, i) => (

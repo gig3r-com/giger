@@ -2,8 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
-import { RootState } from '../../../store/store';
-import { setCurrentUser } from '../../../store/users.slice';
+import { selectActiveUsers, setCurrentUser } from '../../../store/users.slice';
 
 import './select-user.scss';
 
@@ -13,7 +12,7 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
     const dispatch = useDispatch();
     const ref = useRef<HTMLSelectElement>(null);
     const { isGod, getUserById, saveLoginData } = useUserService();
-    const users = useSelector((state: RootState) => state.users.users);
+    const users = useSelector(selectActiveUsers);
     const [showSelection, setShowSelection] = useState(false);
 
     const onSelection = async (userId: string) => {

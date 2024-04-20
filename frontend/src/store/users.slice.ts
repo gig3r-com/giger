@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 import { IUserBase, IUserPrivate, UserRoles } from '../models/user';
 import { users } from '../mocks/users';
 import { cloneDeep } from 'lodash-es';
@@ -84,5 +84,10 @@ export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
     state.users.requiresGodUserSelection;
 export const selectIsAdmin = (state: { users: IUsersState }) =>
     state.users.currentUser?.roles.includes(UserRoles.ADMIN) ?? false;
+
+export const selectActiveUsers = createSelector(
+    (state: { users: IUsersState }) => state.users.users,
+    (users) => users.filter((user) => user.active)
+);
 
 export default usersSlice.reducer;

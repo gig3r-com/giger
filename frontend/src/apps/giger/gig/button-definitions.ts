@@ -15,6 +15,7 @@ export enum GigRelation {
 
 export enum ActionId {
     ACCEPT = 'ACCEPT_GIG',
+    ACCEPT_AS_COMPANY = 'ACCEPT_AS_COMPANY',
     DELETE = 'DELETE_GIG',
     MARK_AS_DONE_MINE = 'MARK_AS_DONE_MINE',
     MARK_AS_DONE_THEIRS = 'MARK_AS_DONE_THEIRS',
@@ -41,6 +42,12 @@ const buttonDefinitions: {
                 color: 'primary',
                 disabled: false,
                 actionId: ActionId.ACCEPT
+            },
+            {
+                label: 'ACCEPT_AS_COMPANY',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT_AS_COMPANY
             }
         ]
     },
