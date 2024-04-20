@@ -1,6 +1,12 @@
 @import '../../../../variables.scss';
 
 .new-entry {
+    display: flex;
+
+    &__general {
+        display: flex;
+        margin-bottom: 0.5rem;
+    }
 
     &__input {
         border: 0;
@@ -38,5 +44,11 @@
     &__info {
         width: calc(100% - 112px);
         margin-right: 0.5rem;
+    }
+
+    textarea {
+        min-height: 6rem;
+        width: calc(100% - 26px);
+        margin-left: 0.5rem;
     }
 }

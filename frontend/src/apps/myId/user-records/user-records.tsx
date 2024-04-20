@@ -15,6 +15,7 @@ import {
 } from '../../../models/user';
 import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 import { RootState } from '../../../store/store';
+import { NewRecord } from './new-record/new-record';
 
 import './user-records.scss';
 
@@ -123,6 +124,7 @@ export function UserRecords(props: IUserRecordsProps) {
                     </div>
                 </div>
             ))}
+            <NewRecord type={mode} />
         </section>
     );
 }

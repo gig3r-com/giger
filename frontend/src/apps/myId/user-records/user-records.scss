@@ -1,7 +1,7 @@
 @import '../../../variables.scss';
 
 .user-records {
-    height: $standard-viewport-height;
+    height: calc(#{$standard-viewport-height} - 60px);
     overflow: auto;
     
     &__entry {
