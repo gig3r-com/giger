@@ -15,19 +15,18 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
 }) => {
     const [expanded, setExpanded] = useState<boolean>(false);
     const { isGod, currentUser } = useUserService();
-    const { updateEvent, removeEvent } = useEventsService();
+    const { updateUserEvent, removeEvent } = useEventsService();
 
     const updateData = (
         propToUpdate: 'year' | 'name' | 'description',
         val: string | number
     ) => {
         if (!currentUser) return;
+        const updatedEntry = { ...entry };
 
-        if (entry) {
-            entry.name = propToUpdate === 'name' ? (val as string) : entry.name;
-        }
+        updatedEntry.name = propToUpdate === 'name' ? (val as string) : entry.name;
 
-        updateEvent(entry!.id, type, entry!);
+        updateUserEvent(entry!.id, type, updatedEntry);
     };
 
     const removeEntry = () => {
@@ -74,7 +73,8 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
                 <AdminEditableField
                     type={FieldTypes.TEXT}
                     value={entry.eventDescription}
-                    onChange={(val) => updateData('description', val)} />
+                    onChange={(val) => updateData('description', val)}
+                />
             </div>
         </motion.article>
     );
