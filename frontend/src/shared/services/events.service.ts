@@ -7,10 +7,7 @@ import {
 } from '../../models/events';
 import { useUserService } from './user.service';
 import { useDispatch } from 'react-redux';
-import {
-    addEvent,
-    addRecord,
-    updateEvent} from '../../store/users.slice';
+import { addEvent, addRecord, updateEvent } from '../../store/users.slice';
 import {
     IGoal,
     IMeta,
@@ -23,7 +20,7 @@ import { v4 } from 'uuid';
 
 export const useEventsService = () => {
     const dispatch = useDispatch();
-    const { currentUser } = useUserService();
+    const { currentUser, updateUserData } = useUserService();
 
     function updateUserEvent(
         eventId: string,
@@ -55,7 +52,6 @@ export const useEventsService = () => {
         event: IMedEvent | ICriminalEvent,
         type: EventRecordType
     ) => void = async (event, type) => {
-
         if (!currentUser) {
             throw new Error('User not found');
         }
@@ -105,7 +101,7 @@ export const useEventsService = () => {
         };
         //! API CALL
         dispatch(addRecord({ type: record.recordType, record }));
-    }
+    };
 
     const addMeta = (type: MetaTypes, description: string): void => {
         const record: IMeta = {
@@ -116,7 +112,7 @@ export const useEventsService = () => {
         };
         //! API CALL
         dispatch(addRecord({ type: record.recordType, record }));
-    }
+    };
 
     const addGoal = (title: string, description: string): void => {
         const record: IGoal = {
@@ -127,22 +123,111 @@ export const useEventsService = () => {
         };
         //! API CALL
         dispatch(addRecord({ type: record.recordType, record }));
-    }
+    };
 
     const getEventRecordForUser = (type: EventRecordType): EventType[] => {
+        const revealCodes = currentUser?.revealCodes;
+        let record: EventType[] = [];
         if (!currentUser) {
             throw new Error('User not found');
         }
 
         if (type === EventRecordType.MEDICAL) {
-            return currentUser?.medHistory as IMedEvent[];
+            record = currentUser?.medHistory as IMedEvent[];
         }
 
         if (type === EventRecordType.CRIMINAL) {
-            return currentUser?.criminalRecord as ICriminalEvent[];
+            record = currentUser?.criminalRecord as ICriminalEvent[];
         }
 
-        throw new Error('Invalid event record type');
+        return record.filter((entry) => {
+            if (!entry.revealCode) return true;
+            return revealCodes?.includes(entry.revealCode);
+        });
+    };
+
+    const updateRelation = (
+        relationId: string,
+        relationTo: string,
+        description: string
+    ): void => {
+        const relations = cloneDeep(currentUser?.relations);
+        const relation = {
+            ...relations?.find((record) => record.id === relationId)
+        } as IRelation;
+
+        if (!relation) {
+            throw new Error('Relation not found');
+        }
+
+        relation.relationTo = relationTo;
+        relation.description = description;
+
+        //! API CALL
+        updateUserData(currentUser!.id, { relations });
+    };
+
+    const updateMeta = (
+        metaId: string,
+        metaType: MetaTypes,
+        description: string
+    ): void => {
+        const metas = cloneDeep(currentUser?.meta);
+        const meta = {
+            ...metas?.find((entry) => entry.id === metaId)
+        } as IMeta;
+
+        if (!meta) {
+            throw new Error('Meta entry not found');
+        }
+
+        meta.type = metaType;
+        meta.description = description;
+
+        //! API CALL
+        updateUserData(currentUser!.id, { meta: metas });
+    };
+
+    const updateGoal = (
+        goalId: string,
+        title: string,
+        description: string
+    ): void => {
+        const goals = cloneDeep(currentUser?.goals);
+        const goal = {
+            ...goals?.find((entry) => entry.id === goalId)
+        } as IGoal;
+
+        if (!goal) {
+            throw new Error('Goal not found');
+        }
+
+        goal.title = title;
+        goal.description = description;
+
+        //! API CALL
+        updateUserData(currentUser!.id, { goals });
+    };
+
+    const updatePrivateRecord = (
+        recordId: string,
+        title: string,
+        description: string
+    ): void => {
+        const records = cloneDeep(currentUser?.privateRecords);
+        const record = {
+            ...records?.find((entry) => entry.id === recordId)
+        } as IGoal;
+
+        if (!record) {
+            throw new Error('Goal not found');
+        }
+
+        record.title = title;
+        record.description = description;
+
+        //! API CALL
+        updateUserData(currentUser!.id, { privateRecords: records });
     };
 
     return {
@@ -153,6 +238,10 @@ export const useEventsService = () => {
         addRelation,
         addPrivateRecord,
         addMeta,
-        addGoal
+        addGoal,
+        updateRelation,
+        updateMeta,
+        updateGoal,
+        updatePrivateRecord
     };
 };

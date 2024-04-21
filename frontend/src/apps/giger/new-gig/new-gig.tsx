@@ -25,7 +25,7 @@ import './new-gig.scss';
 export const NewGig: FC<INewGigProps> = ({ active }) => {
     const navigate = useNavigate();
     const intl = useIntl();
-    const { currentPrivateBalance, currentBusinessBalance } =
+    const { currentPrivateBalance, currentBusinessBalance, hasCompanyAccount } =
         useBankingService();
     const { addNewGig, gigerCommission } = useGigsService();
     const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
@@ -64,8 +64,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     };
 
     const gigReady = useMemo(() => {
-        return (
-            gigName !== '' &&
+        return gigName !== '' &&
             anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&
@@ -73,9 +72,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             payout !== undefined &&
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
-            fromAccount !== '' &&
-            mode !== ''
-        );
+            hasCompanyAccount
+            ? fromAccount !== ''
+            : true && mode !== '';
     }, [
         gigName,
         anonymize,
@@ -85,6 +84,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         selectedCategory,
         selectedRepuation,
         fromAccount,
+        hasCompanyAccount,
         mode
     ]);
 
@@ -96,6 +96,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   message: privateMessage,
                   payout: payout!,
                   anonymizedAuthor: anonymize === 'YES',
+                  ...(hasCompanyAccount && {
+                      fromAccount: fromAccount as AccountType
+                  }),
                   reputationRequired: selectedRepuation as GigRepuationLevels,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
@@ -109,6 +112,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         payout,
         selectedRepuation,
         selectedCategory,
+        hasCompanyAccount,
+        fromAccount,
         gigReady
     ]);
 

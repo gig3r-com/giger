@@ -1284,7 +1284,6 @@ export const users: IUserPrivate[] = [
         roles: [],
         faction: Factions.TAKAYAMA,
         revealCodes: [],
-
         combatSkill: 0,
         criminalRecord: mockCriminalRecord,
         medHistory: mockMedicalHistory,
@@ -1299,41 +1298,6 @@ export const users: IUserPrivate[] = [
         vibeEngagement: VibeEngagement.DISINTERESTED,
         wealthLevel: WealthLevels.AFFLUENT
     },
-    {
-        id: '55566ssaa5GOD',
-        aliasMap: {},
-        handle: 'NeonTiger69',
-        name: 'Johnny',
-        surname: 'Sasaki',
-        age: 40,
-        cyberwareLevel: 4,
-        professionActual: 'Hacker Veteran',
-        professionPublic: 'Cook',
-        typeActual: UserTypes.HUMAN,
-        typePublic: UserTypes.HUMAN,
-        roles: [UserRoles.GOD],
-        assets: ['Retro Computer Collection', 'Hacker Manifesto'],
-        hackingSkill: 3,
-        confrontationVsNegotiation: 0,
-        cowardVsFighter: 1,
-        talkativeVsSilent: 4,
-        thinkerVsDoer: 0,
-        faction: Factions.TAKAYAMA,
-        revealCodes: [],
-        combatSkill: 0,
-        criminalRecord: mockCriminalRecord,
-        medHistory: mockMedicalHistory,
-        favoriteUserIds: [],
-        active: true,
-        privateRecords: privateRecords,
-        meta: meta,
-        goals: goals,
-        relations: relations,
-        vibe: Vibe.DIGIEVO,
-        vibeFunction: 'Hacker',
-        vibeEngagement: VibeEngagement.DISINTERESTED,
-        wealthLevel: WealthLevels.AFFLUENT
-    }
 ];
 
 export const systemUser: IUserPrivate = {

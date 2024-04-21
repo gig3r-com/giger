@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCurrentUser } from '../../store/users.slice';
 import { RootState } from '../../store/store';
+import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
 
 export function useMyIdService() {
     const dispatch = useDispatch();
@@ -11,9 +12,11 @@ export function useMyIdService() {
     const enterRevealCode = async (code: string): Promise<'success' | 'wrongCode'> => {
         const currentRevealCodes = currentUser?.revealCodes ?? [];
 
+        //! API CALL
+
         dispatch(
             updateCurrentUser({
-                revealCodes: [...currentRevealCodes, { code, seen: false }]
+                revealCodes: [...currentRevealCodes, code]
             })
         );
         console.log(`Reveal code: ${code}`);
@@ -25,7 +28,27 @@ export function useMyIdService() {
         return 'wrongCode';
     };
 
+    const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {        
+        switch (sectionType) {
+            case MyIdUncoverableSections.MEDICAL:
+                return currentUser?.medHistory.some((entry) => !entry.seen) ?? false;
+            case MyIdUncoverableSections.CRIMINAL:
+                return currentUser?.criminalRecord.some((entry) => !entry.seen) ?? false;
+            case MyIdUncoverableSections.META:
+                return currentUser?.meta.some((entry) => !entry.seen) ?? false;
+            case MyIdUncoverableSections.RELATIONS:
+                return currentUser?.relations.some((entry) => !entry.seen) ?? false;
+            case MyIdUncoverableSections.PRIVATE_RECORDS:
+                return currentUser?.privateRecords.some((entry) => !entry.seen) ?? false;
+            case MyIdUncoverableSections.GOALS:
+                return currentUser?.goals.some((entry) => !entry.seen) ?? false;
+            default:
+                return false;
+        }
+    } 
+
     return {
-        enterRevealCode
+        enterRevealCode,
+        hasNewEntries
     };
 }

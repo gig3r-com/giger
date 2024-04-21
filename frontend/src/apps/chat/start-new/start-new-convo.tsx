@@ -10,9 +10,9 @@ import { useMessagesService } from '../../../shared/services/messages.service';
 import { UserSelect } from '../../../shared/user-select/user-select';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
+import { selectActiveUsers } from '../../../store/users.selectors';
 
 import './start-new-convo.scss';
-import { selectActiveUsers } from '../../../store/users.slice';
 
 export const StartNewConvo: FC = () => {
     const intl = useIntl();
