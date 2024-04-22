@@ -1298,45 +1298,44 @@ export const users: IUserPrivate[] = [
         vibeEngagement: VibeEngagement.DISINTERESTED,
         wealthLevel: WealthLevels.AFFLUENT
     },
+    {
+        id: 'XXXX',
+        aliasMap: {},
+        handle: 'SYSTEM',
+        name: 'GIGER_SYSTEM',
+        surname: 'GIGER_SYSTEM',
+        age: 0,
+        cyberwareLevel: 15,
+        professionPublic: 'GIGER_SYSTEM',
+        professionActual: 'GIGER_SYSTEM',
+        typeActual: UserTypes.AI,
+        typePublic: UserTypes.AI,
+        assets: ['GIGER_SYSTEM'],
+        hackingSkill: 3,
+        confrontationVsNegotiation: 4,
+        cowardVsFighter: 4,
+        talkativeVsSilent: 4,
+        thinkerVsDoer: 0,
+        roles: [],
+        faction: Factions.BORDELLO,
+        revealCodes: [],
+        combatSkill: 0,
+        criminalRecord: mockCriminalRecord,
+        medHistory: mockMedicalHistory,
+        favoriteUserIds: [],
+        active: false,
+        privateRecords: [],
+        meta: [],
+        goals: [],
+        relations: [],
+        vibe: Vibe.NO_VIBE,
+        vibeFunction: 'GIGER_SYSTEM',
+        vibeEngagement: VibeEngagement.FANATIC,
+        wealthLevel: WealthLevels.ELITE
+    }
 ];
 
-export const systemUser: IUserPrivate = {
-    id: 'XXXX',
-    aliasMap: {},
-    handle: 'SYSTEM',
-    name: 'GIGER_SYSTEM',
-    surname: 'GIGER_SYSTEM',
-    age: 0,
-    cyberwareLevel: 15,
-    professionPublic: 'GIGER_SYSTEM',
-    professionActual: 'GIGER_SYSTEM',
-    typeActual: UserTypes.AI,
-    typePublic: UserTypes.AI,
-    assets: ['GIGER_SYSTEM'],
-    hackingSkill: 3,
-    confrontationVsNegotiation: 4,
-    cowardVsFighter: 4,
-    talkativeVsSilent: 4,
-    thinkerVsDoer: 0,
-    roles: [],
-    faction: Factions.BORDELLO,
-    revealCodes: [],
-
-    combatSkill: 0,
-    criminalRecord: mockCriminalRecord,
-    medHistory: mockMedicalHistory,
-    favoriteUserIds: [],
-    active: true,
-    privateRecords: [],
-    meta: [],
-    goals: [],
-    relations: [],
-    vibe: Vibe.NO_VIBE,
-    vibeFunction: 'GIGER_SYSTEM',
-    vibeEngagement: VibeEngagement.FANATIC,
-    wealthLevel: WealthLevels.ELITE
-};
-
+export const systemUser = users[36];
 export const ripperdoc = users[3];
 export const fixer = users[8];
 export const netrunner = users[2];
