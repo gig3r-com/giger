@@ -21,6 +21,7 @@ import { ComplaintDetails } from '../complaint-details/complaint-details';
 import { ActionId, getButtons } from './button-definitions';
 
 import './gig.scss';
+import { useBankingService } from '../../../shared/services/banking.service';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
+    const { hasCompanyAccount } = useBankingService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
@@ -128,7 +130,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 gig.status,
                                 isMine,
                                 isAdmin,
-                                gig.mode
+                                gig.mode,
+                                hasCompanyAccount
                             ).map((button) => (
                                 <BigButton
                                     key={button.label}

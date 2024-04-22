@@ -5,10 +5,6 @@ import {
     users
 } from '../../mocks/users';
 import {
-    selectActiveUsers,
-    selectCurrentUser,
-    selectIsAdmin,
-    selectIsGod,
     setCurrentUser,
     setIsGod,
     setRequiresGodUserSelection,
@@ -17,6 +13,7 @@ import {
 } from '../../store/users.slice';
 import { IUserBase, IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
 import { RootState } from '../../store/store';
+import { selectActiveUsers, selectCurrentUser, selectIsAdmin, selectIsGod } from '../../store/users.selectors';
 
 /**
  * TODO: Connect to backend once it exists
@@ -101,6 +98,7 @@ export function useUserService() {
             ...userData
         };
 
+        //! API CALL
         if (currentUser?.id === userId) {
             dispatch(updateCurrentUser(updatedData));
         } else {

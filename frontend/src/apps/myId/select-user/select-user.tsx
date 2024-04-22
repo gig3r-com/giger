@@ -2,7 +2,8 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
-import { selectActiveUsers, setCurrentUser } from '../../../store/users.slice';
+import { selectActiveUsers } from '../../../store/users.selectors';
+import { setCurrentUser } from '../../../store/users.slice';
 
 import './select-user.scss';
 

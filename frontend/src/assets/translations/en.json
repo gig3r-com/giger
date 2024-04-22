@@ -159,5 +159,6 @@
     "ALL": "All",
     "WANTS": "wants",
     "PAYS": "pays",
-    "ACTIVE": "Active"
+    "ACTIVE": "Active",
+    "LOCKED_ENTRY": "Locked entry"
 }

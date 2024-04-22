@@ -32,6 +32,7 @@ export function useBankingService() {
         dispatch(setAccount(mockAccount));
         dispatch(setBusinessAccount(accountBusiness));
     };
+    const hasCompanyAccount = !!accounts.business;
 
     const sendTransfer = (
         userId: string,
@@ -84,6 +85,7 @@ export function useBankingService() {
 
     return {
         accounts,
+        hasCompanyAccount,
         fetchAccounts,
         sendTransfer,
         getAccountHolderName,

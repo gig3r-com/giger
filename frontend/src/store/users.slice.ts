@@ -1,4 +1,4 @@
-import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
     IGoal,
     IMeta,
@@ -7,9 +7,7 @@ import {
     IUserBase,
     IUserPrivate,
     IUserRecord,
-    UserRecordTypes,
-    UserRoles
-} from '../models/user';
+    UserRecordTypes} from '../models/user';
 import { users } from '../mocks/users';
 import { cloneDeep } from 'lodash-es';
 import {
@@ -183,19 +181,5 @@ export const {
     addRecord,
     updateEvent
 } = usersSlice.actions;
-
-export const selectCurrentUser = (state: { users: IUsersState }) =>
-    state.users.currentUser;
-export const selectUsers = (state: { users: IUsersState }) => state.users.users;
-export const selectIsGod = (state: { users: IUsersState }) => state.users.isGod;
-export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
-    state.users.requiresGodUserSelection;
-export const selectIsAdmin = (state: { users: IUsersState }) =>
-    state.users.currentUser?.roles.includes(UserRoles.ADMIN) ?? false;
-
-export const selectActiveUsers = createSelector(
-    (state: { users: IUsersState }) => state.users.users,
-    (users) => users.filter((user) => user.active)
-);
 
 export default usersSlice.reducer;

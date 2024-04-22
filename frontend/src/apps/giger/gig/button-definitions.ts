@@ -30,12 +30,28 @@ const buttonDefinitions: {
     isMine?: boolean;
     mode?: GigModes;
     moderation?: boolean;
+    hasCompanyAccount?: boolean;
     buttons: IButtonDefinition[];
 }[] = [
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
         moderation: false,
+        hasCompanyAccount: false,
+        buttons: [
+            {
+                label: 'ACCEPT_GIG',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        moderation: false,
+        hasCompanyAccount: true,
         buttons: [
             {
                 label: 'ACCEPT_GIG',
@@ -170,7 +186,8 @@ export const getButtons = (
     status: GigStatus,
     isMine: boolean,
     moderation: boolean,
-    mode: GigModes
+    mode: GigModes,
+    hasCompanyAccount: boolean
 ): IButtonDefinition[] => {
     const buttonDefinition = buttonDefinitions.find((def) => {
         const statusMatching = def.status === status;
@@ -179,9 +196,17 @@ export const getButtons = (
         const mineMatching =
             def.isMine === undefined ? true : def.isMine === isMine;
         const modeMatching = def.mode === undefined ? true : def.mode === mode;
+        const hasCompanyAccountMatching =
+            def.hasCompanyAccount === undefined
+                ? true
+                : def.hasCompanyAccount === hasCompanyAccount;
 
         return (
-            statusMatching && moderationMatching && mineMatching && modeMatching
+            statusMatching &&
+            moderationMatching &&
+            mineMatching &&
+            modeMatching &&
+            hasCompanyAccountMatching
         );
     })!.buttons;
 

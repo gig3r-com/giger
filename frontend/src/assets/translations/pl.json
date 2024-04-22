@@ -146,5 +146,6 @@
     "CLIENT": "Klient",
     "ACCEPT_AS_COMPANY": "Akceptuj jako firma",
     "ALL": "Wszystkie",
-    "ACTIVE": "Aktywny"
+    "ACTIVE": "Aktywny",
+    "LOCKED_ENTRY": "Zablokowany wpis"
 }
