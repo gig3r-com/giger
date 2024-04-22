@@ -30,7 +30,7 @@ namespace Giger.Models.GigModels
 
         public string? TakenById { get; set; }
 
-        public required bool IsRevealedByClient { get; set; } = true
+        public required bool IsRevealedByClient { get; set; } = true;
 
         public override void Obscure()
         {
