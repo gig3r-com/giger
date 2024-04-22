@@ -1,4 +1,4 @@
-import { Factions } from "./companies";
+import { Factions } from './companies';
 
 export interface IGigBase {
     createdAt: string; //ISO date string
@@ -7,6 +7,7 @@ export interface IGigBase {
     title: string;
     description: string;
     category: GigCategoryNames;
+    subcategory: GigSubcategoryNames;
     reputationRequired?: GigRepuationLevels;
     id: string;
     accountId: string;
@@ -32,34 +33,48 @@ export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;
 export interface IGigCategory {
     type: GigCategoryNames;
     icon: string;
+    subcategories: IGigSubcategory[];
+}
+
+export interface IGigSubcategory {
+    type: GigSubcategoryNames;
+    minPayout: number;
+    maxPayout: number;
 }
 
 export enum GigCategoryNames {
-    INTEL = 'intel',
-    TECH = 'tech',
-    DELIVERY = 'delivery',
-    GUNS_AND_AMMO = 'Guns & ammo',
-    DRUGS = 'drugs',
-    OTHER_MERCH = 'other merch',
-    ITEM_ACQUSITION = 'Item acquisition',
-    ANDROID_ACQUISITION = 'android acquisition',
-    DEBT_COLLECTION = 'debt collection',
-    INTIMIDATION = 'intimidation',
-    KIDNAPPING = 'kidnapping',
-    BODYGUARD = 'bodyguard',
-    HIT = 'hit',
-    LOVER_EXPERIENCE = 'lover experience',
-    SEX_DOLL = 'sex doll',
-    QUICKIE = 'quickie',
-    FIRST_AID = 'first aid',
-    CYBERWARE = 'cyberware',
-    MEDEVAC = 'medEvac',
-    RENTING_LOCATION = 'renting location',
-    BANK_ACCOUNT_MANIPULATION = 'bank account manipulation',
-    SPOOFING = 'spoofing',
-    SECURITY = 'security',
-    ANDROID_HIJACK = 'android hijack',
-    COMPLAINT = 'complaint'
+    FIXER = 'fixer',
+    KILLER = 'killer',
+    HACKING = 'hacking',
+    WELLBEING = 'wellbeing'
+}
+
+export enum GigSubcategoryNames {
+    INTEL = 'INTEL',
+    TECH = 'TECH',
+    DELIVERY = 'DELIVERY',
+    GUNS_AND_AMMO = 'GUNS_AND_AMMO',
+    DRUGS = 'DRUGS',
+    OTHER_MERCH = 'OTHER_MERCH',
+    ITEM_ACQUISITION = 'ITEM_ACQUISITION',
+    ANDROID_ACQUISITION = 'ANDROID_ACQUISITION',
+    DEBT_COLLECTION = 'DEBT_COLLECTION',
+    INTIMIDATION = 'INTIMIDATION',
+    KIDNAPPING = 'KIDNAPPING',
+    BODYGUARD = 'BODYGUARD',
+    HIT = 'HIT',
+    LOVER_EXPERIENCE = 'LOVER_EXPERIENCE',
+    SEX_DOLL = 'SEX_DOLL',
+    QUICKIE = 'QUICKIE',
+    FIRST_AID = 'FIRST_AID',
+    CYBERWARE = 'CYBERWARE',
+    MEDEVAC = 'MEDEVAC',
+    RENTING_LOCATION = 'RENTING_LOCATION',
+    BANK_ACCOUNT_MANIPULATION = 'BANK_ACCOUNT_MANIPULATION',
+    SPOOFING = 'SPOOFING',
+    SECURITY = 'SECURITY',
+    ANDROID_HIJACK = 'ANDROID_HIJACK',
+    MINDEXPLOIT = 'MINDEXPLOIT'
 }
 
 export enum GigStatus {

@@ -1,12 +1,13 @@
 import { FC, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router';
 import {
     GigCategoryNames,
     GigModes,
     GigRepuationLevels,
+    GigSubcategoryNames,
     IDraftGig,
     reputationLabels
 } from '../../../models/gig';
@@ -43,6 +44,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const [selectedCategory, setSelectedCategory] = useState<
         GigCategoryNames | ''
     >('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState<
+        GigSubcategoryNames | ''
+    >('');
 
     const wrapperClassnames = classNames({
         'new-gig': true,
@@ -54,6 +58,26 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         setPayout(payout);
     };
 
+    const onCategoryChange = (category: GigCategoryNames) => {
+        setSelectedCategory(category);
+        const categoryData = categories.find((c) => c.type === category);
+        setSelectedSubcategory(categoryData?.subcategories[0].type ?? '');
+        setPayout(categoryData?.subcategories[0].minPayout ?? 0);
+    };
+
+    const onSubcategoryChange = (subcategory: GigSubcategoryNames) => {
+        const categoryData = categories.find((c) => c.type === selectedCategory);
+        const subCatData = categoryData?.subcategories.find(cat => cat.type === subcategory);
+        setSelectedSubcategory(subcategory);
+        setPayout(subCatData?.minPayout ?? 0);
+    }
+
+    const subcategoryData = useMemo(() => {
+        return categories
+            .find((c) => c.type === selectedCategory)
+            ?.subcategories.find((s) => s.type === selectedSubcategory);
+    }, [selectedCategory, selectedSubcategory]);
+
     const checkBalance = () => {
         const balance =
             fromAccount === AccountType.PRIVATE
@@ -62,6 +86,13 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         const hasEnoughMoney = payout + payout * gigerCommission <= balance;
         setNotEnoughMoneyWarning(!hasEnoughMoney);
     };
+
+    const getSubcategoryList = useMemo(() => {
+        const categoryData = categories.find(
+            (c) => c.type === selectedCategory
+        );
+        return categoryData?.subcategories ?? [];
+    }, [selectedCategory]);
 
     const gigReady = useMemo(() => {
         return gigName !== '' &&
@@ -72,6 +103,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             payout !== undefined &&
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
+            selectedSubcategory !== '' &&
             hasCompanyAccount
             ? fromAccount !== ''
             : true && mode !== '';
@@ -81,10 +113,11 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         publicDescription,
         privateMessage,
         payout,
-        selectedCategory,
         selectedRepuation,
-        fromAccount,
+        selectedCategory,
+        selectedSubcategory,
         hasCompanyAccount,
+        fromAccount,
         mode
     ]);
 
@@ -201,9 +234,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     className="new-gig__input"
                     value={selectedCategory}
                     onChange={(event) =>
-                        setSelectedCategory(
-                            event.target.value as GigCategoryNames
-                        )
+                        onCategoryChange(event.target.value as GigCategoryNames)
                     }
                 >
                     <option value={''} disabled hidden>
@@ -212,6 +243,26 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     {categories.map((category) => (
                         <option key={category.type} value={category.type}>
                             {category.type}
+                        </option>
+                    ))}
+                </select>
+
+                <select
+                    className="new-gig__input"
+                    value={selectedSubcategory}
+                    disabled={selectedCategory === ''}
+                    onChange={(event) =>
+                        onSubcategoryChange(
+                            event.target.value as GigSubcategoryNames
+                        )
+                    }
+                >
+                    <option value={''} disabled hidden>
+                        <MemoizedFormattedMessage id="CHOOSE_SUBCATEGORY" />
+                    </option>
+                    {getSubcategoryList.map((category) => (
+                        <option key={category.type} value={category.type}>
+                            <FormattedMessage id={category.type} />
                         </option>
                     ))}
                 </select>
@@ -258,8 +309,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 />
 
                 <Slider
-                    min={0}
-                    max={50000}
+                    min={subcategoryData?.minPayout ?? 0}
+                    max={subcategoryData?.maxPayout ?? 50000}
                     value={payout}
                     className="new-gig__slider"
                     step={100}
