@@ -25,7 +25,7 @@ export interface IUsersState {
 }
 
 const initialState: IUsersState = {
-    users: JSON.parse(JSON.stringify(users)),
+    users: JSON.parse(JSON.stringify([...users])),
     currentUser: undefined,
     isGod: false,
     requiresGodUserSelection: false

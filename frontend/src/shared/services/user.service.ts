@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
-import {
-    getUserPublicDataById,
-    users
-} from '../../mocks/users';
+import { getUserPublicDataById, users } from '../../mocks/users';
 import {
     setCurrentUser,
     setIsGod,
@@ -11,9 +8,19 @@ import {
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
-import { IUserBase, IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
+import {
+    IUserBase,
+    IUserPrivate,
+    IUserPublic,
+    UserRoles
+} from '../../models/user';
 import { RootState } from '../../store/store';
-import { selectActiveUsers, selectCurrentUser, selectIsAdmin, selectIsGod } from '../../store/users.selectors';
+import {
+    selectActiveUsers,
+    selectCurrentUser,
+    selectIsAdmin,
+    selectIsGod
+} from '../../store/users.selectors';
 
 /**
  * TODO: Connect to backend once it exists
@@ -24,7 +31,7 @@ export function useUserService() {
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
-    const isAdmin = useSelector(selectIsAdmin)
+    const isAdmin = useSelector(selectIsAdmin);
 
     /**
      * completely mocked now, obviously the password test will take place on backend
@@ -41,7 +48,10 @@ export function useUserService() {
                     saveLoginData(users[35]);
                     resolve();
                 }, 3000);
-            } else if (username === 'god' && password === 'god') {
+            } else if (
+                (username === 'god' && password === 'god') ||
+                (username === 'admin' && password === 'admin')
+            ) {
                 console.log(`logging in ${username} with password ${password}`);
                 setTimeout(() => {
                     dispatch(setRequiresGodUserSelection(true));
