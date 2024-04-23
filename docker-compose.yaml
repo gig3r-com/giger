@@ -15,6 +15,7 @@ services:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
   frontend:
+    image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./frontend
     restart: unless-stopped
@@ -22,6 +23,7 @@ services:
       - 8080
 
   backend:
+    image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile
@@ -66,7 +68,6 @@ services:
     restart: unless-stopped
     ports:
       - 8081:8081
-
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin

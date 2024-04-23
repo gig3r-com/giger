@@ -44,19 +44,35 @@ spec:
       - image: {{ include "gig3r.backend.image" . }}
         name: {{ include "gig3r.backend.app" . }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           protocol: TCP
         env:
-        - name: DB_PASSWORD
+        - name: GigerDB__Host
+          value: mongo
+        - name: GigerDB__Port
+          value: "27017"
+        - name: GigerDB__Username
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: DB_PASSWORD
-        volumeMounts:
-        - mountPath: /app/.config.json
-          name: config
-          subPath: "backend_config.json"
-          readOnly: true
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: GigerDB__Password
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+        - name: GigerDB__DatabaseName
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_DATABASE
+        - name: ASPNETCORE_ENVIRONMENT
+          value: {{ include "gig3r.backend.environment" .}}
+        # volumeMounts:
+        # - mountPath: /app/.config.json
+        #   name: config
+        #   subPath: "backend_config.json"
+        #   readOnly: true
       volumes:
       - name: config
         secret:
@@ -65,47 +81,42 @@ spec:
 
 ---
 
-{{- if ne .Values.environment "app" -}}
-
+# mongodb deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "gig3r.swagger.app" . }}
+  name: {{ include "gig3r.mongodb.app" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "gig3r.swagger.app" . }}
+      app: {{ include "gig3r.mongodb.app" . }}
   template:
     metadata:
       labels:
-        app: {{ include "gig3r.swagger.app" . }}
+        app: {{ include "gig3r.mongodb.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
       containers:
-      - image: swaggerapi/swagger-ui
-        name: {{ include "gig3r.swagger.app" . }}
+      - image: mongo:latest
+        name: {{ include "gig3r.mongodb.app" . }}
         ports:
-        - containerPort: 8080
+        - containerPort: 27017
           protocol: TCP
         env:
-        - name: SWAGGER_JSON
-          value: /tmp/swagger.yml
-        {{- if hasKey (default dict .Values.swagger) "envs" }}
-        {{- range $key, $val := .Values.swagger.envs }}
-        - name: {{ $key }}
-          value: {{ $val }}
-        {{- end }}
-        {{- end }}
-        volumeMounts:
-        - mountPath: /tmp/swagger.yml
-          name: config
-          subPath: "config"
-          readOnly: true
-      volumes:
-      - name: config
-        configMap:
-          name: swagger-config
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+        - name: MONGO_INITDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_DATABASE
       restartPolicy: Always
-
-{{- end -}}

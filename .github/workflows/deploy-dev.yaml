@@ -26,8 +26,8 @@ jobs:
   build-backend:
     uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
-      DOCKER_CONTEXT: ./backend
-      DOCKERFILE_NAME: ./backend/Dockerfile
+      DOCKER_CONTEXT: ./backendDotnet
+      DOCKERFILE_NAME: ./backendDotnet/Dockerfile
       IMAGE_NAME: "gig3r-backend"
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
