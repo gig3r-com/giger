@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import {
+    GigModes,
     GigRepuationLevels,
     GigStatus,
     IDraftGig,
@@ -15,8 +16,9 @@ import { useMessagesService } from './messages.service';
 import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
+import { ActionId } from '../../apps/giger/gig/button-definitions';
 
 /**
  * TODO: connect it to the backend.
@@ -27,13 +29,19 @@ export function useGigsService() {
     const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
+    const selectedCategories = useSelector(
+        (state: RootState) => state.gigs.selectedCategories
+    );
+    const selectedMode = useSelector(
+        (state: RootState) => state.gigs.selectedMode
+    );
     const intl = useIntl();
     const { displayToast } = useNotificationsService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
         ...draftGig,
-        createdAt: dayjs().toISOString(),
+        createdAt: dayjs().add(100, 'days').toISOString(),
         convo: createConvo(
             [currentUser!.id],
             createMessage(draftGig.message),
@@ -90,10 +98,16 @@ export function useGigsService() {
     /**
      * Accepts the gig and marks it as in progress.
      * @param id
+     * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
      */
-    const acceptGig = (id: string) => {
+    const acceptGig = (id: string, asCompany: boolean) => {
         const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = { ...gig!, status: GigStatus.IN_PROGRESS };
+        const updatedGig: IGig = {
+            ...gig!,
+            status: GigStatus.IN_PROGRESS,
+            takenById: currentUser?.id,
+            ...(asCompany && { takenByCompany: currentUser?.faction })
+        };
 
         // ! API CALL REQUIRED
         updateGig(updatedGig);
@@ -110,7 +124,7 @@ export function useGigsService() {
     };
 
     /**
-     * Accept a gig as done from the perspective of the user who posted it. 
+     * Accept a gig as done from the perspective of the user who posted it.
      * Only available for the user who posted the gig, after the other party has marked it as done.
      * @param id gig id
      */
@@ -151,6 +165,7 @@ export function useGigsService() {
         const updatedGig: IGig = {
             ...gig!,
             complaintReason: complaint,
+            markedAsComplaintAt: dayjs().add(100, 'years').toISOString(),
             status: GigStatus.DISPUTE
         };
 
@@ -161,7 +176,7 @@ export function useGigsService() {
 
     /**
      * Marks the complaint as bullshit by giger admin and stops the dispute process.
-     * Only available for admins. 
+     * Only available for admins.
      * @param id gig id
      */
     const markAsBullshit = (id: string) => {
@@ -198,57 +213,95 @@ export function useGigsService() {
         updateGig(updatedGig);
     };
 
-    const handleButtonAction = (id: string, actionId?: string) => {
+    const handleButtonAction = (id: string, actionId?: ActionId) => {
         switch (actionId) {
-            case 'MARK_AS_DONE_MINE':
+            case ActionId.MARK_AS_DONE_MINE:
                 markAsDoneMine(id);
                 break;
-            case 'MARK_AS_DONE_THEIRS':
+            case ActionId.MARK_AS_DONE_THEIRS:
                 markAsDoneTheirs(id);
                 break;
-            case 'REPORT_A_PROBLEM':
+            case ActionId.REPORT_A_PROBLEM:
                 reportAProblem(id);
                 break;
-            case 'MARK_AS_BULLSHIT':
+            case ActionId.MARK_AS_BULLSHIT:
                 markAsBullshit(id);
                 break;
-            case 'MARK_AS_VALID':
+            case ActionId.MARK_AS_VALID:
                 markAsValid(id);
                 break;
-            case 'DELETE':
+            case ActionId.DELETE:
                 deleteGig(id);
                 break;
-            case 'ACCEPT':
-                acceptGig(id);
+            case ActionId.ACCEPT:
+                acceptGig(id, false);
                 break;
-            case 'SET_AS_EXPIRED':
+            case ActionId.ACCEPT_AS_COMPANY:
+                acceptGig(id, true);
+                break;
+            case ActionId.MARK_AS_EXPIRED:
                 setAsExpired(id);
                 break;
         }
     };
 
-    const gigsVisibleToTheUser = useMemo(() => currentGigs.filter((gig) => {
-        const expiredButMine =
-            gig.status === GigStatus.EXPIRED &&
-            gig.authorId === currentUser?.id;
-        const userIsSideInGig = [gig.authorId, gig.takenById].includes(
-            currentUser?.id
-        );
+    const gigsVisibleToTheUser = useMemo(
+        () =>
+            currentGigs.filter((gig) => {
+                const expiredButMine =
+                    gig.status === GigStatus.EXPIRED &&
+                    gig.authorId === currentUser?.id;
+                const userIsSideInGig = [gig.authorId, gig.takenById].includes(
+                    currentUser?.id
+                );
 
-        if (gig.status === GigStatus.AVAILABLE) {
-            return true;
-        }
+                if (gig.status === GigStatus.AVAILABLE) {
+                    return true;
+                }
 
-        if (expiredButMine) {
-            return true;
-        }
+                if (expiredButMine) {
+                    return true;
+                }
 
-        if (userIsSideInGig) {
-            return true;
-        }
+                if (userIsSideInGig) {
+                    return true;
+                }
 
-        return false;
-    }), [currentGigs, currentUser]);
+                return false;
+            }),
+        [currentGigs, currentUser]
+    );
+
+    /**
+     * determines whether the user is a provider or a client in the gig
+     * @param gig - gig to check
+     * @returns GigMode
+     */
+    const userGigMode = useCallback(
+        (gig: IGig): GigModes => {
+            const userIsAuthor = gig.authorId === currentUser?.id;
+
+            if (userIsAuthor) {
+                return gig.mode;
+            }
+
+            return gig.mode === GigModes.CLIENT
+                ? GigModes.PROVIDER
+                : GigModes.CLIENT;
+        },
+        [currentUser?.id]
+    );
+
+    const filteredGigs = useMemo(() => {
+        return gigsVisibleToTheUser.filter((gig) => {
+            const categoryMatching =
+                selectedCategories.includes(gig.category) ||
+                selectedCategories.length === 0;
+            const modeMatching =
+                selectedMode === userGigMode(gig) || selectedMode === 'all';
+            return categoryMatching && modeMatching;
+        });
+    }, [gigsVisibleToTheUser, selectedCategories, selectedMode, userGigMode]);
 
     return {
         addNewGig,
@@ -260,6 +313,8 @@ export function useGigsService() {
         handleButtonAction,
         gigerCommission,
         gigsVisibleToTheUser,
-        sendComplaint
+        sendComplaint,
+        userGigMode,
+        filteredGigs
     };
 }

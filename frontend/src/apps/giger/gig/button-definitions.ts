@@ -1,4 +1,4 @@
-import { GigStatus } from '../../../models/gig';
+import { GigModes, GigStatus } from '../../../models/gig';
 
 interface IButtonDefinition {
     label: string;
@@ -15,30 +15,55 @@ export enum GigRelation {
 
 export enum ActionId {
     ACCEPT = 'ACCEPT_GIG',
+    ACCEPT_AS_COMPANY = 'ACCEPT_AS_COMPANY',
     DELETE = 'DELETE_GIG',
     MARK_AS_DONE_MINE = 'MARK_AS_DONE_MINE',
     MARK_AS_DONE_THEIRS = 'MARK_AS_DONE_THEIRS',
     REPORT_A_PROBLEM = 'REPORT_A_PROBLEM',
     MARK_AS_BULLSHIT = 'MARK_AS_BULLSHIT',
-    MARK_AS_VALID = 'MARK_AS_VALID',    
+    MARK_AS_VALID = 'MARK_AS_VALID',
+    MARK_AS_EXPIRED = 'MARK_AS_EXPIRED'
 }
 
 const buttonDefinitions: {
     status: GigStatus;
-    isMine: boolean;
+    isMine?: boolean;
+    mode?: GigModes;
     moderation?: boolean;
+    hasCompanyAccount?: boolean;
     buttons: IButtonDefinition[];
 }[] = [
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
         moderation: false,
+        hasCompanyAccount: false,
         buttons: [
             {
                 label: 'ACCEPT_GIG',
                 color: 'primary',
                 disabled: false,
                 actionId: ActionId.ACCEPT
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        moderation: false,
+        hasCompanyAccount: true,
+        buttons: [
+            {
+                label: 'ACCEPT_GIG',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT
+            },
+            {
+                label: 'ACCEPT_AS_COMPANY',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT_AS_COMPANY
             }
         ]
     },
@@ -56,7 +81,7 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.IN_PROGRESS,
-        isMine: false,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
                 label: 'MARK_AS_DONE',
@@ -68,7 +93,7 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.IN_PROGRESS,
-        isMine: true,
+        mode: GigModes.CLIENT,
         buttons: [
             {
                 label: 'AWAITING_COMPLETION',
@@ -80,7 +105,7 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.PENDING_CONFIRMATION,
-        isMine: true,
+        mode: GigModes.CLIENT,
         buttons: [
             {
                 label: 'MARK_AS_DONE',
@@ -98,18 +123,17 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.PENDING_CONFIRMATION,
-        isMine: false,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
                 label: 'AWAITING_ACCEPTANCE',
                 color: 'secondary',
-                disabled: true,
+                disabled: true
             }
         ]
     },
     {
         status: GigStatus.DISPUTE,
-        isMine: true,
         buttons: [
             {
                 label: 'AWAITING_RESOLUTION',
@@ -120,18 +144,6 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.DISPUTE,
-        isMine: false,
-        buttons: [
-            {
-                label: 'AWAITING_RESOLUTION',
-                color: 'accent2',
-                disabled: true
-            }
-        ]
-    },
-    {
-        status: GigStatus.DISPUTE,
-        isMine: false,
         moderation: true,
         buttons: [
             {
@@ -150,18 +162,6 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.COMPLETED,
-        isMine: false,
-        buttons: [
-            {
-                label: 'DONE',
-                color: 'primary',
-                disabled: true
-            }
-        ]
-    },
-    {
-        status: GigStatus.COMPLETED,
-        isMine: true,
         buttons: [
             {
                 label: 'DONE',
@@ -172,18 +172,6 @@ const buttonDefinitions: {
     },
     {
         status: GigStatus.EXPIRED,
-        isMine: false,
-        buttons: [
-            {
-                label: 'EXPIRED',
-                color: 'primary',
-                disabled: true
-            }
-        ]
-    },
-    {
-        status: GigStatus.EXPIRED,
-        isMine: true,
         buttons: [
             {
                 label: 'EXPIRED',
@@ -197,19 +185,30 @@ const buttonDefinitions: {
 export const getButtons = (
     status: GigStatus,
     isMine: boolean,
-    moderation: boolean
+    moderation: boolean,
+    mode: GigModes,
+    hasCompanyAccount: boolean
 ): IButtonDefinition[] => {
-    if (moderation && status === GigStatus.DISPUTE) {
-        return buttonDefinitions.find(
-            (def) => def.status === status && def.moderation === moderation
-        )!.buttons;
-    }
+    const buttonDefinition = buttonDefinitions.find((def) => {
+        const statusMatching = def.status === status;
+        const moderationMatching =
+            def.moderation === undefined ? true : def.moderation === moderation;
+        const mineMatching =
+            def.isMine === undefined ? true : def.isMine === isMine;
+        const modeMatching = def.mode === undefined ? true : def.mode === mode;
+        const hasCompanyAccountMatching =
+            def.hasCompanyAccount === undefined
+                ? true
+                : def.hasCompanyAccount === hasCompanyAccount;
 
-    const buttonDefinition = buttonDefinitions.find(
-        (def) =>
-            def.status === status &&
-            def.isMine === isMine
-    );
+        return (
+            statusMatching &&
+            moderationMatching &&
+            mineMatching &&
+            modeMatching &&
+            hasCompanyAccountMatching
+        );
+    })!.buttons;
 
-    return buttonDefinition ? buttonDefinition.buttons : [];
+    return buttonDefinition ?? [];
 };

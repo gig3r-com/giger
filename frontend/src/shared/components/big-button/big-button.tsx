@@ -3,12 +3,14 @@ import classNames from 'classnames';
 import { IBigButtonProps } from './big-button.model';
 
 import './big-button.scss';
+import { Loader } from '../loader/loader';
 
 export const BigButton: React.FC<IBigButtonProps> = ({
     text,
     onClick,
     color,
     disabled,
+    loading,
     className = ''
 }) => {
 
@@ -21,6 +23,7 @@ export const BigButton: React.FC<IBigButtonProps> = ({
             className={buttonClassNames}
         >
             <span className="big-button__text">{text}</span>
+            {loading && <Loader />}
         </button>
     );
 };

@@ -41,12 +41,7 @@ export interface IUserPrivate extends IUserPublic {
     criminalRecord: ICriminalEvent[];
     medHistory: IMedEvent[];
     faction: Factions;
-    revealCodes: IRevealCode[];
-}
-
-export interface IRevealCode {
-    code: string;
-    seen: boolean;
+    revealCodes: string[];
 }
 
 /**
@@ -133,7 +128,7 @@ export enum WealthLevels {
 
 export interface IUserRecord extends IObscurableInfo {
     id: string;
-    userId: string;
+    userId?: string;
     description: string;
     recordType: UserRecordTypes;
 }

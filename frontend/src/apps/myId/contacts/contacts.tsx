@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
-import { RootState } from '../../../store/store';
 import { IUserBase, IUserPublic } from '../../../models/user';
 import { useUserService } from '../../../shared/services/user.service';
 import { CharSummary } from '../char-summary/char-summary';
+import { selectActiveUsers } from '../../../store/users.selectors';
 
 import './contacts.scss';
 
@@ -15,7 +15,7 @@ export const Contacts: FC = () => {
     const navigate = useNavigate();
     const { contactId } = useParams();
     const [selectedUser, setSelectedUser] = useState<IUserPublic | null>(null);
-    const userList = useSelector((state: RootState) => state.users.users);
+    const userList = useSelector(selectActiveUsers);
     const favorites = userList.filter((user) =>
         currentUser?.favoriteUserIds.includes(user.id)
     );
