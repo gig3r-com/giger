@@ -10,7 +10,9 @@ export type animationType =
     | 'expandCollapse'
     | 'horExpand'
     | 'slideInLeft'
-    | 'slideInRight';
+    | 'slideInRight'
+    | 'slideInTop'
+    | 'slideInBottom';
 
 /**
  * A hook that returns a function that generates standardized animations used thorough the app.
@@ -56,7 +58,7 @@ export function useStandardizedAnimation() {
                     exit: { x: '100vw' },
                     transition: {
                         ease: params?.timingFunction || standardTimingFunction,
-                        duration: 2.6
+                        duration: .3
                     }
                 };
             case 'slideInRight':
@@ -66,7 +68,27 @@ export function useStandardizedAnimation() {
                     exit: { x: '-100vw' },
                     transition: {
                         ease: params?.timingFunction || standardTimingFunction,
-                        duration: 2.6
+                        duration: .3
+                    }
+                };
+            case 'slideInTop':
+                return {
+                    initial: { y: '-100vh' },
+                    animate: { y: '0' },
+                    exit: { x: '-100vh' },
+                    transition: {
+                        ease: params?.timingFunction || standardTimingFunction,
+                        duration: .3
+                    }
+                };
+            case 'slideInBottom':
+                return {
+                    initial: { y: '100vh' },
+                    animate: { y: '0' },
+                    exit: { x: '100vh' },
+                    transition: {
+                        ease: params?.timingFunction || standardTimingFunction,
+                        duration: .3
                     }
                 };
             default:

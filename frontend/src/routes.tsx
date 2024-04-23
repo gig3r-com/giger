@@ -25,16 +25,19 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
+import { useBankingService } from './shared/services/banking.service';
 
 export const Router = () => {
     const intl = useIntl();
     const { test } = useNotificationsService();
     const { versionCheck } = useVersionService();
+    const { fetchAccounts } = useBankingService();
 
     useEffect(() => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
         test();
+        fetchAccounts();
     }, []);
 
     const isLoggedIn = useSelector(
@@ -54,7 +57,9 @@ export const Router = () => {
                                 <Route
                                     path="report-problem"
                                     element={<ReportProblem />}
-                                />
+                                >
+                                    <Route path=":gigId" element={<Giger />} />
+                                </Route>
                             </Route>
                             <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />

@@ -1,21 +1,26 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
+import { getUserPublicDataById, users } from '../../mocks/users';
 import {
-    getUserPublicDataById,
-    users
-} from '../../mocks/users';
-import {
-    selectCurrentUser,
-    selectIsAdmin,
-    selectIsGod,
     setCurrentUser,
     setIsGod,
     setRequiresGodUserSelection,
     setUser,
     updateCurrentUser
 } from '../../store/users.slice';
-import { IUserBase, IUserPrivate, IUserPublic, UserRoles } from '../../models/user';
+import {
+    IUserBase,
+    IUserPrivate,
+    IUserPublic,
+    UserRoles
+} from '../../models/user';
 import { RootState } from '../../store/store';
+import {
+    selectActiveUsers,
+    selectCurrentUser,
+    selectIsAdmin,
+    selectIsGod
+} from '../../store/users.selectors';
 
 /**
  * TODO: Connect to backend once it exists
@@ -23,9 +28,10 @@ import { RootState } from '../../store/store';
 export function useUserService() {
     const dispatch = useDispatch();
     const userList = useSelector((state: RootState) => state.users.users);
+    const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
-    const isAdmin = useSelector(selectIsAdmin)
+    const isAdmin = useSelector(selectIsAdmin);
 
     /**
      * completely mocked now, obviously the password test will take place on backend
@@ -42,7 +48,10 @@ export function useUserService() {
                     saveLoginData(users[35]);
                     resolve();
                 }, 3000);
-            } else if (username === 'god' && password === 'god') {
+            } else if (
+                (username === 'god' && password === 'god') ||
+                (username === 'admin' && password === 'admin')
+            ) {
                 console.log(`logging in ${username} with password ${password}`);
                 setTimeout(() => {
                     dispatch(setRequiresGodUserSelection(true));
@@ -99,6 +108,7 @@ export function useUserService() {
             ...userData
         };
 
+        //! API CALL
         if (currentUser?.id === userId) {
             dispatch(updateCurrentUser(updatedData));
         } else {
@@ -169,6 +179,8 @@ export function useUserService() {
         return currentUser?.faction;
     };
 
+    const visibleUsers = isGod ? userList : activeUsers;
+
     return {
         login,
         logout,
@@ -185,6 +197,7 @@ export function useUserService() {
         getHandleForConvo,
         toggleUserAsFavorite,
         isInfluencer,
-        getCurrentUserFaction
+        getCurrentUserFaction,
+        visibleUsers
     };
 }

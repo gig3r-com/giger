@@ -7,7 +7,16 @@ export function useGigHelpers() {
     const { currentUser } = useUserService();
     const { gigId } = useParams();
     const buttonColor = (status: GigStatus, isMine: boolean) => {
-        let statusColor: 'primary' | 'secondary' | 'accent' | 'accent2' = 'primary';
+        let statusColor:
+            | 'primary'
+            | 'secondary'
+            | 'accent'
+            | 'accent2'
+            | 'muted-accent' = 'primary';
+
+        if (status === GigStatus.EXPIRED || status === GigStatus.COMPLETED) {
+            return 'muted-accent';
+        }
 
         if (isMine) {
             return 'accent';
@@ -19,9 +28,6 @@ export function useGigHelpers() {
                 break;
             case GigStatus.IN_PROGRESS:
                 statusColor = 'secondary';
-                break;
-            case GigStatus.COMPLETED:
-                statusColor = 'primary';
                 break;
             case GigStatus.DISPUTE:
                 statusColor = 'accent2';
@@ -55,7 +61,8 @@ export function useGigHelpers() {
             'gig__summary--in-progress': gig.status === GigStatus.IN_PROGRESS,
             'gig__summary--available': gig.status === GigStatus.AVAILABLE,
             'gig__summary--dispute': gig.status === GigStatus.DISPUTE,
-            'gig__summary--pending': gig.status === GigStatus.PENDING_CONFIRMATION,
+            'gig__summary--pending':
+                gig.status === GigStatus.PENDING_CONFIRMATION,
             'gig__summary--expired': gig.status === GigStatus.EXPIRED,
             'gig__summary--mine': gig.authorId === currentUser?.id
         });

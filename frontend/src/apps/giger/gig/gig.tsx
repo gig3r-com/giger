@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
 import classNames from 'classnames';
-import { GigStatus } from '../../../models/gig';
+import { GigModes, GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
@@ -18,9 +18,10 @@ import GigReputation from '../gig-reputation/gig-reputation';
 import { useUserService } from '../../../shared/services/user.service';
 import { UserRoles } from '../../../models/user';
 import { ComplaintDetails } from '../complaint-details/complaint-details';
-import { getButtons } from './button-definitions';
+import { ActionId, getButtons } from './button-definitions';
 
 import './gig.scss';
+import { useBankingService } from '../../../shared/services/banking.service';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
+    const { hasCompanyAccount } = useBankingService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
@@ -81,6 +83,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         'gig__status--shown': !selectedId
     });
 
+    const wantsOrPays = gig.mode === GigModes.CLIENT ? 'PAYS' : 'WANTS';
+
     return (
         <li className={wrapperClasses}>
             <span
@@ -102,7 +106,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                         })}
                     >
                         <h3 className="gig__title">{gig.title}</h3>
-                        <span className="gig__payout">{gig.payout} ¤</span>
+                        <span className="gig__payout">
+                            <FormattedMessage id={wantsOrPays} /> {gig.payout} ¤
+                        </span>
                         <span className="gig__reputation">
                             {gig.reputationRequired !== undefined && (
                                 <GigReputation
@@ -120,37 +126,38 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             className="gig__details"
                             {...generateAnimation('expandCollapse')}
                         >
-                            {getButtons(gig.status, isMine, isAdmin).map(
-                                (button) => (
-                                    <BigButton
-                                        key={button.label}
-                                        text={intl.formatMessage({
-                                            id: button.label
-                                        })}
-                                        color={isMine ? 'accent' : button.color}
-                                        onClick={() =>
-                                            handleButtonAction(
-                                                gig.id,
-                                                button.actionId
-                                            )
-                                        }
-                                    />
-                                )
-                            )}
+                            {getButtons(
+                                gig.status,
+                                isMine,
+                                isAdmin,
+                                gig.mode,
+                                hasCompanyAccount
+                            ).map((button) => (
+                                <BigButton
+                                    key={button.label}
+                                    text={intl.formatMessage({
+                                        id: button.label
+                                    })}
+                                    color={isMine ? 'accent' : button.color}
+                                    onClick={() =>
+                                        handleButtonAction(
+                                            gig.id,
+                                            button.actionId
+                                        )
+                                    }
+                                />
+                            ))}
 
-                            {isGod && (
+                            {isGod && gig.status !== GigStatus.EXPIRED && (
                                 <BigButton
                                     text={intl.formatMessage({
                                         id: 'SET_AS_EXPIRED'
                                     })}
-                                    color={buttonColor(
-                                        GigStatus.EXPIRED,
-                                        isMine
-                                    )}
+                                    color={buttonColor(gig.status, isMine)}
                                     onClick={() =>
                                         handleButtonAction(
                                             gig.id,
-                                            'SET_AS_EXPIRED'
+                                            ActionId.MARK_AS_EXPIRED
                                         )
                                     }
                                 />

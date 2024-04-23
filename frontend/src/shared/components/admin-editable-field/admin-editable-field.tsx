@@ -66,7 +66,11 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                 >
                     {props.options?.map((option) => (
                         <option key={option} value={option}>
-                            <FormattedMessage id={option} />
+                            {props.skipTranslation ? (
+                                option
+                            ) : (
+                                <FormattedMessage id={option} />
+                            )}
                         </option>
                     ))}
                 </select>

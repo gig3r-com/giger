@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using System.Reflection;
 
 namespace DatabaseSerializer
 {
@@ -14,12 +17,9 @@ namespace DatabaseSerializer
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            var o = JObject.FromObject(value);
+            var o = JObject.FromObject(value, JsonSerializer.CreateDefault(new JsonSerializerSettings { ContractResolver = new IdContractResolver() , Converters = { new StringEnumConverter() } }));
             if (o != null)
             {
-                var Id = o.SelectToken("Id");
-                o.AddFirst(new JProperty("_id", Id));
-                o.Remove("Id");
                 o.WriteTo(writer);
             }
         }
@@ -37,6 +37,22 @@ namespace DatabaseSerializer
         public override bool CanConvert(Type objectType)
         {
             return _types.Any(t => t == objectType);
+        }
+
+        private class IdContractResolver : DefaultContractResolver
+        {
+            public new static readonly IdContractResolver Instance = new IdContractResolver();
+
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+                if (property.PropertyName == "Id")
+                {
+                    property.PropertyName = "_id";
+                }
+
+                return property;
+            }
         }
     }
 }

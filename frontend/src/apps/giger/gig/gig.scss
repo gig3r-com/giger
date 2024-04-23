@@ -24,6 +24,11 @@
         margin-bottom: 0;
     }
 
+    &__payout {
+        text-transform: uppercase;
+        color: $muted-text;
+    }
+
     &__summary {
         position: relative;
         transform-origin: left;
@@ -54,7 +59,7 @@
             border-color: $secondary-color;
         }
         &--mine {
-            border-color: $accent-color;
+            border-color: $accent-color!important;
         }
         &--pending {
             border-color: $secondary-color;
@@ -63,10 +68,10 @@
             border-color: $accent-color-2;
         }
         &--completed {
-            border-color: $primary-color;
+            border-color: $muted-accent;
         }
         &--expired {
-            border-color: $primary-color;
+            border-color: $muted-accent;
         }
         &--available:before,
         &--available:after {
@@ -78,7 +83,7 @@
         }
         &--mine:before,
         &--mine:after {
-            background-color: $accent-color;
+            background-color: $accent-color!important;
         }
 
         &--dispute:before,
@@ -93,12 +98,12 @@
 
         &--completed:before,
         &--completed:after {
-            background-color: $primary-color;
+            background-color: $muted-accent;
         }
 
         &--expired:before,
         &--expired:after {
-            background-color: $primary-color;
+            background-color: $muted-accent;
         }
 
         &::before {
@@ -165,13 +170,13 @@
 
     &--completed &__title {
         &:before {
-            background: $primary-color;
+            background: $muted-accent;
         }
     }
 
     &--mine &__title {
         &:before {
-            background: $accent-color;
+            background: $accent-color!important;
         }
     }
 
@@ -189,7 +194,7 @@
 
     &--expired &__title {
         &::before {
-            background: $primary-color;
+            background: $muted-accent;
         }
     }
 
@@ -276,5 +281,8 @@
 
         &--accent2 { color: $accent-color-2 }
         &--accent2::before { background-color: $accent-color-2 }
+        
+        &--muted-accent { color: $muted-accent }
+        &--muted-accent::before { background-color: $muted-accent }
     }
 }

@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import {
+    selectAccounts,
     addTransaction,
     setAccount,
     setBusinessAccount
@@ -26,14 +27,12 @@ export function useBankingService() {
     );
     const userList = useSelector((state: RootState) => state.users.users);
     const currentUser = useSelector((state: RootState) => state.users.currentUser);
-    const accounts = useSelector((state: RootState) => ({
-        private: state.bank.account,
-        business: state.bank.businessAccount
-    }));
+    const accounts = useSelector(selectAccounts);
     const fetchAccounts = () => {
         dispatch(setAccount(mockAccount));
         dispatch(setBusinessAccount(accountBusiness));
     };
+    const hasCompanyAccount = !!accounts.business;
 
     const sendTransfer = (
         userId: string,
@@ -55,7 +54,7 @@ export function useBankingService() {
                 amount,
                 title,
                 id: v4(),
-                date: dayjs().toISOString(),
+                date: dayjs().add(100, 'years').toISOString(),
                 ...(fromAccount === AccountType.BUSINESS
                     ? {
                           orderingParty: currentUser?.id
@@ -86,6 +85,7 @@ export function useBankingService() {
 
     return {
         accounts,
+        hasCompanyAccount,
         fetchAccounts,
         sendTransfer,
         getAccountHolderName,

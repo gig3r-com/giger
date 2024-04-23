@@ -49,13 +49,18 @@ namespace Giger.Controllers
             var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
             if (isCodeValid)
             {
-                matchingObscurableData.IsRevealed = false;
                 if (matchingObscurableData is Models.GigModels.Gig gig)
                 {
+                    if (gig.TakenById == user.Id)
+                        gig.IsRevealedByClient = true;
+                    else if (gig.AuthorId == user.Id)
+                        gig.IsRevealed = true;
+
                     await _gigService.UpdateAsync(matchingObscurableData.Id, gig);
                 }
                 else
                 {
+                    matchingObscurableData.IsRevealed = true;
                     await _userService.UpdateAsync(user.Id, user);
                 }
                 obscuredData.IsUsed = true;
@@ -70,7 +75,7 @@ namespace Giger.Controllers
             var gig = await _gigService.GetAsync(obscurableId);
             if (gig is null)
                 return null;
-            if (gig.TakenById != userId)
+            if (gig.TakenById != userId && gig.AuthorId != userId)
                 return null;
 
             return gig;

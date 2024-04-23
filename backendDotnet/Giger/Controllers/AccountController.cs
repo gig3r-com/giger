@@ -178,7 +178,7 @@ namespace Giger.Controllers
             }
 
             newTransaction.Id = ObjectId.GenerateNewId().ToString();
-            newTransaction.Date = DateTime.Now;
+            newTransaction.Date = GigerDateTime.Now;
 
             giverAcc.Transactions = [..giverAcc.Transactions, newTransaction];
             
@@ -206,13 +206,13 @@ namespace Giger.Controllers
             var log = new Log
             {
                 Id = ObjectId.GenerateNewId().ToString(),
-                Timestamp = DateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 SourceUserId = giver.Id,
                 SourceUserName = giver.Handle,
                 TargetUserId = receiver.Id,
                 TargetUserName = receiver.Handle,
                 LogType = LogType.Transfer,
-                LogData = $"Transaction from {transaction.From} to {transaction.To} on {DateTime.Now}",
+                LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
                 SubnetworkId = giver.SubnetworkId,
                 SubnetworkName = giverSubNetwork.Name
             };
@@ -224,13 +224,13 @@ namespace Giger.Controllers
                 log = new Log
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
-                    Timestamp = DateTime.Now,
+                    Timestamp = GigerDateTime.Now,
                     SourceUserId = giver.Id,
                     SourceUserName = giver.Handle,
                     TargetUserId = receiver.Id,
                     TargetUserName = receiver.Handle,
                     LogType = LogType.Transfer,
-                    LogData = $"Transaction from {transaction.From} to {transaction.To} on {DateTime.Now}",
+                    LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
                     SubnetworkId = receiver.SubnetworkId,
                     SubnetworkName = receiverSubNetwork.Name
                 };

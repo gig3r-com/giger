@@ -85,7 +85,9 @@ export default defineConfig({
                         type: 'image/png'
                     }
                 ]
-            }
+            },
+        injectRegister: 'auto',
+        registerType: 'autoUpdate'
         })
     ]
 });

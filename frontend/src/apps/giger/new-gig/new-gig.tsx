@@ -1,11 +1,13 @@
 import { FC, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router';
 import {
     GigCategoryNames,
+    GigModes,
     GigRepuationLevels,
+    GigSubcategoryNames,
     IDraftGig,
     reputationLabels
 } from '../../../models/gig';
@@ -17,23 +19,23 @@ import { BigButton } from '../../../shared/components/big-button/big-button';
 import { Controls } from '../../../shared/components/controls/controls';
 import { Slider } from '../../../shared/components/slider/slider';
 import { useBankingService } from '../../../shared/services/banking.service';
+import { AccountType } from '../../../models/banking';
 
 import './new-gig.scss';
 
 export const NewGig: FC<INewGigProps> = ({ active }) => {
     const navigate = useNavigate();
     const intl = useIntl();
-    const { currentPrivateBalance, currentBusinessBalance } =
+    const { currentPrivateBalance, currentBusinessBalance, hasCompanyAccount } =
         useBankingService();
     const { addNewGig, gigerCommission } = useGigsService();
-    const [fromAccount, setFromAccount] = useState<'PRIVATE' | 'BUSINESS' | ''>(
-        ''
-    );
+    const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
     const [gigName, setGigName] = useState<string>('');
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const [publicDescription, setPublicDescription] = useState<string>('');
     const [privateMessage, setPrivateMessage] = useState<string>('');
     const [payout, setPayout] = useState<number>(0);
+    const [mode, setMode] = useState<GigModes | ''>('');
     const [notEnoughMoneyWarning, setNotEnoughMoneyWarning] =
         useState<boolean>(false);
     const [selectedRepuation, setSelectedReputation] = useState<
@@ -42,6 +44,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const [selectedCategory, setSelectedCategory] = useState<
         GigCategoryNames | ''
     >('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState<
+        GigSubcategoryNames | ''
+    >('');
 
     const wrapperClassnames = classNames({
         'new-gig': true,
@@ -49,18 +54,48 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     });
 
     const onPayoutChange = (payout: number) => {
+        checkBalance();
+        setPayout(payout);
+    };
+
+    const onCategoryChange = (category: GigCategoryNames) => {
+        setSelectedCategory(category);
+        const categoryData = categories.find((c) => c.type === category);
+        setSelectedSubcategory(categoryData?.subcategories[0].type ?? '');
+        setPayout(categoryData?.subcategories[0].minPayout ?? 0);
+    };
+
+    const onSubcategoryChange = (subcategory: GigSubcategoryNames) => {
+        const categoryData = categories.find((c) => c.type === selectedCategory);
+        const subCatData = categoryData?.subcategories.find(cat => cat.type === subcategory);
+        setSelectedSubcategory(subcategory);
+        setPayout(subCatData?.minPayout ?? 0);
+    }
+
+    const subcategoryData = useMemo(() => {
+        return categories
+            .find((c) => c.type === selectedCategory)
+            ?.subcategories.find((s) => s.type === selectedSubcategory);
+    }, [selectedCategory, selectedSubcategory]);
+
+    const checkBalance = () => {
         const balance =
-            fromAccount === 'PRIVATE'
+            fromAccount === AccountType.PRIVATE
                 ? currentPrivateBalance
                 : currentBusinessBalance;
         const hasEnoughMoney = payout + payout * gigerCommission <= balance;
         setNotEnoughMoneyWarning(!hasEnoughMoney);
-        setPayout(payout);
     };
 
+    const getSubcategoryList = useMemo(() => {
+        const categoryData = categories.find(
+            (c) => c.type === selectedCategory
+        );
+        return categoryData?.subcategories ?? [];
+    }, [selectedCategory]);
+
     const gigReady = useMemo(() => {
-        return (
-            gigName !== '' &&
+        return gigName !== '' &&
             anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&
@@ -68,17 +103,22 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             payout !== undefined &&
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
-            fromAccount !== ''
-        );
+            selectedSubcategory !== '' &&
+            hasCompanyAccount
+            ? fromAccount !== ''
+            : true && mode !== '';
     }, [
         gigName,
         anonymize,
         publicDescription,
         privateMessage,
         payout,
-        selectedCategory,
         selectedRepuation,
-        fromAccount
+        selectedCategory,
+        selectedSubcategory,
+        hasCompanyAccount,
+        fromAccount,
+        mode
     ]);
 
     const newGig: IDraftGig | undefined = useMemo(() => {
@@ -89,6 +129,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   message: privateMessage,
                   payout: payout!,
                   anonymizedAuthor: anonymize === 'YES',
+                  ...(hasCompanyAccount && {
+                      fromAccount: fromAccount as AccountType
+                  }),
                   reputationRequired: selectedRepuation as GigRepuationLevels,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
@@ -102,6 +145,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         payout,
         selectedRepuation,
         selectedCategory,
+        hasCompanyAccount,
+        fromAccount,
         gigReady
     ]);
 
@@ -150,20 +195,37 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
                 <select
                     className="new-gig__input"
-                    value={fromAccount}
+                    value={mode}
                     onChange={(event) =>
-                        setFromAccount(
-                            event.target.value as 'PRIVATE' | 'BUSINESS'
-                        )
+                        setMode(event.target.value as GigModes)
                     }
+                >
+                    <option value={''} disabled hidden>
+                        <MemoizedFormattedMessage id="PROVIDER_OR_CLIENT" />
+                    </option>
+                    <option value={GigModes.PROVIDER}>
+                        <MemoizedFormattedMessage id="PROVIDER" />
+                    </option>
+                    <option value={GigModes.CLIENT}>
+                        <MemoizedFormattedMessage id="CLIENT" />
+                    </option>
+                </select>
+
+                <select
+                    className="new-gig__input"
+                    value={fromAccount}
+                    onChange={(event) => {
+                        setFromAccount(event.target.value as AccountType);
+                        checkBalance();
+                    }}
                 >
                     <option value={''} disabled hidden>
                         <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
                     </option>
-                    <option value="PRIVATE">
+                    <option value={AccountType.PRIVATE}>
                         <MemoizedFormattedMessage id="PRIVATE" />
                     </option>
-                    <option value="BUSINESS">
+                    <option value={AccountType.BUSINESS}>
                         <MemoizedFormattedMessage id="BUSINESS" />
                     </option>
                 </select>
@@ -172,9 +234,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     className="new-gig__input"
                     value={selectedCategory}
                     onChange={(event) =>
-                        setSelectedCategory(
-                            event.target.value as GigCategoryNames
-                        )
+                        onCategoryChange(event.target.value as GigCategoryNames)
                     }
                 >
                     <option value={''} disabled hidden>
@@ -183,6 +243,26 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     {categories.map((category) => (
                         <option key={category.type} value={category.type}>
                             {category.type}
+                        </option>
+                    ))}
+                </select>
+
+                <select
+                    className="new-gig__input"
+                    value={selectedSubcategory}
+                    disabled={selectedCategory === ''}
+                    onChange={(event) =>
+                        onSubcategoryChange(
+                            event.target.value as GigSubcategoryNames
+                        )
+                    }
+                >
+                    <option value={''} disabled hidden>
+                        <MemoizedFormattedMessage id="CHOOSE_SUBCATEGORY" />
+                    </option>
+                    {getSubcategoryList.map((category) => (
+                        <option key={category.type} value={category.type}>
+                            <FormattedMessage id={category.type} />
                         </option>
                     ))}
                 </select>
@@ -229,8 +309,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 />
 
                 <Slider
-                    min={0}
-                    max={50000}
+                    min={subcategoryData?.minPayout ?? 0}
+                    max={subcategoryData?.maxPayout ?? 50000}
                     value={payout}
                     className="new-gig__slider"
                     step={100}

@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useUserService } from '../../shared/services/user.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
-import { ReactComponent as GigerLogo } from '../../assets/logo-giger.svg';
+import GigerLogo from '../../assets/logo-giger.svg?react';
 import { DecodeText } from '../../shared/components/decode-text/decodeText';
 import LoginHelp from './login-help/login-help';
 import { SelectUser } from '../myId/select-user/select-user';
-import { selectRequiresGodUserSelection } from '../../store/users.slice';
+import { selectRequiresGodUserSelection } from '../../store/users.selectors';
 
 import './login.scss';
 
