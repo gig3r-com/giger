@@ -1,13 +1,22 @@
-﻿namespace Giger.SerializededModels.Networks
+﻿using Giger.Models.Networks;
+
+namespace Giger.SerializededModels.Networks
 {
-    public class Networks : Models.Networks.Network
+    public class Networks
     {
+        public Network[] NetworksTable { get; set; }
+        
         public Networks()
         {
-            Id = "N666";
-            Name = "The Matrix";
-            AdminId = "U666";
-            Subnetworks = [ "SN999", "SN1337" ];
+            NetworksTable = [
+                new Network()
+                {
+                    Id = "N666",
+                    Name = "The Matrix",
+                    AdminId = "123456",
+                    Subnetworks = [ "SN999", "SN1337" ]
+                }
+            ];
         }
     }
 }

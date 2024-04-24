@@ -1,22 +1,31 @@
-﻿using MongoDB.Bson;
+﻿using Giger.Models.Logs;
+using MongoDB.Bson;
 
 namespace Giger.SerializededModels.Logs
 {
-    public class Logs : Models.Logs.Log
+    public class Logs
     {
+        public Log[] LogsTable { get; set; }
+
         public Logs()
         {
-            Id = ObjectId.GenerateNewId().ToString();
-            Timestamp = GigerDateTime.Now;
-            SourceUserId = "123456";
-            SourceUserName = "jsilver";
-            SourceHackerName = null;
-            TargetUserId = "123457";
-            TargetUserName = "adude";
-            LogType = Models.Logs.LogType.Transfer;
-            LogData = $"Transaction from {SourceUserName} to {TargetUserName} on {Timestamp}";
-            SubnetworkId = "SN999";
-            SubnetworkName = "Test Subnetwork";
+            LogsTable = [
+                new Log()
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    SourceUserId = "123456",
+                    SourceUserName = "jsilver",
+                    SourceHackerName = null,
+                    TargetUserId = "123457",
+                    TargetUserName = "triddle",
+                    LogType = LogType.Transfer,
+                    Timestamp = GigerDateTime.Now,
+                    LogData = $"Transaction from jsilver to triddle on {GigerDateTime.Now}",
+                    SubnetworkId = "SN999",
+                    SubnetworkName = "Test Subnetwork",
+                },
+            ];
+            
         }
     }
 }

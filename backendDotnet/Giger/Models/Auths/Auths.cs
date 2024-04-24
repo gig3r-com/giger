@@ -2,7 +2,7 @@
 
 namespace Giger.Models.Auths
 {
-    public class Auths
+    public class Auth
     {
         [BsonId]
         [BsonElement("_id")]
