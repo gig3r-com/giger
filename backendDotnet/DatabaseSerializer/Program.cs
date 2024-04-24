@@ -8,7 +8,7 @@ namespace DatabaseSerializer
         static void Main(string[] args)
         {
             string nspace = "Giger.Models";
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Giger.dll"));
             var modelTypes = from t in assembly.GetTypes()
                              where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace)
                              select t;
