@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePrefix } from './hooks/usePrefix';
 import useCommandHandler from './hooks/useCommandHandler';
 import useKeyHandler from './hooks/useKeyHandler';

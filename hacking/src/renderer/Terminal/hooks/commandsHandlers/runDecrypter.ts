@@ -3,8 +3,6 @@ import {
   decryptingLines,
   decryptingSuccessLines,
 } from '../../responseLines/runCommands';
-import * as PROGRAMS from '../../data/programs';
-import * as EXPLOITS from '../../data/exploits';
 import { addTimeline, makeLoaderLine } from '../../utils/timelines';
 
 export type RunDecrypterType = {
@@ -24,13 +22,12 @@ export function runDecrypter({
   decryptSubnetwork,
   exploit,
   subnetwork,
-                               setInputDisabled,
+  setInputDisabled,
 }: RunDecrypterType) {
   if (!isConnected) throw new Error('Need to be connected');
   addLines(decryptingLines(exploit));
   const decryptingEffect = exploit.effect[subnetwork.operatingSystem];
   setInputDisabled(true);
-  console.log('now')
   addTimeline(decryptingEffect.decryptingTime, stepDecryption, endDecryption);
 
   function endDecryption() {
