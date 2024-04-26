@@ -37,6 +37,12 @@ namespace Giger.Models.User
 
         public required string NetworkId { get; set; }
 
+        //[BsonIgnore]
+        public required string NetworkName { get; set; }
+
         public required string SubnetworkId { get; set; }
+
+        //[BsonIgnore]
+        public required string SubnetworkName { get; set; }
     }
 }

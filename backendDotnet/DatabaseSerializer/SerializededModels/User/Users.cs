@@ -26,7 +26,9 @@ namespace Giger.SerializededModels.User
                     Vibe = Vibe.DIZORDERS,
                     WealthLevel = WealthLevels.MODEST,
                     NetworkId = "N666",
+                    NetworkName = "The Matrix",
                     SubnetworkId = "SN999",
+                    SubnetworkName = "Subnetwork1",
 
                     //private
                     CyberwareLevel = 4,
@@ -108,7 +110,9 @@ namespace Giger.SerializededModels.User
                     ],
                     Exploits = ["Exploit1", "Exploit2"],
                     MindHack = MindHacks.Enabled,
-                    HackerName = "SilverSliver",
+                    MindHackEnabledFor = ["123456"],
+                    HasPlatinumPass = true,
+                    HackerName = null,
                 },
 
                 new UserPrivate()
@@ -126,7 +130,9 @@ namespace Giger.SerializededModels.User
                     Vibe = Vibe.HEDONIZERS,
                     WealthLevel = WealthLevels.BROKE,
                     NetworkId = "N666",
+                    NetworkName = "The Matrix",
                     SubnetworkId = "SN999",
+                    SubnetworkName = "Subnetwork2",
 
                     //private
                     CyberwareLevel = 4,
@@ -199,8 +205,10 @@ namespace Giger.SerializededModels.User
                         }
                     ],
                     Exploits = ["Exploit1", "Exploit2"],
-                    MindHack = MindHacks.Enabled,
-                    HackerName = "SilverSliver",
+                    MindHack = MindHacks.Disabled,
+                    MindHackEnabledFor = [],
+                    HasPlatinumPass = false,
+                    HackerName = "voldemort",
                 }
             ];
         }
