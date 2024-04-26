@@ -38,18 +38,37 @@ namespace Giger.Controllers
             return FilterOutGodUser(user);
         }
 
-        [HttpGet("private/byName")]
-        public async Task<ActionResult<UserPrivate>> Get(string firstName, string surname)
+        [HttpGet("private/byUsername")]
+        public async Task<ActionResult<UserPrivate>> GetByUserName(string userName)
         {
-            if (IsAuthorized(null, 0) == false)
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(user.Id))
             {
                 return Forbid();
             }
 
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
+        }
+
+        [HttpGet("private/byName")]
+        public async Task<ActionResult<UserPrivate>> Get(string firstName, string surname)
+        {
+            
             var user = await _userService.GetByFirstNameAsync(firstName, surname);
             if (user is null)
             {
                 return NotFound();
+            }
+
+            if (IsAuthorized(user.Id))
+            {
+                return Forbid();
             }
 
             FilterObscurableData(user);
@@ -60,7 +79,7 @@ namespace Giger.Controllers
         public async Task<IActionResult> Post(UserPrivate newUser)
         {
             await _userService.CreateAsync(newUser);
-            return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
+            return CreatedAtAction(nameof(Post), new { id = newUser.Id }, newUser);
         }
 
         [Obsolete("Should have endpoint for each change request")]
@@ -84,6 +103,11 @@ namespace Giger.Controllers
         [HttpDelete("byId")]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
@@ -374,6 +398,40 @@ namespace Giger.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}/mindHack/enabledUsers")]
+        public async Task<ActionResult<List<string>>> GetMindHackEnabledUsers(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.MindHackEnabledFor.ToList();
+        }
+
+        [HttpPatch("{id}/mindHack/enabledUsers")]
+        public async Task<IActionResult> PatchMindHackEnabledUsers(string id, string[] enabledUsers)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.MindHackEnabledFor = enabledUsers;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
         [HttpGet("{id}/professionPublic")]
         public async Task<ActionResult<string>> GetProfessionPublic(string id)
         {
@@ -498,6 +556,41 @@ namespace Giger.Controllers
             }
             return BadRequest("Record already exists");
         }
+
+        [HttpGet("{id}/hasPlatinumPass")]
+        public async Task<ActionResult<bool>> GetHasPlatinumPass(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.HasPlatinumPass;
+        }
+
+        [HttpPatch("{id}/hasPlatinumPass")]
+        public async Task<IActionResult> PatchHasPlatinumPass(string id, bool enabled)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            user.HasPlatinumPass = enabled;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
         #endregion
 
         private void FilterObscurableData(UserPrivate user)
