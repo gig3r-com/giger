@@ -57,6 +57,12 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public required MindHacks MindHack { get; set; }
 
+        // TODO: lista ID użytkowników którzy mogą zmindhackować
+        public string[] MindHackEnabledFor { get; set; } = []; 
+
+        // TODO: endpoint do zmiany - tylko GOD może zmienić
+        public required bool HasPlatinumPass { get; set; }
+
         public string? HackerName { get; set; }
     }
 }
