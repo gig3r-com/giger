@@ -1,0 +1,14 @@
+{
+  "_id": "877cb0ef-34d5-4bc0-8f51-a45521f7ca25",
+  "Name": "LunarOffice",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "Users": [
+    "152bd4ee-79e8-42fe-828a-26f42f2992dc",
+    "60ea0df4-07da-46cb-87da-168f68e8b172",
+    "64bfc035-a272-4e9e-b2e5-56cd3cd4be63"
+  ],
+  "Firewall": "",
+  "OperatingSystem": "",
+  "Ice": [],
+  "PastHacks": []
+}

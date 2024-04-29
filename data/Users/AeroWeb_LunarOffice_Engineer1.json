@@ -1,0 +1,53 @@
+{
+  "_id": "152bd4ee-79e8-42fe-828a-26f42f2992dc",
+  "Name": "Tony",
+  "Handle": "paul",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": " ENGINEER",
+  "Surname": "Paul",
+  "Age": 41,
+  "Vibe": "DIZORDERS",
+  "WealthLevel": "MODEST",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "SubnetworkId": "877cb0ef-34d5-4bc0-8f51-a45521f7ca25",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "ENGINEER",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 0
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "None",
+  "VibeEngagement": "DOUBTING",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [],
+  "CriminalEvents": [],
+  "MedicalEvents": [],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

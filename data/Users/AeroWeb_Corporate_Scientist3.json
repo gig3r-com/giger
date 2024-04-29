@@ -1,0 +1,53 @@
+{
+  "_id": "caf6b798-a763-451d-b60c-76d62acff041",
+  "Name": "Donald",
+  "Handle": "donald_n",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": "SCIENTIST",
+  "Surname": "Nielsen",
+  "Age": 39,
+  "Vibe": "HEDONIZERS",
+  "WealthLevel": "COMFORTABLE",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "SubnetworkId": "561239fb-5003-4224-89e4-f6c77ac8237d",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "SPY",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 0
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "COMFORTABLE",
+  "VibeEngagement": "DISINTERESTED",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [],
+  "CriminalEvents": [],
+  "MedicalEvents": [],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

@@ -1,0 +1,14 @@
+{
+  "_id": "38867391-d5bb-4815-b70b-4a4b93961a29",
+  "Name": "Management",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "Users": [
+    "e7147f33-b4d5-4d59-9222-b1feac358b0c",
+    "31f6e8bf-5944-458a-a2b2-d9a40382352b",
+    "d7113b3c-8957-43a8-8d51-b7d2715589d1"
+  ],
+  "Firewall": "",
+  "OperatingSystem": "",
+  "Ice": [],
+  "PastHacks": []
+}

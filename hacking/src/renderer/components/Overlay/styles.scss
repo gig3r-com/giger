@@ -1,0 +1,37 @@
+.overlay {
+  position: fixed;
+
+  .modal {
+    z-index: 1000;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    .quest-modal {
+      width: 600px;
+      height: 600px;
+      background: black;
+      border: 1px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      >div {
+        margin: 20px;
+      }
+
+      button {
+        margin: 10px;
+        width: 150px;
+      }
+    }
+  }
+
+  .menu {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+}

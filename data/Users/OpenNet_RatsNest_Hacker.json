@@ -1,0 +1,78 @@
+{
+  "_id": "a4546040-830f-40a3-b98b-4ef4895ada48",
+  "Name": "Kimberly",
+  "Handle": "smart_one",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": "JANITOR",
+  "Surname": "Smart",
+  "Age": 19,
+  "Vibe": "SW4RM",
+  "WealthLevel": "BROKE",
+  "NetworkId": "648eeb00-5102-4ca6-b127-5af49cf54342",
+  "SubnetworkId": "f9380ca5-9e0a-44b9-b7ba-335bb0941907",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "HACKER",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 1
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "None",
+  "VibeEngagement": "INTERESTED",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [
+    {
+      "_id": "90cf1420-9941-4fa8-a7fc-9e1bf0584d3e",
+      "IsRevealed": true,
+      "Title": "Quest: Get out of this hole",
+      "Description": "",
+      "RecordType": "PrivateRecord"
+    },
+    {
+      "_id": "90cf1420-9941-4fa8-a7fc-9e1bf0584d3e",
+      "IsRevealed": true,
+      "Title": "Hello my friend!",
+      "Description": "Hello my friend! Here are some code we talked about before ;) install this: ZXCVB-3SCNR-4458-4POI9 and this LKJHG-B2RCH-9647-1ER45 and have fun :D",
+      "RecordType": "PrivateRecord"
+    }
+  ],
+  "CriminalEvents": [],
+  "MedicalEvents": [
+    {
+      "_id": "d1dfb152-f88e-4f6e-83b2-64df8897cbe9",
+      "Type": "CYBERWARE",
+      "Name": "Cyberdeck Integration Chip",
+      "EventDescription": "Hacking chip.",
+      "Status": "CURRENT",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": true
+    }
+  ],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

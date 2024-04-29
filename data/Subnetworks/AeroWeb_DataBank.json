@@ -1,0 +1,15 @@
+{
+  "_id": "4c854926-5720-47a2-9910-0cc71e8b749a",
+  "Name": "DataBank",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "Users": [
+    "214f38d4-de48-4cee-aa53-9841066fe663",
+    "55ddd4ed-b4cf-42c8-856c-36e36720f261",
+    "34c7342f-acfc-45ed-88f2-7b8f726dc62e",
+    "11cf3a05-cea7-46f1-a905-0a1571a62e2b"
+  ],
+  "Firewall": "",
+  "OperatingSystem": "",
+  "Ice": [],
+  "PastHacks": []
+}
