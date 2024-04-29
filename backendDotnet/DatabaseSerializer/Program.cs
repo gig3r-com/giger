@@ -7,8 +7,8 @@ namespace DatabaseSerializer
     {
         static void Main(string[] args)
         {
-            string nspace = "Giger.SerializededModels";
-            var assembly = Assembly.GetExecutingAssembly();
+            string nspace = "Giger.Models";
+            var assembly = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Giger.dll"));
             var modelTypes = from t in assembly.GetTypes()
                              where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace)
                              select t;
@@ -17,8 +17,14 @@ namespace DatabaseSerializer
             var outputDirModelTypes = Path.Combine(Assembly.GetExecutingAssembly().Location, "..", "..", "..", "ModelsTypes");
             SaveModels(outputDirModelTypes, modelTypesArray, assembly, new ModelTypesJsonConverter(modelTypesArray));
 
+            nspace = "Giger.SerializededModels";
+            assembly = Assembly.GetExecutingAssembly();
+            modelTypes = from t in assembly.GetTypes()
+                             where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace)
+                             select t;
+            modelTypesArray = modelTypes.ToArray();
             var outputDirModels = Path.Combine(Path.GetDirectoryName(outputDirModelTypes), "ModelsExample");
-            SaveModels(outputDirModels, modelTypesArray, assembly, new ModelExamplesJsonConverter(modelTypesArray));
+            SaveModels(outputDirModels, modelTypesArray, assembly, new ModelExamplesJsonConverter(modelTypesArray), postProcess: true);
 
             Console.WriteLine("Models saved successfully.");
             Console.WriteLine($"They can be found in {Path.GetFullPath(Path.GetDirectoryName(outputDirModelTypes))}.");
@@ -27,7 +33,7 @@ namespace DatabaseSerializer
         }
 
 
-        private static void SaveModels(string path, Type[] modelTypes, Assembly assembly, JsonConverter customConverter)
+        private static void SaveModels(string path, Type[] modelTypes, Assembly assembly, JsonConverter customConverter, bool postProcess = false)
         {
             if (!Directory.Exists(path))
             {
@@ -51,6 +57,12 @@ namespace DatabaseSerializer
                     else
                     {
                         jsonString = JsonConvert.SerializeObject(assembly.CreateInstance(t.FullName), Formatting.Indented);
+                    }
+
+                    if (postProcess)
+                    {
+                        jsonString = jsonString.Substring(jsonString.IndexOf("Table") + 8);
+                        jsonString = jsonString.Substring(0, jsonString.LastIndexOf(']') + 1);
                     }
                     File.WriteAllText($"{path}/{t.Name}.json", jsonString);
                 }
