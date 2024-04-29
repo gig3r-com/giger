@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { IPopupProps } from './popup.model';
-import { ReactComponent as Attention } from '../../../assets/chevron-left-solid.svg';
+import Attention from '../../../assets/chevron-left-solid.svg?react';
 
 import './popup.scss';
 

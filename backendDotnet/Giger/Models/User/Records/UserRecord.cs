@@ -7,7 +7,7 @@ namespace Giger.Models.User.Records
 {
     public abstract class UserRecord : ObscurableInfo
     {
-        public required string UserId { get; set; }
+        public required string Title { get; set; }
         
         public required string Description { get; set; }
         
@@ -16,6 +16,7 @@ namespace Giger.Models.User.Records
 
         public override void Obscure()
         {
+            Title = REDACTED;
             Description = REDACTED;
         }
 

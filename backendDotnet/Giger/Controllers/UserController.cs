@@ -14,7 +14,11 @@ namespace Giger.Controllers
         #region PrivateUser
 
         [HttpGet("private/all")]
-        public async Task<List<UserPrivate>> GetAllPrivateUsers() => await _userService.GetAllPrivateUsersAsync();
+        public async Task<List<UserPrivate>> GetAllPrivateUsers()
+        {
+            var allUsers = await _userService.GetAllPrivateUsersAsync();
+            return FilterOutAllGodUsers(allUsers);
+        }
             
         [HttpGet("private/byId")]
         public async Task<ActionResult<UserPrivate>> Get(string id)
@@ -30,33 +34,52 @@ namespace Giger.Controllers
                 return Forbid();
             }
 
-            user = FilterObscurableData(user);
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
+        }
 
-            return user;
+        [HttpGet("private/byUsername")]
+        public async Task<ActionResult<UserPrivate>> GetByUserName(string userName)
+        {
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(user.Id))
+            {
+                return Forbid();
+            }
+
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
         }
 
         [HttpGet("private/byName")]
         public async Task<ActionResult<UserPrivate>> Get(string firstName, string surname)
         {
-            if (IsAuthorized(null, 0) == false)
-            {
-                return Forbid();
-            }
-
+            
             var user = await _userService.GetByFirstNameAsync(firstName, surname);
             if (user is null)
             {
                 return NotFound();
             }
 
-            return user;
+            if (IsAuthorized(user.Id))
+            {
+                return Forbid();
+            }
+
+            FilterObscurableData(user);
+            return FilterOutGodUser(user);
         }
 
         [HttpPost()]
         public async Task<IActionResult> Post(UserPrivate newUser)
         {
             await _userService.CreateAsync(newUser);
-            return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
+            return CreatedAtAction(nameof(Post), new { id = newUser.Id }, newUser);
         }
 
         [Obsolete("Should have endpoint for each change request")]
@@ -80,6 +103,11 @@ namespace Giger.Controllers
         [HttpDelete("byId")]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
             var user = await _userService.GetAsync(id);
             if (user is null)
             {
@@ -370,6 +398,40 @@ namespace Giger.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}/mindHack/enabledUsers")]
+        public async Task<ActionResult<List<string>>> GetMindHackEnabledUsers(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.MindHackEnabledFor.ToList();
+        }
+
+        [HttpPatch("{id}/mindHack/enabledUsers")]
+        public async Task<IActionResult> PatchMindHackEnabledUsers(string id, string[] enabledUsers)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.MindHackEnabledFor = enabledUsers;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
         [HttpGet("{id}/professionPublic")]
         public async Task<ActionResult<string>> GetProfessionPublic(string id)
         {
@@ -494,26 +556,59 @@ namespace Giger.Controllers
             }
             return BadRequest("Record already exists");
         }
+
+        [HttpGet("{id}/hasPlatinumPass")]
+        public async Task<ActionResult<bool>> GetHasPlatinumPass(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.HasPlatinumPass;
+        }
+
+        [HttpPatch("{id}/hasPlatinumPass")]
+        public async Task<IActionResult> PatchHasPlatinumPass(string id, bool enabled)
+        {
+            if (!IsAuthorized(id))
+            {
+                Forbid();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            user.HasPlatinumPass = enabled;
+            await _userService.UpdateAsync(id, user);
+            return Ok();
+        }
+
         #endregion
 
-        private UserPrivate FilterObscurableData(UserPrivate user)
+        private void FilterObscurableData(UserPrivate user)
         {
             if (IsGodUser())
             {
-                return user;
+                return;
             }
 
-            user.PrivateRecords = (PrivateRecord[])FilterObscurableField(user.PrivateRecords);
-            user.MedicalEvents = (MedicalEvent[])FilterObscurableField(user.MedicalEvents);
-            user.CriminalEvents = (CriminalEvent[])FilterObscurableField(user.CriminalEvents);
-            user.Relations = (Relation[])FilterObscurableField(user.Relations);
-            user.Meta = (Meta[])FilterObscurableField(user.Meta);
-            user.Goals = (Goal[])FilterObscurableField(user.Goals);
-
-            return user;
+            FilterObscurableField(user.PrivateRecords);
+            FilterObscurableField(user.MedicalEvents);
+            FilterObscurableField(user.CriminalEvents);
+            FilterObscurableField(user.Relations);
+            FilterObscurableField(user.Meta);
+            FilterObscurableField(user.Goals);
         }
 
-        private ObscurableInfo[] FilterObscurableField(IEnumerable<ObscurableInfo> obscurableFields)
+        private void FilterObscurableField(IEnumerable<ObscurableInfo> obscurableFields)
         {
             foreach (var element in obscurableFields)
             {
@@ -521,6 +616,19 @@ namespace Giger.Controllers
                 {
                     element.Obscure();
                 }
+            }
+        }
+
+        private List<UserPrivate> FilterOutAllGodUsers(IEnumerable<UserPrivate> users)
+        {
+            return users.Where(u => !u.Roles.Contains(UserRoles.GOD)).ToList();
+        }
+
+        private UserPrivate FilterOutGodUser(UserPrivate user)
+        {
+            if (!user.Roles.Contains(UserRoles.GOD))
+            {
+                return user;
             }
             return null;
         }

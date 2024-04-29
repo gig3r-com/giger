@@ -282,6 +282,135 @@ export const gig11Convo: IConversation = {
     ]
 };
 
+export const gig12Convo: IConversation = {
+    id: '14',
+    participants: [systemUser.id, fixer.id, runner.id],
+    gigConversation: true,
+    messages: [
+        {
+            id: '34',
+            date: '2023-08-20T09:00:00',
+            sender: systemUser.id,
+            text: 'Gig details encrypted, access key sent.'
+        },
+        {
+            id: '35',
+            date: '2023-08-20T09:30:20',
+            sender: fixer.id,
+            text: 'Target location: Corporate HQ, high security.'
+        },
+        {
+            id: '36',
+            date: '2023-08-20T10:15:45',
+            sender: runner.id,
+            text: 'I need a distraction to get inside unnoticed.'
+        }
+    ]
+};
+
+export const gig13Convo: IConversation = {
+    id: '15',
+    participants: [systemUser.id, netrunner.id, hacker.id],
+    gigConversation: true,
+    messages: [
+        {
+            id: '37',
+            date: '2023-08-21T14:30:00',
+            sender: systemUser.id,
+            text: 'Gig posted, details limited for security.'
+        },
+        {
+            id: '38',
+            date: '2023-08-21T15:00:20',
+            sender: netrunner.id,
+            text: 'Target has a heavily fortified data center.'
+        },
+        {
+            id: '39',
+            date: '2023-08-21T15:45:45',
+            sender: hacker.id,
+            text: 'I need time to crack their encryption.'
+        }
+    ]
+};
+
+export const gig14Convo: IConversation = {
+    id: '16',
+    participants: [systemUser.id, fixer.id, merc.id],
+    gigConversation: true,
+    messages: [
+        {
+            id: '40',
+            date: '2023-08-22T11:30:00',
+            sender: systemUser.id,
+            text: 'Gig details encrypted, access key sent.'
+        },
+        {
+            id: '41',
+            date: '2023-08-22T12:00:20',
+            sender: fixer.id,
+            text: 'Target is a high-profile VIP, expect heavy security.'
+        },
+        {
+            id: '42',
+            date: '2023-08-22T12:45:45',
+            sender: merc.id,
+            text: 'I need a sniper position for a clean shot.'
+        }
+    ]
+};
+export const gig15Convo: IConversation = {
+    id: '17',
+    participants: [systemUser.id, netrunner.id, hiredGun.id],
+    gigConversation: true,
+    messages: [
+        {
+            id: '43',
+            date: '2023-08-23T09:45:00',
+            sender: systemUser.id,
+            text: 'Gig details encrypted, access key sent.'
+        },
+        {
+            id: '44',
+            date: '2023-08-23T10:20:30',
+            sender: netrunner.id,
+            text: "Target's location is a heavily guarded corporate facility."
+        },
+        {
+            id: '45',
+            date: '2023-08-23T11:05:15',
+            sender: hiredGun.id,
+            text: "I'll need some serious firepower for this one."
+        }
+    ]
+};
+
+export const gig16Convo: IConversation = {
+    id: '18',
+    participants: [systemUser.id, fixer.id, runner.id],
+    gigConversation: true,
+    messages: [
+        {
+            id: '46',
+            date: '2023-08-24T14:30:00',
+            sender: systemUser.id,
+            text: 'Gig posted, details limited.'
+        },
+        {
+            id: '47',
+            date: '2023-08-24T15:10:45',
+            sender: fixer.id,
+            text: 'Target is on the move, keep up the pace.'
+        },
+        {
+            id: '48',
+            date: '2023-08-24T15:45:20',
+            sender: runner.id,
+            text: "I'll need some stealth skills to complete this gig."
+        }
+    ]
+};
+
 export const mockConvos = [
     gig1Convo,
     gig2Convo,
@@ -293,5 +422,10 @@ export const mockConvos = [
     gig8Convo,
     gig9Convo,
     gig10Convo,
-    gig11Convo
+    gig11Convo,
+    gig12Convo,
+    gig13Convo,
+    gig14Convo,
+    gig15Convo,
+    gig16Convo
 ];

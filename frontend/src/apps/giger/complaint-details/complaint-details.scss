@@ -1,0 +1,10 @@
+@import '../../../variables.scss';
+
+.complaint-details {
+    display: flex;
+    flex-direction: column;
+
+    &__label {
+        color: $accent-color-2;
+    }
+}

@@ -22,7 +22,8 @@ export const mockCriminalRecord: ICriminalEvent[] = [
         status: EventStatus.HISTORICAL,
         timestamp: '2077-03-10T18:30:00Z',
         type: CriminalEventType.VICTIM,
-        revealCode: 'ROB-2023' // A code to unlock this information
+        revealCode: 'ROB-2023', // A code to unlock this information
+        seen: false
     },
     {
         id: '3',
@@ -98,7 +99,8 @@ export const mockCriminalRecord: ICriminalEvent[] = [
         status: EventStatus.HISTORICAL,
         timestamp: '2077-04-05T16:30:00Z',
         type: CriminalEventType.WITNESS,
-        revealCode: 'WIT-2023' // A code to unlock this information
+        revealCode: 'WIT-2023', // A code to unlock this information
+        seen: false
     },
     {
         id: '11',

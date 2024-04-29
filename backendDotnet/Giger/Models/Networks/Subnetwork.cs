@@ -7,19 +7,20 @@ namespace Giger.Models.Networks
     public class Subnetwork
     {
         [BsonId]
-        public string Id { get; set; }
-        
-        public string Name { get; set; }
-        
-        public string NetworkId { get; set; }
-        
-        public string[] Users { get; set; } = [];
+        [BsonElement("_id")]
+        public required string Id { get; set; }
+
+        public required string Name { get; set; }
+
+        public required string NetworkId { get; set; }
+
+        public required string[] Users { get; set; } = [];
 
         [BsonRepresentation(BsonType.String)]
-        public Firewall Firewall { get; set; }
+        public Firewall? Firewall { get; set; }
         
         [BsonRepresentation(BsonType.String)]
-        public OperatingSystem OperatingSystem { get; set; }
+        public OperatingSystem? OperatingSystem { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public Ice[] Ice { get; set; } = [];
@@ -46,6 +47,6 @@ namespace Giger.Models.Networks
     [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
     public enum Ice
     {
-
+        ToBeProvided
     }
 }

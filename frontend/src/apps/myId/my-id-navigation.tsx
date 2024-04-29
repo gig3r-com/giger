@@ -1,7 +1,10 @@
 import classNames from 'classnames';
 import { FC } from 'react';
-import './my-id-navigation.scss';
 import { useUserService } from '../../shared/services/user.service';
+
+import './my-id-navigation.scss';
+import { useMyIdService } from '../../shared/services/myid.service';
+import { MyIdUncoverableSections } from './myid.model';
 
 export type MyIdNavigationProps = {
     active?: boolean;
@@ -10,18 +13,32 @@ export type MyIdNavigationProps = {
 
 export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
     const { logout } = useUserService();
+    const { hasNewEntries } = useMyIdService();
     const wrapperClassnames = classNames({
         'my-id-navigation': true
     });
     const items = [
         { name: 'contacts' },
         { name: 'vibe' },
-        { name: 'medical' },
-        { name: 'criminal', isNew: true },
-        { name: 'goals', isNew: true },
-        { name: 'relations', isNew: true },
-        { name: 'meta' },
-        { name: 'records' },
+        {
+            name: 'medical',
+            isNew: hasNewEntries(MyIdUncoverableSections.MEDICAL)
+        },
+        {
+            name: 'criminal',
+            isNew: hasNewEntries(MyIdUncoverableSections.CRIMINAL)
+        },
+        { name: 'goals', isNew: hasNewEntries(MyIdUncoverableSections.GOALS) },
+        {
+            name: 'relations',
+            isNew: hasNewEntries(MyIdUncoverableSections.RELATIONS)
+        },
+        { name: 'meta', isNew: hasNewEntries(MyIdUncoverableSections.META) },
+        {
+            name: 'records',
+            isNew: hasNewEntries(MyIdUncoverableSections.PRIVATE_RECORDS)
+        },
+        { name: 'code' },
         { name: 'log out', onClickAction: () => logout() }
     ];
 

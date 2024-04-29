@@ -2,6 +2,11 @@
 {
     public struct CyberwareLevel
     {
+        public CyberwareLevel(int i)
+        {
+            Stat = (short)i;
+        }
+
         private const short MINVALUE = 0;
         private const short MAXVALUE = 15;
 
@@ -25,5 +30,8 @@
                 }
             }
         }
+
+        public static implicit operator int(CyberwareLevel cl) => cl.Stat;
+        public static implicit operator CyberwareLevel(int i) => new (i);
     }
 }

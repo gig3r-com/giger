@@ -31,6 +31,7 @@ namespace Giger.Controllers
             }
 
             newLog.Id = ObjectId.GenerateNewId().ToString();
+            newLog.Timestamp = GigerDateTime.Now;
             await _logService.CreateAsync(newLog);
 
             return CreatedAtAction(nameof(PostLog), new { id = newLog.Id }, newLog);
@@ -51,6 +52,7 @@ namespace Giger.Controllers
             }
 
             newLog.Id = ObjectId.GenerateNewId().ToString();
+            newLog.Timestamp = GigerDateTime.Now;
             subnetwork.PastHacks = [.. subnetwork.PastHacks, newLog.Id];
 
             _networksService.UpdateSubnetworkAsync(subnetworkId, subnetwork);

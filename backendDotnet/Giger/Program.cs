@@ -42,6 +42,30 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Use((context, next) =>
+{
+#if DEBUG
+    if (!AuthController.AuthEnabled)
+    {
+        return next();
+    }
+#endif
+
+    if (context.Request.Path.StartsWithSegments("/api/Login"))
+    {
+        return next();
+    }
+
+    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
+    {
+        return next();
+    }
+    context.Response.Clear();
+    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+    context.Response.WriteAsync("Unauthorized. Please login.");
+    return null;
+});
+
 app.UseAuthorization();
 
 var webSocketOptions = new WebSocketOptions() { KeepAliveInterval = TimeSpan.FromSeconds(120) };

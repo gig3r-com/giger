@@ -2,6 +2,11 @@
 {
     public struct CharStat
     {
+        public CharStat(int i)
+        {
+            Stat = (short)i;
+        }
+
         private const short MINVALUE = 0;
         private const short MAXVALUE = 4;
 
@@ -25,5 +30,8 @@
                 }
             }
         }
+
+        public static implicit operator int(CharStat cl) => cl.Stat;
+        public static implicit operator CharStat(int i) => new(i);
     }
 }

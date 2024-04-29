@@ -5,9 +5,10 @@ namespace Giger.Models.Networks
     public class Network
     {
         [BsonId]
-        public string Id { get; set; }
-        public string Name { get; set; }
+        [BsonElement("_id")]
+        public required string Id { get; set; }
+        public required string Name { get; set; }
         public string[] Subnetworks { get; set; } = [];
-        public string AdminId { get; set; }
+        public required string AdminId { get; set; }
     }
 }

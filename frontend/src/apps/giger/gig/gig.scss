@@ -24,6 +24,11 @@
         margin-bottom: 0;
     }
 
+    &__payout {
+        text-transform: uppercase;
+        color: $muted-text;
+    }
+
     &__summary {
         position: relative;
         transform-origin: left;
@@ -54,7 +59,19 @@
             border-color: $secondary-color;
         }
         &--mine {
-            border-color: $accent-color;
+            border-color: $accent-color!important;
+        }
+        &--pending {
+            border-color: $secondary-color;
+        }
+        &--dispute {
+            border-color: $accent-color-2;
+        }
+        &--completed {
+            border-color: $muted-accent;
+        }
+        &--expired {
+            border-color: $muted-accent;
         }
         &--available:before,
         &--available:after {
@@ -66,7 +83,27 @@
         }
         &--mine:before,
         &--mine:after {
-            background-color: $accent-color;
+            background-color: $accent-color!important;
+        }
+
+        &--dispute:before,
+        &--dispute:after {
+            background-color: $accent-color-2;
+        }
+
+        &--pending:before,
+        &--pending:after {
+            background-color: $secondary-color;
+        }
+
+        &--completed:before,
+        &--completed:after {
+            background-color: $muted-accent;
+        }
+
+        &--expired:before,
+        &--expired:after {
+            background-color: $muted-accent;
         }
 
         &::before {
@@ -105,6 +142,9 @@
         letter-spacing: normal;
         color: #fff;
         width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
 
         &:before {
             content: '';
@@ -130,13 +170,31 @@
 
     &--completed &__title {
         &:before {
-            background: $accent-color-2;
+            background: $muted-accent;
         }
     }
 
     &--mine &__title {
         &:before {
-            background: $accent-color;
+            background: $accent-color!important;
+        }
+    }
+
+    &--pending &__title {
+        &::before {
+            background: $secondary-color;
+        }
+    }
+
+    &--dispute &__title {
+        &::before {
+            background: $accent-color-2;
+        }
+    }
+
+    &--expired &__title {
+        &::before {
+            background: $muted-accent;
         }
     }
 
@@ -159,8 +217,9 @@
 
     &__details {
         max-height: calc(
-            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height}
+            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height} - 79px
         );
+        overflow: auto;
     }
 
     &__from {
@@ -220,7 +279,10 @@
         &--accent { color: $accent-color }
         &--accent::before { background-color: $accent-color }
 
-        &--accent-2 { color: $accent-color-2 }
-        &--accent-2::before { background-color: $accent-color-2 }
+        &--accent2 { color: $accent-color-2 }
+        &--accent2::before { background-color: $accent-color-2 }
+        
+        &--muted-accent { color: $muted-accent }
+        &--muted-accent::before { background-color: $muted-accent }
     }
 }

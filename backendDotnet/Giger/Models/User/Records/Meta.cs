@@ -7,7 +7,7 @@ namespace Giger.Models.User.Records
     public class Meta : UserRecord
     {
         [BsonRepresentation(BsonType.String)]
-        public MetaTypes Type { get; set; }
+        public required MetaTypes Type { get; set; }
 
         public bool IsLink { get; set; }
 

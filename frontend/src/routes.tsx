@@ -13,7 +13,7 @@ import { useNotificationsService } from './shared/services/notifications.service
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
 import { useVersionService } from './shared/services/version.service';
-import { AdminMarker } from './shared/components/admin-marker/admin-marker';
+import { GodMarker } from './shared/components/god-marker/god-marker';
 import { Contacts } from './apps/myId/contacts/contacts';
 import { Details } from './apps/myId/details/details';
 import { Vibe } from './apps/myId/vibe/vibe';
@@ -22,14 +22,22 @@ import { EventRecordType } from './models/events';
 import { UserRecords } from './apps/myId/user-records/user-records';
 import { UserRecordTypes } from './models/user';
 import { AnimatePresence, motion } from 'framer-motion';
+import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
+import { useIntl } from 'react-intl';
+import { CodeEntry } from './apps/myId/code-entry/code-entry';
+import { useBankingService } from './shared/services/banking.service';
 
 export const Router = () => {
+    const intl = useIntl();
     const { test } = useNotificationsService();
     const { versionCheck } = useVersionService();
+    const { fetchAccounts } = useBankingService();
 
     useEffect(() => {
+        console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
         test();
+        fetchAccounts();
     }, []);
 
     const isLoggedIn = useSelector(
@@ -46,12 +54,23 @@ export const Router = () => {
                             <Route path="giger" element={<Giger />}>
                                 <Route path="new-gig" element={<Giger />} />
                                 <Route path=":gigId" element={<Giger />} />
+                                <Route
+                                    path="report-problem"
+                                    element={<ReportProblem />}
+                                >
+                                    <Route path=":gigId" element={<Giger />} />
+                                </Route>
                             </Route>
                             <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />
                                 <Route path="new" element={<Chat />} />
                             </Route>
-                            <Route path="bank" element={<Bank />} />
+                            <Route path="bank" element={<Bank />}>
+                                <Route
+                                    path="new"
+                                    element={<NewTransaction />}
+                                />
+                            </Route>
                             <Route path="myid" element={<MyId />}>
                                 <Route path="details" element={<Details />}>
                                     <Route
@@ -134,12 +153,12 @@ export const Router = () => {
                                             />
                                         }
                                     />
+                                    <Route
+                                        path="code"
+                                        element={<CodeEntry />}
+                                    />
                                 </Route>
                             </Route>
-                            <Route
-                                path="report-problem"
-                                element={<ReportProblem />}
-                            />
                         </Routes>
                         <Toaster
                             position="bottom-center"
@@ -150,7 +169,7 @@ export const Router = () => {
                             {(t) => <ToastItem toast={t} />}
                         </Toaster>
                         <MainMenu />
-                        <AdminMarker />
+                        <GodMarker />
                     </>
                 ) : (
                     <Routes>

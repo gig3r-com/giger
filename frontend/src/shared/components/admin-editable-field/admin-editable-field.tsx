@@ -15,12 +15,12 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
     const booleanInput = props.type === FieldTypes.BOOLEAN;
     const selectInput = props.type === FieldTypes.SELECT;
     const sliderInput = props.type === FieldTypes.SLIDER;
-    const { isAdmin } = useUserService();
+    const { isGod } = useUserService();
     const [value, setValue] = useState<string | number | boolean>(props.value);
 
     return (
         <>
-            {isAdmin && textInput && (
+            {isGod && textInput && (
                 <div
                     contentEditable={true}
                     suppressContentEditableWarning={true}
@@ -33,7 +33,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     {props.value}
                 </div>
             )}
-            {isAdmin && numberInput && (
+            {isGod && numberInput && (
                 <input
                     type="number"
                     className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
@@ -44,7 +44,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     }}
                 />
             )}
-            {isAdmin && booleanInput && (
+            {isGod && booleanInput && (
                 <select
                     className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={`${value}`}
@@ -57,7 +57,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     <option value="false">no</option>
                 </select>
             )}
-            {isAdmin && selectInput && (
+            {isGod && selectInput && (
                 <select
                     className={`${props.className} admin-editable-field admin-editable-field__select admin-editable-field__admin-mode`}
                     value={value as string}
@@ -66,14 +66,18 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                 >
                     {props.options?.map((option) => (
                         <option key={option} value={option}>
-                            <FormattedMessage id={option} />
+                            {props.skipTranslation ? (
+                                option
+                            ) : (
+                                <FormattedMessage id={option} />
+                            )}
                         </option>
                     ))}
                 </select>
             )}
             {sliderInput && (
                 <Slider
-                    className={`${props.className} admin-editable-field admin-editable-field__slider ${isAdmin && 'admin-editable-field__admin-mode'}`}
+                    className={`${props.className} admin-editable-field admin-editable-field__slider ${isGod && 'admin-editable-field__admin-mode'}`}
                     label={props.label}
                     label2={props.label2}
                     value={value as number}
@@ -83,10 +87,10 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     onChange={setValue}
                     min={props.min}
                     max={props.max}
-                    disabled={!isAdmin}
+                    disabled={!isGod}
                 />
             )}
-            {!isAdmin && !sliderInput && (
+            {!isGod && !sliderInput && (
                 <span
                     className={`admin-editable-field ${props.className}`}
                     onClick={props.onClick}

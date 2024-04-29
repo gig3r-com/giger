@@ -283,7 +283,13 @@ export const mockUserConvos: IConversation[] = [
     },
     {
         id: 'conv9',
-        participants: [users[4].id, users[17].id, users[24].id, users[27].id, users[35].id], // Michael Davis, BinaryPhantom, Charlotte White, Sophia Young, NeonTiger69
+        participants: [
+            users[4].id,
+            users[17].id,
+            users[24].id,
+            users[27].id,
+            users[35].id
+        ], // Michael Davis, BinaryPhantom, Charlotte White, Sophia Young, NeonTiger69
         messages: [
             {
                 id: 'msg34',
@@ -509,7 +515,13 @@ export const mockUserConvos: IConversation[] = [
     },
     {
         id: 'conv14',
-        participants: [users[1].id, users[16].id, users[20].id, users[26].id, users[35].id], // Jane Smith, Lucas Moore, Liam Clark, Harper Scott, NeonTiger69
+        participants: [
+            users[1].id,
+            users[16].id,
+            users[20].id,
+            users[26].id,
+            users[35].id
+        ], // Jane Smith, Lucas Moore, Liam Clark, Harper Scott, NeonTiger69
         messages: [
             {
                 id: 'msg62',
@@ -557,7 +569,13 @@ export const mockUserConvos: IConversation[] = [
     },
     {
         id: 'conv15',
-        participants: [users[5].id, users[7].id, users[27].id, users[33].id, users[35].id], // Olivia Wilson, Sophia Anderson, Sophia Young, Benjamin Wood, NeonTiger69
+        participants: [
+            users[5].id,
+            users[7].id,
+            users[27].id,
+            users[33].id,
+            users[35].id
+        ], // Olivia Wilson, Sophia Anderson, Sophia Young, Benjamin Wood, NeonTiger69
         messages: [
             {
                 id: 'msg68',
@@ -673,6 +691,64 @@ export const mockUserConvos: IConversation[] = [
                 sender: users[25].id,
                 text: "Meet me at the NeonTech Corp building tomorrow. We'll navigate through their virtual defenses.",
                 date: '2023-08-20T12:30:00',
+                status: IMessageStatus.SENT
+            }
+        ]
+    },
+    {
+        id: 'conv19',
+        participants: [
+            users[1].id,
+            users[2].id,
+            users[3].id,
+            users[4].id,
+            users[5].id,
+            users[6].id,
+            users[7].id,
+            users[8].id,
+            users[9].id,
+            users[10].id,
+            users[11].id,
+            users[12].id,
+            users[13].id,
+            users[14].id,
+            users[15].id,
+            users[16].id,
+            users[17].id,
+            users[18].id,
+            users[19].id,
+            users[20].id,
+            users[21].id,
+            users[22].id,
+            users[23].id,
+            users[24].id,
+            users[25].id,
+            users[26].id,
+            users[27].id,
+            users[28].id,
+            users[29].id,
+            users[30].id,
+            users[31].id,
+            users[32].id,
+            users[33].id,
+            users[34].id,
+            users[35].id,
+            users[36].id
+        ],
+        participantsAllowedToSendMsgs: [users[36].id],
+        messages: [
+            {
+                id: 'msg82',
+                sender: users[36].id,
+                text: 'This is a public annoucment. The NeonTech Corp building has been breached. All users are advised to change their passwords immediately.',
+                date: '2023-08-20T12:00:00',
+                status: IMessageStatus.SENT
+            },
+            {
+                id: 'msg83',
+                sender: users[36].id,
+                text: 'This is a public announcment. We are at security level 3. All users are advised to stay indoors until further notice.',
+                date: '2023-08-20T12:15:00',
                 status: IMessageStatus.SENT
             }
         ]

@@ -11,23 +11,25 @@ import {
     VibeEngagement,
     WealthLevels
 } from '../../../models/user';
-import { ReactComponent as HumanSignature } from '../../../assets/id-human.svg';
-import { ReactComponent as AISignature } from '../../../assets/id-ai.svg';
-import { ReactComponent as AndroidSignature } from '../../../assets/id-android.svg';
+import HumanSignature from '../../../assets/id-human.svg?react';
+import AISignature from '../../../assets/id-ai.svg?react';
+import AndroidSignature from '../../../assets/id-android.svg?react';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AdminEditableField } from '../../../shared/components/admin-editable-field/admin-editable-field';
 import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 import { useUserService } from '../../../shared/services/user.service';
-
-import './char-summary.scss';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import { SelectUser } from '../select-user/select-user';
+import { Factions } from '../../../models/companies';
+
+import './char-summary.scss';
 
 export const CharSummary: FC<{
     mode: 'public' | 'private';
     userData?: IUserPublic;
 }> = ({ userData, mode }) => {
     const intl = useIntl();
+    const { isGod } = useUserService();
     const isPrivate = mode === 'private';
     const { updateUserData, currentUser } = useUserService();
     const { generateAnimation } = useStandardizedAnimation();
@@ -249,145 +251,167 @@ export const CharSummary: FC<{
                     />
                     {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
                         <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="FACTION" />:
+                            </span>
                             <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={(user as IUserPrivate).hackingSkill}
-                                min={0}
-                                max={3}
-                                showValue={false}
-                                label={intl.formatMessage({
-                                    id: 'HACKING_SKILL'
-                                })}
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                options={[...Object.values(Factions)]}
+                                value={user!.vibe}
                                 onChange={async (val) =>
                                     await updateUserData(user!.id, {
-                                        hackingSkill: parseInt(val) as SkillStat
+                                        faction: val as Factions
                                     })
                                 }
                             />
                         </>
                     )}
 
-                    {isPrivate && (
+                    {isPrivate && isGod && (
                         <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="ACTIVE" />:
+                            </span>
                             <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={(user as IUserPrivate).combatSkill}
-                                min={0}
-                                max={3}
-                                showValue={false}
-                                label={intl.formatMessage({
-                                    id: 'COMBAT_SKILL'
-                                })}
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                value={user!.active ? 'YES' : 'NO'}
+                                options={['YES', 'NO']}
                                 onChange={async (val) =>
                                     await updateUserData(user!.id, {
-                                        combatSkill: parseInt(val) as SkillStat
+                                        active: val === 'YES'
                                     })
                                 }
                             />
                         </>
                     )}
 
-                    {isPrivate && (
-                        <>
-                            <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={(user as IUserPrivate).talkativeVsSilent}
-                                min={0}
-                                max={4}
-                                showMin={false}
-                                showMax={false}
-                                showValue={false}
-                                label={intl.formatMessage({ id: 'TALKATIVE' })}
-                                label2={intl.formatMessage({ id: 'SILENT' })}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        talkativeVsSilent: parseInt(
-                                            val
-                                        ) as CharStat
-                                    })
-                                }
-                            />
-                        </>
+                    {isPrivate && (user as IUserPrivate).hackingSkill > 0 && (
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).hackingSkill}
+                            min={0}
+                            max={3}
+                            showValue={false}
+                            label={intl.formatMessage({
+                                id: 'HACKING_SKILL'
+                            })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    hackingSkill: parseInt(val) as SkillStat
+                                })
+                            }
+                        />
                     )}
 
                     {isPrivate && (
-                        <>
-                            <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={
-                                    (user as IUserPrivate)
-                                        .confrontationVsNegotiation
-                                }
-                                min={0}
-                                max={4}
-                                showMin={false}
-                                showMax={false}
-                                showValue={false}
-                                label={intl.formatMessage({
-                                    id: 'CONFRONTATIONAL'
-                                })}
-                                label2={intl.formatMessage({
-                                    id: 'NEGOTIATOR'
-                                })}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        confrontationVsNegotiation: parseInt(
-                                            val
-                                        ) as CharStat
-                                    })
-                                }
-                            />
-                        </>
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).combatSkill}
+                            min={0}
+                            max={3}
+                            showValue={false}
+                            label={intl.formatMessage({
+                                id: 'COMBAT_SKILL'
+                            })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    combatSkill: parseInt(val) as SkillStat
+                                })
+                            }
+                        />
                     )}
 
                     {isPrivate && (
-                        <>
-                            <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={(user as IUserPrivate).cowardVsFighter}
-                                min={0}
-                                max={4}
-                                showMin={false}
-                                showMax={false}
-                                showValue={false}
-                                label={intl.formatMessage({ id: 'COWARD' })}
-                                label2={intl.formatMessage({ id: 'FIGHTER' })}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        cowardVsFighter: parseInt(
-                                            val
-                                        ) as CharStat
-                                    })
-                                }
-                            />
-                        </>
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).talkativeVsSilent}
+                            min={0}
+                            max={4}
+                            showMin={false}
+                            showMax={false}
+                            showValue={false}
+                            label={intl.formatMessage({ id: 'TALKATIVE' })}
+                            label2={intl.formatMessage({ id: 'SILENT' })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    talkativeVsSilent: parseInt(val) as CharStat
+                                })
+                            }
+                        />
                     )}
 
                     {isPrivate && (
-                        <>
-                            <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={(user as IUserPrivate).thinkerVsDoer}
-                                min={0}
-                                max={4}
-                                showMin={false}
-                                showMax={false}
-                                showValue={false}
-                                label={intl.formatMessage({ id: 'THINKER' })}
-                                label2={intl.formatMessage({ id: 'DOER' })}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        thinkerVsDoer: parseInt(val) as CharStat
-                                    })
-                                }
-                            />
-                        </>
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={
+                                (user as IUserPrivate)
+                                    .confrontationVsNegotiation
+                            }
+                            min={0}
+                            max={4}
+                            showMin={false}
+                            showMax={false}
+                            showValue={false}
+                            label={intl.formatMessage({
+                                id: 'CONFRONTATIONAL'
+                            })}
+                            label2={intl.formatMessage({
+                                id: 'NEGOTIATOR'
+                            })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    confrontationVsNegotiation: parseInt(
+                                        val
+                                    ) as CharStat
+                                })
+                            }
+                        />
+                    )}
+
+                    {isPrivate && (
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).cowardVsFighter}
+                            min={0}
+                            max={4}
+                            showMin={false}
+                            showMax={false}
+                            showValue={false}
+                            label={intl.formatMessage({ id: 'COWARD' })}
+                            label2={intl.formatMessage({ id: 'FIGHTER' })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    cowardVsFighter: parseInt(val) as CharStat
+                                })
+                            }
+                        />
+                    )}
+
+                    {isPrivate && (
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).thinkerVsDoer}
+                            min={0}
+                            max={4}
+                            showMin={false}
+                            showMax={false}
+                            showValue={false}
+                            label={intl.formatMessage({ id: 'THINKER' })}
+                            label2={intl.formatMessage({ id: 'DOER' })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    thinkerVsDoer: parseInt(val) as CharStat
+                                })
+                            }
+                        />
                     )}
                 </div>
             </div>

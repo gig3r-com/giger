@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import classNames from 'classnames';
@@ -19,6 +19,7 @@ export const ConvoSnippet: FC<{
     const { chatId } = useParams();
     const { getHandleForConvo } = useUserService();
     const { generateAnimation } = useStandardizedAnimation();
+    const { currentUser } = useUserService();
     const lastMessage = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({
@@ -28,48 +29,70 @@ export const ConvoSnippet: FC<{
         'convo-snippet--other-selected':
             chatId !== convo.id && isConversationExpanded
     });
+    const canSendMessages = useMemo(() => {
+        return (
+            currentUser &&
+            convo.participantsAllowedToSendMsgs?.includes(currentUser?.id)
+        );
+    }, [currentUser, convo.participantsAllowedToSendMsgs]);
 
     return (
         <motion.article
-            {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
+            {...generateAnimation('horExpand', {
+                delay: delayMultiplier * 0.06
+            })}
             className={convoSnippetClassnames}
         >
-            {chatId === convo.id && isConversationExpanded &&<Controls leftSideOption='back' />}
+            {chatId === convo.id && isConversationExpanded && (
+                <Controls leftSideOption="back" />
+            )}
             <AnimatePresence>
                 {!isConversationExpanded && (
                     <motion.section
                         key={convo.id + 'snippet'}
-                        {...generateAnimation('horExpand', { delay: delayMultiplier * 0.06 })}
+                        {...generateAnimation('horExpand', {
+                            delay: delayMultiplier * 0.06
+                        })}
                         className="convo-snippet__summary"
                     >
-                        {lastMessage && <Link to={`/chat/${convo.id}`}>
-                            <section className="convo-snippet__meta">
-                                <span className="convo-snippet__sender">
-                                    @{getHandleForConvo(convo.id, lastMessage.sender)}
+                        {lastMessage && (
+                            <Link to={`/chat/${convo.id}`}>
+                                <section className="convo-snippet__meta">
+                                    <span className="convo-snippet__sender">
+                                        @
+                                        {getHandleForConvo(
+                                            convo.id,
+                                            lastMessage.sender
+                                        )}
+                                    </span>
+                                    {' > '}
+                                    <span className="convo-snippet__date">
+                                        {new Date(
+                                            lastMessage.date
+                                        ).toLocaleTimeString()}
+                                    </span>
+                                    {' > '}
+                                    <span className="convo-snippet__status">
+                                        {lastMessage.status && (
+                                            <MemoizedFormattedMessage
+                                                id={lastMessage.status.toUpperCase()}
+                                            />
+                                        )}
+                                    </span>
+                                </section>
+                                <span className="convo-snippet__message">
+                                    {lastMessage.text}
                                 </span>
-                                {' > '}
-                                <span className="convo-snippet__date">
-                                    {new Date(
-                                        lastMessage.date
-                                    ).toLocaleTimeString()}
-                                </span>
-                                {' > '}
-                                <span className="convo-snippet__status">
-                                    {lastMessage.status && <MemoizedFormattedMessage
-                                        id={lastMessage.status.toUpperCase()}
-                                    />}
-                                </span>
-                            </section>
-                            <span className="convo-snippet__message">
-                                {lastMessage.text}
-                            </span>
-                        </Link>}
+                            </Link>
+                        )}
                     </motion.section>
                 )}
                 {chatId === convo.id && (
                     <>
-                        <Conversation key={convo.id+'convo'} convo={convo} />
-                        <NewMsg key={convo.id+'msg'} convoId={convo.id} />
+                        <Conversation key={convo.id + 'convo'} convo={convo} />
+                        {canSendMessages && (
+                            <NewMsg key={convo.id + 'msg'} convoId={convo.id} />
+                        )}
                     </>
                 )}
             </AnimatePresence>

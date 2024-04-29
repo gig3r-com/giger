@@ -1,7 +1,7 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 
 import './gig-reputation.scss';
-import classNames from 'classnames';
 
 const GigReputation: FC<{
     reputation: 0 | 1 | 2 | 3 | 4 | 5;

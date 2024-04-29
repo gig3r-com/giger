@@ -1,11 +1,9 @@
-import { FC, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import { IGig } from '../../models/gig';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router';
 import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
-import { RootState } from '../../store/store';
+import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
 
 import './giger.scss';
@@ -14,31 +12,18 @@ export const Giger: FC = () => {
     const location = useLocation();
     const { gigId } = useParams();
     const navigate = useNavigate();
-    const { fetchGigs } = useGigsService();
-    const gigs = useSelector((state: RootState) => state.gigs.gigs);
-    const selectedCategories = useSelector(
-        (state: RootState) => state.gigs.selectedCategories
-    );
-    const [filteredGigs, setFilteredGigs] = useState<IGig[]>(gigs);
+    const { fetchGigs, gigsVisibleToTheUser, filteredGigs } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
 
     useEffect(function mountSetup() {
-        fetchGigs();
+        if (filteredGigs.length === 0) {
+            fetchGigs();
+        }
     }, []);
 
-    useEffect(
-        function onFiltersUpdate() {
-            const filteredList = gigs.filter((gig) =>
-                selectedCategories.includes(gig.category)
-            );
-            setFilteredGigs(
-                selectedCategories.length === 0 ? gigs : filteredList
-            );
-        },
-        [selectedCategories, gigs]
-    );
+    const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);
 
     const toggleMenuState = () => {
         setMenuState(menuState === 'filters' ? 'list' : 'filters');
@@ -66,12 +51,15 @@ export const Giger: FC = () => {
 
     return (
         <article className="giger">
-            <GigList gigs={filteredGigs} toggleMenuState={toggleMenuState} />
+            <GigList toggleMenuState={toggleMenuState} />
             <GigListFilters
                 toggleMenuState={toggleMenuState}
                 active={menuState === 'filters'}
             />
-            <NewGig active={menuState === 'newGig'} />
+            <AnimatePresence>
+                <NewGig active={menuState === 'newGig'} />
+            </AnimatePresence>
+            <Outlet />
         </article>
     );
 };

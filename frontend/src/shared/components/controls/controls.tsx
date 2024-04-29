@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { IControlsProps } from './controls.model';
 import { standardTimingFunction } from '../../constants';
-import { ReactComponent as ChevronLeft } from '../../../assets/chevron-left-solid.svg';
+import ChevronLeft from '../../../assets/chevron-left-solid.svg?react';
 
 import './controls.scss';
 
@@ -39,7 +39,7 @@ export const Controls: FC<IControlsProps> = ({
                 <motion.span
                     {...anim}
                     className="controls__back controls__left-side"
-                    onClick={navigateBack ? () => navigate(-1) : () => onLeftSideClick && onLeftSideClick()}
+                    onClick={navigateBack ? () => navigate('../') : () => onLeftSideClick && onLeftSideClick()}
                 >
                     <ChevronLeft />
                     <MemoizedFormattedMessage id="BACK" />

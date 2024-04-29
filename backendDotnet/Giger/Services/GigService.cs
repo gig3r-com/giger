@@ -18,8 +18,9 @@ namespace Giger.Services
         public async Task<List<Gig>> GetAllAsync() =>
             await _gigsCollection.Find(_ => true).ToListAsync();
 
-        public async Task<List<Gig>> GetAllAvailableAsync() =>
-            await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE).ToListAsync();
+        public async Task<List<Gig>> GetAllAvailableAsync(string requestSenderId) =>
+            await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE ||
+                    g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
 
         public async Task<List<Gig>> GetAllOwnAsync(string takenBy) =>
             await _gigsCollection.Find(g => g.TakenById == takenBy).ToListAsync();

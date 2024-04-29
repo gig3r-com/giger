@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Giger", "Giger\Giger.csproj", "{8ADE0AE5-1EEB-4204-A7E5-802FEE09013C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebSocketClientChat", "TestWebSocketClientChat\TestWebSocketClientChat.csproj", "{075A3083-0DFD-4DB7-AB59-723943E8783B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWebSocketClientChat", "TestWebSocketClientChat\TestWebSocketClientChat.csproj", "{075A3083-0DFD-4DB7-AB59-723943E8783B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSerializer", "DatabaseSerializer\DatabaseSerializer.csproj", "{ECC966B0-D24A-4D8B-8132-19FC7C65C5B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{075A3083-0DFD-4DB7-AB59-723943E8783B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{075A3083-0DFD-4DB7-AB59-723943E8783B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{075A3083-0DFD-4DB7-AB59-723943E8783B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECC966B0-D24A-4D8B-8132-19FC7C65C5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC966B0-D24A-4D8B-8132-19FC7C65C5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC966B0-D24A-4D8B-8132-19FC7C65C5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC966B0-D24A-4D8B-8132-19FC7C65C5B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,8 +7,9 @@ namespace Giger.Models.BankingModels
     public class Account
     {
         [BsonId]
+        [BsonElement("_id")]
         public required string Id { get; set; }
-        
+
         public required string Owner { get; set; }
 
         public required string OwnerId { get; set; }
@@ -17,8 +18,8 @@ namespace Giger.Models.BankingModels
         
         [BsonRepresentation(BsonType.String)]
         public required AccountType Type { get; set; }
-        
-        public decimal Balance { get; set; }
+
+        public required decimal Balance { get; set; }
         
         public required string AccountNumber { get; set; }
     }

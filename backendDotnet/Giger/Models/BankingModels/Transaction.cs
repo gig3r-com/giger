@@ -10,10 +10,12 @@ namespace Giger.Models.BankingModels
         
         public required string From { get; set; }
 
+        public required string Title { get; set; }
+
         [BsonIgnore]
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
-        
-        public DateTime Date { get; set; }
+
+        public required DateTime Date { get; set; }
     }
 }

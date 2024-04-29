@@ -1,7 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
-import { RootState } from '../../../store/store';
+import { selectActiveUsers, selectUsers } from '../../../store/users.selectors';
 import { setCurrentUser } from '../../../store/users.slice';
 
 import './select-user.scss';
@@ -11,8 +12,9 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
 }) => {
     const dispatch = useDispatch();
     const ref = useRef<HTMLSelectElement>(null);
-    const { isAdmin, getUserById, saveLoginData } = useUserService();
-    const users = useSelector((state: RootState) => state.users.users);
+    const { isGod, getUserById, saveLoginData } = useUserService();
+    const activeUsers = useSelector(selectActiveUsers);
+    const allUsers = useSelector(selectUsers);
     const [showSelection, setShowSelection] = useState(false);
 
     const onSelection = async (userId: string) => {
@@ -35,7 +37,7 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
 
     return (
         <>
-            {isAdmin && (
+            {isGod && (
                 <div
                     className="select-user material-icons material-symbols-outlined"
                     onClick={() => setShowSelection(true)}
@@ -49,9 +51,13 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
                     <select
                         ref={ref}
                         className="select-user__select"
+                        value={''}
                         onChange={(event) => onSelection(event.target.value)}
                     >
-                        {users.map((user) => (
+                        <option disabled hidden value={''}>
+                            <FormattedMessage id="SELECT_USER" />
+                        </option>
+                        {(isGod ? allUsers : activeUsers).map((user) => (
                             <option key={user.id} value={user.id}>
                                 {user.handle}
                             </option>

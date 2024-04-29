@@ -4,13 +4,13 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AnimatePresence, motion } from 'framer-motion';
-import { RootState } from '../../../store/store';
 import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
-import { UserSelect } from '../user-select/user-select';
+import { UserSelect } from '../../../shared/user-select/user-select';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
+import { selectActiveUsers } from '../../../store/users.selectors';
 
 import './start-new-convo.scss';
 
@@ -19,7 +19,7 @@ export const StartNewConvo: FC = () => {
     const navigate = useNavigate();
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const usersWrapper = useRef<HTMLDivElement>(null);
-    const users = useSelector((state: RootState) => state.users.users);
+    const users = useSelector(selectActiveUsers);
     const { createConvo } = useMessagesService();
     const { canAnonymizeChatHandle } = useUserService();
     const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
@@ -78,9 +78,8 @@ export const StartNewConvo: FC = () => {
             >
                 <Controls key="controls" leftSideOption="back" />
                 <UserSelect
-                    selected={selectedUsers}
-                    onValueUpdate={setSearchString}
-                    searchString={searchString}
+                    mode='multi'
+                    onSelection={(val) => setSelectedUsers(val)}
                 />
 
                 {canAnonymizeChatHandle() && (

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -10,30 +10,43 @@ import { Controls } from '../../../shared/components/controls/controls';
 import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
 import { RootState } from '../../../store/store';
+import { useGigsService } from '../../../shared/services/gigs.service';
 
 import './gigList.scss';
 
-export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
+export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
     const { currentUser } = useUserService();
-    const fetchingGigs = useSelector((state: RootState) => state.gigs.fetchingGigs);
+    const { filteredGigs } = useGigsService();
+    const fetchingGigs = useSelector(
+        (state: RootState) => state.gigs.fetchingGigs
+    );
     const { gigId } = useParams();
     const intl = useIntl();
 
-    const sortedGigs = [...gigs].sort((a, b) => {
-        const aIsOwn = a.authorId === currentUser?.id;
-        const bIsOwn = b.authorId === currentUser?.id;
-        const statusesRank = {
-            [GigStatus.DISPUTE]: 0,
-            [GigStatus.PENDING]: 1,
-            [GigStatus.IN_PROGRESS]: 2,
-            [GigStatus.AVAILABLE]: 3,
-            [GigStatus.COMPLETED]: 4
-        };
-        const aScore = aIsOwn ? -1 : statusesRank[a.status];
-        const bScore = bIsOwn ? -1 : statusesRank[b.status];
+    const sortedGigs = useMemo(
+        () =>
+            [...filteredGigs].sort((a, b) => {
+                const aPriority =
+                    a.authorId === currentUser?.id &&
+                    a.status !== GigStatus.EXPIRED;
+                const bIsOwn =
+                    b.authorId === currentUser?.id &&
+                    a.status !== GigStatus.EXPIRED;
+                const statusesRank = {
+                    [GigStatus.DISPUTE]: 0,
+                    [GigStatus.PENDING_CONFIRMATION]: 1,
+                    [GigStatus.IN_PROGRESS]: 2,
+                    [GigStatus.AVAILABLE]: 3,
+                    [GigStatus.COMPLETED]: 4,
+                    [GigStatus.EXPIRED]: 5
+                };
+                const aScore = aPriority ? -1 : statusesRank[a.status];
+                const bScore = bIsOwn ? -1 : statusesRank[b.status];
 
-        return aScore - bScore;
-    });
+                return aScore - bScore;
+            }),
+        [filteredGigs, currentUser]
+    );
 
     return (
         <section className="gig-list">
@@ -41,8 +54,9 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                 leftSideOption={
                     gigId
                         ? 'back'
-                        : `${gigs.length} ${
-                              gigs.length > 1 || gigs.length === 0
+                        : `${filteredGigs.length} ${
+                              filteredGigs.length > 1 ||
+                              filteredGigs.length === 0
                                   ? intl.formatMessage({ id: 'GIG_PLURAL' })
                                   : intl.formatMessage({ id: 'GIG_PLURAL' })
                           }`
@@ -50,7 +64,7 @@ export const GigList: FC<IGigListProps> = ({ gigs, toggleMenuState }) => {
                 rightSideOption={gigId ? undefined : 'FILTERS'}
                 onRightSideClick={gigId ? undefined : toggleMenuState}
             />
-            {gigs.length === 0 && !fetchingGigs && <NoGigFound />}
+            {filteredGigs.length === 0 && !fetchingGigs && <NoGigFound />}
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
                     {sortedGigs.map((gig, i) => (

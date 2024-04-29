@@ -74,6 +74,7 @@ export interface IAdminEditableFieldPropsSelect
     type: FieldTypes.SELECT;
     options: string[];
     value: string;
+    skipTranslation?: boolean;
     onChange: (value: string) => void;
 }
 

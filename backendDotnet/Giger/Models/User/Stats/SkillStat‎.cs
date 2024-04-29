@@ -2,6 +2,11 @@
 {
     public struct SkillStat
     {
+        public SkillStat(int i)
+        {
+            Stat = (short)i;
+        }
+
         private const short MINVALUE = 0;
         private const short MAXVALUE = 3;
 
@@ -25,5 +30,8 @@
                 }
             }
         }
+
+        public static implicit operator int(SkillStat cl) => cl.Stat;
+        public static implicit operator SkillStat(int i) => new (i);
     }
 }
