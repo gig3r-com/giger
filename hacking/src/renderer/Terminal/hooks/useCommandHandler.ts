@@ -1,5 +1,5 @@
 import { MAIN_COMMANDS } from '../data/commands';
-import ApiService from '../../apiService/apiService';
+import { ApiService, ServerConnectionService } from '../../services';
 import {
   useTransferCommands,
   useSendMsgCommands,
@@ -20,7 +20,6 @@ type OnCommandHandleType = {
   addErrors: (line: string[] | string) => void;
   addLines: (lines: string[]) => void;
   removeLastLine: () => void;
-  connectToSubnetwork: () => void;
   isConnected: boolean;
   isDecrypted: boolean;
   decryptSubnetwork: () => void;
@@ -38,7 +37,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     addErrors,
     addLines,
     removeLastLine,
-    connectToSubnetwork,
     isConnected,
     isDecrypted,
     decryptSubnetwork,
@@ -47,7 +45,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     logout,
     toggleDebugMode,
     refreshPrefix,
-    isLoggedIn,
   } = props;
 
   /*
@@ -77,7 +74,6 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     addLines,
     addErrors,
     removeLastLine,
-    connectToSubnetwork,
     isConnected,
     decryptSubnetwork,
     setInputDisabled,
@@ -85,9 +81,18 @@ export default function useCommandHandler(props: OnCommandHandleType) {
   const { executeTransferCommand } = useTransferCommands({
     addLines,
     addErrors,
+    setInputDisabled,
   });
-  const { executeSendMsgCommand } = useSendMsgCommands({ addLines, addErrors });
-  const { executeReadMsgCommand } = useReadMsgCommands({ addLines, addErrors });
+  const { executeSendMsgCommand } = useSendMsgCommands({
+    addLines,
+    addErrors,
+    setInputDisabled,
+  });
+  const { executeReadMsgCommand } = useReadMsgCommands({
+    addLines,
+    addErrors,
+    setInputDisabled,
+  });
 
   /*
    * Read data commands
@@ -106,7 +111,11 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     addErrors,
     setInputDisabled,
   });
-  const { executeLogCommand } = useLogCommands({ addLines, addErrors });
+  const { executeLogCommand } = useLogCommands({
+    addLines,
+    addErrors,
+    setInputDisabled,
+  });
 
   /*
    * Read data commands
@@ -116,35 +125,42 @@ export default function useCommandHandler(props: OnCommandHandleType) {
     addErrors,
     setInputDisabled,
   });
-  const { executeBalanceCommand } = useBalanceCommands({ addLines, addErrors });
+  const { executeBalanceCommand } = useBalanceCommands({
+    addLines,
+    addErrors,
+    setInputDisabled,
+  });
 
+  // eslint-disable-next-line consistent-return
   const executeCommand = (command: string) => {
     const parsedCommand = command.toLowerCase().split(' ');
     const mainCommand = parsedCommand[0];
     switch (mainCommand) {
-      case MAIN_COMMANDS.CLEAR:
-        return setLines([]);
-      case MAIN_COMMANDS.END:
-        return disconnectFromSubnetwork();
-      case MAIN_COMMANDS.NAME:
-        setInputDisabled(true);
-        return ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
-          (newHackerName) => {
-            setInputDisabled(false);
-            addLines([newHackerName.hackerName]);
-            refreshPrefix();
-          },
-        );
-      case MAIN_COMMANDS.LOOGUT:
-        return logout();
-      case MAIN_COMMANDS.PROFILE:
-        return executeProfileCommand(parsedCommand);
-      case MAIN_COMMANDS.LIST:
-        return executeListCommand(parsedCommand);
-      case MAIN_COMMANDS.SCAN:
-        return executeScanCommand(parsedCommand);
-      case MAIN_COMMANDS.RUN:
-        return executeRunCommand(parsedCommand);
+      // case MAIN_COMMANDS.CLEAR:
+      //   return setLines([]);
+      // case MAIN_COMMANDS.END: {
+      //   ServerConnectionService.disconnect();
+      //   break;
+      // }
+      // case MAIN_COMMANDS.NAME:
+      //   setInputDisabled(true);
+      //   return ApiService.changeActiveUserHackingName(parsedCommand[1]).then(
+      //     (newHackerName) => {
+      //       setInputDisabled(false);
+      //       addLines([newHackerName.hackerName]);
+      //       refreshPrefix();
+      //     },
+      //   );
+      // case MAIN_COMMANDS.LOOGUT:
+      //   return logout();
+      // case MAIN_COMMANDS.PROFILE:
+      //   return executeProfileCommand(parsedCommand);
+      // case MAIN_COMMANDS.LIST:
+      //   return executeListCommand(parsedCommand);
+      // case MAIN_COMMANDS.SCAN:
+      //   return executeScanCommand(parsedCommand);
+      // case MAIN_COMMANDS.RUN:
+      //   return executeRunCommand(parsedCommand);
       case MAIN_COMMANDS.BALANCE:
         return executeBalanceCommand(parsedCommand);
       case MAIN_COMMANDS.TRANSFER:

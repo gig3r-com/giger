@@ -1,27 +1,23 @@
-import {ReactElement, useEffect, useState} from 'react';
-import {getConnectedSubnetworkData, getLoginUserData} from "../utils/store";
+import { ReactElement, useEffect, useState } from 'react';
+import { getLoginUserData } from '../utils/store';
+import { ServerConnectionService } from '../../services';
 
 type UsePrefixType = {
   isConnected: boolean;
-  timeLeft: number;
+  inputTimer: number;
   accessPoint: string;
   username: string;
   isLoggedIn: boolean;
   forceRefresh: boolean;
 };
-export function usePrefix(props: UsePrefixType) {
-  const {
-    isConnected,
-    timeLeft,
-    accessPoint,
-    username,
-    isLoggedIn,
-    forceRefresh,
-  } = props;
+export default function usePrefix(props: UsePrefixType) {
+  const { inputTimer, accessPoint, username, isLoggedIn, forceRefresh } = props;
   const [prefix, setPrefix] = useState<ReactElement[] | null>(null);
+  const { isConnected, connectedSubnetwork } = ServerConnectionService;
 
   useEffect(() => {
     const pref = [<span className="input-prefix">~</span>];
+
     if (!isLoggedIn && username) {
       pref.push(
         <span className="input-prefix">
@@ -32,15 +28,14 @@ export function usePrefix(props: UsePrefixType) {
     } else if (!isLoggedIn) {
       pref.push(<span className="input-prefix">Enter username</span>);
     } else if (isConnected) {
-      const connectedSubnetworkData = getConnectedSubnetworkData();
       const connectionTimer =
-        timeLeft > 100
-          ? Math.floor(timeLeft / 100)
-          : `0,${Math.floor(timeLeft / 10)}`;
+        inputTimer > 10
+          ? Math.floor(inputTimer / 10)
+          : `0,${Math.floor(inputTimer / 1)}`;
       pref.push(
         <span className="input-prefix">
           {accessPoint ? `${accessPoint}/` : ''}
-          {connectedSubnetworkData.name}
+          {connectedSubnetwork?.name}
         </span>,
       );
       pref.push(<span className="input-prefix">{connectionTimer}s</span>);
@@ -57,7 +52,14 @@ export function usePrefix(props: UsePrefixType) {
     pref.push(<span className="input-prefix">{'>'}</span>);
 
     setPrefix(pref);
-  }, [isConnected, timeLeft, accessPoint, isLoggedIn, username, forceRefresh]);
+  }, [
+    isConnected,
+    inputTimer,
+    accessPoint,
+    isLoggedIn,
+    username,
+    forceRefresh,
+  ]);
 
   return { prefix };
 }

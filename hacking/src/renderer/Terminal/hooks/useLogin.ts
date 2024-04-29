@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import ApiService from '../../apiService/apiService';
-import { loginSuccessful } from '../responseLines/login';
+import { ApiService } from '../../services';
+import { loginSuccessful, loginFailed } from '../responseLines/login';
 import { getLoginUserData, setLoginUserData } from '../utils/store';
 
 type UseLoginType = {
@@ -19,19 +19,20 @@ export default function useLogin({
   const [username, setUsername] = useState<string>('');
   function enterPassword(password: string): void {
     setInputDisabled(true);
-    if (username === 'mike_v' && password === 'test') {
-      setUsername('');
-      ApiService.getActiveUserProfile('e4ad03a7').then(
-        (hackerData: any) => {
-          setLoginUserData(hackerData);
-          setUserData(hackerData);
-          setIsLoggedIn(true);
-          setInputDisabled(false);
-          setPrefixType(hackerData.hackerName);
-          addLines(loginSuccessful(hackerData.hackerName));
-        },
-      );
-    }
+    setUsername('');
+    ApiService.getActiveUserProfile(username, password)
+      .then((hackerData: any) => {
+        setLoginUserData(hackerData);
+        setUserData(hackerData);
+        setIsLoggedIn(true);
+        setInputDisabled(false);
+        setPrefixType(hackerData.hackerName);
+        addLines(loginSuccessful(hackerData.hackerName));
+      })
+      .catch(() => {
+        addLines(loginFailed);
+        setInputDisabled(false);
+      });
   }
 
   function logout() {

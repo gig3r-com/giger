@@ -1,0 +1,53 @@
+{
+  "_id": "0b50768e-90e0-46b0-9fa1-95b937090d04",
+  "Name": "Bruce",
+  "Handle": "master_of_masters",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": "OVERSEER",
+  "Surname": "Rawls",
+  "Age": 42,
+  "Vibe": "SW4RM",
+  "WealthLevel": "IMPOVERISHED",
+  "NetworkId": "648eeb00-5102-4ca6-b127-5af49cf54342",
+  "SubnetworkId": "f9380ca5-9e0a-44b9-b7ba-335bb0941907",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "OVERSEER",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 0
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "None",
+  "VibeEngagement": "INTERESTED",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [],
+  "CriminalEvents": [],
+  "MedicalEvents": [],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

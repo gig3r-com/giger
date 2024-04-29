@@ -3,7 +3,7 @@ import {
   decryptingLines,
   decryptingSuccessLines,
 } from '../../responseLines/runCommands';
-import { addTimeline, makeLoaderLine } from '../../utils/timelines';
+import { makeLoaderLine } from '../../utils/timelines';
 
 export type RunDecrypterType = {
   isConnected: boolean;
@@ -26,19 +26,18 @@ export function runDecrypter({
 }: RunDecrypterType) {
   if (!isConnected) throw new Error('Need to be connected');
   addLines(decryptingLines(exploit));
-  const decryptingEffect = exploit.effect[subnetwork.operatingSystem];
+  // const decryptingEffect = exploit.effect[subnetwork.operatingSystem];
   setInputDisabled(true);
-  addTimeline(decryptingEffect.decryptingTime, stepDecryption, endDecryption);
 
-  function endDisabler() {
-    addLines(decryptingSuccessLines);
-    decryptSubnetwork();
-    setInputDisabled(false);
-  }
-
-  function stepDisabler(time) {
-    if (time !== decryptingEffect.decryptingTime) removeLastLine();
-    addLines([makeLoaderLine(time, decryptingEffect.decryptingTime)]);
-    if (time === 0) removeLastLine();
-  }
+  // function endDisabler() {
+  //   addLines(decryptingSuccessLines);
+  //   decryptSubnetwork();
+  //   setInputDisabled(false);
+  // }
+  //
+  // function stepDisabler(time) {
+  //   if (time !== decryptingEffect.decryptingTime) removeLastLine();
+  //   addLines([makeLoaderLine(time, decryptingEffect.decryptingTime)]);
+  //   if (time === 0) removeLastLine();
+  // }
 }

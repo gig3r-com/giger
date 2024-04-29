@@ -1,0 +1,26 @@
+.ice-progress-bar {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 30px;
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .filler {
+      position: absolute;
+      background: red;
+      width: 100%;
+      bottom: 0;
+      height: 0;
+      transition: 300ms ease-in-out all;
+
+      >span {
+
+      }
+    }
+  }
+}

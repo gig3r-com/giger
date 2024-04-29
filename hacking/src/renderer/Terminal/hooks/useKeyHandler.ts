@@ -1,3 +1,5 @@
+import {CommandsService} from "../../services";
+
 export const canTabSelector = 'data-can-tab';
 const selectedTabClass = 'selected-color';
 
@@ -98,7 +100,8 @@ export default function useKeyHandler({
   const enter = () => {
     if (isLoggedIn) {
       addUserLine(input);
-      executeCommand(input);
+      CommandsService.executeCommand(input);
+      // executeCommand(input);
     } else if (username) {
       enterPassword(input);
     } else {

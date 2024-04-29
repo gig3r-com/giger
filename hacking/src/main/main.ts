@@ -13,7 +13,6 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import Store from 'electron-store';
-import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 const usb = require('usb');
@@ -137,11 +136,6 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  windows.push(mainWindow);
-  new AppUpdater();
 };
 
 /**

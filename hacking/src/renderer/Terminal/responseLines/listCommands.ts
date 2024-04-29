@@ -17,7 +17,7 @@ export function getListCmdLines() {
   return lines;
 }
 
-export function getEncodedListCmdLines(encryptedCommands: []) {
+export function getEncodedListCmdLines(encryptedCommands: string[]) {
   const lines = [];
   const commandsKeys = Object.keys(CONNECTED_COMMANDS_DESCRIPTIONS);
   for (let i = 0; i < commandsKeys.length; i++) {
@@ -55,8 +55,10 @@ export function getListProgramLines(programs) {
   const lines = [];
   for (let i = 0; i < programs.length; i++) {
     lines.push(
-      `<span class="accent-color-2" ${canTabSelector}>${programs[i].name}</span> ${programs[i].type}`,
+      `<span class="accent-color-2" ${canTabSelector}>${programs[i]?.name}</span> ${programs[i]?.type}`,
     );
   }
   return lines;
 }
+
+export const noProgramsAvailable = [`<span>No programs available</span>`];

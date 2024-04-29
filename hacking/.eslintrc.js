@@ -17,6 +17,7 @@ module.exports = {
     'promise/catch-or-return': 'off',
     'no-use-before-define': 'off',
     'class-methods-use-this': 'off',
+    'jsx-a11y/no-autofocus': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

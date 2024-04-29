@@ -12,6 +12,7 @@ type AccessPointTable = {
 const accessPoints: AccessPointTable = {
   49271: 'logitech',
 };
+// @ts-ignore
 export default function useAccessPointHandler({ setAccessPoint }) {
   useEffect(() => {
     window.electron.ipcRenderer.on('devices', (devicesString: string) => {

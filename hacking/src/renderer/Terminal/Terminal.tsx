@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { usePrefix } from './hooks/usePrefix';
+import { FocusEventHandler, useEffect, useMemo, useState } from 'react';
+import usePrefix from './hooks/usePrefix';
 import useCommandHandler from './hooks/useCommandHandler';
 import useKeyHandler from './hooks/useKeyHandler';
 import useLineStateHandler from './hooks/useLineStateHandler';
@@ -7,8 +7,13 @@ import useSystemHandler from './hooks/useSystemHandler';
 import useAccessPointHandler from './hooks/useAccessPointHandler';
 import useLogin from './hooks/useLogin';
 import useDebugMode from './hooks/useDebugMode';
-import Loader from '../Loader';
-import apiService from '../apiService/apiService';
+import Loader from '../components/Loader';
+import {
+  ApiService,
+  CommandsService,
+  ConfigService,
+  ServerConnectionService,
+} from '../services';
 
 export default function Terminal() {
   const [input, setInput] = useState('');
@@ -16,12 +21,14 @@ export default function Terminal() {
   const [prefixType, setPrefixType] = useState('admin');
   const [inputDisabled, setInputDisabled] = useState(false);
   const [forceRefresh, setForceRefresh] = useState(false);
+  const [inputTimer, setInputTimer] = useState<number | null>(null);
   const refreshPrefix = () => setForceRefresh(true);
   useEffect(() => {
     if (forceRefresh) setForceRefresh(false);
   }, [forceRefresh]);
   const changeInput = (e: Event) => setInput(e.target.value);
-  const stayFocused = (e: Event) => e.target.focus();
+  const stayFocused = (e: FocusEventHandler<HTMLInputElement>) =>
+    e.target.focus();
   const { toggleDebugMode } = useDebugMode();
   const {
     lines,
@@ -36,18 +43,15 @@ export default function Terminal() {
     useLogin({ setInputDisabled, addLines, setPrefixType });
   const {
     isConnected,
-    timeLeft,
-    connectToSubnetwork,
     isDecrypted,
     decryptSubnetwork,
     disconnectFromSubnetwork,
-  } = useSystemHandler({ addLines, setPrefixType });
+  } = useSystemHandler({ addLines, setPrefixType, setLines });
   const { executeCommand } = useCommandHandler({
     setLines,
     addLines,
     addErrors,
     removeLastLine,
-    connectToSubnetwork,
     disconnectFromSubnetwork,
     isConnected,
     isDecrypted,
@@ -71,13 +75,14 @@ export default function Terminal() {
   });
   const { prefix } = usePrefix({
     isConnected,
-    timeLeft,
+    inputTimer,
     accessPoint,
     username,
     isLoggedIn,
     userData,
     forceRefresh,
   });
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   if (window.electron) useAccessPointHandler({ setAccessPoint });
 
   const renderedLines = useMemo(() => {
@@ -87,15 +92,32 @@ export default function Terminal() {
     });
   }, [lines]);
 
+  useEffect(() => {
+    ServerConnectionService.init(
+      addLines,
+      removeLastLine,
+      setPrefixType,
+      setInputTimer,
+      setLines,
+      setInputDisabled,
+    );
+    CommandsService.init({
+      addLines,
+      setLines,
+      addErrors,
+      setInputDisabled,
+      logout,
+      refreshPrefix,
+    });
+    window.config.services = {
+      ApiService,
+      ConfigService,
+      ServerConnectionService,
+    };
+  }, [addLines, removeLastLine]);
+
   return (
     <>
-      <button
-        onClick={() => {
-          apiService.disableAuth();
-        }}
-      >
-        disableAuth
-      </button>
       {renderedLines}
       <div className="line input-line">
         {prefix}

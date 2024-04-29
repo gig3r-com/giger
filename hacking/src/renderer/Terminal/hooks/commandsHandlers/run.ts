@@ -1,4 +1,4 @@
-import ApiService from '../../../apiService/apiService';
+import { ApiService } from '../../../services';
 import * as EXPLOITS from '../../data/exploits';
 import { ExploitType, SubnetworkType } from '../../data/types';
 import { runBreacher } from './runBreacher';
@@ -14,7 +14,6 @@ export type UseRunCommandsType = {
   addLines: (lines: string[]) => void;
   addErrors: (lines: string | string[]) => void;
   removeLastLine: () => void;
-  connectToSubnetwork: (subnetwork: SubnetworkType, timer: number) => void;
   decryptSubnetwork: () => void;
   setInputDisabled: (value: boolean) => void;
 };
@@ -23,7 +22,6 @@ export default function useRunCommands({
   addLines,
   addErrors,
   removeLastLine,
-  connectToSubnetwork,
   isConnected,
   decryptSubnetwork,
   setInputDisabled,
@@ -31,29 +29,40 @@ export default function useRunCommands({
   const executeRunCommand = async (parsedCommand: string[]) => {
     try {
       setInputDisabled(true);
-      const subnetworkId = getSubnetworkId(isConnected, parsedCommand[2]);
-      const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
       const exploit: ExploitType | undefined = getExploit(parsedCommand[1]);
 
       if (!exploit) return addErrors(programNotFound);
-      if (!subnetwork) return addErrors(subnetworkNotFound);
-
-      const runProgramProps = {
-        addLines,
-        exploit,
-        isConnected,
-        removeLastLine,
-        subnetwork,
-        setInputDisabled,
-      };
 
       switch (exploit.type) {
         case 'breacher': {
-          runBreacher({ connectToSubnetwork, ...runProgramProps });
+          const subnetworkId = getSubnetworkId(isConnected, parsedCommand[2]);
+          const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+          if (!subnetwork) return addErrors(subnetworkNotFound);
+          runBreacher({
+            addLines,
+            exploit,
+            isConnected,
+            removeLastLine,
+            subnetwork,
+          });
           break;
         }
         case 'decrypter': {
-          runDecrypter({ decryptSubnetwork, ...runProgramProps });
+          const subnetworkId = getSubnetworkId(isConnected, parsedCommand[2]);
+          const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+          if (!subnetwork) return addErrors(subnetworkNotFound);
+          runDecrypter({
+            addLines,
+            exploit,
+            isConnected,
+            removeLastLine,
+            subnetwork,
+            setInputDisabled,
+          });
+          break;
+        }
+        case 'monitor': {
+          console.log('MON');
           break;
         }
         default: {

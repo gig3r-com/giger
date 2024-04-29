@@ -3,6 +3,7 @@ export function addTimeline(time: number, stepCallback: (number) => void, endCal
     stepCallback && stepCallback(time);
     time-- || (clearInterval(interval), endCallback());
   }, 10);
+  return interval;
 }
 
 export function makeLoaderLine(value, maxValue) {

@@ -1,6 +1,6 @@
 export type ExploitType = {
   name: string;
-  type: 'breacher' | 'decrypter';
+  type: 'breacher' | 'decrypter' | 'monitor' | 'scanner';
   effect: {};
 };
 

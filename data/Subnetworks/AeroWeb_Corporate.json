@@ -1,0 +1,18 @@
+{
+  "_id": "561239fb-5003-4224-89e4-f6c77ac8237d",
+  "Name": "Corporate",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "Users": [
+    "333b8141-1e0d-4ee1-9b30-7fd7d578ed88",
+    "dc5900e0-1cc9-47e5-b3ae-f2fbc8bc67da",
+    "b35bba1d-935f-457e-8491-12b046c09552",
+    "caf6b798-a763-451d-b60c-76d62acff041",
+    "d66eea28-cc53-4207-98a8-c1b776c7f2d4",
+    "df2c3c06-b9aa-495a-884b-50097200ffe5",
+    "f49cfe23-63ea-40b8-b6c2-6a469d3022e9"
+  ],
+  "Firewall": "",
+  "OperatingSystem": "",
+  "Ice": [],
+  "PastHacks": []
+}

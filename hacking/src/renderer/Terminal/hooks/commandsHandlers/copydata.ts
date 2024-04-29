@@ -1,5 +1,5 @@
-import apiService from '../../../apiService/apiService';
-import { ProfileType } from '../../../apiService/types';
+import { ApiService } from '../../../services';
+import { ProfileType } from '../../../types';
 
 type UseCopyDataCommandsType = {
   addLines: (lines: string[]) => void;
@@ -20,9 +20,9 @@ export function useCopyDataCommands({
       if (userId === '.') {
         throw 'Cant copy from your own profile';
       } else {
-        const profile = await apiService.getUserProfile(userId);
+        const profile = await ApiService.getUserProfile(userId);
         const event = getEvent(profile, eventId);
-        await apiService.addRecordToLoginUser(event);
+        await ApiService.addRecordToLoginUser(event);
       }
       setInputDisabled(false);
     } catch (err) {

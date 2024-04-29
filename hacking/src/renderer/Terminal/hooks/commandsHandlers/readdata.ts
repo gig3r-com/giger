@@ -1,7 +1,7 @@
 import { getLoginUserData } from '../../utils/store';
-import apiService from '../../../apiService/apiService';
+import { ApiService } from '../../../services';
 import { getEventProfileLines } from '../../responseLines/profileCommands';
-import { ProfileType } from '../../../apiService/types';
+import { ProfileType } from '../../../types';
 
 type UseReadDataCommandsType = {
   addLines: (lines: string[]) => void;
@@ -24,7 +24,7 @@ export function useReadDataCommands({
         if (!loginUserData) return addErrors('No login user');
         printEvent(loginUserData, eventId);
       } else {
-        const profile = await apiService.getUserProfile(userId);
+        const profile = await ApiService.getUserProfile(userId);
         printEvent(profile, eventId);
       }
       setInputDisabled(false);

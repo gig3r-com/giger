@@ -1,0 +1,53 @@
+{
+  "_id": "dc5900e0-1cc9-47e5-b3ae-f2fbc8bc67da",
+  "Name": "Bryan",
+  "Handle": "mills",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": "SCIENTIST",
+  "Surname": "Willis",
+  "Age": 20,
+  "Vibe": "HEDONIZERS",
+  "WealthLevel": "STRUGGLING",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "SubnetworkId": "561239fb-5003-4224-89e4-f6c77ac8237d",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "SCIENTIST",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 0
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "None",
+  "VibeEngagement": "FANATIC",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [],
+  "CriminalEvents": [],
+  "MedicalEvents": [],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

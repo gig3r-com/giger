@@ -1,4 +1,4 @@
-import ApiService from '../../../apiService/apiService';
+import { ApiService } from '../../../services';
 import {
   getUserDataLines,
   getNetworkDataLines,

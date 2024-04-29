@@ -1,64 +1,41 @@
-import { canTabSelector } from '../hooks/useKeyHandler';
+import { SubnetworkType, NetworkType, UserType } from '../../types';
+import { field, tabField, title, tabArray, array, onlyTab } from './utils';
 
-export function getUserIdLines(userId: string | object): string[] {
+export function getUserIdLines(userId: string): string[] {
+  return [`User ID: ${onlyTab(userId)}`];
+}
+export function getUserDataLines(data: UserType): string[] {
   return [
-    `User ID: <span class="accent-color-2" ${canTabSelector}>${userId}</span>`,
+    `${title('User')}`,
+    // eslint-disable-next-line
+    `${tabField('id', data.id)} ${tabField('handle', data.handle,)} ${field('name', data.name)} ${field('surname', data.surname,)}`,
+    // eslint-disable-next-line
+    `${tabField('network', data.networkId)} ${tabField('subnetwork', data.subnetworkId,)}`,
+    // eslint-disable-next-line
+    `${field('type', data.type)} ${field('profession', data.profession,)} ${field('age', String(data.age))}`,
   ];
-}
-export function getUserDataLines(data) {
-  const lines = [
-    `<span class="secondary-color">User</span> found!`
-  ];
-  Object.keys(data).map((key) => {
-    if (data[key] && typeof data[key] === 'string')
-      lines.push(
-        `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key]}</span>`,
-      );
-    if (data[key] && typeof data[key] === 'object')
-      lines.push(
-        `<span>${key}</span> <span ${canTabSelector} class="accent-color-2">${data[key].name}</span>`,
-      );
-  });
-  return lines;
 }
 
-export function getSubnetworkDataLines(data) {
-  const lines = [
-    `<span class="secondary-color">Subnetwork</span> found!`
+export function getSubnetworkDataLines(data: SubnetworkType): string[] {
+  return [
+    `${title('Subnetwork')}`,
+    // eslint-disable-next-line
+    `${tabField('id', data.id)} ${tabField('name', data.name)} ${tabField('networkId', data.networkId,)}`,
+    // eslint-disable-next-line
+    `${tabArray('users', data.users)}`,
+    // eslint-disable-next-line
+    `${field('firewall', data.firewall)} ${field('system', data.operatingSystem,)} ${field('accessPoint', data.accessPoint)}`,
+    // eslint-disable-next-line
+    `${array('ice', data.ice.length ? data.ice : ['none'])}`,
   ];
-  Object.keys(data).map((key) => {
-    if (data[key] && typeof data[key] === 'string')
-      lines.push(
-        `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key]}</span>`,
-      );
-    if (data[key] && typeof data[key] === 'object')
-      lines.push(
-        `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].name}</span>`,
-      );
-  });
-  return lines;
 }
 
-export function getNetworkDataLines(data) {
-  console.log(data)
-  const lines = [
-    `<span class="secondary-color">Network</span> found!`
+export function getNetworkDataLines(data: NetworkType): string[] {
+  return [
+    `${title('Network')}`,
+    // eslint-disable-next-line
+    `${tabField('id', data.id)} ${tabField('name', data.name)}`,
+    // eslint-disable-next-line
+    `${tabArray('subnetworks', data.subnetworks)}`,
   ];
-  Object.keys(data).map((key) => {
-    if (data[key] && typeof data[key] === 'string')
-      lines.push(
-        `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key]}</span>`,
-      );
-    if (data[key] && typeof data[key] === 'object')
-      if (Array.isArray(data[key])) {
-        lines.push(
-          `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].join(`</span>, </span><span class="accent-color-2" ${canTabSelector}>`)}</span>`,
-        );
-      } else {
-        lines.push(
-          `<span>${key}</span> <span class="accent-color-2" ${canTabSelector}>${data[key].name}</span>`,
-        );
-      }
-  });
-  return lines;
 }

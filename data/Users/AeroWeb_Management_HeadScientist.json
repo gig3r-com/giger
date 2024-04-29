@@ -1,0 +1,53 @@
+{
+  "_id": "d7113b3c-8957-43a8-8d51-b7d2715589d1",
+  "Name": "Elroy",
+  "Handle": "kelvin",
+  "Roles": [],
+  "AliasMap": {},
+  "Active": true,
+  "TypePublic": "HUMAN",
+  "ProfessionPublic": "HEAD_SCIENTIST",
+  "Surname": "Davis",
+  "Age": 73,
+  "Vibe": "OVERSEERS",
+  "WealthLevel": "AFFLUENT",
+  "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
+  "SubnetworkId": "38867391-d5bb-4815-b70b-4a4b93961a29",
+  "CyberwareLevel": {
+    "Stat": 0
+  },
+  "ProfessionActual": "HEAD_SCIENTIST",
+  "TypeActual": "HUMAN",
+  "Assets": [],
+  "HackingSkills": {
+    "Stat": 0
+  },
+  "ConfrontationVsNegotiation": {
+    "Stat": 0
+  },
+  "CowardVsFighter": {
+    "Stat": 0
+  },
+  "TalkativeVsSilent": {
+    "Stat": 0
+  },
+  "ThinkerVsDoer": {
+    "Stat": 0
+  },
+  "CombatSkill": {
+    "Stat": 0
+  },
+  "VibeFunction": "None",
+  "VibeEngagement": "INTERESTED",
+  "FavoriteUserIds": [],
+  "Faction": "Takayama",
+  "Relations": [],
+  "Goals": [],
+  "Meta": [],
+  "PrivateRecords": [],
+  "CriminalEvents": [],
+  "MedicalEvents": [],
+  "Exploits": [],
+  "MindHack": "Banned",
+  "HackerName": ""
+}

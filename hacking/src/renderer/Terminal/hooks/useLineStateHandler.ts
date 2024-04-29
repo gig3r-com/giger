@@ -46,11 +46,11 @@ export default function useLineStateHandler({
       addLine(`<span class="error">${errorLines}</span>`);
     }
   };
-  const removeLastLine = () =>
+  const removeLastLine = () =>{
     setLines((oldLines) => {
       oldLines.pop();
       return [...oldLines];
-    });
+    });}
 
   return {
     lines,

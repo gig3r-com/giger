@@ -1,6 +1,6 @@
 import { getLoginUserData } from '../../utils/store';
 import { getBaseProfileLines } from '../../responseLines/profileCommands';
-import apiService from '../../../apiService/apiService';
+import {ApiService, ServerConnectionService} from '../../../services';
 
 type UseProfileCommandsType = {
   addLines: (lines: string[]) => void;
@@ -19,8 +19,9 @@ export function useProfileCommands({
       const userId =
         parsedCommand[1] === '.' ? getLoginUserData()?.id : parsedCommand[1];
       if (!userId) throw new Error('NO ID'); // todo: error msg
-      const profile = await apiService.getUserProfile(userId);
+      const profile = await ApiService.getUserProfile(userId);
       addLines(getBaseProfileLines(profile));
+      ServerConnectionService.speedConnection(100);
       setInputDisabled(false);
     } catch (err) {
       setInputDisabled(false);

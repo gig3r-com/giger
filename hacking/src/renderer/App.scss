@@ -13,16 +13,20 @@ body {
   justify-content: flex-start;
   flex-direction: column;
   white-space: pre-wrap;
+  overflow-x: hidden;
 }
 
 .line {
+  text-indent: -10px;
   color: $text-color;
   margin: 0;
+  padding-left: 10px;
   overflow: hidden;
   width: 100%;
 }
 
 .user-line {
+  margin-left: 10px;
   color: $base-text-color;
 }
 
@@ -38,6 +42,10 @@ body {
   color: $accent-color-2;
 }
 
+.example-color {
+  color: $example-color;
+}
+
 .disabled-color {
   color: $disabled-color;
 }
@@ -45,6 +53,10 @@ body {
 .selected-color {
   color: black;
   background: $base-text-color;
+}
+
+.error-title {
+  color: $secondary-color;
 }
 
 .date {
@@ -57,10 +69,12 @@ body {
   white-space: nowrap;
   font-size: 18px;
   color: $base-text-color;
+  text-indent: 0;
 }
 
 .input-prefix {
   padding-right: 4px;
+  text-indent: 0;
 }
 
 input {
