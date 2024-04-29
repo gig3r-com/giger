@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
+import { useApiService } from './api.service';
 
 /**
  * TODO: connect it to the backend.
@@ -26,6 +27,7 @@ import { ActionId } from '../../apps/giger/gig/button-definitions';
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { api } = useApiService
     const { currentUser, updateUserData } = useUserService();
     const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
@@ -79,6 +81,7 @@ export function useGigsService() {
 
     const fetchGigs = () => {
         dispatch(setFetchingGigs(true));
+        
         dispatch(setGigs(mockGigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
