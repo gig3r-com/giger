@@ -53,6 +53,7 @@ services:
     volumes:
       - ./docker/volumes/mongo:/data/db
       - ./docker/mongo_init:/docker-entrypoint-initdb.d
+      - ./data/mongo:/data/
     environment:
       MONGO_INITDB_DATABASE: ${GIGER_DATABASE:-admin}
       MONGO_INITDB_ROOT_USERNAME: ${GIGER_USERNAME:-giger}
@@ -70,33 +71,3 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${GIGER_PASSWORD:-giger}
     depends_on:
       - mongo
-
-  # swagger:
-  #   image: swaggerapi/swagger-ui
-  #   restart: unless-stopped
-  #   ports:
-  #     - ${SWAGGER_PORT:-8090}:8080
-  #   volumes:
-  #     - ./swagger.yml:/tmp/swagger.yml
-  #   environment:
-  #     SWAGGER_JSON: "/tmp/swagger.yml"
-  #     BASE_URL: "/swagger"
-
-  # backend:
-  #   build:
-  #     context: ./backend
-  #   restart: unless-stopped
-  #   expose:
-  #     - 80
-  #   volumes:
-  #     - ./docker/backend/config.json:/app/.config.json
-  #     - ./backend/migrations/:/app/migrations
-  #   depends_on:
-  #     - postgres
-
-  # postgres:
-  #   image: postgres:16-alpine
-  #   environment:
-  #     POSTGRES_PASSWORD: postgres
-  #   volumes:
-  #     - ./docker/volumes/postgres:/var/lib/postgresql/data/
