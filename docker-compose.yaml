@@ -44,12 +44,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - mongo
-  
+
   mongo:
     image: mongo:latest
     restart: unless-stopped
     expose:
       - 27017
+    ports:
+      - 27017:27017
     volumes:
       - ./docker/volumes/mongo:/data/db
       - ./docker/mongo_init:/docker-entrypoint-initdb.d
@@ -71,3 +73,4 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${GIGER_PASSWORD:-giger}
     depends_on:
       - mongo
+      
