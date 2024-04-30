@@ -30,6 +30,8 @@ on:
     secrets:
       KUBECONFIG:
         required: true
+      DATA_SSH_KEY:
+        required: true
     outputs:
       address:
         description: "address of deployed environment"
@@ -44,7 +46,10 @@ jobs:
       address: ${{ steps.address.outputs.address }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DATA_SSH_KEY }}
+          submodules: recursive
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
