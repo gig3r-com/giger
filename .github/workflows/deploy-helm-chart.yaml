@@ -30,6 +30,8 @@ on:
     secrets:
       KUBECONFIG:
         required: true
+      DATA_SSH_KEY:
+        required: true
     outputs:
       address:
         description: "address of deployed environment"
@@ -43,23 +45,27 @@ jobs:
     outputs:
       address: ${{ steps.address.outputs.address }}
     steps:
+      - name: install additional packages
+        run: |
+          sudo apt update
+          sudo apt install -y curl git
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DATA_SSH_KEY }}
+          submodules: recursive
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
         with:
           prefix: CI_
 
-      - name: install additional packages
-        run: |
-          sudo apt update
-          sudo apt install -y curl
-
       - name: Deploy
         uses: 'WyriHaximus/github-action-helm3@v3'
         with:
           exec: |
+            cp -r ./data ./chart/gig3r/
             helm upgrade --install \
             gig3r-${{ env.HELM_ENVIRONMENT }} \
             ./chart/gig3r \
@@ -74,10 +80,7 @@ jobs:
             --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
-            --set database.user=${{ env.HELM_ENVIRONMENT }} \
-            --set database.admin.user=postgres \
-            --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }} \
-            --set-file swagger.config=./swagger.yml
+            --set database.user=${{ env.HELM_ENVIRONMENT }}
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true

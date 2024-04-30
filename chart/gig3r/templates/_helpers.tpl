@@ -25,7 +25,7 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- $len := 24 | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
 {{- if $obj }}
-{{- index $obj "DB_PASSWORD" -}}
+{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" -}}
 {{- else -}}
 {{- randAlphaNum $len | b64enc -}}
 {{- end -}}
@@ -56,10 +56,19 @@ false
 }
 {{- end }}
 
-{{- define "gig3r.swagger.app" -}}
-gig3r-{{ default "app" .Values.environment }}-swagger
+#if .Values.environment != app then Development, else Production 
+{{- define "gig3r.backend.environment" -}}
+  {{- if eq "app" .Values.environment -}}
+    "Production"
+  {{- else -}}
+    "Development"
+  {{- end -}}
+{{- end -}}
+
+{{- define "gig3r.mongodb.app" -}}
+gig3r-{{ default "app" .Values.environment }}-mongodb
 {{- end }}
 
-{{- define "gig3r.swagger.url" -}}
-{{- cat "swagger." (include "gig3r.host" .) | nospace -}}
+{{- define "gig3r.mongodb.image" -}}
+{{ default "mongo" .Values.mongodb.image }}:{{ default "latest" .Values.mongodb.tag }}
 {{- end }}
