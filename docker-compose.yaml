@@ -44,10 +44,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - mongo
-  
+
   mongo:
     image: mongo:latest
     restart: unless-stopped
+    ports:
+      - 27017:27017
     expose:
       - 27017
     volumes:
@@ -71,7 +73,6 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${GIGER_PASSWORD:-giger}
     depends_on:
       - mongo
-
   # swagger:
   #   image: swaggerapi/swagger-ui
   #   restart: unless-stopped
