@@ -48,7 +48,7 @@ spec:
           protocol: TCP
         env:
         - name: GigerDB__Host
-          value: mongo
+          value: {{ include "gig3r.mongodb.app" . }}
         - name: GigerDB__Port
           value: "27017"
         - name: GigerDB__Username
@@ -119,4 +119,19 @@ spec:
             secretKeyRef:
               name: gig3r-secret
               key: MONGO_INITDB_DATABASE
+        volumeMounts:
+        {{- range $path, $_ := .Files.Glob "data/mongo/*.json" }}
+        - name: mongo-config
+          mountPath: /init/{{ $path | base }}
+          subPath: {{ $path | base }}
+        {{- end }}
+        - name: mongo-scripts
+          mountPath: /docker-entrypoint-initdb.d
       restartPolicy: Always
+      volumes:
+        - name: "mongo-config"
+          configMap:
+            name: "mongo-config"
+        - name: "mongo-scripts"
+          configMap:
+            name: "mongo-scripts"

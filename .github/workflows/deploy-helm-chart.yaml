@@ -60,6 +60,7 @@ jobs:
         uses: 'WyriHaximus/github-action-helm3@v3'
         with:
           exec: |
+            cp ./data ./chart/gig3r/
             helm upgrade --install \
             gig3r-${{ env.HELM_ENVIRONMENT }} \
             ./chart/gig3r \
@@ -74,10 +75,7 @@ jobs:
             --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
-            --set database.user=${{ env.HELM_ENVIRONMENT }} \
-            --set database.admin.user=postgres \
-            --set database.admin.password=${{ secrets.POSTGRES_PASSWORD }} \
-            --set-file swagger.config=./swagger.yml
+            --set database.user=${{ env.HELM_ENVIRONMENT }}
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true

@@ -35,3 +35,21 @@ spec:
   sessionAffinity: None
 
 ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.mongodb.app" . }}
+  name: {{ include "gig3r.mongodb.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.mongodb.app" . }}
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: {{ include "gig3r.mongodb.app" . }}
+  sessionAffinity: None
+
+---
