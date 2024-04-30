@@ -1,11 +1,13 @@
 import { createRoot } from 'react-dom/client';
 import Overlay from '../../components/Overlay';
-import { ApiService, CommandsService } from '../index';
+import { CommandsService } from '../index';
 
 export default class OverlayService {
-  private setModalText: any;
+  private closeOverlayModal: any;
 
-  public resetHacker1 = () => this.reset.bind(this)('hacker1');
+  public setActiveQuest: any;
+
+  private setModal: any;
 
   constructor() {
     const container = document.getElementById('overlay') as HTMLElement;
@@ -13,28 +15,19 @@ export default class OverlayService {
     root.render(<Overlay />);
   }
 
-  init({ setModalText }) {
-    this.setModalText = setModalText;
+  init({ closeOverlayModal, setModal, setActiveQuest }) {
+    this.closeOverlayModal = closeOverlayModal;
+    this.setModal = setModal;
+    this.setActiveQuest = setActiveQuest;
   }
 
-  async reset(option: string) {
-    try {
-      await ApiService.resetExploits(this.resetOptions[option].exploits);
-      await ApiService.changeActiveUserHackingName(
-        this.resetOptions[option].hackingName,
-      );
-      CommandsService.logout();
-      CommandsService.setLines([]);
-      this.setModalText('');
-    } catch (err) {
-      console.error(err);
-    }
+  initializeModal(modalNumber: number) {
+    CommandsService.setInputDisabled(true);
+    this.setModal(modalNumber);
   }
 
-  resetOptions = {
-    hacker1: {
-      hackingName: 'smart_one',
-      exploits: [],
-    },
-  };
+  closeModal() {
+    CommandsService.setInputDisabled(false);
+    this.closeOverlayModal();
+  }
 }

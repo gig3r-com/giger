@@ -109,10 +109,6 @@ export default class ServerConnectionService {
       if (!this.setInputTimer) return this.initializeError();
       this.connectionTimeLeft -= 1;
 
-      // const percent =
-      //   (1 - this.connectionTimeLeft / this.timeInSubnetwork) * 100;
-      // this.MonitorService.setValue(percent);
-
       this.checkTargets();
       this.setInputTimer(this.connectionTimeLeft);
       if (this.connectionTimeLeft <= 0) {
@@ -137,8 +133,8 @@ export default class ServerConnectionService {
         : this.connectedSubnetworkSystem.timeOnImperfectBreach) || 0;
     this.connectionTimeLeft = this.timeInSubnetwork;
 
-    // todo
-    ['Ping', 'Boost'].forEach((iceName) => {
+    //    ['Ping', 'Boost']
+    subnetwork.ice.forEach((iceName) => {
       const ice = this.ConfigService.getProgram(iceName);
       if (!ice) return;
       if (

@@ -15,6 +15,15 @@ export default function mapProfile(data: any): ProfileType {
   const mindHackData = {
     mindHack: data.mindHack,
   };
+  const privateR = data.privateRecords?.filter(
+    (event) => event.isRevealed === true,
+  );
+  const medical = data.medicalEvents?.filter(
+    (event) => event.isRevealed === true,
+  );
+  const criminal = data.criminalEvents?.filter(
+    (event) => event.isRevealed === true,
+  );
 
   return {
     ...mapUser(data),
@@ -27,9 +36,9 @@ export default function mapProfile(data: any): ProfileType {
     typeActual: data.typeActual,
     favoriteUserIds: data.favoriteUserIds,
     relations: data.relations,
-    privateRecords: data.privateRecords?.map(mapRecord) || [],
-    criminalEvents: data.criminalEvents?.map(mapEvent) || [],
-    medicalEvents: data.medicalEvents?.map(mapEvent) || [],
+    privateRecords: privateR.map(mapRecord) || [],
+    criminalEvents: criminal.map(mapEvent) || [],
+    medicalEvents: medical.map(mapEvent) || [],
   };
 
   function mapEvent(data: any): EventType {

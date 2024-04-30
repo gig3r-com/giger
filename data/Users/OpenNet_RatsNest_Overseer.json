@@ -12,7 +12,9 @@
   "Vibe": "SW4RM",
   "WealthLevel": "IMPOVERISHED",
   "NetworkId": "648eeb00-5102-4ca6-b127-5af49cf54342",
+  "NetworkName": "OpenNet",
   "SubnetworkId": "f9380ca5-9e0a-44b9-b7ba-335bb0941907",
+  "SubnetworkName": "RatsNest",
   "CyberwareLevel": {
     "Stat": 0
   },

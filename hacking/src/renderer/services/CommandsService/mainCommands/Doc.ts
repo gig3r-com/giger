@@ -27,7 +27,7 @@ export default class Doc {
     }
   }
 
-  documents: { [key: string]: [lines: string[] | (() => string[])] } = {
+  documents: { [key: string]: DocType } = {
     name: DOCUMENTATIONS.NAME,
     profile: DOCUMENTATIONS.PROFILE,
     clear: DOCUMENTATIONS.CLEAR,
@@ -36,8 +36,12 @@ export default class Doc {
     list: DOCUMENTATIONS.LIST,
     scan: DOCUMENTATIONS.SCAN,
     install: DOCUMENTATIONS.INSTALL,
+    run: DOCUMENTATIONS.RUN,
+    copydata: DOCUMENTATIONS.COPY_DATA,
 
     sledgehammer: DOCUMENTATIONS.SLEDGEHAMMER,
     scanner_v1: DOCUMENTATIONS.SCANNER_V1,
   };
 }
+
+type DocType = string[] | (() => string[]);

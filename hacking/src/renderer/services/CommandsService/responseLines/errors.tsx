@@ -63,6 +63,10 @@ export const noScanId: string[] = [
   '<span class="error-title">ERROR</span>: You need to provide scan id, check <span class="secondary-color">doc scan</span> for more information.',
 ];
 
+export const cantCopyFromSelf: string[] = [
+  '<span class="error-title">ERROR</span>: You cant copy records from your own profile',
+];
+
 export function getErrorMessage(error: any): string[] {
   let errorMsgKey;
   if (typeof error === 'string') {

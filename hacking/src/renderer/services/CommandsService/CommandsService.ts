@@ -9,6 +9,7 @@ import {
   Logout,
   Doc,
   Install,
+  CopyData,
 } from './mainCommands';
 import { wrongCommandError } from './responseLines/errors';
 import type ApiServiceType from '../ApiService/ApiService';
@@ -45,6 +46,7 @@ export default class CommandsService {
     logout: new Logout(this),
     doc: new Doc(this),
     install: new Install(this),
+    copydata: new CopyData(this),
   };
 
   public activeCommand: string = '';

@@ -2,7 +2,6 @@ import type CommandsServiceType from '../CommandsService';
 import type { CommandsTableType } from '../CommandsService';
 import {
   getEncodedListCmdLines,
-  getListCmdLines,
   getListProgramLines,
   noProgramsAvailable,
 } from '../../../Terminal/responseLines/listCommands';
@@ -10,6 +9,7 @@ import {
   getErrorMessage,
   wrongListCommandError,
 } from '../responseLines/errors';
+import { getListLines } from '../responseLines/list';
 
 export default class List {
   private Service: CommandsServiceType;
@@ -52,7 +52,9 @@ export default class List {
       fireInitError();
       return;
     }
-    addLines(getListCmdLines());
+    addLines(
+      getListLines(this.commands.filter((command) => command.onDisconnected)),
+    );
   }
 
   listConnectedCommands(): void {
@@ -91,4 +93,105 @@ export default class List {
       addLines(getErrorMessage(err));
     }
   }
+
+  commands = [
+    {
+      title: 'list cmd',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'Lists all available commands',
+    },
+    {
+      title: 'list prog',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'Lists all available exploits',
+    },
+    {
+      title: 'clear',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'Clears console',
+    },
+    {
+      title: 'logout',
+      onDisconnected: true,
+      onConnected: false,
+      special: '',
+      disableCode: '',
+      description: 'Logout from this terminal',
+    },
+    {
+      title: 'end',
+      onDisconnected: false,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'End connection to currently connected subnetwork',
+    },
+    {
+      title: 'name [newName]',
+      onDisconnected: true,
+      onConnected: false,
+      special: '',
+      disableCode: '',
+      description: 'Change your hacker name to [newName]',
+    },
+    {
+      title: 'install [programKey] [options]',
+      onDisconnected: true,
+      onConnected: false,
+      special: '',
+      disableCode: '',
+      description: 'Install program using [programKey]',
+    },
+    {
+      title: 'doc [option]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'Shows documentation about [option]',
+    },
+    {
+      title: 'scan [options]',
+      onDisconnected: true,
+      onConnected: true,
+      special: 'scan',
+      disableCode: '',
+      description: 'Retrieve data with provided [option]',
+    },
+    {
+      title: 'run [programName] [subnetworkId]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description: 'Runs [programName] on the specified [subnetworkId]',
+    },
+    {
+      title: 'profile [userId] [recordId]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: '',
+      description:
+        'Retrieve data about user (from [userId]) or its record if [recordId] is provided',
+    },
+    {
+      title: 'copydata [userId] [recordId]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: 'copydata',
+      description:
+        'Copy record data from user (from [userId]) to your account (int Private Records)',
+    },
+  ];
 }

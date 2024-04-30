@@ -23,16 +23,33 @@ export default class Profile {
       });
   }
 
-  resetExploits(exploits: string[] = []) {
+  resetExploits(userId: string, exploits: string[] = []) {
     const { gigerApiUrl } = this.getUrls();
-    const loginUserData = getLoginUserData();
+    const loginUserData = getLoginUserData() || {};
     const newLoginUserData = {
       ...loginUserData,
       exploits,
     };
-    const url = `${gigerApiUrl}/User/${loginUserData.id}/exploits`;
+    const url = `${gigerApiUrl}/User/${userId}/exploits`;
     return axios.patch(url, newLoginUserData.exploits).then(() => {
-      setLoginUserData(newLoginUserData);
+      if (loginUserData.id) {
+        setLoginUserData(newLoginUserData);
+      }
+    });
+  }
+
+  resetHackingName(userId: string, hackerName: string) {
+    const { gigerApiUrl } = this.getUrls();
+    const loginUserData = getLoginUserData() || {};
+    const newLoginUserData = {
+      ...loginUserData,
+      hackerName,
+    };
+    const url = `${gigerApiUrl}/User/${userId}/hackerName?newName=${hackerName}`;
+    return axios.patch(url, newLoginUserData.exploits).then(() => {
+      if (loginUserData.id) {
+        setLoginUserData(newLoginUserData);
+      }
     });
   }
 }

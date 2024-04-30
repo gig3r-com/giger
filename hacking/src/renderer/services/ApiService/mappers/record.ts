@@ -1,12 +1,11 @@
 export default function mapRecordToApi(data, userId: string) {
   return {
-    id: new Date().valueOf().toString(),
-    userId: userId,
+    id: data.id,
+    type: data.type,
     title: data.name,
     description: data.description,
-    recordType: 'Relation',
-    revealCode: "",
-    revealPriority: true,
-    isRevealed: 0
-  }
+    status: data.status,
+    date: data.description,
+    isRevealed: data.isRevealed || true,
+  };
 }

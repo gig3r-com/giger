@@ -8,5 +8,18 @@ import Run from './Run';
 import Logout from './Logout';
 import Doc from './Doc';
 import Install from './Install';
+import CopyData from './CopyData';
 
-export { End, Clear, List, Scan, Name, Profile, Run, Logout, Doc, Install };
+export {
+  End,
+  Clear,
+  List,
+  Scan,
+  Name,
+  Profile,
+  Run,
+  Logout,
+  Doc,
+  Install,
+  CopyData,
+};

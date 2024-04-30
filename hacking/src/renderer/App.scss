@@ -105,6 +105,16 @@ table.profile-table {
   margin: 0 20px;
 }
 
+table.list-table {
+  td {
+    padding: 0 10px;
+  }
+  .command-cell {
+    white-space: nowrap;
+  }
+  margin: 0 20px;
+}
+
 @keyframes loading {
   0% {
     content: '-';

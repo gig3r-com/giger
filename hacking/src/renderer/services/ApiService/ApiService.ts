@@ -20,6 +20,8 @@ export default class ApiService {
    */
   resetExploits = this.profileModule.resetExploits.bind(this);
 
+  resetHackingName = this.profileModule.resetHackingName.bind(this);
+
   changeActiveUserHackingName =
     this.profileModule.changeActiveUserHackingName.bind(this);
 

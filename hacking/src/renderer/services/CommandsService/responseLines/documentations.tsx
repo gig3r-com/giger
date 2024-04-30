@@ -105,6 +105,26 @@ export const INSTALL: string[] = [
   '',
 ];
 
+export const RUN: string[] = [
+  '',
+  `<span class="secondary-color">Documentation</span> RUN`,
+  `Full command path: <span class="secondary-color">run [programName] [subnetworkId]</span>`,
+  '',
+  `<span class="example-color">Example: <span class="secondary-color">run Sledgehammer 88a8ed46-7a4d-4395-8340-d028bd123773</span>`,
+  '<span class="example-color">  program--> ^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ <--subnetwork ID</span>',
+  '',
+];
+
+export const COPY_DATA: string[] = [
+  '',
+  `<span class="secondary-color">Documentation</span> COPY DATA`,
+  `Full command path: <span class="secondary-color">copydata [userId] [recordId]</span>`,
+  '',
+  `<span class="example-color">Example: <span class="secondary-color">copydata 5ab35395-f015-4af7-b89a-01ff2d2f499e 88a8ed46-7a4d-4395-8340-d028bd123773</span>`,
+  '<span class="example-color">       user ID--> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ <--subnetwork ID</span>',
+  '',
+];
+
 export const SLEDGEHAMMER: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Sledgehammer`,
@@ -121,6 +141,6 @@ export const SCANNER_V1: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Scanner v1.22`,
   `Type: <span class="secondary-color">SCANNER</span>`,
-  'Scanner',
+  'Scanner used to gather public information about networks, subnetworks and users. It can also detect subnetwork\'s firewall, operating system and ices but it is not fully reliable.',
   '',
 ];

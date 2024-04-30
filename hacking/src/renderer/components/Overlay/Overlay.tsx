@@ -1,30 +1,47 @@
 import { useEffect, useState } from 'react';
-import { OverlayService } from '../../services';
+import {CommandsService, OverlayService} from '../../services';
 import Hacker1Modal from './modals/Hacker1Modal';
 
-export type QuestTypes = 'none' | 'hacker_1';
-
 export default function Overlay() {
-  const [modalText, setModalText] = useState<any>('');
-  const [activeQuest, setActiveQuest] = useState<QuestTypes>('hacker_1');
+  const [modalInside, setModalInside] = useState<any>('');
+  const [activeQuest, setActiveQuest] = useState<0 | null>(null);
 
   const closeModal = () => {
-    setModalText('');
+    CommandsService.setInputDisabled(false);
+    setModalInside('');
   };
+
   const showQuest = () => {
-    setModalText(<Hacker1Modal close={closeModal} />);
+    if (activeQuest === 0) {
+      CommandsService.setInputDisabled(true);
+      setModalInside(<Hacker1Modal testIsActive />);
+    }
+  };
+
+  const setModal = (modalNumber: number) => {
+    if (modalNumber === 0) {
+      setModalInside(<Hacker1Modal testIsActive={false} />);
+    }
   };
 
   useEffect(() => {
-    OverlayService.init({ setModalText });
-  }, [setModalText]);
+    OverlayService.init({
+      closeOverlayModal: closeModal,
+      setModal,
+      setActiveQuest,
+    });
+  }, [setModalInside]);
 
   return (
     <div className="overlay">
       <div className="menu">
-        <button onClick={showQuest}>Show Quest</button>
+        {typeof activeQuest === 'number' ? (
+          <button onClick={showQuest}>Show Test Information</button>
+        ) : (
+          ''
+        )}
       </div>
-      {modalText ? <div className="modal">{modalText}</div> : null}
+      {modalInside ? <div className="modal">{modalInside}</div> : null}
     </div>
   );
 }

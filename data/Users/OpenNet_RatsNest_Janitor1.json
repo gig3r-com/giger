@@ -12,7 +12,9 @@
   "Vibe": "SW4RM",
   "WealthLevel": "BROKE",
   "NetworkId": "648eeb00-5102-4ca6-b127-5af49cf54342",
+  "NetworkName": "OpenNet",
   "SubnetworkId": "f9380ca5-9e0a-44b9-b7ba-335bb0941907",
+  "SubnetworkName": "RatsNest",
   "CyberwareLevel": {
     "Stat": 0
   },
@@ -46,8 +48,55 @@
   "Meta": [],
   "PrivateRecords": [],
   "CriminalEvents": [],
-  "MedicalEvents": [],
+  "MedicalEvents": [
+    {
+      "_id": "d1dfb152-f88e-4f6e-83b2-64df8897cbe9",
+      "Type": "CYBERWARE",
+      "Name": "Cyberdeck Integration Chip",
+      "EventDescription": "Hacking chip.",
+      "Status": "CURRENT",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": true
+    },
+    {
+      "_id": "b7ab9ba5-c2cc-4972-8689-b8bac8e2acf9",
+      "Type": "MEDICAL_DRUG",
+      "Name": "Pain Relief Prescription",
+      "EventDescription": "Injection for pain relief after a high-intensity operation.",
+      "Status": "CURRENT",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": true
+    },
+    {
+      "_id": "b1d60535-8d83-40fa-8095-cf38542dd62f",
+      "Type": "MEDICAL_PROCEDURE",
+      "Name": "Nano Blood Cleansing",
+      "EventDescription": "Procedure to cleanse the blood using nanobots.",
+      "Status": "HISTORICAL",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": true
+    },
+    {
+      "_id": "17d1efa5-3bc0-44c3-a1b7-1f4083f4a94f",
+      "Type": "SYMPTOM",
+      "Name": "Persistent Migraines",
+      "EventDescription": "Experiencing persistent migraines, cause unknown.",
+      "Status": "HISTORICAL",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": true
+    },
+    {
+      "_id": "b0112d44-3df9-422c-9c4d-fb2fea05ea69",
+      "Type": "MEDICAL_PROCEDURE",
+      "Name": "Tracking chip injection",
+      "EventDescription": "Tracking chip injection.",
+      "Status": "HISTORICAL",
+      "TimeStamp": "2024-04-07T14:05:42.335Z",
+      "IsRevealed": false
+    }
+  ],
   "Exploits": [],
   "MindHack": "Banned",
-  "HackerName": ""
+  "HackerName": "",
+  "HasPlatinumPass": false
 }
