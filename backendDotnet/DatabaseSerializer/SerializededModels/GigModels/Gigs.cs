@@ -17,7 +17,8 @@ namespace Giger.SerializededModels.GigModels
                     Title = "Gather intel",
                     ConversasionId = "789336",
                     Description = "Will gather any intel you need",
-                    Category = GigCategoryNames.INTEL,
+                    Category = GigCategoryNames.FIXER,
+                    Subcategory = GigSubcategoryNames.INTEL,
                     RepurationRequired = 0,
                     IsAnonymizedAuthor = true,
                     Status = GigStatus.IN_PROGRESS,
@@ -31,7 +32,8 @@ namespace Giger.SerializededModels.GigModels
                     CreatedAt = GigerDateTime.Now.AddHours(-1),
                     AcceptedAt = GigerDateTime.Now,
                     Modes = GigModes.PROVIDER,
-                    AccountNumber = "501234",
+                    ProviderAccountNumber = "501234",
+                    ClientAccountNumber = "504321",
                 },
                 new Gig()
                 {
@@ -41,7 +43,8 @@ namespace Giger.SerializededModels.GigModels
                     Title = "Test Gig",
                     Description = "This is a test gig.",
                     ConversasionId = null,
-                    Category = GigCategoryNames.INTEL,
+                    Category = GigCategoryNames.WELLBEING,
+                    Subcategory = GigSubcategoryNames.MEDEVAC,
                     RepurationRequired = 1,
                     IsAnonymizedAuthor = true,
                     Status = GigStatus.COMPLETED,
@@ -55,7 +58,8 @@ namespace Giger.SerializededModels.GigModels
                     CreatedAt = GigerDateTime.Now.AddHours(-37),
                     AcceptedAt = GigerDateTime.Now.AddDays(-1),
                     Modes = GigModes.CLIENT,
-                    AccountNumber = "501234",
+                    ProviderAccountNumber = "501234",
+                    ClientAccountNumber = "504321",
                 },
                 new Gig()
                 {
@@ -65,7 +69,8 @@ namespace Giger.SerializededModels.GigModels
                     Title = "Hijack android",
                     Description = "Android #1532 needs to be brought back to its rightful owner",
                     ConversasionId = null,
-                    Category = GigCategoryNames.ANDROID_HIJACK,
+                    Category = GigCategoryNames.KILLER,
+                    Subcategory = GigSubcategoryNames.ANDROID_HIJACK,
                     RepurationRequired = 2,
                     IsAnonymizedAuthor = true,
                     Status = GigStatus.AVAILABLE,
@@ -79,7 +84,8 @@ namespace Giger.SerializededModels.GigModels
                     CreatedAt = GigerDateTime.Now,
                     AcceptedAt = null,
                     Modes = GigModes.CLIENT,
-                    AccountNumber = "501234",
+                    ClientAccountNumber = "501234",
+                    ProviderAccountNumber = null
                 },
             ];
         }
