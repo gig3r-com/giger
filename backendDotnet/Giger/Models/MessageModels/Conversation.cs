@@ -8,7 +8,7 @@ namespace Giger.Models.MessageModels
         [BsonElement("_id")]
         public required string Id { get; set; }
 
-        public Message[] Messages { get; set; } = [];
+        public List<Message> Messages { get; set; } = [];
 
         public required string[] Participants { get; set; } = []; // UserNames
 
