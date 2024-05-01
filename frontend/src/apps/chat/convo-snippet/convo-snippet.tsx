@@ -32,7 +32,8 @@ export const ConvoSnippet: FC<{
     const canSendMessages = useMemo(() => {
         return (
             currentUser &&
-            convo.participantsAllowedToSendMsgs?.includes(currentUser?.id)
+            (convo.participantsAllowedToSendMsgs?.includes(currentUser?.id) ??
+                true)
         );
     }, [currentUser, convo.participantsAllowedToSendMsgs]);
 

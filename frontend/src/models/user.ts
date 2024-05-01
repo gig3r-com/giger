@@ -1,6 +1,7 @@
 import { Factions } from './companies';
 import { ICriminalEvent, IMedEvent } from './events';
 import { IObscurableInfo } from './general';
+import { GigCategoryNames } from './gig';
 
 export interface IUserBase {
     id: string;
@@ -45,6 +46,7 @@ export interface IUserPrivate extends IUserPublic {
     networkName: string;
     subnetworkId: string;
     subnetworkName: string;
+    reputation: IReputationLevels;
 }
 
 /**
@@ -55,15 +57,22 @@ export interface IAliasMap {
     [key: string]: string; // key: convo or gig id, value: displayedName
 }
 
+export interface IReputationLevels {
+    [GigCategoryNames.FIXER]: number;
+    [GigCategoryNames.KILLER]: number;
+    [GigCategoryNames.HACKING]: number;
+    [GigCategoryNames.WELLBEING]: number;
+}
+
 export interface IAnonymizedUser {
     userId: string;
     displayedAs: string;
 }
 
 export enum UserTypes {
-    HUMAN = 'human',
-    AI = 'ai',
-    ANDROID = 'android'
+    HUMAN = 'HUMAN',
+    AI = 'AI',
+    ANDROID = 'ANDROID'
 }
 
 export enum UserRoles {

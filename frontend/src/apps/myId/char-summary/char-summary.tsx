@@ -7,6 +7,7 @@ import {
     IUserPrivate,
     IUserPublic,
     SkillStat,
+    UserTypes,
     Vibe,
     VibeEngagement,
     WealthLevels
@@ -39,11 +40,11 @@ export const CharSummary: FC<{
     );
     const signature = () => {
         switch (user!.typePublic) {
-            case 'human':
+            case UserTypes.HUMAN:
                 return <HumanSignature className="char-summary__signature" />;
-            case 'ai':
+            case UserTypes.AI:
                 return <AISignature className="char-summary__signature" />;
-            case 'android':
+            case UserTypes.ANDROID:
                 return <AndroidSignature className="char-summary__signature" />;
             default:
                 return <HumanSignature className="char-summary__signature" />;
@@ -255,25 +256,24 @@ export const CharSummary: FC<{
                             })
                         }
                     />
-                    {isPrivate &&
-                        (user as IUserPrivate).hackingSkills.stat > 0 && (
-                            <>
-                                <span className="char-summary__label">
-                                    <MemoizedFormattedMessage id="FACTION" />:
-                                </span>
-                                <AdminEditableField
-                                    type={FieldTypes.SELECT}
-                                    className="char-summary__entry"
-                                    options={[...Object.values(Factions)]}
-                                    value={user!.vibe}
-                                    onChange={async (val) =>
-                                        await updateUserData(user!.id, {
-                                            faction: val as Factions
-                                        })
-                                    }
-                                />
-                            </>
-                        )}
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="FACTION" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                options={[...Object.values(Factions)]}
+                                value={user!.vibe}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        faction: val as Factions
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
                     {isPrivate && isGod && (
                         <>
@@ -294,29 +294,26 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    {isPrivate &&
-                        (user as IUserPrivate).hackingSkills.stat > 0 && (
-                            <AdminEditableField
-                                type={FieldTypes.SLIDER}
-                                className="char-summary__entry char-summary__entry--full-length"
-                                value={
-                                    (user as IUserPrivate).hackingSkills.stat
-                                }
-                                min={0}
-                                max={3}
-                                showValue={false}
-                                label={intl.formatMessage({
-                                    id: 'HACKING_SKILL'
-                                })}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        hackingSkills: {
-                                            stat: parseInt(val)
-                                        } as SkillStat
-                                    })
-                                }
-                            />
-                        )}
+                    {isPrivate && (
+                        <AdminEditableField
+                            type={FieldTypes.SLIDER}
+                            className="char-summary__entry char-summary__entry--full-length"
+                            value={(user as IUserPrivate).hackingSkills.stat}
+                            min={0}
+                            max={3}
+                            showValue={false}
+                            label={intl.formatMessage({
+                                id: 'HACKING_SKILL'
+                            })}
+                            onChange={async (val) =>
+                                await updateUserData(user!.id, {
+                                    hackingSkills: {
+                                        stat: parseInt(val)
+                                    } as SkillStat
+                                })
+                            }
+                        />
+                    )}
 
                     {isPrivate && (
                         <AdminEditableField
