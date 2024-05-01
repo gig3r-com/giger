@@ -1,5 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using Giger.Models.Networks;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Giger.Models.Logs
@@ -30,6 +32,24 @@ namespace Giger.Models.Logs
         public required string SubnetworkId { get; set; }
 
         public required string SubnetworkName { get; set; }
+
+        public Log() { }
+
+        [SetsRequiredMembers]
+        public Log(Log other, Subnetwork subnetwork)
+        {
+            Id = ObjectId.GenerateNewId().ToString();
+            Timestamp = other.Timestamp;
+            SourceUserId = other.SourceUserId;
+            SourceUserName = other.SourceUserName;
+            SourceHackerName = other.SourceHackerName;
+            TargetUserId = other.TargetUserId;
+            TargetUserName = other.TargetUserName;
+            LogType = other.LogType;
+            LogData = other.LogData;
+            SubnetworkId = subnetwork.Id;
+            SubnetworkName = subnetwork.Name;
+        }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<LogType>))]
