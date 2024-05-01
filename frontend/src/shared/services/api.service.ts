@@ -14,7 +14,7 @@ export function useApiService() {
 
     const api = wretch(import.meta.env.VITE_API_ENDPOINT, {
         mode: 'cors'
-    }).headers({ authToken: getAuthToken() as string });
+    }).headers({ AuthToken: getAuthToken() as string });
     // .errorType('json')
     // .resolve((r) => r.json());
 
