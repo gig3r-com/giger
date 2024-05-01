@@ -14,5 +14,10 @@
             UserId = REDACTED;
             base.Obscure();
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 27 + UserId.GetHashCode() * 31;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Giger.Models.EventModels;
+using Giger.Models.GigModels;
 using Giger.Models.User;
 using MongoDB.Bson;
 
@@ -113,6 +114,12 @@ namespace Giger.SerializededModels.User
                     MindHackEnabledFor = ["123456"],
                     HasPlatinumPass = true,
                     HackerName = null,
+                    GigRepution = new Dictionary<GigCategoryNames, decimal>() {
+                        { GigCategoryNames.HACKING, 0m },
+                        { GigCategoryNames.KILLER, 5500m },
+                        { GigCategoryNames.FIXER, 500m },
+                        { GigCategoryNames.WELLBEING, 2000m }
+                    }
                 },
 
                 new UserPrivate()
@@ -209,6 +216,12 @@ namespace Giger.SerializededModels.User
                     MindHackEnabledFor = [],
                     HasPlatinumPass = false,
                     HackerName = "voldemort",
+                    GigRepution = new Dictionary<GigCategoryNames, decimal>() {
+                        { GigCategoryNames.HACKING, 100000m },
+                        { GigCategoryNames.KILLER, 0m },
+                        { GigCategoryNames.FIXER, 2000m },
+                        { GigCategoryNames.WELLBEING, 3000m }
+                    }
                 }
             ];
         }

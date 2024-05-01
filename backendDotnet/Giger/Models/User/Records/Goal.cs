@@ -11,5 +11,10 @@
         {
             base.Obscure();
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 37;
+        }
     }
 }

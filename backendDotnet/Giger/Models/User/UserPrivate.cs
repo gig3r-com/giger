@@ -1,4 +1,5 @@
 ﻿using Giger.Models.EventModels;
+using Giger.Models.GigModels;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
 using MongoDB.Bson;
@@ -38,18 +39,20 @@ namespace Giger.Models.User
 
         public required Factions Faction { get; set; } // changeable
 
+        public Dictionary<GigCategoryNames, decimal> GigRepution { get; set; } = [];
+
         // things below are obscured
-        public Relation[] Relations { get; set; } = []; // changeable
+        public virtual Relation[] Relations { get; set; } = []; // changeable
 
-        public Goal[] Goals { get; set; } = []; // changeable
+        public virtual Goal[] Goals { get; set; } = []; // changeable
 
-        public Meta[] Meta { get; set; } = []; // changeable
+        public virtual Meta[] Meta { get; set; } = []; // changeable
 
-        public PrivateRecord[] PrivateRecords { get; set; } = []; // changeable
+        public virtual PrivateRecord[] PrivateRecords { get; set; } = []; // changeable
 
-        public CriminalEvent[] CriminalEvents { get; set; } = []; // changeable
+        public virtual CriminalEvent[] CriminalEvents { get; set; } = []; // changeable
 
-        public MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
+        public virtual MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
 
         // hacker only
         public string[] Exploits { get; set; } = [];
