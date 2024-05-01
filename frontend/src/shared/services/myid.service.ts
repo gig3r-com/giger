@@ -31,17 +31,17 @@ export function useMyIdService() {
     const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {        
         switch (sectionType) {
             case MyIdUncoverableSections.MEDICAL:
-                return currentUser?.medHistory.some((entry) => !entry.seen) ?? false;
+                return currentUser?.medicalEvents?.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.CRIMINAL:
-                return currentUser?.criminalRecord.some((entry) => !entry.seen) ?? false;
+                return currentUser?.criminalEvents?.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.META:
-                return currentUser?.meta.some((entry) => !entry.seen) ?? false;
+                return currentUser?.meta?.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.RELATIONS:
-                return currentUser?.relations.some((entry) => !entry.seen) ?? false;
+                return currentUser?.relations?.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.PRIVATE_RECORDS:
-                return currentUser?.privateRecords.some((entry) => !entry.seen) ?? false;
+                return currentUser?.privateRecords?.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.GOALS:
-                return currentUser?.goals.some((entry) => !entry.seen) ?? false;
+                return currentUser?.goals?.some((entry) => !entry.seen) ?? false;
             default:
                 return false;
         }

@@ -13,7 +13,7 @@ import { ICriminalEvent, IMedEvent } from '../models/events';
 export const selectCurrentUser = (state: { users: IUsersState }) =>
     state.users.currentUser;
 export const selectUsers = (state: { users: IUsersState }) => state.users.users;
-export const selectIsGod = (state: { users: IUsersState }) => state.users.isGod;
+export const selectIsGod = (state: { users: IUsersState }) => state.users.currentUser?.roles.includes(UserRoles.GOD) ?? false;
 export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
     state.users.requiresGodUserSelection;
 export const selectIsAdmin = (state: { users: IUsersState }) =>
@@ -27,7 +27,7 @@ export const selectMedicalEvents = createSelector(
     (state: { users: IUsersState }) => state.users,
     (users) => {
         const revealCodes = users.currentUser?.revealCodes;
-        const medEvents = users.currentUser?.medHistory;
+        const medEvents = users.currentUser?.medicalEvents;
         return medEvents && revealCodes
             ? addLockData<IMedEvent>(medEvents, revealCodes)
             : [];
@@ -37,7 +37,7 @@ export const selectCriminalEvents = createSelector(
     (state: { users: IUsersState }) => state.users,
     (users) => {
         const revealCodes = users.currentUser?.revealCodes;
-        const criminalEvents = users.currentUser?.criminalRecord;
+        const criminalEvents = users.currentUser?.criminalEvents;
         return criminalEvents && revealCodes
             ? addLockData<ICriminalEvent>(criminalEvents, revealCodes)
             : [];

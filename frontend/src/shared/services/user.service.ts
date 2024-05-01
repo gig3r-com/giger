@@ -3,7 +3,6 @@ import { v4 } from 'uuid';
 import { getUserPublicDataById, users } from '../../mocks/users';
 import {
     setCurrentUser,
-    setIsGod,
     setRequiresGodUserSelection,
     setUser,
     updateCurrentUser
@@ -44,11 +43,18 @@ export function useUserService() {
         await loginCall(username, password);
 
         return new Promise<void>((resolve, reject) => {
-            api.get(`User/private/byUsername${username}`)
+            api.get(`User/private/byUsername?username=${username}`)
+                .json<IUserPrivate>()
                 .then((userData) => {
+                    const userIsGod = userData.roles.includes(UserRoles.GOD);
                     dispatch(setCurrentUser(userData));
-                    //saveLoginData(users[35]);
-                    saveIsGod(userData.roles.includes(UserRoles.GOD));
+                    saveLoginData(userData);
+
+                    if (userIsGod) {
+                        dispatch(setRequiresGodUserSelection(true));
+                    }
+
+                    resolve();
                 })
                 .catch(() => {
                     reject('wrong password');
@@ -91,26 +97,16 @@ export function useUserService() {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
     };
 
-    const saveIsGod = (isGod: boolean) => {
-        localStorage.setItem('isGod', JSON.stringify(isGod));
-    };
-
     const retrieveLoginData = (): void => {
         const userData = localStorage.getItem('loggedInUser');
-        const isGod = localStorage.getItem('isGod');
 
         if (userData) {
             dispatch(setCurrentUser(JSON.parse(userData)));
-        }
-
-        if (isGod) {
-            dispatch(setIsGod(JSON.parse(isGod)));
         }
     };
 
     const logout = (): void => {
         localStorage.removeItem('loggedInUser');
-        localStorage.removeItem('isGod');
         dispatch(setCurrentUser(undefined));
     };
 
@@ -118,24 +114,22 @@ export function useUserService() {
         userId: string,
         userData: Partial<IUserPrivate>
     ) => {
-        if (!userList.map((user) => user.id).includes(userId)) {
-            throw new Error(`User with id ${userId} not found`);
-        }
-
         const updatedData: Partial<IUserPrivate> = {
+            ...currentUser,
             ...userData
         };
 
-        //! API CALL
+        api.url('User').put(updatedData);
+
         if (currentUser?.id === userId) {
-            dispatch(updateCurrentUser(updatedData));
+            dispatch(updateCurrentUser(userData));
         } else {
-            dispatch(setUser({ ...updatedData }));
+            dispatch(setUser({ ...userData }));
         }
     };
 
     const canAnonymizeChatHandle = () => {
-        return (currentUser && currentUser.hackingSkill >= 1) || isGod;
+        return (currentUser && currentUser.hackingSkills.stat >= 1) || isGod;
     };
 
     const getAnonymizedHandle = () => {
@@ -183,15 +177,26 @@ export function useUserService() {
     ): Promise<IUserPrivate | IUserPublic> {
         switch (type) {
             case 'private':
-                return (await api.get(
-                    `User/private/byName/${name}`
-                )) as IUserPrivate;
+                return await api
+                    .get(`User/private/byName/${name}`)
+                    .json<IUserPrivate>();
             case 'public':
-                return (await api.get(
-                    `User/public/byName/${name}`
-                )) as IUserPublic;
+                return await api
+                    .get(`User/public/byName/${name}`)
+                    .json<IUserPublic>();
         }
     }
+
+    const fetchCurrentUser = async () => {
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        const userdata = await api
+            .get(`User/private/byId?id=${currentUser.id}`)
+            .json<IUserPrivate>();
+        dispatch(updateCurrentUser(userdata));
+    };
 
     const getBasicUserDataById = (userId: string): IUserBase | undefined => {
         return userList.find((user) => user.id === userId);
@@ -227,6 +232,7 @@ export function useUserService() {
         login,
         logout,
         retrieveLoginData,
+        fetchCurrentUser,
         isGod,
         isAdmin,
         updateUserData,

@@ -25,7 +25,7 @@ export interface IUserPrivate extends IUserPublic {
     professionActual: string;
     typeActual: UserTypes;
     assets: string[];
-    hackingSkill: SkillStat;
+    hackingSkills: SkillStat;
     confrontationVsNegotiation: CharStat;
     cowardVsFighter: CharStat;
     talkativeVsSilent: CharStat;
@@ -38,10 +38,13 @@ export interface IUserPrivate extends IUserPublic {
     goals: IGoal[];
     meta: IMeta[];
     privateRecords: IPrivateRecord[];
-    criminalRecord: ICriminalEvent[];
-    medHistory: IMedEvent[];
+    criminalEvents: ICriminalEvent[];
+    medicalEvents: IMedEvent[];
     faction: Factions;
     revealCodes: string[];
+    networkName: string;
+    subnetworkId: string;
+    subnetworkName: string;
 }
 
 /**
@@ -64,14 +67,13 @@ export enum UserTypes {
 }
 
 export enum UserRoles {
-    ADMIN = 'admin',
-    INFLUENCER = 'influencer',
-    DIRECTOR = 'director',
-    GOD = 'god'
+    ADMIN = 'ADMIN',
+    INFLUENCER = 'INFLUENCER',
+    GOD = 'GOD'
 }
 
 export interface ICharStats {
-    hackingSkill: SkillStat;
+    hackingSkills: SkillStat;
     confrontationVsNegotiation: CharStat;
     cowardVsFighter: CharStat;
     talkativeVsSilent: CharStat;
@@ -79,25 +81,11 @@ export interface ICharStats {
     combatSkill: SkillStat;
 }
 
-export type SkillStat = 0 | 1 | 2 | 3;
-export type CharStat = 0 | 1 | 2 | 3 | 4;
-export type CyberwareLevel =
-    | 0
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 13
-    | 14
-    | 15;
+export type SkillStat = { stat: 0 | 1 | 2 | 3 };
+export type CharStat = { stat: 0 | 1 | 2 | 3 | 4 };
+export type CyberwareLevel = {
+    stat: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+};
 
 export enum Vibe {
     DIZORDERS = 'DIZORDERS',

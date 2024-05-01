@@ -20,14 +20,12 @@ import {
 export interface IUsersState {
     users: IUserBase[];
     currentUser?: IUserPrivate;
-    isGod: boolean;
     requiresGodUserSelection: boolean;
 }
 
 const initialState: IUsersState = {
     users: JSON.parse(JSON.stringify([...users])),
     currentUser: undefined,
-    isGod: false,
     requiresGodUserSelection: false
 };
 
@@ -58,9 +56,6 @@ export const usersSlice = createSlice({
         ) => {
             state.currentUser = action.payload;
         },
-        setIsGod: (state, action: PayloadAction<boolean>) => {
-            state.isGod = action.payload;
-        },
         setRequiresGodUserSelection: (
             state,
             action: PayloadAction<boolean>
@@ -87,13 +82,13 @@ export const usersSlice = createSlice({
             }
 
             if (action.payload.type === EventRecordType.CRIMINAL) {
-                state.currentUser.criminalRecord.push(
+                state.currentUser.criminalEvents.push(
                     action.payload.event as ICriminalEvent
                 );
             }
 
             if (action.payload.type === EventRecordType.MEDICAL) {
-                state.currentUser.medHistory.push(
+                state.currentUser.medicalEvents.push(
                     action.payload.event as IMedEvent
                 );
             }
@@ -111,26 +106,26 @@ export const usersSlice = createSlice({
             }
 
             if (action.payload.type === EventRecordType.CRIMINAL) {
-                const eventIndex = state.currentUser.criminalRecord.findIndex(
+                const eventIndex = state.currentUser.medicalEvents.findIndex(
                     (event) => event.id === action.payload.eventId
                 );
 
                 if (eventIndex !== -1) {
-                    state.currentUser.criminalRecord[eventIndex] = {
-                        ...state.currentUser.criminalRecord[eventIndex],
+                    state.currentUser.criminalEvents[eventIndex] = {
+                        ...state.currentUser.criminalEvents[eventIndex],
                         ...action.payload.updateData
                     };
                 }
             }
 
             if (action.payload.type === EventRecordType.MEDICAL) {
-                const eventIndex = state.currentUser.medHistory.findIndex(
+                const eventIndex = state.currentUser.medicalEvents.findIndex(
                     (event) => event.id === action.payload.eventId
                 );
 
                 if (eventIndex !== -1) {
-                    state.currentUser.medHistory[eventIndex] = {
-                        ...state.currentUser.medHistory[eventIndex],
+                    state.currentUser.medicalEvents[eventIndex] = {
+                        ...state.currentUser.medicalEvents[eventIndex],
                         ...action.payload.updateData
                     };
                 }
@@ -175,7 +170,6 @@ export const {
     setCurrentUser,
     setUser,
     updateCurrentUser,
-    setIsGod,
     setRequiresGodUserSelection,
     addEvent,
     addRecord,

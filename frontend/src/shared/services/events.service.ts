@@ -133,14 +133,14 @@ export const useEventsService = () => {
         }
 
         if (type === EventRecordType.MEDICAL) {
-            record = currentUser?.medHistory as IMedEvent[];
+            record = currentUser?.medicalEvents as IMedEvent[];
         }
 
         if (type === EventRecordType.CRIMINAL) {
-            record = currentUser?.criminalRecord as ICriminalEvent[];
+            record = currentUser?.criminalEvents as ICriminalEvent[];
         }
 
-        return record.filter((entry) => {
+        return record?.filter((entry) => {
             if (!entry.revealCode) return true;
             return revealCodes?.includes(entry.revealCode);
         });
