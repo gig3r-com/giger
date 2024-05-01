@@ -619,14 +619,22 @@ namespace Giger.Controllers
             }
         }
 
-        private List<UserPrivate> FilterOutAllGodUsers(IEnumerable<UserPrivate> users)
+        private List<UserPrivate> FilterOutAllGodUsers(List<UserPrivate> users)
         {
+            if (IsGodUser())
+            {
+                return users;
+            }    
             return users.Where(u => !u.Roles.Contains(UserRoles.GOD)).ToList();
         }
 
         private UserPrivate FilterOutGodUser(UserPrivate user)
         {
             if (!user.Roles.Contains(UserRoles.GOD))
+            {
+                return user;
+            }
+            if (IsGodUser())
             {
                 return user;
             }
