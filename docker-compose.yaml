@@ -1,5 +1,3 @@
-version: "3.9"
-
 # networks:
 #   default:
 #     external: true
@@ -15,6 +13,7 @@ services:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
   frontend:
+    image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./frontend
     restart: unless-stopped
@@ -22,6 +21,7 @@ services:
       - 8080
 
   backend:
+    image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile
@@ -44,15 +44,18 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - mongo
-  
+
   mongo:
     image: mongo:latest
     restart: unless-stopped
     expose:
       - 27017
+    ports:
+      - 27017:27017
     volumes:
       - ./docker/volumes/mongo:/data/db
       - ./docker/mongo_init:/docker-entrypoint-initdb.d
+      - ./data/mongo:/data/
     environment:
       MONGO_INITDB_DATABASE: ${GIGER_DATABASE:-admin}
       MONGO_INITDB_ROOT_USERNAME: ${GIGER_USERNAME:-giger}
@@ -63,7 +66,6 @@ services:
     restart: unless-stopped
     ports:
       - 8081:8081
-
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
       ME_CONFIG_MONGODB_AUTH_DATABASE: ${GIGER_DATABASE:-admin}
@@ -71,33 +73,4 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${GIGER_PASSWORD:-giger}
     depends_on:
       - mongo
-
-  # swagger:
-  #   image: swaggerapi/swagger-ui
-  #   restart: unless-stopped
-  #   ports:
-  #     - ${SWAGGER_PORT:-8090}:8080
-  #   volumes:
-  #     - ./swagger.yml:/tmp/swagger.yml
-  #   environment:
-  #     SWAGGER_JSON: "/tmp/swagger.yml"
-  #     BASE_URL: "/swagger"
-
-  # backend:
-  #   build:
-  #     context: ./backend
-  #   restart: unless-stopped
-  #   expose:
-  #     - 80
-  #   volumes:
-  #     - ./docker/backend/config.json:/app/.config.json
-  #     - ./backend/migrations/:/app/migrations
-  #   depends_on:
-  #     - postgres
-
-  # postgres:
-  #   image: postgres:16-alpine
-  #   environment:
-  #     POSTGRES_PASSWORD: postgres
-  #   volumes:
-  #     - ./docker/volumes/postgres:/var/lib/postgresql/data/
+      
