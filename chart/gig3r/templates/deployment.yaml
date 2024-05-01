@@ -135,3 +135,58 @@ spec:
         - name: "mongo-scripts"
           configMap:
             name: "mongo-scripts"
+---
+
+# mongoexpress deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gig3r.mongo-express.app" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "gig3r.mongo-express.app" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gig3r.mongo-express.app" . }}
+        randstr: {{ randAlphaNum 20 }}
+    spec:
+      containers:
+      - image: mongo-express:latest
+        name: {{ include "gig3r.mongo-express.app" . }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ME_CONFIG_MONGODB_SERVER
+          value: {{ include "gig3r.mongo-express.app" . }}
+        - name: ME_CONFIG_MONGODB_AUTH_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_DATABASE
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+
+        - name: ME_CONFIG_BASICAUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-express-secret
+              key: ME_CONFIG_BASICAUTH_USERNAME
+        - name: ME_CONFIG_BASICAUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-express-secret
+              key: ME_CONFIG_BASICAUTH_PASSWORD
+      restartPolicy: Always
+

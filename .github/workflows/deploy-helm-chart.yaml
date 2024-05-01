@@ -80,7 +80,9 @@ jobs:
             --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
-            --set database.user=${{ env.HELM_ENVIRONMENT }}
+            --set database.user=${{ env.HELM_ENVIRONMENT }} \
+            --set mongoexpress.user=${{ secrets.ME_USER }} \
+            --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true
