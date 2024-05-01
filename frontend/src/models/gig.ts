@@ -10,8 +10,8 @@ export interface IGigBase {
     subcategory: GigSubcategoryNames;
     reputationRequired?: GigRepuationLevels;
     id: string;
-    providerAccount: string; // account id
-    clientAccount: string; // account id
+    providerAccount: string | null; // account id
+    clientAccount: string | null; // account id
     anonymizedAuthor?: boolean;
     mode: GigModes;
 }
