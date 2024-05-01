@@ -2,7 +2,6 @@
 using Giger.Models.User;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
 namespace Giger.Models.GigModels
 {
@@ -19,6 +18,9 @@ namespace Giger.Models.GigModels
         [BsonRepresentation(BsonType.String)]
         public required GigCategoryNames Category { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
+        public required GigSubcategoryNames Subcategory { get; set; }
+
         public required GigRepuationLevels RepurationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
@@ -34,7 +36,8 @@ namespace Giger.Models.GigModels
 
         public Factions? TakenForCompany { get; set; }
 
-        public required string AccountNumber { get; set; }
+        public string? ClientAccountNumber { get; set; }
+        public string? ProviderAccountNumber { get; set; }
 
         public DateTime? MarkedAsComplaintAt { get; set; }
 
@@ -54,59 +57,10 @@ namespace Giger.Models.GigModels
             Title = REDACTED;
             Description = REDACTED;
             Category = GigCategoryNames.REDACTED;
+            Subcategory = GigSubcategoryNames.REDACTED;
             Status = GigStatus.COMPLETED;
             AuthorId = REDACTED;
             AuthorName = REDACTED;
         }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<GigStatus>))]
-    public enum GigStatus
-    {
-        //[EnumMember(Value = "available")]
-        AVAILABLE,
-        IN_PROGRESS,
-        COMPLETED,
-        PENDING,
-        DISPUTE,
-        EXPIRED
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<GigModes>))]
-    public enum GigModes
-    {
-        PROVIDER, // author does work, gets paid
-        CLIENT    // author orders work, pays
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<GigCategoryNames>))]
-    public enum GigCategoryNames
-    {
-        REDACTED,
-        INTEL,
-        TECH,
-        DELIVERY,
-        GUNS_AND_AMMO,
-        DRUGS,
-        OTHER_MERCH,
-        ITEM_ACQUSITION,
-        ANDROID_ACQUISITION,
-        DEBT_COLLECTION,
-        INTIMIDATION,
-        KIDNAPPING,
-        BODYGUARD,
-        HIT,
-        LOVER_EXPERIENCE,
-        SEX_DOLL,
-        QUICKIE,
-        FIRST_AID,
-        CYBERWARE,
-        MEDEVAC,
-        RENTING_LOCATION,
-        BANK_ACCOUNT_MANIPULATION,
-        SPOOFING,
-        SECURITY,
-        ANDROID_HIJACK,
-        COMPLAINT
     }
 }
