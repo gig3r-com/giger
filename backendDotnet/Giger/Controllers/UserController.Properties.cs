@@ -422,7 +422,7 @@ namespace Giger.Controllers
 		[HttpPatch("{id}/hasPlatinumPass")]
 		public async Task<IActionResult> PatchHasPlatinumPass(string id, bool enabled)
 		{
-			if (!IsAuthorized(id))
+			if (!IsGodUser())
 			{
 				Forbid();
 			}

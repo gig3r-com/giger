@@ -9,14 +9,14 @@ namespace Giger.Models.User
 {
     public class UserPrivate : UserPublic
     {
-        public required CyberwareLevel CyberwareLevel { get; set; } // changeable
+        public required CyberwareLevel CyberwareLevel { get; set; }
 
         public required string ProfessionActual { get; set; }
         
         [BsonRepresentation(BsonType.String)]
         public required UserTypes TypeActual { get; set; }
         
-        public string[] Assets { get; set; } = []; // changeable ?? TODO: DELETE?
+        public string[] Assets { get; set; } = []; //TODO: DELETE?
 
         public required SkillStat HackingSkills { get; set; }
 
@@ -30,29 +30,29 @@ namespace Giger.Models.User
 
         public required SkillStat CombatSkill { get; set; }
 
-        public required string VibeFunction { get; set; } // changeable
+        public required string VibeFunction { get; set; }
         
         [BsonRepresentation(BsonType.String)]
-        public required VibeEngagement VibeEngagement { get; set; }// changeable
+        public required VibeEngagement VibeEngagement { get; set; }
 
-        public string[] FavoriteUserIds { get; set; } = []; // changeable
+        public string[] FavoriteUserIds { get; set; } = [];
 
-        public required Factions Faction { get; set; } // changeable
+        public required Factions Faction { get; set; }
 
         public Dictionary<GigCategoryNames, decimal> GigRepution { get; set; } = [];
 
         // things below are obscured
-        public virtual Relation[] Relations { get; set; } = []; // changeable
+        public virtual Relation[] Relations { get; set; } = [];
 
-        public virtual Goal[] Goals { get; set; } = []; // changeable
+        public virtual Goal[] Goals { get; set; } = [];
 
-        public virtual Meta[] Meta { get; set; } = []; // changeable
+        public virtual Meta[] Meta { get; set; } = [];
 
-        public virtual PrivateRecord[] PrivateRecords { get; set; } = []; // changeable
+        public virtual PrivateRecord[] PrivateRecords { get; set; } = [];
 
-        public virtual CriminalEvent[] CriminalEvents { get; set; } = []; // changeable
+        public virtual CriminalEvent[] CriminalEvents { get; set; } = [];
 
-        public virtual MedicalEvent[] MedicalEvents { get; set; } = []; // changeable
+        public virtual MedicalEvent[] MedicalEvents { get; set; } = [];
 
         // hacker only
         public string[] Exploits { get; set; } = [];
@@ -60,10 +60,8 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public required MindHacks MindHack { get; set; }
 
-        // TODO: lista ID użytkowników którzy mogą zmindhackować
         public string[] MindHackEnabledFor { get; set; } = []; 
 
-        // TODO: endpoint do zmiany - tylko GOD może zmienić
         public required bool HasPlatinumPass { get; set; }
 
         public string? HackerName { get; set; }
