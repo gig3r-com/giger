@@ -12,3 +12,7 @@ backend:
 database:
   name: admin
   user: gig3r
+
+mongoexpress:
+  user: changeme
+  password: changeaswell

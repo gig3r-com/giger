@@ -53,3 +53,21 @@ spec:
   sessionAffinity: None
 
 ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.mongo-express.app" . }}
+  name: {{ include "gig3r.mongo-express.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.mongo-express.app" . }}
+    port: 8080
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: {{ include "gig3r.mongo-express.app" . }}
+  sessionAffinity: None
+
+---
