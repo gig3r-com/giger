@@ -41,8 +41,11 @@ namespace Giger.Controllers
                 if (targetUser is not null)
                 {
                     var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
-                    var copyLog = new Log(newLog, targetSubnetwork);
-                    _logService.CreateAsync(copyLog);
+                    if (targetSubnetwork.Id != senderSubnetwork.Id)
+                    {
+                        var copyLog = new Log(newLog, targetSubnetwork);
+                        _logService.CreateAsync(copyLog);
+                    }
                 }
             }
 
@@ -89,11 +92,13 @@ namespace Giger.Controllers
                 if (targetUser is not null)
                 {
                     var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
-                    var copyLog = new Log(newLog, targetSubnetwork);
-                    targetSubnetwork.PastHacks = [.. targetSubnetwork.PastHacks, copyLog.Id];
-                    _networksService.UpdateSubnetworkAsync(targetSubnetwork.Id, targetSubnetwork);
-                    _logService.CreateAsync(copyLog);
-
+                    if (targetSubnetwork.Id != senderSubnetwork.Id)
+                    {
+                        var copyLog = new Log(newLog, targetSubnetwork);
+                        targetSubnetwork.PastHacks = [.. targetSubnetwork.PastHacks, copyLog.Id];
+                        _networksService.UpdateSubnetworkAsync(targetSubnetwork.Id, targetSubnetwork);
+                        _logService.CreateAsync(copyLog);
+                    }
                 }
             }
 
