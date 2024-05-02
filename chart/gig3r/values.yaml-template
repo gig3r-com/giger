@@ -3,22 +3,16 @@ base_url: gig3r.com
 
 frontend:
   image: mivalsten/gig3r-frontend
-  tag: 5
+  tag: 0.2.0
 
 backend:
   image: mivalsten/gig3r-backend
-  tag: 5
+  tag: 0.2.0
 
 database:
-  name: gig3r
+  name: admin
   user: gig3r
-  password: gig3r
-  admin:
-    user: postgres
-    password: superSecretPassword
 
-swagger:
-  config: |-
-    # put your swagger config here
-  envs:
-    SWAGGER_PORT: 80
+mongoexpress:
+  user: changeme
+  password: changeaswell
