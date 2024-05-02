@@ -18,6 +18,9 @@ namespace Giger.Services
         public async Task<List<Account>> GetAllAsync() =>
             await _accountsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<Account?> GetSystemAccountAsync() =>
+            await _accountsCollection.Find(x => x.Owner == "SYSTEM").FirstOrDefaultAsync();
+
         public async Task<Account?> GetByIdAsync(string id) =>
             await _accountsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 

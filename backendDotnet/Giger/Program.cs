@@ -49,7 +49,7 @@ app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
 app.UseStaticFiles();
 app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {

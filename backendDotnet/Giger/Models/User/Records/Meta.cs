@@ -21,6 +21,11 @@ namespace Giger.Models.User.Records
             base.Obscure();
             Type = MetaTypes.REDACTED;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 17 + Type.GetHashCode() * 5 + IsLink.GetHashCode() * 3;
+        }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<MetaTypes>))]

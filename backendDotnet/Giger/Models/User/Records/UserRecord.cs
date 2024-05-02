@@ -20,6 +20,11 @@ namespace Giger.Models.User.Records
             Description = REDACTED;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 7 + Title.GetHashCode() * 13 + Description.GetHashCode() * 11 + RecordType.GetHashCode() * 7;
+        }
+
         [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
         public enum UserRecordTypes
         {

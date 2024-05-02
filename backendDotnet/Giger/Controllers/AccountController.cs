@@ -68,7 +68,7 @@ namespace Giger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Account newAccount)
+        public async Task<IActionResult> CreatedAccount(Account newAccount)
         {
             if (IsGodUser())
             {
@@ -77,7 +77,26 @@ namespace Giger.Controllers
 
             newAccount.Id = ObjectId.GenerateNewId().ToString();
             await _accountService.CreateAsync(newAccount);
-            return CreatedAtAction(nameof(Get), new { id = newAccount.Id }, newAccount);
+            return CreatedAtAction(nameof(CreatedAccount), new { id = newAccount.Id }, newAccount);
+        }
+
+        [HttpPut("{accountNo}")]
+        public async Task<IActionResult> Update(string accountNo, Account updatedAccount)
+        {
+            if (!IsGodUser())
+            {
+                return Forbid();
+            }
+
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
+            if (account is null)
+            {
+                return NotFound();
+            }
+
+            account = updatedAccount;
+            await _accountService.UpdateAsync(accountNo, account);
+            return NoContent();
         }
 
         [HttpPatch("{accountNo}/balance/add")]
@@ -152,7 +171,7 @@ namespace Giger.Controllers
         }
 
         [HttpPost("transaction")]
-        public async Task<IActionResult> Post(Transaction newTransaction)
+        public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
         {
             if (!IsAuthorized(newTransaction.From))
             {
@@ -189,17 +208,17 @@ namespace Giger.Controllers
             receiverAcc.Balance += newTransaction.Amount;
             _accountService.UpdateAsync(receiverAcc.Id, receiverAcc);
 
-            LogTransaction(newTransaction, giverAcc.OwnerId, receiverAcc.OwnerId);
+            LogTransaction(newTransaction, giverAcc.Owner, receiverAcc.Owner);
 
-            return CreatedAtAction(nameof(Post), new { id = newTransaction.Id }, newTransaction);
+            return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
 
-        private async void LogTransaction(Transaction transaction, string giverId, string receiverId)
+        private async void LogTransaction(Transaction transaction, string giverName, string receiverName)
         {
             // giver and receiver are not null at this point
-            var giver = await _userService.GetByUserNameAsync(giverId);
-            var receiver = await _userService.GetByUserNameAsync(receiverId);
+            var giver = await _userService.GetByUserNameAsync(giverName);
+            var receiver = await _userService.GetByUserNameAsync(receiverName);
             var giverSubNetwork = await _networksService.GetSubnetworkByIdAsync(giver.SubnetworkId);
             var receiverSubNetwork = await _networksService.GetSubnetworkByIdAsync(receiver.SubnetworkId);
 

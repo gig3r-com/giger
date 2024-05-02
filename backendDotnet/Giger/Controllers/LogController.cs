@@ -16,49 +16,93 @@ namespace Giger.Controllers
         [HttpGet("{subnetworkId}/all")]
         public async Task<List<Log>> GetAllSubnetworkLogs(string subnetworkId) => await _logService.GetAllForSubnetworkAsync(subnetworkId);
 
-        [HttpPost("{subnetwork}")]
-        public async Task<IActionResult> PostLog(string subnetworkId, Log newLog)
+        [HttpPost()]
+        public async Task<IActionResult> PostLog(Log newLog)
         {
-            var subnetwork = _networksService.GetSubnetworkByIdAsync(subnetworkId);
-            if (subnetwork is null)
+            var senderUser = await _userService.GetAsync(newLog.SourceUserId);
+            if (senderUser is null)
+            {
+                return BadRequest();
+            }
+
+            var senderSubnetwork = await _networksService.GetSubnetworkByIdAsync(senderUser.SubnetworkId);
+            if (senderSubnetwork is null)
             {
                 return NotFound();
             }
 
-            if (subnetworkId != newLog.SubnetworkId)
-            {
-                return BadRequest("Mismtached subnetwork ID");
-            }
-
             newLog.Id = ObjectId.GenerateNewId().ToString();
             newLog.Timestamp = GigerDateTime.Now;
-            await _logService.CreateAsync(newLog);
+            _logService.CreateAsync(newLog);
+
+            if (newLog.TargetUserId is not null)
+            {
+                var targetUser = await _userService.GetAsync(newLog.TargetUserId);
+                if (targetUser is not null)
+                {
+                    var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
+                    if (targetSubnetwork.Id != senderSubnetwork.Id)
+                    {
+                        var copyLog = new Log(newLog, targetSubnetwork);
+                        _logService.CreateAsync(copyLog);
+                    }
+                }
+            }
 
             return CreatedAtAction(nameof(PostLog), new { id = newLog.Id }, newLog);
         }
 
-        [HttpPost("{subnetworkId}/hack")]
-        public async Task<IActionResult> PostHack(string subnetworkId, Log newLog)
+        [HttpPut]
+        public async Task<IActionResult> PutLog(Log updatedLog)
         {
-            var subnetwork = await _networksService.GetSubnetworkByIdAsync(subnetworkId);
-            if (subnetwork is null)
+            var log = await _logService.GetByIdAsync(updatedLog.Id);
+            if (log is null)
             {
                 return NotFound();
             }
 
-            if (subnetworkId != newLog.SubnetworkId)
+            await _logService.UpdateAsync(updatedLog.Id, updatedLog);
+            return Ok();
+        }
+
+        [HttpPost("hack")]
+        public async Task<IActionResult> PostHack(Log newLog)
+        {
+            var senderUser = await _userService.GetAsync(newLog.SourceUserId);
+            if (senderUser is null)
             {
-                return BadRequest("Mismtached subnetwork ID");
+                return BadRequest();
+            }
+
+            var senderSubnetwork = await _networksService.GetSubnetworkByIdAsync(senderUser.SubnetworkId);
+            if (senderSubnetwork is null)
+            {
+                return NotFound();
             }
 
             newLog.Id = ObjectId.GenerateNewId().ToString();
             newLog.Timestamp = GigerDateTime.Now;
-            subnetwork.PastHacks = [.. subnetwork.PastHacks, newLog.Id];
-
-            _networksService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+            senderSubnetwork.PastHacks = [.. senderSubnetwork.PastHacks, newLog.Id];
+            _networksService.UpdateSubnetworkAsync(senderSubnetwork.Id, senderSubnetwork);
             _logService.CreateAsync(newLog);
 
-            return CreatedAtAction(nameof(PostLog), new { id = newLog.Id }, newLog);
+            if (newLog.TargetUserId is not null)
+            {
+                var targetUser = await _userService.GetAsync(newLog.TargetUserId);
+                if (targetUser is not null)
+                {
+                    var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
+                    if (targetSubnetwork.Id != senderSubnetwork.Id)
+                    {
+                        var copyLog = new Log(newLog, targetSubnetwork);
+                        targetSubnetwork.PastHacks = [.. targetSubnetwork.PastHacks, copyLog.Id];
+                        _networksService.UpdateSubnetworkAsync(targetSubnetwork.Id, targetSubnetwork);
+                        _logService.CreateAsync(copyLog);
+                    }
+                }
+            }
+
+            return CreatedAtAction(nameof(PostHack), new { id = newLog.Id }, newLog);
         }
     }
 }
