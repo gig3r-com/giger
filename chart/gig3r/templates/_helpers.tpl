@@ -72,3 +72,7 @@ gig3r-{{ default "app" .Values.environment }}-mongodb
 {{- define "gig3r.mongodb.image" -}}
 {{ default "mongo" .Values.mongodb.image }}:{{ default "latest" .Values.mongodb.tag }}
 {{- end }}
+
+{{- define "gig3r.mongo-express.app" -}}
+gig3r-{{ default "app" .Values.environment }}-mongo-express
+{{- end }}
