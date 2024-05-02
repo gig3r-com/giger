@@ -39,7 +39,7 @@ namespace Giger.Models.User
 
         public required Factions Faction { get; set; }
 
-        public Dictionary<GigCategoryNames, decimal> GigRepution { get; set; } = [];
+        public Dictionary<GigCategoryNames, decimal> GigReputation { get; set; } = [];
 
         // things below are obscured
         public virtual Relation[] Relations { get; set; } = [];

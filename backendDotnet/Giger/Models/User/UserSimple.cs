@@ -140,7 +140,7 @@ namespace Giger.Models.User
             PrivateRecords = user.PrivateRecords;
             CriminalEvents = user.CriminalEvents;
             MedicalEvents = user.MedicalEvents;
-            GigRepution = user.GigRepution;
+            GigReputation = user.GigReputation;
             Exploits = user.Exploits;
             MindHack = user.MindHack;
             MindHackEnabledFor = user.MindHackEnabledFor;
