@@ -2,6 +2,8 @@
 {
     public class RecordsHashes
     {
+        public RecordsHashes() { }
+
         public RecordsHashes(UserPrivate user)
         {
             int relationsHashCode = 3;

@@ -11,92 +11,23 @@ namespace Giger.Models.User
 
         [JsonIgnore]
         public override Relation[] Relations { get; set; }
-        //public int RelationsHash 
-        //{ 
-        //    get 
-        //    {
-        //        int hashCode = 3;
-        //        foreach (var relation in Relations)
-        //        {
-        //            hashCode ^= relation.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
-        //}
 
         [JsonIgnore]
         public override Goal[] Goals { get; set; }
-        //public int GoalsHash
-        //{
-        //    get
-        //    {
-        //        int hashCode = 5;
-        //        foreach (var goal in Goals)
-        //        {
-        //            hashCode ^= goal.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
 
         [JsonIgnore]
         public override Meta[] Meta { get; set; }
-        //public int MetaHash
-        //{
-        //    get
-        //    {
-        //        int hashCode = 7;
-        //        foreach (var meta in Meta)
-        //        {
-        //            hashCode ^= meta.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
-        //}
 
         [JsonIgnore]
         public override PrivateRecord[] PrivateRecords { get; set; }
-        //public int PrivateRecordsHash
-        //{
-        //    get
-        //    {
-        //        int hashCode = 13;
-        //        foreach (var privateRecord in PrivateRecords)
-        //        {
-        //            hashCode ^= privateRecord.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
-        //}
 
         [JsonIgnore]
         public override CriminalEvent[] CriminalEvents { get; set; }
-        //public int CriminalEventsHash
-        //{
-        //    get
-        //    {
-        //        int hashCode = 17;
-        //        foreach (var criminalEvent in CriminalEvents)
-        //        {
-        //            hashCode ^= criminalEvent.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
-        //}
 
         [JsonIgnore]
         public override MedicalEvent[] MedicalEvents { get; set; }
-        //public int MedicalEventsHash
-        //{
-        //    get
-        //    {
-        //        int hashCode = 23;
-        //        foreach (var medicalEvent in MedicalEvents)
-        //        {
-        //            hashCode ^= medicalEvent.GetHashCode();
-        //        }
-        //        return hashCode;
-        //    }
-        //}
+
+        public UserSimple() { }
 
         [SetsRequiredMembers]
         public UserSimple(UserPrivate user)
