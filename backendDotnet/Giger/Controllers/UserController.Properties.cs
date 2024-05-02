@@ -320,7 +320,7 @@ namespace Giger.Controllers
 		[HttpPut("{id}/mindHack/enabledUsers")]
 		public async Task<IActionResult> PatchMindHackEnabledUsers(string id, string[] enabledUsers)
 		{
-			if (!IsAuthorized(id))
+			if (!IsAuthorized())
 			{
 				Forbid();
 			}
