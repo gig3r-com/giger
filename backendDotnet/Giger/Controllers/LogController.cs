@@ -61,7 +61,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            await _logService.UpdateAsync(updatedLog.Id, updatedLog);
+            await _logService.UpdateAsync(updatedLog);
             return Ok();
         }
 
@@ -83,7 +83,7 @@ namespace Giger.Controllers
             newLog.Id = ObjectId.GenerateNewId().ToString();
             newLog.Timestamp = GigerDateTime.Now;
             senderSubnetwork.PastHacks = [.. senderSubnetwork.PastHacks, newLog.Id];
-            _networksService.UpdateSubnetworkAsync(senderSubnetwork.Id, senderSubnetwork);
+            _networksService.UpdateSubnetworkAsync(senderSubnetwork);
             _logService.CreateAsync(newLog);
 
             if (newLog.TargetUserId is not null)
@@ -96,7 +96,7 @@ namespace Giger.Controllers
                     {
                         var copyLog = new Log(newLog, targetSubnetwork);
                         targetSubnetwork.PastHacks = [.. targetSubnetwork.PastHacks, copyLog.Id];
-                        _networksService.UpdateSubnetworkAsync(targetSubnetwork.Id, targetSubnetwork);
+                        _networksService.UpdateSubnetworkAsync(targetSubnetwork);
                         _logService.CreateAsync(copyLog);
                     }
                 }

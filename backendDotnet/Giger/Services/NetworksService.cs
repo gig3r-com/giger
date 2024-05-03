@@ -66,8 +66,8 @@ namespace Giger.Services
         public async Task CreateSubnetworkAsync(Subnetwork newSubnetwork) =>
             await _subnetworksCollection.InsertOneAsync(newSubnetwork);
 
-        public async Task UpdateSubnetworkAsync(string id, Subnetwork updatedSubnetwork) =>
-            await _subnetworksCollection.ReplaceOneAsync(network => network.Id == id, updatedSubnetwork);
+        public async Task UpdateSubnetworkAsync(Subnetwork updatedSubnetwork) =>
+            await _subnetworksCollection.ReplaceOneAsync(network => network.Id == updatedSubnetwork.Id, updatedSubnetwork);
 
         public async Task DeleteSubnetworkAsync(string id) =>
             await _networksCollection.DeleteOneAsync(network => network.Id == id);
