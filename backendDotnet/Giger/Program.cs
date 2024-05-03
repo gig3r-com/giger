@@ -49,7 +49,6 @@ app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
 app.UseStaticFiles();
 app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
-//app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
@@ -61,13 +60,20 @@ app.Use(async (context, next) =>
     }
 #endif
 
-    if (context.Request.Path.StartsWithSegments("/api/Login"))
+    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
     {
         await next();
         return;
     }
 
-    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
+    if (context.Request.Path.StartsWithSegments("/api/Login"))
+    {
+        await next();
+        return;
+    }
+    
+
+    if (context.Request.Path.StartsWithSegments("/api/HealthCheck"))
     {
         await next();
         return;
