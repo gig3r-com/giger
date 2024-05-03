@@ -37,6 +37,7 @@ namespace Giger.Models.GigModels
         public Factions? TakenForCompany { get; set; }
 
         public string? ClientAccountNumber { get; set; }
+
         public string? ProviderAccountNumber { get; set; }
 
         public DateTime? MarkedAsComplaintAt { get; set; }
@@ -56,11 +57,13 @@ namespace Giger.Models.GigModels
             Payout = -1;
             Title = REDACTED;
             Description = REDACTED;
+            ConversasionId = null;
             Category = GigCategoryNames.REDACTED;
             Subcategory = GigSubcategoryNames.REDACTED;
             Status = GigStatus.COMPLETED;
             AuthorId = REDACTED;
             AuthorName = REDACTED;
+            ComplaintReason = ComplaintReason == null ? null : REDACTED;
         }
     }
 }

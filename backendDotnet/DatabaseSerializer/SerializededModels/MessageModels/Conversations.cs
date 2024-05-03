@@ -50,12 +50,69 @@ namespace Giger.SerializededModels.MessageModels
                         {
                             Id = ObjectId.GenerateNewId().ToString(),
                             Date = GigerDateTime.Now,
+                            Sender = "jsilver",
+                            Text = "I will get you everything on Takayama corporation",
+                            Status = MessageStatus.READ
+                        },
+                        new()
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
-                            Text = "Please get me all you can on Takayama corporation",
+                            Text = "ACCEPTED",
+                            Status = MessageStatus.SENT
+                        },
+                        new()
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Sender = "triddle",
+                            Text = "I will get back to you in a few hours",
                             Status = MessageStatus.SENT
                         },
                     ],
                     Participants = ["jsilver", "triddle"],
+                    GigConversation = true,
+                },
+                new Conversation()
+                {
+                    Id = "987987",
+                    Messages = [
+                        new()
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Date = GigerDateTime.Now,
+                            Sender = "triddle",
+                            Text = "Please get me all you can on Takayama corporation",
+                            Status = MessageStatus.READ
+                        },
+                        new()
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Sender = "jsilver",
+                            Text = "ACCEPTED",
+                            Status = MessageStatus.SENT
+                        },
+                        new()
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Sender = "jsilver",
+                            Text = "I will get back to you in a few hours",
+                            Status = MessageStatus.SENT
+                        },
+                    ],
+                    Participants = ["jsilver", "triddle"],
+                    GigConversation = true,
+                },
+                new Conversation()
+                {
+                    Id = "1789336",
+                    Messages = [
+                        new("jsilver", "I want you to find and bring back Android #1532")
+                    ],
+                    Participants = ["jsilver"],
                     GigConversation = true,
                 }
             ];

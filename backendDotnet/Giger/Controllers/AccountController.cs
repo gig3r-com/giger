@@ -95,7 +95,7 @@ namespace Giger.Controllers
             }
 
             account = updatedAccount;
-            await _accountService.UpdateAsync(accountNo, account);
+            await _accountService.UpdateAsync(account);
             return NoContent();
         }
 
@@ -113,7 +113,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance += value;
-            await _accountService.UpdateAsync(accountNo, account);
+            await _accountService.UpdateAsync(account);
             return NoContent();
         }
 
@@ -131,7 +131,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance -= value;
-            await _accountService.UpdateAsync(accountNo, account);
+            await _accountService.UpdateAsync(account);
             return NoContent();
         }
 
@@ -167,7 +167,7 @@ namespace Giger.Controllers
             {
                 return Forbid();
             }
-            return account.Transactions.ToList();
+            return account.Transactions;
         }
 
         [HttpPost("transaction")]
@@ -193,65 +193,52 @@ namespace Giger.Controllers
 
             if (giverAcc.Balance < newTransaction.Amount)
             {
-                return BadRequest("Not enough balance");
+                return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
             newTransaction.Id = ObjectId.GenerateNewId().ToString();
             newTransaction.Date = GigerDateTime.Now;
 
-            giverAcc.Transactions = [..giverAcc.Transactions, newTransaction];
-            
+            giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
-            _accountService.UpdateAsync(giverAcc.Id, giverAcc);
+            await _accountService.UpdateAsync(giverAcc);
 
-            receiverAcc.Transactions = [.. receiverAcc.Transactions, newTransaction];
+            receiverAcc.Transactions.Add(newTransaction);
             receiverAcc.Balance += newTransaction.Amount;
-            _accountService.UpdateAsync(receiverAcc.Id, receiverAcc);
+            await _accountService.UpdateAsync(receiverAcc);
 
-            LogTransaction(newTransaction, giverAcc.Owner, receiverAcc.Owner);
+            LogTransaction(newTransaction, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
 
-        private async void LogTransaction(Transaction transaction, string giverName, string receiverName)
+        private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {
-            // giver and receiver are not null at this point
-            var giver = await _userService.GetByUserNameAsync(giverName);
-            var receiver = await _userService.GetByUserNameAsync(receiverName);
-            var giverSubNetwork = await _networksService.GetSubnetworkByIdAsync(giver.SubnetworkId);
-            var receiverSubNetwork = await _networksService.GetSubnetworkByIdAsync(receiver.SubnetworkId);
+            var giverUser = await _userService.GetByUserNameAsync(senderAccount.Owner);
+            var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
-            var log = new Log
+            Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
+
+            if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
             {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUserId = giver.Id,
-                SourceUserName = giver.Handle,
-                TargetUserId = receiver.Id,
-                TargetUserName = receiver.Handle,
-                LogType = LogType.Transfer,
-                LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                SubnetworkId = giver.SubnetworkId,
-                SubnetworkName = giverSubNetwork.Name
-            };
+                Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
+            }
 
-            _logService.CreateAsync(log);
-
-            if (giverSubNetwork.Id != receiverSubNetwork.Id)
+            void Log(string subnetworkId, string subnetworkName)
             {
-                log = new Log
+                var log = new Log
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
                     Timestamp = GigerDateTime.Now,
-                    SourceUserId = giver.Id,
-                    SourceUserName = giver.Handle,
-                    TargetUserId = receiver.Id,
-                    TargetUserName = receiver.Handle,
+                    SourceUserId = senderAccount.OwnerId,
+                    SourceUserName = senderAccount.Owner,
+                    TargetUserId = receiverAccount.OwnerId,
+                    TargetUserName = receiverAccount.Owner,
                     LogType = LogType.Transfer,
                     LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                    SubnetworkId = receiver.SubnetworkId,
-                    SubnetworkName = receiverSubNetwork.Name
+                    SubnetworkId = subnetworkId,
+                    SubnetworkName = subnetworkName
                 };
 
                 _logService.CreateAsync(log);

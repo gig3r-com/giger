@@ -63,10 +63,13 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            conversation.Participants = [..conversation.Participants, userName];
-            await _conversationService.UpdateAsync(id, conversation);
+            if (!conversation.Participants.Contains(userName))
+            {
+                conversation.Participants.Add(userName);
+                await _conversationService.UpdateAsync(conversation);
+            }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
