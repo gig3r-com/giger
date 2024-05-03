@@ -219,7 +219,7 @@ namespace Giger.Controllers
             var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
             Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
-
+          
             if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
             {
                 Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
