@@ -44,7 +44,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.PrivateRecords = privateRecords;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -64,7 +64,7 @@ namespace Giger.Controllers
 			if (!user.PrivateRecords.Any(pr => pr.Id == privateRecord.Id))
 			{
 				user.PrivateRecords = [.. user.PrivateRecords, privateRecord];
-				await _userService.UpdateAsync(id, user);
+				await _userService.UpdateAsync(user);
 				return Ok();
 			}
 			return BadRequest("Record already exists");
@@ -106,7 +106,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Relations = relations;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -126,7 +126,7 @@ namespace Giger.Controllers
 			if (!user.Relations.Any(pr => pr.Id == relation.Id))
 			{
 				user.Relations = [.. user.Relations, relation];
-				await _userService.UpdateAsync(id, user);
+				await _userService.UpdateAsync(user);
 				return Ok();
 			}
 			return BadRequest("Record already exists");
@@ -168,7 +168,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Goals = goals;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -188,7 +188,7 @@ namespace Giger.Controllers
 			if (!user.Goals.Any(pr => pr.Id == goal.Id))
 			{
 				user.Goals = [.. user.Goals, goal];
-				await _userService.UpdateAsync(id, user);
+				await _userService.UpdateAsync(user);
 				return Ok();
 			}
 			return BadRequest("Record already exists");
@@ -231,7 +231,7 @@ namespace Giger.Controllers
                 return NoContent();
             }
             user.Meta = metas;
-            await _userService.UpdateAsync(id, user);
+            await _userService.UpdateAsync(user);
             return Ok();
         }
 
@@ -251,7 +251,7 @@ namespace Giger.Controllers
             if (!user.Meta.Any(pr => pr.Id == meta.Id))
             {
                 user.Meta = [.. user.Meta, meta];
-                await _userService.UpdateAsync(id, user);
+                await _userService.UpdateAsync(user);
                 return Ok();
             }
             return BadRequest("Record already exists");
@@ -293,7 +293,7 @@ namespace Giger.Controllers
                 return NoContent();
             }
             user.CriminalEvents = criminalEvents;
-            await _userService.UpdateAsync(id, user);
+            await _userService.UpdateAsync(user);
             return Ok();
         }
 
@@ -313,7 +313,7 @@ namespace Giger.Controllers
             if (!user.CriminalEvents.Any(pr => pr.Id == criminalEvent.Id))
             {
                 user.CriminalEvents = [.. user.CriminalEvents, criminalEvent];
-                await _userService.UpdateAsync(id, user);
+                await _userService.UpdateAsync(user);
                 return Ok();
             }
             return BadRequest("Record already exists");
@@ -355,7 +355,7 @@ namespace Giger.Controllers
                 return NoContent();
             }
             user.MedicalEvents = medicalEvents;
-            await _userService.UpdateAsync(id, user);
+            await _userService.UpdateAsync(user);
             return Ok();
         }
 
@@ -375,7 +375,7 @@ namespace Giger.Controllers
             if (!user.MedicalEvents.Any(pr => pr.Id == medicalEvent.Id))
             {
                 user.MedicalEvents = [.. user.MedicalEvents, medicalEvent];
-                await _userService.UpdateAsync(id, user);
+                await _userService.UpdateAsync(user);
                 return Ok();
             }
             return BadRequest("Record already exists");

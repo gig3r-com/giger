@@ -324,7 +324,7 @@ namespace Giger.Controllers
                 CompleteTransaction(gig);
                 var providerUser = await _userService.GetAsync(gig.TakenById);
                 providerUser.GigReputation[gig.Category] += gig.Payout;
-                _userService.UpdateAsync(providerUser.Id, providerUser);
+                _userService.UpdateAsync(providerUser);
             }
             PayDisputeFeeToClerk(gig, clerkAccountNo);
 

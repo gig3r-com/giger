@@ -43,7 +43,7 @@ namespace Giger.Controllers
 
             implantData.TimeStamp = GigerDateTime.Now;
             targetUser.MedicalEvents = [.. targetUser.MedicalEvents, implantData];
-            await _userService.UpdateAsync(userId, targetUser);
+            await _userService.UpdateAsync(targetUser);
 
             return Ok($"An {implantData.Name} implant has been succesfully activated.");
         }

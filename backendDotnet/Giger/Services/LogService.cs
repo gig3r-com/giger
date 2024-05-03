@@ -25,8 +25,8 @@ namespace Giger.Services
         public async Task CreateAsync(Log newAccount) =>
             await _logsCollection.InsertOneAsync(newAccount);
 
-        public async Task UpdateAsync(string id, Log updatedAccount) =>
-            await _logsCollection.ReplaceOneAsync(x => x.Id == id, updatedAccount);
+        public async Task UpdateAsync(Log updatedAccount) =>
+            await _logsCollection.ReplaceOneAsync(x => x.Id == updatedAccount.Id, updatedAccount);
 
         public async Task RemoveAsync(string id) =>
             await _logsCollection.DeleteOneAsync(x => x.Id == id);

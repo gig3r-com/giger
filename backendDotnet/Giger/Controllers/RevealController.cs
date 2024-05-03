@@ -63,10 +63,10 @@ namespace Giger.Controllers
                 else
                 {
                     matchingObscurableData.IsRevealed = true;
-                    await _userService.UpdateAsync(user.Id, user);
+                    await _userService.UpdateAsync(user);
                 }
                 obscuredData.IsUsed = true;
-                await _obscuredDataService.UpdateAsync(obscuredData.Id, obscuredData);
+                await _obscuredDataService.UpdateAsync(obscuredData);
                 return Ok();
             }
             return NotFound("Wrong code");

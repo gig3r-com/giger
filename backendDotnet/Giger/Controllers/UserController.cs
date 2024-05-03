@@ -166,7 +166,7 @@ namespace Giger.Controllers
                 return BadRequest();
             }
 
-            await _userService.UpsertAsync(updatedUser.Id, updatedUser);
+            await _userService.UpsertAsync(updatedUser);
             return Ok();
         }
 
