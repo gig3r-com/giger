@@ -7,11 +7,13 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService)
+    public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService, ImplantsController implantsController)
         : AuthController(userService, loginService)
     {
         private readonly GigService _gigService = gigService;
         private readonly ObscuredDataService _obscuredDataService = obscuredDataService;
+
+        private readonly ImplantsController _implantsController = implantsController;
 
         [HttpPatch("code")]
         public async Task<IActionResult> RevealData(string revealCode)
@@ -43,7 +45,7 @@ namespace Giger.Controllers
 
             if (matchingObscurableData is null)
             {
-                return Redirect($"/api/implants?userId={user.Id}&revealCode={revealCode}");
+                return await _implantsController.Install(user.Id, revealCode);
             }
 
             var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
@@ -56,7 +58,7 @@ namespace Giger.Controllers
                     else if (gig.AuthorId == user.Id)
                         gig.IsRevealed = true;
 
-                    await _gigService.UpdateAsync(matchingObscurableData.Id, gig);
+                    await _gigService.UpdateAsync(gig);
                 }
                 else
                 {
@@ -80,7 +82,6 @@ namespace Giger.Controllers
 
             return gig;
         }
-
 
         private ObscurableInfo? GetObscurableInfoFromUserProfile(UserPrivate user, string obscurableId)
         {
