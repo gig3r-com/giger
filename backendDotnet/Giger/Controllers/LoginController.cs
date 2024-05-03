@@ -73,58 +73,69 @@ namespace Giger.Controllers
         }
 
         [HttpGet("hacker")]
-        public async Task<string> LoginHacker(string userName, string password)
+        public async Task<string> LoginHacker(string hackerName, string password)
         {
-            var userLoginData = await _loginService.GetByUserNameAsync(userName);
-            if (userLoginData == null)
+            var hackerLoginData = await _loginService.GetByHackerNameAsync(hackerName);
+            if (hackerLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;
                 return "User not found";
             }
-            if (userLoginData.Password != password)
+            if (hackerLoginData.Password != password)
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return "Wrong password";
             }
 
-            var user = await _userService.GetByUserNameAsync(userName);
+            var user = await _userService.GetByUserNameAsync(hackerLoginData.Username);
             if (user != null && (user.Roles.Contains(Models.User.UserRoles.ADMIN) ||
                 user.HackingSkills.Stat >= 1))
             {
-                if (userLoginData.AuthToken != null)
+                if (hackerLoginData.AuthToken != null)
                 {
                     Response.StatusCode = StatusCodes.Status200OK;
-                    return userLoginData.AuthToken;
+                    return hackerLoginData.AuthToken;
                 }
                 else
                 {
                     Response.StatusCode = StatusCodes.Status400BadRequest;
-                    return "Please login to Gig3r first";
+                    return "Please login to GiG3r first.";
                 }
             }
             Response.StatusCode = StatusCodes.Status401Unauthorized;
             return "You are not authorized to use this service";
         }
 
-        [HttpGet("logout")]
-        public async Task<string> Logout(string userName)
+        [HttpGet("giger/logout")]
+        public async Task<string> LogoutGiger(string userName)
         {
-            Request.Headers.TryGetValue("AuthToken", out var authToken);
             var userLoginData = await _loginService.GetByUserNameAsync(userName);
             if (userLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;
-                return "User not found";
+                return "User not found.";
             }
-            if (userLoginData.AuthToken != authToken)
-            {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return "Wrong token";
-            }
+
             userLoginData.AuthToken = null;
             await _loginService.UpdateAsync(userLoginData);
             Response.StatusCode = StatusCodes.Status200OK;
-            return "Logged out";
+            return "Logged out.";
+        }
+
+        [HttpGet("hacker/logout")]
+        public async Task<string> Logout(string hackerName)
+        {
+            var hackerLoginData = await _loginService.GetByUserNameAsync(hackerName);
+            if (hackerLoginData == null)
+            {
+                Response.StatusCode = StatusCodes.Status404NotFound;
+                return "User not found.";
+            }
+
+            hackerLoginData.AuthToken = null;
+            await _loginService.UpdateAsync(hackerLoginData);
+            Response.StatusCode = StatusCodes.Status200OK;
+            return "Logged out.";
         }
 
         [HttpGet("changePassword")]
@@ -134,22 +145,22 @@ namespace Giger.Controllers
             if (userLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;
-                return "User not found";
+                return "User not found.";
             }
             if (userLoginData.Password != oldPassword)
             {
                 Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return "Wrong password";
+                return "Wrong password!";
             }
             if (userLoginData.Password == newPassword)
             {
                 Response.StatusCode = StatusCodes.Status400BadRequest;
-                return "New password is the same as the old one";
+                return "New password cannot be the same as the old one!";
             }
             userLoginData.Password = newPassword;
             await _loginService.UpdateAsync(userLoginData);
             Response.StatusCode = StatusCodes.Status200OK;
-            return "Password changed";
+            return "Password changed.";
         }
     }
 }
