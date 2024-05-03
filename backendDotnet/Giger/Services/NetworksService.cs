@@ -36,18 +36,18 @@ namespace Giger.Services
         {
             var network = await GetNetworkByIdAsync(networkId);
             network.Subnetworks = [ .. network.Subnetworks, subnetworkId];
-            await UpdateNetworkAsync(networkId, network);
+            await UpdateNetworkAsync(network);
         }
 
         public async Task RemoveSubnetwork(string networkId, string subnetworkId)
         {
             var network = await GetNetworkByIdAsync(networkId);
             network.Subnetworks = network.Subnetworks.Except([subnetworkId]).ToArray();
-            await UpdateNetworkAsync(networkId, network);
+            await UpdateNetworkAsync(network);
         }
 
-        public async Task UpdateNetworkAsync(string id, Network updatedNetwork) =>
-            await _networksCollection.ReplaceOneAsync(network => network.Id == id, updatedNetwork);
+        public async Task UpdateNetworkAsync(Network updatedNetwork) =>
+            await _networksCollection.ReplaceOneAsync(network => network.Id == updatedNetwork.Id, updatedNetwork);
 
         public async Task DeleteNetworkAsync(string id) =>
             await _networksCollection.DeleteOneAsync(network => network.Id == id);
@@ -66,8 +66,8 @@ namespace Giger.Services
         public async Task CreateSubnetworkAsync(Subnetwork newSubnetwork) =>
             await _subnetworksCollection.InsertOneAsync(newSubnetwork);
 
-        public async Task UpdateSubnetworkAsync(string id, Subnetwork updatedSubnetwork) =>
-            await _subnetworksCollection.ReplaceOneAsync(network => network.Id == id, updatedSubnetwork);
+        public async Task UpdateSubnetworkAsync(Subnetwork updatedSubnetwork) =>
+            await _subnetworksCollection.ReplaceOneAsync(network => network.Id == updatedSubnetwork.Id, updatedSubnetwork);
 
         public async Task DeleteSubnetworkAsync(string id) =>
             await _networksCollection.DeleteOneAsync(network => network.Id == id);

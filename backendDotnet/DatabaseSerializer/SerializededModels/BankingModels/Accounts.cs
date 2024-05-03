@@ -1,4 +1,5 @@
-﻿using Giger.Models.BankingModels;
+﻿using Giger.Controllers;
+using Giger.Models.BankingModels;
 using Giger.Models.User;
 using MongoDB.Bson;
 
@@ -10,14 +11,9 @@ namespace Giger.SerializededModels.BankingModels
 
         public Accounts()
         {
-            var tid1 = ObjectId.GenerateNewId().ToString();
-            var t1 = GigerDateTime.Now;
-
-            var tid2 = ObjectId.GenerateNewId().ToString();
-            var t2 = GigerDateTime.Now.AddHours(1).AddMinutes(6);
-
-            var tid3 = ObjectId.GenerateNewId().ToString();
-            var t3 = GigerDateTime.Now.AddHours(-120).AddMinutes(6);
+            var time1 = GigerDateTime.Now;
+            var time2 = GigerDateTime.Now.AddHours(1).AddMinutes(6);
+            var time3 = GigerDateTime.Now.AddHours(-120).AddMinutes(6);
 
             AccountTable = [
                 new Account()
@@ -28,18 +24,41 @@ namespace Giger.SerializededModels.BankingModels
                     Transactions = [
                         new()
                         {
-                            Id = tid3,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "SYSTEM",
                             From = "501234",
-                            Date = t3,
+                            Date = time3,
                             Title = "Funds reserved for Gig_1",
                             Amount = 100,
                         }
                     ],
-                    Type = AccountType.PRIVATE,
+                    Type = AccountType.BUSINESS,
                     Balance = 100100,
                     AccountNumber = "SYSTEM",
                 },
+
+                new Account()
+                {
+                    Id = "SOCIAL",
+                    Owner = "SOCIAL",
+                    OwnerId = "SOCIAL",
+                    Transactions = [],
+                    Type = AccountType.BUSINESS,
+                    Balance = 100000,
+                    AccountNumber = "9950147",
+                },
+
+                new Account()
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Owner = Factions.Gunners.ToString(),
+                    OwnerId = Factions.Gunners.ToString(),
+                    Transactions = [],
+                    Type = AccountType.BUSINESS,
+                    Balance = 10000,
+                    AccountNumber = "9944444",
+                },
+
                 new Account()
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
@@ -48,30 +67,30 @@ namespace Giger.SerializededModels.BankingModels
                     Transactions = [
                         new()
                         {
-                            Id = tid1,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "501234",
                             From = "504321",
-                            Date = t1,
+                            Date = time1,
                             Title = "Gig",
                             Amount = 1000,
                         },
                         new()
                         {
-                            Id = tid2,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "504321",
                             From = "501234",
-                            Date = t2,
+                            Date = time2,
                             Title = "Payment",
                             Amount = 123,
                         },
                         new()
                         {
-                            Id = tid3,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "SYSTEM",
                             From = "501234",
-                            Date = t3,
-                            Title = "Funds reserved for Gig_1",
-                            Amount = 100,
+                            Date = time3,
+                            Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, "Gather intel"),
+                            Amount = 1000,
                         }
                     ],
                     Type = AccountType.PRIVATE,
@@ -82,35 +101,24 @@ namespace Giger.SerializededModels.BankingModels
                 new Account()
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
-                    Owner = Factions.Gunners.ToString(),
-                    OwnerId = "123456",
-                    Transactions = [ ],
-                    Type = AccountType.BUSINESS,
-                    Balance = 10000,
-                    AccountNumber = "200001",
-                },
-
-                new Account()
-                {
-                    Id = ObjectId.GenerateNewId().ToString(),
                     Owner = "triddle",
                     OwnerId = "123457",
                     Transactions = [
                         new()
                         {
-                            Id = tid1,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "501234",
                             From = "504321",
-                            Date = t1,
+                            Date = time1,
                             Title = "Gig",
                             Amount = 1000,
                         },
                         new()
                         {
-                            Id = tid2,
+                            Id = ObjectId.GenerateNewId().ToString(),
                             To = "504321",
                             From = "501234",
-                            Date = t2,
+                            Date = time2,
                             Title = "Payment",
                             Amount = 123,
                         }

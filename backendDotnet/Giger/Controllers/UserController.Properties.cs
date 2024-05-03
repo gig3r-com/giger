@@ -39,7 +39,7 @@ namespace Giger.Controllers
 				return Ok();
 			}
 			user.FavoriteUserIds = [.. user.FavoriteUserIds, newFavorite];
-			await _userService.UpdateAsync(userId, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -56,7 +56,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.FavoriteUserIds = user.FavoriteUserIds.Except([oldFavorite]).ToArray();
-			await _userService.UpdateAsync(userId, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -69,7 +69,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.FavoriteUserIds = newFavorites;
-			await _userService.UpdateAsync(userId, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -103,7 +103,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Surname = newSurname;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -137,7 +137,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Name = newName;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -171,7 +171,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.HackerName = newName;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -205,7 +205,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Roles = newRoles;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -239,7 +239,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Exploits = newExploits;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -263,7 +263,7 @@ namespace Giger.Controllers
 			}
 
 			user.Exploits = [.. user.Exploits, newExploit];
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -297,7 +297,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.MindHack = newMindHack;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -331,7 +331,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.MindHackEnabledFor = enabledUsers;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -365,7 +365,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.ProfessionPublic = newProfession;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -399,7 +399,7 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.TypePublic = userTypes;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -433,7 +433,7 @@ namespace Giger.Controllers
 				return NotFound();
 			}
 			user.HasPlatinumPass = enabled;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 
@@ -451,7 +451,7 @@ namespace Giger.Controllers
 				return NotFound();
 			}
 			user.Active = isActive;
-			await _userService.UpdateAsync(id, user);
+			await _userService.UpdateAsync(user);
 			return Ok();
 		}
 

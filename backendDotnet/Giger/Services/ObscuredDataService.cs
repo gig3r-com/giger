@@ -30,8 +30,8 @@ namespace Giger.Services
         public async Task CreateAsync(ObscuredCodesMap newObscuredRevealedMap) =>
             await _obscuredCodesMapCollection.InsertOneAsync(newObscuredRevealedMap);
 
-        public async Task UpdateAsync(string id, ObscuredCodesMap updatedObscuredRevealedMap) =>
-            await _obscuredCodesMapCollection.ReplaceOneAsync(x => x.Id == id, updatedObscuredRevealedMap);
+        public async Task UpdateAsync(ObscuredCodesMap updatedObscuredRevealedMap) =>
+            await _obscuredCodesMapCollection.ReplaceOneAsync(x => x.Id == updatedObscuredRevealedMap.Id, updatedObscuredRevealedMap);
 
         public async Task RemoveAsync(string id) =>
             await _obscuredCodesMapCollection.DeleteOneAsync(x => x.Id == id);

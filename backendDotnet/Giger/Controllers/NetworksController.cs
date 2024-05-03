@@ -67,7 +67,7 @@ namespace Giger.Controllers
             if (Enum.TryParse<Firewall>(firewall, out var firewallEnum))
             {
                 subnetwork.Firewall = firewallEnum;
-                await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+                await _networkService.UpdateSubnetworkAsync(subnetwork);
                 return Ok();
             }
             else
@@ -89,7 +89,7 @@ namespace Giger.Controllers
             if (Enum.TryParse<OperatingSystem>(os, out var osEnum))
             {
                 subnetwork.OperatingSystem = osEnum;
-                await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+                await _networkService.UpdateSubnetworkAsync(subnetwork);
                 return Ok();
             }
             else
@@ -115,7 +115,7 @@ namespace Giger.Controllers
                     return BadRequest($"Subnetwork already contains {ice} ICE.");
                 }
                 subnetwork.Ice = [.. subnetwork.Ice, iceEnum ];
-                await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+                await _networkService.UpdateSubnetworkAsync(subnetwork);
                 return Ok();
             }
             else
@@ -140,7 +140,7 @@ namespace Giger.Controllers
                     return BadRequest($"Subnetwork already contains {ice} ICE.");
                 }
                 subnetwork.Ice = subnetwork.Ice.Except([iceEnum]).ToArray();
-                await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+                await _networkService.UpdateSubnetworkAsync(subnetwork);
                 return Ok();
             }
             else
@@ -222,7 +222,7 @@ namespace Giger.Controllers
                 return Ok("This user was already in that subnetwork.");
             }
             subnetwork.Users = [.. subnetwork.Users, userId];
-            await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
             return Ok();
         }
 
@@ -244,7 +244,7 @@ namespace Giger.Controllers
             {
                 return Ok();
             }
-            await _networkService.UpdateSubnetworkAsync(subnetworkId, subnetwork);
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
             return Ok();
         }
         #endregion

@@ -31,11 +31,11 @@ namespace Giger.Services
         public async Task CreateAsync(UserPrivate newUser) =>
             await _usersCollection.InsertOneAsync(newUser);
 
-        public async Task UpdateAsync(string userId, UserPrivate updatedUser) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == userId, updatedUser );
+        public async Task UpdateAsync(UserPrivate updatedUser) =>
+            await _usersCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, updatedUser );
 
-        public async Task UpsertAsync(string userId, UserPrivate updatedUser) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == userId, updatedUser, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpsertAsync(UserPrivate updatedUser) =>
+            await _usersCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, updatedUser, new ReplaceOptions() { IsUpsert = true });
 
         public async Task RemoveAsync(string userId) =>
             await _usersCollection.DeleteOneAsync(x => x.Id == userId);

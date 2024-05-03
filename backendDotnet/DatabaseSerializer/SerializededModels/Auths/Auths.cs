@@ -14,6 +14,7 @@ namespace Giger.SerializededModels.Auths
                     Id = ObjectId.GenerateNewId().ToString(),
                     Username = "jsilver",
                     Password = "passWORD",
+                    HackerName = null,
                     AuthToken = null
                 },
                 new Models.Auths.Auth
@@ -21,6 +22,7 @@ namespace Giger.SerializededModels.Auths
                     Id = ObjectId.GenerateNewId().ToString(),
                     Username = "triddle",
                     Password = "voldemort",
+                    HackerName = "voldemort",
                     AuthToken = null
                 },
             ];

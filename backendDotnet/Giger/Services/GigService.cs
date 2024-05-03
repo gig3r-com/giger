@@ -18,7 +18,7 @@ namespace Giger.Services
         public async Task<List<Gig>> GetAllAsync() =>
             await _gigsCollection.Find(_ => true).ToListAsync();
 
-        public async Task<List<Gig>> GetAllAvailableAsync(string requestSenderId) =>
+        public async Task<List<Gig>> GetAllVisibleToUserAsync(string requestSenderId) =>
             await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE ||
                     g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
 
@@ -34,8 +34,8 @@ namespace Giger.Services
         public async Task CreateAsync(Gig newGig) =>
             await _gigsCollection.InsertOneAsync(newGig);
 
-        public async Task UpdateAsync(string id, Gig updatedGig) =>
-            await _gigsCollection.ReplaceOneAsync(x => x.Id == id, updatedGig);
+        public async Task UpdateAsync(Gig updatedGig) =>
+            await _gigsCollection.ReplaceOneAsync(x => x.Id == updatedGig.Id, updatedGig);
 
         public async Task RemoveAsync(string id) =>
             await _gigsCollection.DeleteOneAsync(x => x.Id == id);
