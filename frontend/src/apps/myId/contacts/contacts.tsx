@@ -50,8 +50,6 @@ export const Contacts: FC = () => {
         [contactId]
     );
 
-    useEffect(() => console.log(selectedUser), [selectedUser]);
-
     const mapContacts = (user: IUserBase) => (
         <li key={user.id} className="contacts__list-item">
             <span

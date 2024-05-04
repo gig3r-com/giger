@@ -11,15 +11,13 @@ import {
 } from '../../models/gig';
 import { setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
-import { mockGigs } from '../../mocks/gigs';
-import { useMessagesService } from './messages.service';
 import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
-//import { useApiService } from './api.service';
+import { useApiService } from './api.service';
 
 /**
  * TODO: connect it to the backend.
@@ -27,9 +25,8 @@ import { ActionId } from '../../apps/giger/gig/button-definitions';
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    //const { api } = useApiService
+    const { api } = useApiService();
     const { currentUser, updateUserData } = useUserService();
-    const { createConvo, createMessage } = useMessagesService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
@@ -44,11 +41,6 @@ export function useGigsService() {
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
         ...draftGig,
         createdAt: dayjs().add(100, 'days').toISOString(),
-        convo: createConvo(
-            [currentUser!.id],
-            createMessage(draftGig.message),
-            draftGig.id
-        ),
         authorId: currentUser!.id,
         status: GigStatus.AVAILABLE
     });
@@ -58,7 +50,13 @@ export function useGigsService() {
      * Takes the money from the user's account.
      * @param gig basic data required to create a gig
      */
-    const addNewGig = (gig: IDraftGig) => {
+    const addNewGig = async (gig: IDraftGig) => {
+        const newGig = constructGig(gig);
+        await api
+            .url('Gig/create')
+            .query({ openingMessage: gig.message })
+            .post(newGig)
+            .res();
         dispatch(setGigs([...currentGigs, constructGig(gig)]));
 
         if (gig.anonymizedAuthor) {
@@ -79,10 +77,11 @@ export function useGigsService() {
         dispatch(setGigs(updatedGigs));
     };
 
-    const fetchGigs = () => {
+    const fetchGigs = async () => {
         dispatch(setFetchingGigs(true));
-        
-        dispatch(setGigs(mockGigs));
+
+        const gigs = await api.get('Gig/get/all').json<IGig[]>();
+        dispatch(setGigs(gigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
 
@@ -112,8 +111,17 @@ export function useGigsService() {
             ...(asCompany && { takenByCompany: currentUser?.faction })
         };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        api.url('Gig/update')
+            .put(updatedGig)
+            .res()
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
+                )
+            )
+            .then(() => {
+                updateGig(updatedGig);
+            });
     };
 
     const getReputationLevel = (creditValue: number): GigRepuationLevels => {
@@ -135,8 +143,17 @@ export function useGigsService() {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        api.url(`Gig/${id}/complete`)
+            .patch()
+            .res()
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
+                )
+            )
+            .then(() => {
+                updateGig(updatedGig);
+            });
     };
 
     /**
@@ -151,8 +168,15 @@ export function useGigsService() {
             status: GigStatus.PENDING_CONFIRMATION
         };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        setGigStatus(id, GigStatus.PENDING_CONFIRMATION)
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
+                )
+            )
+            .then(() => {
+                updateGig(updatedGig);
+            });
     };
 
     /**
@@ -186,8 +210,13 @@ export function useGigsService() {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        api.url(`Gig/${id}/resolve`)
+            .query({ clerkAccountNo: currentUser?.id, isProviderRight: false })
+            .patch()
+            .res()
+            .then(() => {
+                updateGig(updatedGig);
+            });
     };
 
     /**
@@ -199,8 +228,13 @@ export function useGigsService() {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        api.url(`Gig/${id}/resolve`)
+            .query({ clerkAccountNo: currentUser?.id, isProviderRight: false })
+            .patch()
+            .res()
+            .then(() => {
+                updateGig(updatedGig);
+            });
     };
 
     /**
@@ -212,8 +246,25 @@ export function useGigsService() {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = { ...gig!, status: GigStatus.EXPIRED };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
+        setGigStatus(id, GigStatus.EXPIRED)
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
+                )
+            )
+            .then(() => {
+                updateGig(updatedGig);
+            });
+    };
+
+    const setGigStatus = async (id: string, status: GigStatus) => {
+        await api.url(`Gig/${id}/status`).patch({ status }).res();
+    };
+
+    const joinGigConvo = (id: string) => {
+        api.url(`Gig/${id}/coversation/join`)
+            .query({ userName: currentUser?.handle })
+            .patch();
     };
 
     const handleButtonAction = (id: string, actionId?: ActionId) => {
@@ -285,10 +336,10 @@ export function useGigsService() {
             const userIsAuthor = gig.authorId === currentUser?.id;
 
             if (userIsAuthor) {
-                return gig.mode;
+                return gig.modes;
             }
 
-            return gig.mode === GigModes.CLIENT
+            return gig.modes === GigModes.CLIENT
                 ? GigModes.PROVIDER
                 : GigModes.CLIENT;
         },
@@ -318,6 +369,7 @@ export function useGigsService() {
         gigsVisibleToTheUser,
         sendComplaint,
         userGigMode,
-        filteredGigs
+        filteredGigs,
+        joinGigConvo
     };
 }

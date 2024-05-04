@@ -172,10 +172,10 @@ export const CharSummary: FC<{
                                     VibeEngagement.HYPED,
                                     VibeEngagement.FANATIC
                                 ]}
-                                value={user!.vibe}
+                                value={(user as IUserPrivate)!.vibeEngagement}
                                 onChange={async (val) =>
                                     await updateUserData(user!.id, {
-                                        vibe: val as Vibe
+                                        vibeEngagement: val as VibeEngagement
                                     })
                                 }
                             />

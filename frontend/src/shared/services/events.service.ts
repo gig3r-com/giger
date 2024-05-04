@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash-es';
 import {
     IMedEvent,
     ICriminalEvent,
@@ -6,8 +5,7 @@ import {
     EventType
 } from '../../models/events';
 import { useUserService } from './user.service';
-import { useDispatch } from 'react-redux';
-import { addEvent, addRecord, updateEvent } from '../../store/users.slice';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     IGoal,
     IMeta,
@@ -17,10 +15,36 @@ import {
     UserRecordTypes
 } from '../../models/user';
 import { v4 } from 'uuid';
+import { useApiService } from './api.service';
+import { useNotificationsService } from './notifications.service';
+import { useIntl } from 'react-intl';
+import {
+    addEvent,
+    addRecord,
+    updateEvent,
+    updateRecord
+} from '../../store/events.slice';
+import {
+    selectRelations,
+    selectMeta,
+    selectPrivateRecords,
+    selectGoals,
+    selectCriminalEvents,
+    selectMedicalEvents
+} from '../../store/events.selectors';
 
 export const useEventsService = () => {
+    const intl = useIntl();
     const dispatch = useDispatch();
-    const { currentUser, updateUserData } = useUserService();
+    const { api } = useApiService();
+    const { displayToast } = useNotificationsService();
+    const { currentUser } = useUserService();
+    const relations = useSelector(selectRelations);
+    const metas = useSelector(selectMeta);
+    const privateRecords = useSelector(selectPrivateRecords);
+    const goals = useSelector(selectGoals);
+    const criminalEvents = useSelector(selectCriminalEvents);
+    const medicalEvents = useSelector(selectMedicalEvents);
 
     function updateUserEvent(
         eventId: string,
@@ -31,21 +55,25 @@ export const useEventsService = () => {
             throw new Error('User not found');
         }
 
-        const eventRecord = cloneDeep(getEventRecordForUser(type));
-        const eventIndex = eventRecord.findIndex(
-            (event) => event.id === eventId
+        const url =
+            type === EventRecordType.MEDICAL
+                ? `User/${currentUser?.id}/medicalEvents`
+                : `User/${currentUser?.id}/criminalEvents`;
+        const event = getEventRecordForUser(type).find(
+            (ev) => ev.id === eventId
         );
 
-        if (!eventIndex === undefined) {
+        if (!event === undefined) {
             throw new Error('entry not found');
         }
 
-        eventRecord.splice(eventIndex, 1, {
-            ...eventRecord[eventIndex],
-            ...updateData
-        });
-
-        dispatch(updateEvent({ type, eventId, updateData }));
+        api.url(url)
+            .patch({ ...event, updateData })
+            .res()
+            .then(() => dispatch(updateEvent({ type, eventId, updateData })))
+            .catch(() =>
+                displayToast(intl.formatMessage({ id: 'ERROR_EVENT_UPDATE' }))
+            );
     }
 
     const addUserEvent: (
@@ -56,8 +84,18 @@ export const useEventsService = () => {
             throw new Error('User not found');
         }
 
-        //! API CALL
-        dispatch(addEvent({ event, type }));
+        const url =
+            type === EventRecordType.MEDICAL
+                ? `User/${currentUser?.id}/medicalEvents`
+                : `User/${currentUser?.id}/criminalEvents`;
+
+        api.url(url)
+            .put(event)
+            .res()
+            .then(() => dispatch(addEvent({ event, type })))
+            .catch(() =>
+                displayToast(intl.formatMessage({ id: 'ERROR_EVENT_CREATION' }))
+            );
     };
 
     const removeEvent: (
@@ -74,11 +112,13 @@ export const useEventsService = () => {
         }
 
         if (!eventIndex === undefined) {
-            throw new Error('Medical entry not found');
+            throw new Error('Event not found');
         }
 
         eventRecord.splice(eventIndex, 1);
-        //! API CALL
+        api.url(
+            `User/${currentUser.id}/${type === EventRecordType.CRIMINAL ? 'criminalEvents' : 'medicalEvents'}/${eventId}`
+        ).delete();
     };
 
     const addRelation = (relationToId: string, description: string): void => {
@@ -88,8 +128,12 @@ export const useEventsService = () => {
             description,
             recordType: UserRecordTypes.RELATION
         };
-        //! API CALL
-        dispatch(addRecord({ type: UserRecordTypes.RELATION, record }));
+        api.url(`User/${currentUser?.id}/relations`)
+            .put(record)
+            .res()
+            .then(() => {
+                dispatch(addRecord({ type: record.recordType, record }));
+            });
     };
 
     const addPrivateRecord = (title: string, description: string): void => {
@@ -99,8 +143,12 @@ export const useEventsService = () => {
             description,
             recordType: UserRecordTypes.PRIVATE_RECORD
         };
-        //! API CALL
-        dispatch(addRecord({ type: record.recordType, record }));
+        api.url(`User/${currentUser?.id}/privateRecords`)
+            .put(record)
+            .res()
+            .then(() => {
+                dispatch(addRecord({ type: record.recordType, record }));
+            });
     };
 
     const addMeta = (type: MetaTypes, description: string): void => {
@@ -110,8 +158,13 @@ export const useEventsService = () => {
             description,
             recordType: UserRecordTypes.META
         };
-        //! API CALL
-        dispatch(addRecord({ type: record.recordType, record }));
+
+        api.url(`User/${currentUser?.id}/metas`)
+            .put(record)
+            .res()
+            .then(() => {
+                dispatch(addRecord({ type: record.recordType, record }));
+            });
     };
 
     const addGoal = (title: string, description: string): void => {
@@ -121,8 +174,12 @@ export const useEventsService = () => {
             description,
             recordType: UserRecordTypes.GOAL
         };
-        //! API CALL
-        dispatch(addRecord({ type: record.recordType, record }));
+        api.url(`User/${currentUser?.id}/goals`)
+            .put(record)
+            .res()
+            .then(() => {
+                dispatch(addRecord({ type: record.recordType, record }));
+            });
     };
 
     const getEventRecordForUser = (type: EventRecordType): EventType[] => {
@@ -133,11 +190,11 @@ export const useEventsService = () => {
         }
 
         if (type === EventRecordType.MEDICAL) {
-            record = currentUser?.medicalEvents as IMedEvent[];
+            record = medicalEvents;
         }
 
         if (type === EventRecordType.CRIMINAL) {
-            record = currentUser?.criminalEvents as ICriminalEvent[];
+            record = criminalEvents;
         }
 
         return record?.filter((entry) => {
@@ -151,20 +208,29 @@ export const useEventsService = () => {
         relationTo: string,
         description: string
     ): void => {
-        const relations = cloneDeep(currentUser?.relations);
         const relation = {
-            ...relations?.find((record) => record.id === relationId)
+            ...relations.find((record) => record.id === relationId),
+            relationTo: relationTo,
+            description: description
         } as IRelation;
 
         if (!relation) {
             throw new Error('Relation not found');
         }
 
-        relation.relationTo = relationTo;
-        relation.description = description;
-
-        //! API CALL
-        updateUserData(currentUser!.id, { relations });
+        api.url(`User/${currentUser?.id}/relations`)
+            .patch(relation)
+            .error(500, () =>
+                displayToast(intl.formatMessage({ id: 'ERROR_UPDATE' }))
+            )
+            .res()
+            .then(() => {
+                updateRecord({
+                    type: UserRecordTypes.RELATION,
+                    recordId: relationId,
+                    updateData: relation
+                });
+            });
     };
 
     const updateMeta = (
@@ -172,20 +238,29 @@ export const useEventsService = () => {
         metaType: MetaTypes,
         description: string
     ): void => {
-        const metas = cloneDeep(currentUser?.meta);
         const meta = {
-            ...metas?.find((entry) => entry.id === metaId)
+            ...metas.find((entry) => entry.id === metaId),
+            type: metaType,
+            description: description
         } as IMeta;
 
         if (!meta) {
             throw new Error('Meta entry not found');
         }
 
-        meta.type = metaType;
-        meta.description = description;
-
-        //! API CALL
-        updateUserData(currentUser!.id, { meta: metas });
+        api.url(`User/${currentUser?.id}/metas`)
+            .patch(meta)
+            .error(500, () =>
+                displayToast(intl.formatMessage({ id: 'ERROR_UPDATE' }))
+            )
+            .res()
+            .then(() => {
+                updateRecord({
+                    type: UserRecordTypes.RELATION,
+                    recordId: metaId,
+                    updateData: meta
+                });
+            });
     };
 
     const updateGoal = (
@@ -193,20 +268,29 @@ export const useEventsService = () => {
         title: string,
         description: string
     ): void => {
-        const goals = cloneDeep(currentUser?.goals);
         const goal = {
-            ...goals?.find((entry) => entry.id === goalId)
+            ...goals?.find((entry) => entry.id === goalId),
+            title,
+            description
         } as IGoal;
 
         if (!goal) {
             throw new Error('Goal not found');
         }
 
-        goal.title = title;
-        goal.description = description;
-
-        //! API CALL
-        updateUserData(currentUser!.id, { goals });
+        api.url(`User/${currentUser?.id}/goals`)
+            .patch(goal)
+            .error(500, () =>
+                displayToast(intl.formatMessage({ id: 'ERROR_UPDATE' }))
+            )
+            .res()
+            .then(() => {
+                updateRecord({
+                    type: UserRecordTypes.RELATION,
+                    recordId: goalId,
+                    updateData: goal
+                });
+            });
     };
 
     const updatePrivateRecord = (
@@ -214,20 +298,29 @@ export const useEventsService = () => {
         title: string,
         description: string
     ): void => {
-        const records = cloneDeep(currentUser?.privateRecords);
         const record = {
-            ...records?.find((entry) => entry.id === recordId)
-        } as IGoal;
+            ...privateRecords.find((entry) => entry.id === recordId),
+            title,
+            description
+        } as IPrivateRecord;
 
         if (!record) {
             throw new Error('Goal not found');
         }
 
-        record.title = title;
-        record.description = description;
-
-        //! API CALL
-        updateUserData(currentUser!.id, { privateRecords: records });
+        api.url(`User/${currentUser?.id}/privateRecords`)
+            .patch(privateRecords)
+            .error(500, () =>
+                displayToast(intl.formatMessage({ id: 'ERROR_UPDATE' }))
+            )
+            .res()
+            .then(() => {
+                updateRecord({
+                    type: UserRecordTypes.RELATION,
+                    recordId,
+                    updateData: record
+                });
+            });
     };
 
     return {

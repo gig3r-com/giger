@@ -10,9 +10,10 @@ import {
     setGigConversations
 } from '../../store/messages.slice';
 import { RootState } from '../../store/store';
-import { mockUserConvos } from '../../mocks/userConvos';
 import { useUserService } from './user.service';
 import { IUserBase } from '../../models/user';
+import { useApiService } from './api.service';
+import { useNotificationsService } from './notifications.service';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -20,7 +21,10 @@ import { IUserBase } from '../../models/user';
 export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
-    const { currentUser, updateUserData, getBasicUserDataById } = useUserService();
+    const { api } = useApiService();
+    const { displayToast } = useNotificationsService();
+    const { currentUser, updateUserData, getBasicUserDataById } =
+        useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -30,7 +34,8 @@ export function useMessagesService() {
     );
 
     const createMessage: (text: string, senderId?: string) => IMessage = (
-        text, senderId
+        text,
+        senderId
     ) => {
         return {
             id: uuidv4(),
@@ -100,10 +105,17 @@ export function useMessagesService() {
     };
 
     const fetchUserConvos: (userId: string) => void = (userId) => {
-        const filteredConvos = mockUserConvos.filter((convo) =>
-            convo.participants.some((user) => user === userId)
-        );
-        dispatch(setConversations(JSON.parse(JSON.stringify(filteredConvos))));
+        api.query({ participant: userId })
+            .get('Conversation/byParticipant')
+            .json<IConversation[]>()
+            .then((convos) => {
+                dispatch(setConversations(convos));
+            })
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'FAILED_TO_FETCH_MESSAGES' })
+                )
+            );
     };
 
     const sendMessage: (messageText: string, convoId: string) => void = (

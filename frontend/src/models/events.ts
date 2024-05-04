@@ -16,8 +16,8 @@ export enum EventStatus {
 }
 
 export enum EventRecordType {
-    MEDICAL = 'medical',
-    CRIMINAL = 'criminal'
+    MEDICAL = 'MEDICAL',
+    CRIMINAL = 'CRIMINAL'
 }
 
 export interface ICriminalEvent extends IEvent {

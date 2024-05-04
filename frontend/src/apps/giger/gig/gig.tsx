@@ -83,7 +83,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         'gig__status--shown': !selectedId
     });
 
-    const wantsOrPays = gig.mode === GigModes.CLIENT ? 'PAYS' : 'WANTS';
+    const wantsOrPays = gig.modes === GigModes.CLIENT ? 'PAYS' : 'WANTS';
+
+    const showGigStatus = gig.status !== GigStatus.AVAILABLE || isMine;
 
     return (
         <li className={wrapperClasses}>
@@ -130,7 +132,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 gig.status,
                                 isMine,
                                 isAdmin,
-                                gig.mode,
+                                gig.modes,
                                 hasCompanyAccount
                             ).map((button) => (
                                 <BigButton
@@ -191,9 +193,10 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     )}
                 </AnimatePresence>
             </div>
-            {gig.status !== GigStatus.AVAILABLE && (
+            {showGigStatus && (
                 <div className={statusClasses}>
-                    {gig.status.replace('_', ' ')}{' '}
+                    {gig.status !== GigStatus.AVAILABLE &&
+                        gig.status.replace('_', ' ')}{' '}
                     {isMine && <FormattedMessage id="MY_GIG" />}
                 </div>
             )}

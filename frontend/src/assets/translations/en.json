@@ -184,5 +184,11 @@
     "SPOOFING": "Spoofing",
     "SECURITY": "Security",
     "ANDROID_HIJACK": "Android hijack",
-    "MINDEXPLOIT": "Mindexploit"
+    "MINDEXPLOIT": "Mindexploit",
+    "ERROR_FAILED_TO_UPDATE_GIG": "Failed to update. Try again or contact support.",
+    "ERROR_FETCHING_USERS": "Failed to fetch users. Try again or contact support.",
+    "ERROR_EVENT_CREATION": "Failed to create event. Try again or contact support.",
+    "ERROR_EVENT_UPDATE": "Failed to update event. Try again or contact support.",
+    "ERROR_UPDATE": "Failed to update the resource. Try again or contact support.",
+    "UNKNOWN_USER": "Unknown user"
 }

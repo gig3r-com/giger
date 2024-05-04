@@ -1,5 +1,4 @@
 import { Factions } from './companies';
-import { ICriminalEvent, IMedEvent } from './events';
 import { IObscurableInfo } from './general';
 import { GigCategoryNames } from './gig';
 
@@ -35,12 +34,6 @@ export interface IUserPrivate extends IUserPublic {
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
     favoriteUserIds: string[];
-    relations: IRelation[];
-    goals: IGoal[];
-    meta: IMeta[];
-    privateRecords: IPrivateRecord[];
-    criminalEvents: ICriminalEvent[];
-    medicalEvents: IMedEvent[];
     faction: Factions;
     revealCodes: string[];
     networkName: string;

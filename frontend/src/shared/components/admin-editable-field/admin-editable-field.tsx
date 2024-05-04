@@ -53,16 +53,22 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                         setValue(event.target.value === 'true')
                     }
                 >
-                    <option value="true">yes</option>
-                    <option value="false">no</option>
+                    <option value="true">
+                        <FormattedMessage id="YES" />
+                    </option>
+                    <option value="false">
+                        <FormattedMessage id="NO" />
+                    </option>
                 </select>
             )}
             {isGod && selectInput && (
                 <select
                     className={`${props.className} admin-editable-field admin-editable-field__select admin-editable-field__admin-mode`}
                     value={value as string}
-                    onBlur={() => props.onChange(value as string)}
-                    onChange={(event) => setValue(event.target.value)}
+                    onChange={(event) => {
+                        setValue(event.target.value);
+                        props.onChange(value as string);
+                    }}
                 >
                     {props.options?.map((option) => (
                         <option key={option} value={option}>

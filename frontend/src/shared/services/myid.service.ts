@@ -2,12 +2,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCurrentUser } from '../../store/users.slice';
 import { RootState } from '../../store/store';
 import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
+import { selectRelations, selectMeta, selectPrivateRecords, selectGoals, selectCriminalEvents, selectMedicalEvents } from '../../store/events.selectors';
 
 export function useMyIdService() {
     const dispatch = useDispatch();
     const currentUser = useSelector(
         (state: RootState) => state.users.currentUser
     );
+    const relations = useSelector(selectRelations);
+    const metas = useSelector(selectMeta);
+    const privateRecords = useSelector(selectPrivateRecords);
+    const goals = useSelector(selectGoals);
+    const criminalEvents = useSelector(selectCriminalEvents);
+    const medicalEvents = useSelector(selectMedicalEvents);
 
     const enterRevealCode = async (code: string): Promise<'success' | 'wrongCode'> => {
         const currentRevealCodes = currentUser?.revealCodes ?? [];
@@ -31,17 +38,17 @@ export function useMyIdService() {
     const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {        
         switch (sectionType) {
             case MyIdUncoverableSections.MEDICAL:
-                return currentUser?.medicalEvents?.some((entry) => !entry.seen) ?? false;
+                return medicalEvents.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.CRIMINAL:
-                return currentUser?.criminalEvents?.some((entry) => !entry.seen) ?? false;
+                return criminalEvents.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.META:
-                return currentUser?.meta?.some((entry) => !entry.seen) ?? false;
+                return metas.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.RELATIONS:
-                return currentUser?.relations?.some((entry) => !entry.seen) ?? false;
+                return relations.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.PRIVATE_RECORDS:
-                return currentUser?.privateRecords?.some((entry) => !entry.seen) ?? false;
+                return privateRecords.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.GOALS:
-                return currentUser?.goals?.some((entry) => !entry.seen) ?? false;
+                return goals.some((entry) => !entry.seen) ?? false;
             default:
                 return false;
         }

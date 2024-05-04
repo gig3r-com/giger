@@ -13,7 +13,8 @@ export interface IGigBase {
     providerAccount: string | null; // account id
     clientAccount: string | null; // account id
     anonymizedAuthor?: boolean;
-    mode: GigModes;
+    modes: GigModes;
+    authorName: string;
 }
 
 export interface IDraftGig extends IGigBase {
@@ -44,10 +45,10 @@ export interface IGigSubcategory {
 }
 
 export enum GigCategoryNames {
-    FIXER = 'fixer',
-    KILLER = 'killer',
-    HACKING = 'hacking',
-    WELLBEING = 'wellbeing'
+    FIXER = 'FIXER',
+    KILLER = 'KILLER',
+    HACKING = 'HACKING',
+    WELLBEING = 'WELLBEING'
 }
 
 export enum GigSubcategoryNames {
@@ -79,17 +80,17 @@ export enum GigSubcategoryNames {
 }
 
 export enum GigStatus {
-    AVAILABLE = 'available',
-    IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed',
-    PENDING_CONFIRMATION = 'pending',
-    DISPUTE = 'dispute',
-    EXPIRED = 'expired'
+    AVAILABLE = 'AVAILABLE',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    PENDING_CONFIRMATION = 'PENDING',
+    DISPUTE = 'DISPUTE',
+    EXPIRED = 'EXPIRED'
 }
 
 export enum GigModes {
-    PROVIDER = 'provider',
-    CLIENT = 'client'
+    PROVIDER = 'PROVIDER',
+    CLIENT = 'CLIENT'
 }
 
 export const reputationLabels = new Map<GigRepuationLevels, string>([

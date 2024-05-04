@@ -5,6 +5,7 @@ import {
     setCurrentUser,
     setRequiresGodUserSelection,
     setUser,
+    setUsers,
     updateCurrentUser
 } from '../../store/users.slice';
 import {
@@ -21,13 +22,17 @@ import {
     selectIsGod
 } from '../../store/users.selectors';
 import { useApiService } from './api.service';
+import { useNotificationsService } from './notifications.service';
+import { useIntl } from 'react-intl';
 
 /**
  * TODO: Connect to backend once it exists
  */
 export function useUserService() {
+    const intl = useIntl();
     const dispatch = useDispatch();
     const { api, loginCall } = useApiService();
+    const { displayToast } = useNotificationsService();
     const userList = useSelector((state: RootState) => state.users.users);
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
@@ -40,58 +45,24 @@ export function useUserService() {
      * also we return a token for the godmode to use as authentication
      */
     const login = async (username: string, password: string) => {
-        await loginCall(username, password);
+        const userData = await loginCall(username, password);
 
-        return new Promise<void>((resolve, reject) => {
-            api.get(`User/private/byUsername?username=${username}`)
-                .json<IUserPrivate>()
-                .then((userData) => {
-                    const userIsGod = userData.roles.includes(UserRoles.GOD);
-                    dispatch(setCurrentUser(userData));
-                    saveLoginData(userData);
+        const userIsGod = userData.roles.includes(UserRoles.GOD);
+        dispatch(setCurrentUser(userData));
+        saveLoginData(userData);
 
-                    if (userIsGod) {
-                        dispatch(setRequiresGodUserSelection(true));
-                    }
+        if (userIsGod) {
+            dispatch(setRequiresGodUserSelection(true));
+        }
 
-                    resolve();
-                })
-                .catch(() => {
-                    reject('wrong password');
-                });
-            setTimeout(() => {}, 3000);
-        });
+        setTimeout(() => {}, 3000);
     };
 
-    // new Promise<void>((resolve, reject) => {
-    //     if (password === 'test' && username === 'test') {
-    //         console.log(`logging in ${username} with password ${password}`);
-
-    //         setTimeout(() => {
-    //             dispatch(setCurrentUser(users[35]));
-    //             saveLoginData(users[35]);
-    //             resolve();
-    //         }, 3000);
-    //     } else if (
-    //         (username === 'god' && password === 'god') ||
-    //         (username === 'admin' && password === 'admin')
-    //     ) {
-    //         console.log(`logging in ${username} with password ${password}`);
-    //         setTimeout(() => {
-    //             dispatch(setRequiresGodUserSelection(true));
-    //             dispatch(setIsGod(true));
-    //             saveIsGod(true);
-    //             resolve();
-    //         }, 3000);
-    //     } else {
-    //         console.log(
-    //             `login failed for ${username} with password ${password}`
-    //         );
-    //         setTimeout(() => {
-    //             reject('wrong password');
-    //         }, 3000);
-    //     }
-    // });
+    const fetchAllUsers = () => {
+        api.get('User/public/all').json<IUserPublic[]>().then((data) => {
+            dispatch(setUsers(data));
+        }).catch(() => displayToast(intl.formatMessage({ id: 'ERROR_FETCHING_USERS' })))
+    }
 
     const saveLoginData = (userData: IUserPrivate) => {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
@@ -107,6 +78,8 @@ export function useUserService() {
 
     const logout = (): void => {
         localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('authToken');
+        api.get('Login/logout');
         dispatch(setCurrentUser(undefined));
     };
 
@@ -247,6 +220,7 @@ export function useUserService() {
         toggleUserAsFavorite,
         isInfluencer,
         getCurrentUserFaction,
-        visibleUsers
+        visibleUsers,
+        fetchAllUsers
     };
 }

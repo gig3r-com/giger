@@ -32,6 +32,6 @@ export interface IBusinessAccount extends IAccount {
 }
 
 export enum AccountType {
-    PRIVATE = 'private',
-    BUSINESS = 'business'
+    PRIVATE = 'PRIVATE',
+    BUSINESS = 'BUSINESS'
 }
