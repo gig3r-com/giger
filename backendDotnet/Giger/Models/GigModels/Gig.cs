@@ -13,7 +13,7 @@ namespace Giger.Models.GigModels
 
         public required string Description { get; set; }
 
-        public string? ConversasionId { get; set; }
+        public string? ConversationId { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public required GigCategoryNames Category { get; set; }
@@ -21,7 +21,7 @@ namespace Giger.Models.GigModels
         [BsonRepresentation(BsonType.String)]
         public required GigSubcategoryNames Subcategory { get; set; }
 
-        public required GigRepuationLevels RepurationRequired { get; set; }
+        public required GigRepuationLevels ReputationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
 

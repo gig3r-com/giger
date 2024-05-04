@@ -77,12 +77,12 @@ namespace Giger.Controllers
                 return NotFound(Messages.GIG_NOT_FOUND);
             }
 
-            if (gig.ConversasionId is null)
+            if (gig.ConversationId is null)
             {
                 return NotFound(Messages.GIG_NOT_FOUND_CONVERSATION);
             }
 
-            var conversation = await _conversationService.GetAsync(gig.ConversasionId);
+            var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
             {
                 return NotFound(Messages.GIG_NOT_FOUND_CONVERSATION);
@@ -101,7 +101,7 @@ namespace Giger.Controllers
             newGig.Id = ObjectId.GenerateNewId().ToString();
             newGig.CreatedAt = GigerDateTime.Now;
 
-            if (newGig.Modes == GigModes.CLIENT)
+            if (newGig.Mode == GigModes.CLIENT)
             {
                 var account = await _accountService.GetByAccountNumberAsync(newGig.ProviderAccountNumber);
                 if (account is null)
@@ -135,7 +135,7 @@ namespace Giger.Controllers
                 newGig.AuthorName = anonymizedUserName;
             }
 
-            newGig.ConversasionId = CreateNewGigConversation(newGig, openingMessage).Result.Id;
+            newGig.ConversationId = CreateNewGigConversation(newGig, openingMessage).Result.Id;
 
             await _gigService.CreateAsync(newGig);
             return CreatedAtAction(nameof(Post), new { id = newGig.Id }, newGig);
@@ -188,7 +188,7 @@ namespace Giger.Controllers
                 return NotFound(Messages.ACCOUNT_NOT_FOUND);
             }
 
-            if (gig.Modes == GigModes.CLIENT)
+            if (gig.Mode == GigModes.CLIENT)
             {
                 gig.ProviderAccountNumber = accountNo;
             }
@@ -210,11 +210,11 @@ namespace Giger.Controllers
             gig.AcceptedAt = GigerDateTime.Now;
             gig.Status = GigStatus.IN_PROGRESS;
 
-            var conversation = await _conversationService.GetAsync(gig.ConversasionId);
+            var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
             {
                 conversation = await CreateNewGigConversation(gig, "");
-                gig.ConversasionId = conversation.Id;
+                gig.ConversationId = conversation.Id;
             }
             var userTakenBy = await _userService.GetAsync(takenBy);
             conversation.Participants.Add(userTakenBy.Handle);
@@ -350,7 +350,7 @@ namespace Giger.Controllers
                 return BadRequest("Gig is not available for removal");
             }
 
-            if (gig.Modes == GigModes.CLIENT)
+            if (gig.Mode == GigModes.CLIENT)
             {
                 ReturnFunds(gig);
             }
