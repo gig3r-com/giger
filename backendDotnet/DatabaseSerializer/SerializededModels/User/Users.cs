@@ -53,7 +53,7 @@ namespace Giger.SerializededModels.User
                     Relations = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = null,
                             UserName = "triddle",
                             Description = "Best friend",
@@ -63,7 +63,7 @@ namespace Giger.SerializededModels.User
                     Goals = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = "Kill the boss",
                             Description = "Kill the boss of the rival gang",
                             IsRevealed = true
@@ -72,7 +72,7 @@ namespace Giger.SerializededModels.User
                     Meta = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = "Use this code if you took LSD drug",
                             Description = "q12we34r",
                             Type = Models.User.Records.MetaTypes.INSPIRATIONS,
@@ -92,7 +92,7 @@ namespace Giger.SerializededModels.User
                     CriminalEvents = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Type = CriminalEventType.WITNESS,
                             Name = "Killed the corporation manager",
                             EventDescription = "Killed the boss of the rival gang",
@@ -104,7 +104,7 @@ namespace Giger.SerializededModels.User
                     MedicalEvents = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Name = "Got shot",
                             EventDescription = "Got shot in the leg",
                             Status = EventStatus.HISTORICAL,
@@ -168,7 +168,7 @@ namespace Giger.SerializededModels.User
                     Relations = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = "Boss",
                             UserName = "jsilver",
                             Description = "boss of the gang",
@@ -178,7 +178,7 @@ namespace Giger.SerializededModels.User
                     Goals = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = "Kill the boss",
                             Description = "Kill the boss of the rival gang",
                             IsRevealed = true
@@ -187,7 +187,7 @@ namespace Giger.SerializededModels.User
                     Meta = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Title = "Use this code if you took LSD drug",
                             Description = "q12we34r",
                             Type = Models.User.Records.MetaTypes.INSPIRATIONS,
@@ -199,7 +199,7 @@ namespace Giger.SerializededModels.User
                     CriminalEvents = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Type = CriminalEventType.WITNESS,
                             Name = "Hacker the corporation",
                             EventDescription = "Managed to break through ",
@@ -211,7 +211,7 @@ namespace Giger.SerializededModels.User
                     MedicalEvents = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Name = "Got shot",
                             EventDescription = "Got shot in the leg",
                             Status = EventStatus.HISTORICAL,

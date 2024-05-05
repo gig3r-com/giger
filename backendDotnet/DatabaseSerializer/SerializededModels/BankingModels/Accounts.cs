@@ -24,7 +24,7 @@ namespace Giger.SerializededModels.BankingModels
                     Transactions = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "SYSTEM",
                             From = "501234",
                             Date = time3,
@@ -52,7 +52,7 @@ namespace Giger.SerializededModels.BankingModels
 
                 new Account()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Owner = Factions.GUNNERS.ToString(),
                     OwnerId = Factions.GUNNERS.ToString(),
                     Transactions = [],
@@ -64,13 +64,13 @@ namespace Giger.SerializededModels.BankingModels
 
                 new Account()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Owner = "jsilver",
                     OwnerId = "123456",
                     Transactions = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "501234",
                             From = "504321",
                             Date = time1,
@@ -79,7 +79,7 @@ namespace Giger.SerializededModels.BankingModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "504321",
                             From = "501234",
                             Date = time2,
@@ -88,7 +88,7 @@ namespace Giger.SerializededModels.BankingModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "SYSTEM",
                             From = "501234",
                             Date = time3,
@@ -104,13 +104,13 @@ namespace Giger.SerializededModels.BankingModels
 
                 new Account()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Owner = "triddle",
                     OwnerId = "123457",
                     Transactions = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "501234",
                             From = "504321",
                             Date = time1,
@@ -119,7 +119,7 @@ namespace Giger.SerializededModels.BankingModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             To = "504321",
                             From = "501234",
                             Date = time2,

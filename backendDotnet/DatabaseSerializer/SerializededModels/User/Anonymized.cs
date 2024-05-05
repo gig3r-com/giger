@@ -12,7 +12,7 @@ namespace Giger.SerializededModels.User
             AnonymizedUserTable = [
                 new AnonymizedUser()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     UserId = "123456",
                     DisplyedAs = "6628dfb2d33520d5b9321f9d",
                 }

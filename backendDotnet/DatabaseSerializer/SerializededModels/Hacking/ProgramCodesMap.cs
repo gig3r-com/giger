@@ -11,13 +11,13 @@ namespace Giger.SerializededModels.Hacking
             CodesMapTable = [
                 new Models.Hacking.ProgramCodes()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ProgramCode = "q12we34r",
                     IsUsed = false,
                 },
                 new Models.Hacking.ProgramCodes()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ProgramCode = "q12we34r",
                     IsUsed = false,
                 }

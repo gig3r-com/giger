@@ -250,7 +250,7 @@ namespace Giger.Controllers
             {
                 var log = new Log
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Timestamp = GigerDateTime.Now,
                     SourceUserId = senderAccount.OwnerId,
                     SourceUserName = senderAccount.Owner,

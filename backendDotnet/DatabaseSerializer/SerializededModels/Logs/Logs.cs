@@ -12,7 +12,7 @@ namespace Giger.SerializededModels.Logs
             LogsTable = [
                 new Log()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     SourceUserId = "123456",
                     SourceUserName = "jsilver",
                     SourceHackerName = null,

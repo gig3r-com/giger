@@ -12,11 +12,11 @@ namespace Giger.SerializededModels.MessageModels
             ConversationsTable = [
                 new Conversation()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Messages = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now,
                             Sender = "jsilver",
                             Text = "Hello, I am interested in your services.",
@@ -24,7 +24,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "Hello? Anyone here?",
@@ -32,7 +32,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(6),
                             Sender = "jsilver",
                             Text = "Hellooooooo?!",
@@ -48,7 +48,7 @@ namespace Giger.SerializededModels.MessageModels
                     Messages = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now,
                             Sender = "jsilver",
                             Text = "I will get you everything on Takayama corporation",
@@ -56,7 +56,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "ACCEPTED",
@@ -64,7 +64,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "I will get back to you in a few hours",
@@ -80,7 +80,7 @@ namespace Giger.SerializededModels.MessageModels
                     Messages = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now,
                             Sender = "triddle",
                             Text = "Please get me all you can on Takayama corporation",
@@ -88,7 +88,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "ACCEPTED",
@@ -96,7 +96,7 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "I will get back to you in a few hours",

@@ -135,7 +135,7 @@ namespace Giger.Controllers
                 var anonymizedUserName = Guid.NewGuid().ToString();
                 var anonymizedUser = new AnonymizedUser
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     UserId = newGig.AuthorId,
                     DisplyedAs = anonymizedUserName
                 };
@@ -414,7 +414,7 @@ namespace Giger.Controllers
         {
             var conversation = new Conversation()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 GigConversation = true,
                 Participants = [newGig.AuthorName],
                 Messages = [new Message(newGig.AuthorName, openingMessage)]
@@ -432,7 +432,7 @@ namespace Giger.Controllers
                 
             Transaction reserve = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = "SYSTEM",
                 Date = GigerDateTime.Now,
@@ -444,7 +444,7 @@ namespace Giger.Controllers
 
             Transaction socialTax = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = "SOCIAL",
                 Date = GigerDateTime.Now,
@@ -460,7 +460,7 @@ namespace Giger.Controllers
         {
             Transaction reserve = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = "SYSTEM",
                 To = gig.ClientAccountNumber,
                 Date = GigerDateTime.Now,
@@ -475,7 +475,7 @@ namespace Giger.Controllers
         {
             Transaction trx = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = gig.ProviderAccountNumber,
                 Date = GigerDateTime.Now,
@@ -490,7 +490,7 @@ namespace Giger.Controllers
         {
             Transaction trx = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = "SOCIAL",
                 To = clerkAccountNo,
                 Date = GigerDateTime.Now,

@@ -11,21 +11,21 @@ namespace Giger.SerializededModels.Obscured
             CodesMapTable = [
                 new Models.Obscured.ObscuredCodesMap()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ObscurableId = "661737df07174e02083a9ef5",
                     ExpectedRevealCode = "q12we34r",
                     IsUsed = false,
                 },
                 new Models.Obscured.ObscuredCodesMap()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ObscurableId = "2",
                     ExpectedRevealCode = "code1",
                     IsUsed = false,
                 },
                 new Models.Obscured.ObscuredCodesMap()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ObscurableId = "2",
                     ExpectedRevealCode = "code2",
                     IsUsed = false,
