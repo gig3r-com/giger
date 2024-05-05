@@ -35,11 +35,19 @@ namespace Giger.Controllers
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (userName == null)
             {
-                Forbid(Messages.AUTH_TOKEN_EXPIRED);
+                Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
                 return Enumerable.Empty<Gig>().ToList();
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
-            var gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+            List<Gig> gigs;
+            if (IsRole(UserRoles.MODERATOR))
+            {
+                gigs = await _gigService.GetAllVisibleToModeratorAsync(requestSender.Id);
+            }
+            else
+            {
+                gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+            }
             gigs.ForEach(gig => ObscureGig(gig, requestSender.Id));
             return gigs;
         }
@@ -60,7 +68,7 @@ namespace Giger.Controllers
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (userName == null)
             {
-                Forbid(Messages.AUTH_TOKEN_EXPIRED);
+                Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
                 return null;
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
@@ -95,10 +103,10 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(newGig.AuthorId))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
-            newGig.Id = ObjectId.GenerateNewId().ToString();
+            newGig.Id = Guid.NewGuid().ToString();
             newGig.CreatedAt = GigerDateTime.Now;
 
             if (newGig.Mode == GigModes.CLIENT)
@@ -146,7 +154,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(updatedGig.AuthorId))
             {
-                return Forbid();
+                return Unauthorized();
             }
             var oldGig = await _gigService.GetAsync(updatedGig.Id);
             if (oldGig is null)
@@ -192,18 +200,13 @@ namespace Giger.Controllers
             {
                 gig.ProviderAccountNumber = accountNo;
             }
-            else if (gig.Modes == GigModes.PROVIDER)
+            else if (gig.Mode == GigModes.PROVIDER)
             {
                 gig.ClientAccountNumber = accountNo;
                 if (!FreezeFunds(gig, account).Result)
                 {
                     return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
                 }
-            }
-
-            if (Enum.TryParse<Factions>(account.Owner, out var faction))
-            {
-                gig.TakenForCompany = faction;
             }
 
             gig.TakenById = takenBy;
@@ -259,7 +262,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(gig.TakenById))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             gig.Status = GigStatus.COMPLETED;
@@ -287,7 +290,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(gig.TakenById))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             gig.Status = GigStatus.DISPUTE;
@@ -299,8 +302,13 @@ namespace Giger.Controllers
         }
 
         [HttpPatch("{id}/resolve")]
-        public async Task<IActionResult> PatchResolveGig(string id, string clerkAccountNo, bool isProviderRight)
+        public async Task<IActionResult> PatchResolveGig(string id, string clerkAccountNo, bool isClientRight)
         {
+            if (!IsRole(UserRoles.MODERATOR))
+            {
+                return Unauthorized();
+            }
+
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
             {
@@ -312,14 +320,9 @@ namespace Giger.Controllers
                 return BadRequest("Gig is not taken");
             }
 
-            if (!IsAuthorized(gig.TakenById))
-            {
-                return Forbid();
-            }
-
             gig.Status = GigStatus.COMPLETED;
             ReturnFunds(gig);
-            if (isProviderRight)
+            if (!isClientRight)
             {
                 CompleteTransaction(gig);
                 var providerUser = await _userService.GetAsync(gig.TakenById);
@@ -340,9 +343,9 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            if (!IsAuthorized(gig.AuthorId)) /// or isGodUser??
+            if (!IsAuthorized(gig.AuthorId))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             if (gig.Status != GigStatus.AVAILABLE || gig.Status != GigStatus.EXPIRED)
@@ -363,14 +366,15 @@ namespace Giger.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> PatchStatus(string id, GigStatus value)
         {
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
+
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
             {
                 return NotFound();
-            }
-            if (!IsGodUser())
-            {
-                return Forbid();
             }
 
             gig.Status = value;

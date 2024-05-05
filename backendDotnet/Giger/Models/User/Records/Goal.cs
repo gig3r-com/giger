@@ -4,7 +4,7 @@
     {
         public Goal()
         {
-            RecordType = UserRecordTypes.Goal;
+            RecordType = UserRecordTypes.GOAL;
         }
 
         public override void Obscure()

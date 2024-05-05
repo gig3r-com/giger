@@ -53,7 +53,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             await _gigerImplantsService.CreateAsync(newEvent);
@@ -65,7 +65,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var gigerEvent = await _gigerImplantsService.GetAsync(id);
@@ -84,7 +84,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var gigerEvent = await _gigerImplantsService.GetAsync(id);

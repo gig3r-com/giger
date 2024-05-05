@@ -28,10 +28,10 @@ namespace Giger.Models.User.Records
         [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
         public enum UserRecordTypes
         {
-            Relation,
-            Goal,
-            Meta,
-            PrivateRecord
+            RELATION,
+            GOAL,
+            META,
+            PRIVATE_RECORD
         }
     }
 }

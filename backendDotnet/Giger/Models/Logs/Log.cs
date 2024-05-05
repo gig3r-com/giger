@@ -38,7 +38,7 @@ namespace Giger.Models.Logs
         [SetsRequiredMembers]
         public Log(Log other, Subnetwork subnetwork)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = Guid.NewGuid().ToString();
             Timestamp = other.Timestamp;
             SourceUserId = other.SourceUserId;
             SourceUserName = other.SourceUserName;
@@ -55,20 +55,18 @@ namespace Giger.Models.Logs
     [JsonConverter(typeof(JsonStringEnumConverter<LogType>))]
     public enum LogType
     {
-        Message,
-        Transfer,
-        SubnetworkHacked,
-        SubnetworkSecurityBreach,
-        [BsonElement("Fired ICE")]
-        FiredIce,
-        CopiedData,
-        SubnetworkOsChanged,
-        SubnetworkFirewallChanged,
-        SubnetworkIceChanged,
-        GigCreated,
-        GigAccepted,
-        GigMessageSent,
-        MindExploitChanged
-
+        MESSAGE,
+        TRANSFER,
+        SUBNETWORK_HACKED,
+        SUBNETWORK_SECURITY_BREACH,
+        FIRED_ICE,
+        COPIED_DATA,
+        SUBNETWORK_OS_CHANGED,
+        SUBNETWORK_FIREWALL_CHANGED,
+        SUBNETWORK_ICE_CHANGED,
+        GIG_CREATED,
+        GIG_ACCEPTED,
+        GIG_MESSAGESENT,
+        MIND_EXPLOIT_CHANGED
     }
 }

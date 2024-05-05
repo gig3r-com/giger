@@ -35,6 +35,7 @@ namespace Giger.SerializededModels.BankingModels
                     Type = AccountType.BUSINESS,
                     Balance = 100100,
                     AccountNumber = "SYSTEM",
+                    IsActive = true,
                 },
 
                 new Account()
@@ -46,17 +47,19 @@ namespace Giger.SerializededModels.BankingModels
                     Type = AccountType.BUSINESS,
                     Balance = 100000,
                     AccountNumber = "9950147",
+                    IsActive = true,
                 },
 
                 new Account()
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
-                    Owner = Factions.Gunners.ToString(),
-                    OwnerId = Factions.Gunners.ToString(),
+                    Owner = Factions.GUNNERS.ToString(),
+                    OwnerId = Factions.GUNNERS.ToString(),
                     Transactions = [],
                     Type = AccountType.BUSINESS,
                     Balance = 10000,
                     AccountNumber = "9944444",
+                    IsActive = true,
                 },
 
                 new Account()
@@ -96,6 +99,7 @@ namespace Giger.SerializededModels.BankingModels
                     Type = AccountType.PRIVATE,
                     Balance = 1777,
                     AccountNumber = "501234",
+                    IsActive = true,
                 },
 
                 new Account()
@@ -126,6 +130,7 @@ namespace Giger.SerializededModels.BankingModels
                     Type = AccountType.PRIVATE,
                     Balance = 1123,
                     AccountNumber = "504321",
+                    IsActive = true,
                 },
             ];
         }

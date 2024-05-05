@@ -15,14 +15,16 @@ namespace Giger.Models.User
         
         [BsonRepresentation(BsonType.String)]
         public required UserTypes TypeActual { get; set; }
+
+        public string? FactionRankActual { get; set; }
         
         public string[] Assets { get; set; } = []; //TODO: DELETE?
 
         public required SkillStat HackingSkills { get; set; }
 
-        public required CharStat ConfrontationVsNegotiation { get; set; }
+        public required CharStat ConfrontationistVsAgreeable { get; set; }
 
-        public required CharStat CowardVsFighter { get; set; }
+        public required CharStat CowardVsBrave { get; set; }
 
         public required CharStat TalkativeVsSilent { get; set; }
 
@@ -38,6 +40,8 @@ namespace Giger.Models.User
         public string[] FavoriteUserIds { get; set; } = [];
 
         public required Factions Faction { get; set; }
+
+        public int InsuredAmount { get; set; }
 
         public Dictionary<GigCategoryNames, decimal> GigReputation { get; set; } = [];
 
@@ -61,8 +65,6 @@ namespace Giger.Models.User
         public required MindHacks MindHack { get; set; }
 
         public string[] MindHackEnabledFor { get; set; } = []; 
-
-        public required bool HasPlatinumPass { get; set; }
 
         public string? HackerName { get; set; }
     }

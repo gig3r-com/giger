@@ -56,8 +56,8 @@ namespace Giger.Models.User
             TypeActual = user.TypeActual;
             Assets = user.Assets;
             HackingSkills = user.HackingSkills;
-            ConfrontationVsNegotiation = user.ConfrontationVsNegotiation;
-            CowardVsFighter = user.CowardVsFighter;
+            ConfrontationistVsAgreeable = user.ConfrontationistVsAgreeable;
+            CowardVsBrave = user.CowardVsBrave;
             TalkativeVsSilent = user.TalkativeVsSilent;
             ThinkerVsDoer = user.ThinkerVsDoer;
             CombatSkill = user.CombatSkill;

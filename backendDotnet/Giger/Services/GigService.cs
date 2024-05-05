@@ -22,6 +22,10 @@ namespace Giger.Services
             await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE ||
                     g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
 
+        public async Task<List<Gig>> GetAllVisibleToModeratorAsync(string requestSenderId) =>
+            await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
+                    g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
+
         public async Task<List<Gig>> GetAllOwnAsync(string takenBy) =>
             await _gigsCollection.Find(g => g.TakenById == takenBy).ToListAsync();
 

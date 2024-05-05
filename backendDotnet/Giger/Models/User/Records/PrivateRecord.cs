@@ -4,7 +4,7 @@
     {
         public PrivateRecord()
         {
-            RecordType = UserRecordTypes.PrivateRecord;
+            RecordType = UserRecordTypes.PRIVATE_RECORD;
         }
 
         public override int GetHashCode()

@@ -18,7 +18,7 @@ namespace Giger.SerializededModels.Logs
                     SourceHackerName = null,
                     TargetUserId = "123457",
                     TargetUserName = "triddle",
-                    LogType = LogType.Transfer,
+                    LogType = LogType.TRANSFER,
                     Timestamp = GigerDateTime.Now,
                     LogData = $"Transaction from jsilver to triddle on {GigerDateTime.Now}",
                     SubnetworkId = "SN999",
