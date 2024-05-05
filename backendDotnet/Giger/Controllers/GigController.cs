@@ -343,7 +343,7 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            if (!IsAuthorized(gig.AuthorId))
+            if (!IsAuthorized(gig.AuthorId)) /// or isGodUser??
             {
                 return Unauthorized();
             }
