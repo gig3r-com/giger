@@ -1,10 +1,11 @@
 import classNames from 'classnames';
 import { FC } from 'react';
+import { useMyIdService } from '../../shared/services/myid.service';
+import { MyIdUncoverableSections } from './myid.model';
+import { useApiService } from '../../shared/services/api.service';
 import { useUserService } from '../../shared/services/user.service';
 
 import './my-id-navigation.scss';
-import { useMyIdService } from '../../shared/services/myid.service';
-import { MyIdUncoverableSections } from './myid.model';
 
 export type MyIdNavigationProps = {
     active?: boolean;
@@ -12,7 +13,8 @@ export type MyIdNavigationProps = {
 };
 
 export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
-    const { logout } = useUserService();
+    const { logout } = useApiService();
+    const { currentUser } = useUserService();
     const { hasNewEntries } = useMyIdService();
     const wrapperClassnames = classNames({
         'my-id-navigation': true
@@ -39,7 +41,7 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
             isNew: hasNewEntries(MyIdUncoverableSections.PRIVATE_RECORDS)
         },
         { name: 'code' },
-        { name: 'log out', onClickAction: () => logout() }
+        { name: 'log out', onClickAction: () => logout(currentUser?.handle ?? '') }
     ];
 
     return (

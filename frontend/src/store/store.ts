@@ -3,13 +3,15 @@ import gigsReducer from './gigs.slice';
 import conversationsReducer from './messages.slice';
 import usersReducer from './users.slice';
 import bankSlice from './bank.slice';
+import eventsSlice from './events.slice';
 
 export const store = configureStore({
     reducer: {
         gigs: gigsReducer,
         conversations: conversationsReducer,
         users: usersReducer,
-        bank: bankSlice
+        bank: bankSlice,
+        events: eventsSlice
     }
 });
 

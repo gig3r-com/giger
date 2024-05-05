@@ -3,14 +3,18 @@ import { RootState } from '../../store/store';
 import {
     selectAccounts,
     addTransaction,
-    setAccount,
-    setBusinessAccount
+    setAccount
 } from '../../store/bank.slice';
-import { account as mockAccount, accountBusiness } from '../../mocks/banking';
-import { AccountType, ITransaction } from '../../models/banking';
+import {
+    AccountType,
+    IPrivateAccount,
+    ITransaction
+} from '../../models/banking';
 import { v4 } from 'uuid';
 import dayjs from 'dayjs';
 import { Factions } from '../../models/companies';
+import { useApiService } from './api.service';
+import { useIntl } from 'react-intl';
 
 type Holder = {
     id: string;
@@ -18,7 +22,9 @@ type Holder = {
 };
 
 export function useBankingService() {
+    const intl = useIntl();
     const dispatch = useDispatch();
+    const { api } = useApiService();
     const currentPrivateBalance = useSelector(
         (state: RootState) => state.bank.account?.balance ?? 0
     );
@@ -26,11 +32,24 @@ export function useBankingService() {
         (state: RootState) => state.bank.businessAccount?.balance ?? 0
     );
     const userList = useSelector((state: RootState) => state.users.users);
-    const currentUser = useSelector((state: RootState) => state.users.currentUser);
+    const currentUser = useSelector(
+        (state: RootState) => state.users.currentUser
+    );
     const accounts = useSelector(selectAccounts);
-    const fetchAccounts = () => {
-        dispatch(setAccount(mockAccount));
-        dispatch(setBusinessAccount(accountBusiness));
+    const fetchAccounts = async () => {
+        if (!currentUser) return;
+        const privateAccount = (
+            await api
+                .query({ owner: currentUser?.handle })
+                .get(`Account/byOwner`)
+                .json<IPrivateAccount[]>()
+        )[0];
+        // const businessAccount = (await api
+        //     .query({ owner: currentUser?.faction })
+        //     .get(`Account/byOwner`)
+        //     .json<IBusinessAccount[]>())[0];
+        dispatch(setAccount(privateAccount));
+        //dispatch(setBusinessAccount(businessAccount));
     };
     const hasCompanyAccount = !!accounts.business;
 
@@ -41,7 +60,10 @@ export function useBankingService() {
         fromAccount: AccountType
     ) =>
         new Promise<void>((resolve) => {
-            const account = accounts[fromAccount];
+            const account =
+                accounts[
+                    fromAccount.toLocaleLowerCase() as 'private' | 'business'
+                ];
 
             if (!account) {
                 console.error('Account not found');
@@ -62,9 +84,17 @@ export function useBankingService() {
                     : {})
             };
 
-            console.log('Sending transaction', transaction);
-            dispatch(addTransaction({ accountType: fromAccount, transaction }));
-            resolve();
+            api.url('Account/transaction')
+                .post(transaction)
+                .res(() => {
+                    dispatch(
+                        addTransaction({
+                            accountType: fromAccount,
+                            transaction
+                        })
+                    );
+                    resolve();
+                });
         });
 
     const getAccountHolderName = (id: string): string => {
@@ -75,12 +105,7 @@ export function useBankingService() {
         const availableHolders: Holder[] = [...userList, ...factionHolders];
         const holder = availableHolders.find((holder) => holder.id === id);
 
-        if (!holder) {
-            console.error('Holder not found');
-            return '';
-        }
-
-        return holder.handle;
+        return holder?.handle ?? intl.formatMessage({ id: 'UNKNOWN_USER' });
     };
 
     return {

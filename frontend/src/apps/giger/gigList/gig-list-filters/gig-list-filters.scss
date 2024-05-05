@@ -31,6 +31,7 @@
         width: 100%;
         flex-wrap: wrap;
         position: relative;
+        transform: translateX(-22px);
 
         &:nth-child(even) {
             left: 55px;

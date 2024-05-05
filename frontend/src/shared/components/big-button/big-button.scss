@@ -40,6 +40,11 @@
         color: $dark-text;
     }
 
+    &--muted-accent {
+        background-color: $muted-accent;
+        color: $dark-text;
+    }
+
     &:disabled {
         background-color: $disabled-color;
         color: $dark-text;

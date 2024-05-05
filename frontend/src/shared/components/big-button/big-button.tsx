@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 import { IBigButtonProps } from './big-button.model';
+import { Loader } from '../loader/loader';
 
 import './big-button.scss';
-import { Loader } from '../loader/loader';
 
 export const BigButton: React.FC<IBigButtonProps> = ({
     text,

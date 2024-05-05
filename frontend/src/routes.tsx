@@ -26,17 +26,20 @@ import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
 import { useBankingService } from './shared/services/banking.service';
+import { useUserService } from './shared/services/user.service';
 
 export const Router = () => {
     const intl = useIntl();
     const { test } = useNotificationsService();
     const { versionCheck } = useVersionService();
     const { fetchAccounts } = useBankingService();
+    const { fetchAllUsers } = useUserService();
 
     useEffect(() => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
         test();
+        fetchAllUsers();
         fetchAccounts();
     }, []);
 

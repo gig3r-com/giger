@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -19,14 +19,15 @@ import { useUserService } from '../../../shared/services/user.service';
 import { UserRoles } from '../../../models/user';
 import { ComplaintDetails } from '../complaint-details/complaint-details';
 import { ActionId, getButtons } from './button-definitions';
+import { useBankingService } from '../../../shared/services/banking.service';
 
 import './gig.scss';
-import { useBankingService } from '../../../shared/services/banking.service';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const intl = useIntl();
-    const { currentUser, getHandleForConvo, isAdmin, isGod } = useUserService();
+    const { currentUser, getHandleForConvo, isModerator, isGod } =
+        useUserService();
     const { handleButtonAction } = useGigsService();
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
@@ -36,6 +37,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         (state: RootState) => state.conversations.gigConversations
     );
     const showComplaint = useMemo(() => {
+        const complaintExists = !!gig.complaintReason;
         const correctStatus =
             gig.status === GigStatus.DISPUTE ||
             gig.status === GigStatus.COMPLETED;
@@ -44,14 +46,18 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
             gig.takenById === currentUser?.id ||
             gig.authorId === currentUser?.id;
 
-        return correctStatus && (userIsModerator || interestedParty);
+        return (
+            correctStatus &&
+            complaintExists &&
+            (userIsModerator || interestedParty)
+        );
     }, [gig]);
     const isMine = useMemo(() => {
         return gig.authorId === currentUser?.id;
     }, [gig, currentUser]);
 
     const convo = useMemo(() => {
-        return convos.find((c) => c.id === gig.id);
+        return convos.find((c) => c.id === gig.conversationId);
     }, [convos, gig]);
 
     const showConvo = useMemo(() => {
@@ -62,10 +68,16 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         );
     }, [gig, currentUser, convo]);
 
+    const onClickHandler = useCallback(() => {
+        if (gig.isRevealed) {
+            navigate(`/giger/${gig.id}`);
+        }
+    }, [gig]);
+
     useEffect(
         function fetch() {
             if (selectedId === gig.id) {
-                fetchConvo(gig.id);
+                fetchConvo(gig.conversationId);
             }
         },
         [selectedId, gig]
@@ -85,6 +97,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
     const wantsOrPays = gig.mode === GigModes.CLIENT ? 'PAYS' : 'WANTS';
 
+    const showGigStatus = gig.status !== GigStatus.AVAILABLE || isMine;
+
     return (
         <li className={wrapperClasses}>
             <span
@@ -99,7 +113,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 <AnimatePresence>
                     <motion.div
                         className={gigSummaryClassName(gig)}
-                        onClick={() => navigate(`/giger/${gig.id}`)}
+                        onClick={onClickHandler}
                         key={gig.id}
                         {...generateAnimation('horExpand', {
                             delay: delayMultiplier * 0.06
@@ -129,7 +143,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             {getButtons(
                                 gig.status,
                                 isMine,
-                                isAdmin,
+                                isModerator,
                                 gig.mode,
                                 hasCompanyAccount
                             ).map((button) => (
@@ -171,8 +185,8 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
                             <AnimatePresence>
                                 {fetchingConvo && (
-                                    <p key={gig.id + 'fetch'}>
-                                        <FormattedMessage id="FETCHING_CONVERSTATION" />
+                                    <p key={gig.conversationId + 'fetch'}>
+                                        <FormattedMessage id="FETCHING_CONVERSATION" />
                                     </p>
                                 )}
                                 {showConvo && convo && (
@@ -191,9 +205,10 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     )}
                 </AnimatePresence>
             </div>
-            {gig.status !== GigStatus.AVAILABLE && (
+            {showGigStatus && (
                 <div className={statusClasses}>
-                    {gig.status.replace('_', ' ')}{' '}
+                    {gig.status !== GigStatus.AVAILABLE &&
+                        gig.status.replace('_', ' ')}{' '}
                     {isMine && <FormattedMessage id="MY_GIG" />}
                 </div>
             )}
