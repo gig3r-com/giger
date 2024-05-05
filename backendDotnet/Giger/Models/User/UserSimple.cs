@@ -43,7 +43,6 @@ namespace Giger.Models.User
             TypePublic = user.TypePublic;
             ProfessionPublic = user.ProfessionPublic;
             Surname = user.Surname;
-            Age = user.Age;
             Vibe = user.Vibe;
             WealthLevel = user.WealthLevel;
             NetworkId = user.NetworkId;

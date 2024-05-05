@@ -29,8 +29,6 @@ namespace Giger.Models.User
 
         public required string Surname { get; set; }
 
-        public required int Age { get; set; }
-
         [BsonRepresentation(BsonType.String)]
         public required Vibe Vibe { get; set; }
 
