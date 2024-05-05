@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
-import { getUserPublicDataById, users } from '../../mocks/users';
 import {
     setCurrentUser,
     setRequiresGodUserSelection,
@@ -18,16 +17,13 @@ import { RootState } from '../../store/store';
 import {
     selectActiveUsers,
     selectCurrentUser,
-    selectIsAdmin,
+    selectIsModerator,
     selectIsGod
 } from '../../store/users.selectors';
 import { useApiService } from './api.service';
 import { useNotificationsService } from './notifications.service';
 import { useIntl } from 'react-intl';
 
-/**
- * TODO: Connect to backend once it exists
- */
 export function useUserService() {
     const intl = useIntl();
     const dispatch = useDispatch();
@@ -37,12 +33,10 @@ export function useUserService() {
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
-    const isAdmin = useSelector(selectIsAdmin);
+    const isModerator = useSelector(selectIsModerator);
 
     /**
-     * completely mocked now, obviously the password test will take place on backend
-     * in case an godmode user logs in, we set the requiresGodUserSelection to true.
-     * also we return a token for the godmode to use as authentication
+     * in case an godmode user logs in, we set the requiresGodUserSelection to true
      */
     const login = async (username: string, password: string) => {
         const userData = await loginCall(username, password);
@@ -59,10 +53,15 @@ export function useUserService() {
     };
 
     const fetchAllUsers = () => {
-        api.get('User/public/all').json<IUserPublic[]>().then((data) => {
-            dispatch(setUsers(data));
-        }).catch(() => displayToast(intl.formatMessage({ id: 'ERROR_FETCHING_USERS' })))
-    }
+        api.get('User/public/all')
+            .json<IUserPublic[]>()
+            .then((data) => {
+                dispatch(setUsers(data));
+            })
+            .catch(() =>
+                displayToast(intl.formatMessage({ id: 'ERROR_FETCHING_USERS' }))
+            );
+    };
 
     const saveLoginData = (userData: IUserPrivate) => {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
@@ -130,9 +129,13 @@ export function useUserService() {
     ): Promise<IUserPrivate | IUserPublic> {
         switch (type) {
             case 'private':
-                return users.find((user) => user.id === userId)!;
+                return await api
+                    .get(`User/private/byId?id=${userId}`)
+                    .json<IUserPrivate>();
             case 'public':
-                return getUserPublicDataById(userId);
+                return await api
+                    .get(`User/public/byId?id=${userId}`)
+                    .json<IUserPrivate>();
         }
     }
 
@@ -178,7 +181,11 @@ export function useUserService() {
     const getHandleForConvo = (convoId: string, userId: string) => {
         const user = userList.find((user) => userId === user.id);
 
-        return user?.aliasMap[convoId] ?? user?.handle;
+        return (
+            user?.aliasMap[convoId] ??
+            user?.handle ??
+            intl.formatMessage({ id: 'UNKNOWN' })
+        );
     };
 
     const toggleUserAsFavorite = async (favoriteUserId: string) => {
@@ -207,7 +214,7 @@ export function useUserService() {
         retrieveLoginData,
         fetchCurrentUser,
         isGod,
-        isAdmin,
+        isModerator,
         updateUserData,
         currentUser,
         saveLoginData,

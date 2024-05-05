@@ -12,7 +12,7 @@ import './event-record.scss';
 /**
  * A component that displays the event history of the user.
  * Supports both medical and criminal events.
- * Allows editing in admin mode
+ * Allows editing in god mode
  */
 export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
     const intl = useIntl();

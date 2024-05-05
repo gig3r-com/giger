@@ -121,10 +121,10 @@ export const useEventsService = () => {
         ).delete();
     };
 
-    const addRelation = (relationToId: string, description: string): void => {
+    const addRelation = (userName: string, description: string): void => {
         const record: IRelation = {
             id: v4(),
-            relationTo: relationToId,
+            userName,
             description,
             recordType: UserRecordTypes.RELATION
         };
@@ -183,7 +183,6 @@ export const useEventsService = () => {
     };
 
     const getEventRecordForUser = (type: EventRecordType): EventType[] => {
-        const revealCodes = currentUser?.revealCodes;
         let record: EventType[] = [];
         if (!currentUser) {
             throw new Error('User not found');
@@ -197,10 +196,7 @@ export const useEventsService = () => {
             record = criminalEvents;
         }
 
-        return record?.filter((entry) => {
-            if (!entry.revealCode) return true;
-            return revealCodes?.includes(entry.revealCode);
-        });
+        return record;
     };
 
     const updateRelation = (

@@ -97,18 +97,6 @@ export const CharSummary: FC<{
                             }
                         />
 
-                        <span className="char-summary__label char-summary__label--short">
-                            <MemoizedFormattedMessage id="AGE" />:
-                        </span>
-                        <AdminEditableField
-                            type={FieldTypes.NUMBER}
-                            className="char-summary__entry char-summary__entry--extended"
-                            value={user!.age}
-                            onChange={async (val) =>
-                                await updateUserData(user!.id, { age: val })
-                            }
-                        />
-
                         {isPrivate && (
                             <>
                                 <span className="char-summary__label char-summary__label--short">
@@ -366,7 +354,7 @@ export const CharSummary: FC<{
                             className="char-summary__entry char-summary__entry--full-length"
                             value={
                                 (user as IUserPrivate)
-                                    .confrontationVsNegotiation.stat
+                                    .confrontationistVsAgreeable.stat
                             }
                             min={0}
                             max={4}
@@ -381,7 +369,7 @@ export const CharSummary: FC<{
                             })}
                             onChange={async (val) =>
                                 await updateUserData(user!.id, {
-                                    confrontationVsNegotiation: {
+                                    confrontationistVsAgreeable: {
                                         stat: parseInt(val)
                                     } as CharStat
                                 })
@@ -393,7 +381,7 @@ export const CharSummary: FC<{
                         <AdminEditableField
                             type={FieldTypes.SLIDER}
                             className="char-summary__entry char-summary__entry--full-length"
-                            value={(user as IUserPrivate).cowardVsFighter.stat}
+                            value={(user as IUserPrivate).cowardVsBrave.stat}
                             min={0}
                             max={4}
                             showMin={false}
@@ -403,7 +391,7 @@ export const CharSummary: FC<{
                             label2={intl.formatMessage({ id: 'FIGHTER' })}
                             onChange={async (val) =>
                                 await updateUserData(user!.id, {
-                                    cowardVsFighter: {
+                                    cowardVsBrave: {
                                         stat: parseInt(val)
                                     } as CharStat
                                 })

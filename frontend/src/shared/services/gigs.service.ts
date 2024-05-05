@@ -19,9 +19,6 @@ import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
 import { useApiService } from './api.service';
 
-/**
- * TODO: connect it to the backend.
- */
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -42,7 +39,9 @@ export function useGigsService() {
         ...draftGig,
         createdAt: dayjs().add(100, 'days').toISOString(),
         authorId: currentUser!.id,
-        status: GigStatus.AVAILABLE
+        status: GigStatus.AVAILABLE,
+        isRevealed: true,
+        conversationId: ''
     });
 
     /**
@@ -98,6 +97,7 @@ export function useGigsService() {
     };
 
     /**
+     * ! NEEDS UPDATE 
      * Accepts the gig and marks it as in progress.
      * @param id
      * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
@@ -168,7 +168,9 @@ export function useGigsService() {
             status: GigStatus.PENDING_CONFIRMATION
         };
 
-        setGigStatus(id, GigStatus.PENDING_CONFIRMATION)
+        api.url(`Gig/${id}/pending`)
+            .patch()
+            .res()
             .catch(() =>
                 displayToast(
                     intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
@@ -196,9 +198,14 @@ export function useGigsService() {
             status: GigStatus.DISPUTE
         };
 
-        // ! API CALL REQUIRED
-        updateGig(updatedGig);
-        navigate(`../${gigId}`);
+        api.url(`Gig/${gigId}/dispute`)
+            .query({ reason: complaint })
+            .patch()
+            .res()
+            .then(() => {
+                updateGig(updatedGig);
+                navigate(`../${gigId}`);
+            });
     };
 
     /**
@@ -211,7 +218,7 @@ export function useGigsService() {
         const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
 
         api.url(`Gig/${id}/resolve`)
-            .query({ clerkAccountNo: currentUser?.id, isProviderRight: false })
+            .query({ clerkAccountNo: currentUser?.id, isClientRight: false })
             .patch()
             .res()
             .then(() => {
@@ -229,7 +236,7 @@ export function useGigsService() {
         const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
 
         api.url(`Gig/${id}/resolve`)
-            .query({ clerkAccountNo: currentUser?.id, isProviderRight: false })
+            .query({ clerkAccountNo: currentUser?.id, isClientRight: true })
             .patch()
             .res()
             .then(() => {
@@ -336,10 +343,10 @@ export function useGigsService() {
             const userIsAuthor = gig.authorId === currentUser?.id;
 
             if (userIsAuthor) {
-                return gig.modes;
+                return gig.mode;
             }
 
-            return gig.modes === GigModes.CLIENT
+            return gig.mode === GigModes.CLIENT
                 ? GigModes.PROVIDER
                 : GigModes.CLIENT;
         },

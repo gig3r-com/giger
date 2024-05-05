@@ -3,15 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import { IConversation, IMessage, IMessageStatus } from '../../models/message';
-import { users } from '../../mocks/users';
-import { mockConvos } from '../../mocks/convos';
 import {
     setConversations,
     setGigConversations
 } from '../../store/messages.slice';
 import { RootState } from '../../store/store';
 import { useUserService } from './user.service';
-import { IUserBase } from '../../models/user';
 import { useApiService } from './api.service';
 import { useNotificationsService } from './notifications.service';
 
@@ -80,6 +77,12 @@ export function useMessagesService() {
         return convoId;
     };
 
+    const getGigConvo = async (gigId: string): Promise<IConversation> => {
+        return await api
+            .get(`Gig/get/${gigId}/conversation`)
+            .json<IConversation>();
+    };
+
     const createInitialMessages = (participants: string[]): IMessage[] => {
         const initialMessages: IMessage[] = [];
         participants.forEach((participant) => {
@@ -98,10 +101,13 @@ export function useMessagesService() {
 
     const fetchConvo: (id: string) => void = (id) => {
         setFetchingConvo(true);
-        const convo = mockConvos.find((convo) => convo.id === id);
-        setFetchingConvo(false);
-
-        convo && dispatch(setGigConversations([...gigConversations, convo]));
+        api.get(`Conversation/${id}`)
+            .json<IConversation>()
+            .then((convo) => {
+                convo &&
+                    dispatch(setGigConversations([...gigConversations, convo]));
+                setFetchingConvo(false);
+            });
     };
 
     const fetchUserConvos: (userId: string) => void = (userId) => {
@@ -157,26 +163,13 @@ export function useMessagesService() {
         }
     };
 
-    /**
-     * TODO: Connect to backend once it exists
-     * ? Move to a different service?
-     * Returns a list of users that match the given string
-     * @param name
-     */
-    const findUserByName: (name: string) => IUserBase[] = (name) => {
-        console.log(name);
-        return users.filter((user) =>
-            user.name.toLowerCase().includes(name.toLowerCase())
-        );
-    };
-
     return {
         createMessage,
         sendMessage,
-        findUserByName,
         createConvo,
         fetchConvo,
         fetchingConvo,
-        fetchUserConvos
+        fetchUserConvos,
+        getGigConvo
     };
 }

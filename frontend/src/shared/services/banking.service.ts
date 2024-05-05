@@ -3,12 +3,10 @@ import { RootState } from '../../store/store';
 import {
     selectAccounts,
     addTransaction,
-    setAccount,
-    setBusinessAccount
+    setAccount
 } from '../../store/bank.slice';
 import {
     AccountType,
-    IBusinessAccount,
     IPrivateAccount,
     ITransaction
 } from '../../models/banking';
@@ -40,16 +38,18 @@ export function useBankingService() {
     const accounts = useSelector(selectAccounts);
     const fetchAccounts = async () => {
         if (!currentUser) return;
-        const privateAccount = await api
-            .query({ owner: currentUser?.handle })
-            .get(`Account/byOwner`)
-            .json<IPrivateAccount>();
-        const businessAccount = await api
-            .query({ owner: currentUser?.faction })
-            .get(`Account/byOwner`)
-            .json<IBusinessAccount>();
+        const privateAccount = (
+            await api
+                .query({ owner: currentUser?.handle })
+                .get(`Account/byOwner`)
+                .json<IPrivateAccount[]>()
+        )[0];
+        // const businessAccount = (await api
+        //     .query({ owner: currentUser?.faction })
+        //     .get(`Account/byOwner`)
+        //     .json<IBusinessAccount[]>())[0];
         dispatch(setAccount(privateAccount));
-        dispatch(setBusinessAccount(businessAccount));
+        //dispatch(setBusinessAccount(businessAccount));
     };
     const hasCompanyAccount = !!accounts.business;
 
@@ -60,7 +60,10 @@ export function useBankingService() {
         fromAccount: AccountType
     ) =>
         new Promise<void>((resolve) => {
-            const account = accounts[fromAccount.toLocaleLowerCase() as 'private' | 'business'];
+            const account =
+                accounts[
+                    fromAccount.toLocaleLowerCase() as 'private' | 'business'
+                ];
 
             if (!account) {
                 console.error('Account not found');
@@ -102,7 +105,7 @@ export function useBankingService() {
         const availableHolders: Holder[] = [...userList, ...factionHolders];
         const holder = availableHolders.find((holder) => holder.id === id);
 
-        return holder?.handle ?? intl.formatMessage({id: 'UNKNOWN_USER' });
+        return holder?.handle ?? intl.formatMessage({ id: 'UNKNOWN_USER' });
     };
 
     return {

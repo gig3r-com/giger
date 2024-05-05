@@ -1,5 +1,5 @@
 export interface IObscurableInfo {
-    revealCode?: string;
+    isRevealed?: boolean;
     seen?: boolean;
 }
 

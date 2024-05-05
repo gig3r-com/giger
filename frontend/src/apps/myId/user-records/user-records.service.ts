@@ -15,6 +15,7 @@ import {
 import { useApiService } from '../../../shared/services/api.service';
 import { useUserService } from '../../../shared/services/user.service';
 import { setRecords } from '../../../store/events.slice';
+import { useCallback } from 'react';
 
 export const useUserRecordsService = () => {
     const dispatch = useDispatch();
@@ -25,20 +26,23 @@ export const useUserRecordsService = () => {
     const privateRecords = useSelector(selectPrivateRecords);
     const goals = useSelector(selectGoals);
 
-    const getRecords = (type: UserRecordTypes) => {
-        switch (type) {
-            case UserRecordTypes.GOAL:
-                return goals;
-            case UserRecordTypes.META:
-                return metas;
-            case UserRecordTypes.PRIVATE_RECORD:
-                return privateRecords;
-            case UserRecordTypes.RELATION:
-                return relations;
-            default:
-                return [];
-        }
-    };
+    const getRecords = useCallback(
+        (type: UserRecordTypes) => {
+            switch (type) {
+                case UserRecordTypes.GOAL:
+                    return goals;
+                case UserRecordTypes.META:
+                    return metas;
+                case UserRecordTypes.PRIVATE_RECORD:
+                    return privateRecords;
+                case UserRecordTypes.RELATION:
+                    return relations;
+                default:
+                    return [];
+            }
+        },
+        [goals, metas, privateRecords, relations]
+    );
 
     const fetchRecords = async (type: UserRecordTypes) => {
         if (!currentUser) return;

@@ -12,7 +12,20 @@
         margin-bottom: 1rem;
     }
 
+    &__result {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    &__success {
+        background-color: $accent-color;
+        color: $dark-text;
+    }
+
     &__wrong-code {
-        color: $secondary-color;
+        background-color: $secondary-color;
+        color: white;
     }
 }

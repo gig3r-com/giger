@@ -2,10 +2,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCurrentUser } from '../../store/users.slice';
 import { RootState } from '../../store/store';
 import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
-import { selectRelations, selectMeta, selectPrivateRecords, selectGoals, selectCriminalEvents, selectMedicalEvents } from '../../store/events.selectors';
+import {
+    selectRelations,
+    selectMeta,
+    selectPrivateRecords,
+    selectGoals,
+    selectCriminalEvents,
+    selectMedicalEvents
+} from '../../store/events.selectors';
+import { useApiService } from './api.service';
 
 export function useMyIdService() {
     const dispatch = useDispatch();
+    const { api } = useApiService();
     const currentUser = useSelector(
         (state: RootState) => state.users.currentUser
     );
@@ -16,26 +25,26 @@ export function useMyIdService() {
     const criminalEvents = useSelector(selectCriminalEvents);
     const medicalEvents = useSelector(selectMedicalEvents);
 
-    const enterRevealCode = async (code: string): Promise<'success' | 'wrongCode'> => {
-        const currentRevealCodes = currentUser?.revealCodes ?? [];
+    const enterRevealCode = (code: string): Promise<'success' | 'wrongCode'> =>
+        new Promise((resolve) => {
+            const currentRevealCodes = currentUser?.revealCodes ?? [];
 
-        //! API CALL
+            api.url('Reveal/code')
+                .query({ revealCode: code })
+                .patch()
+                .res()
+                .then(() => {
+                    dispatch(
+                        updateCurrentUser({
+                            revealCodes: [...currentRevealCodes, code]
+                        })
+                    );
+                    resolve('success');
+                })
+                .catch(() => resolve('wrongCode'));
+        });
 
-        dispatch(
-            updateCurrentUser({
-                revealCodes: [...currentRevealCodes, code]
-            })
-        );
-        console.log(`Reveal code: ${code}`);
-
-        // !MOCK
-        if (code === 'TEST') {
-            return 'success';
-        }
-        return 'wrongCode';
-    };
-
-    const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {        
+    const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {
         switch (sectionType) {
             case MyIdUncoverableSections.MEDICAL:
                 return medicalEvents.some((entry) => !entry.seen) ?? false;
@@ -52,7 +61,7 @@ export function useMyIdService() {
             default:
                 return false;
         }
-    } 
+    };
 
     return {
         enterRevealCode,

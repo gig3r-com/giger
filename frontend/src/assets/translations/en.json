@@ -190,5 +190,6 @@
     "ERROR_EVENT_CREATION": "Failed to create event. Try again or contact support.",
     "ERROR_EVENT_UPDATE": "Failed to update event. Try again or contact support.",
     "ERROR_UPDATE": "Failed to update the resource. Try again or contact support.",
-    "UNKNOWN_USER": "Unknown user"
+    "UNKNOWN_USER": "Unknown user",
+    "UNKNOWN": "Unknown"
 }

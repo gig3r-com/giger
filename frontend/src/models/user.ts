@@ -15,9 +15,11 @@ export interface IUserBase {
 export interface IUserPublic extends IUserBase {
     professionPublic: string;
     typePublic: UserTypes;
-    age: number;
     vibe: Vibe;
     wealthLevel: WealthLevels;
+    hasPlatinumPass: boolean;
+    factionRankPublic: string;
+    highSecurity: boolean; 
 }
 
 export interface IUserPrivate extends IUserPublic {
@@ -26,8 +28,8 @@ export interface IUserPrivate extends IUserPublic {
     typeActual: UserTypes;
     assets: string[];
     hackingSkills: SkillStat;
-    confrontationVsNegotiation: CharStat;
-    cowardVsFighter: CharStat;
+    confrontationistVsAgreeable: CharStat;
+    cowardVsBrave: CharStat;
     talkativeVsSilent: CharStat;
     thinkerVsDoer: CharStat;
     combatSkill: SkillStat;
@@ -40,6 +42,8 @@ export interface IUserPrivate extends IUserPublic {
     subnetworkId: string;
     subnetworkName: string;
     reputation: IReputationLevels;
+    insuredAmount: number;
+    factionRankActual: string; 
 }
 
 /**
@@ -71,13 +75,16 @@ export enum UserTypes {
 export enum UserRoles {
     ADMIN = 'ADMIN',
     INFLUENCER = 'INFLUENCER',
-    GOD = 'GOD'
+    GOD = 'GOD',
+    BOSS = 'BOSS',
+    NPC = 'NPC',
+    MODERATOR = 'MODERATOR'
 }
 
 export interface ICharStats {
     hackingSkills: SkillStat;
-    confrontationVsNegotiation: CharStat;
-    cowardVsFighter: CharStat;
+    confrontationistVsAgreeable: CharStat;
+    cowardVsBrave: CharStat;
     talkativeVsSilent: CharStat;
     thinkerVsDoer: CharStat;
     combatSkill: SkillStat;
@@ -124,7 +131,7 @@ export interface IUserRecord extends IObscurableInfo {
 }
 
 export interface IRelation extends IUserRecord {
-    relationTo: string; // userId
+    userName: string; // userId
     recordType: UserRecordTypes.RELATION;
 }
 

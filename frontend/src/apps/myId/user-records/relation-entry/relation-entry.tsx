@@ -12,7 +12,7 @@ export const RelationEntry: FC<{ relation: IRelation }> = ({ relation }) => {
 
     const selectedName = (relation: IRelation) => {
         return userList.find(
-            (u) => u.id === (relation as IRelation).relationTo
+            (u) => u.handle === (relation as IRelation).userName
         )!.handle;
     };
 
@@ -21,7 +21,7 @@ export const RelationEntry: FC<{ relation: IRelation }> = ({ relation }) => {
     };
 
     const onDescriptionChange = (description: string) => {
-        updateRelation(relation.id, relation.relationTo, description);
+        updateRelation(relation.id, relation.userName, description);
     };
 
     const userOptions = userList.map((u) => u.handle);

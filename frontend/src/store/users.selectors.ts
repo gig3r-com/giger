@@ -13,6 +13,8 @@ export const selectRequiresGodUserSelection = (state: { users: IUsersState }) =>
     state.users.requiresGodUserSelection;
 export const selectIsAdmin = (state: { users: IUsersState }) =>
     state.users.currentUser?.roles.includes(UserRoles.ADMIN) ?? false;
+export const selectIsModerator = (state: { users: IUsersState }) =>
+    state.users.currentUser?.roles.includes(UserRoles.MODERATOR) ?? false;
 
 export const selectActiveUsers = createSelector(
     (state: { users: IUsersState }) => state.users.users,

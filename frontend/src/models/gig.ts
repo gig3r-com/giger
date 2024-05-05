@@ -1,4 +1,4 @@
-import { Factions } from './companies';
+import { IObscurableInfo } from "./general";
 
 export interface IGigBase {
     createdAt: string; //ISO date string
@@ -10,10 +10,10 @@ export interface IGigBase {
     subcategory: GigSubcategoryNames;
     reputationRequired?: GigRepuationLevels;
     id: string;
-    providerAccount: string | null; // account id
-    clientAccount: string | null; // account id
+    providerAccountNumber: string | null; // account id
+    clientAccountNumber: string | null; // account id
     anonymizedAuthor?: boolean;
-    modes: GigModes;
+    mode: GigModes;
     authorName: string;
 }
 
@@ -21,13 +21,13 @@ export interface IDraftGig extends IGigBase {
     message: string;
 }
 
-export interface IGig extends IGigBase {
+export interface IGig extends IGigBase, IObscurableInfo {
     status: GigStatus;
     authorId: string;
     takenById?: string;
-    takenForCompany?: Factions;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;
+    conversationId: string;
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;

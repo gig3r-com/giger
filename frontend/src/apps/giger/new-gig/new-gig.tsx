@@ -140,7 +140,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   }),
                   reputationRequired: selectedRepuation as GigRepuationLevels,
                   subcategory: selectedSubcategory! as GigSubcategoryNames,
-                  modes: mode as GigModes,
+                  mode: mode as GigModes,
                   authorName: anonymize ? 'Anonymous' : currentUser?.handle,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()

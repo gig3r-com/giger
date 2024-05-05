@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { IUserRecordsProps } from './user-records.model';
 import {
     IRelation,
@@ -14,12 +14,16 @@ import { PrivateRecordEntry } from './private-record-entry/private-record-entry'
 import { RelationEntry } from './relation-entry/relation-entry';
 import { LockedEntry } from '../../../shared/components/locked-entry/locked-entry';
 import { useUserRecordsService } from './user-records.service';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './user-records.scss';
 
 export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
     const { getRecords, fetchRecords } = useUserRecordsService();
+    const { isGod } = useUserService();
+
+    const records = useMemo(() => getRecords(mode), [mode, getRecords]);
 
     useEffect(function fetchData() {
         fetchRecords(mode);
@@ -50,9 +54,17 @@ export function UserRecords(props: IUserRecordsProps) {
 
     return (
         <section className="user-records">
-            {getRecords(mode).map((record) => getRecord(record))}
-            <LockedEntry />
-            <NewRecord type={mode} />
+            {records
+                .filter((record) => record.isRevealed)
+                .map((record) => getRecord(record))}
+
+            {records
+                .filter((record) => !record.isRevealed)
+                .map((record) => (
+                    <LockedEntry key={record.id} />
+                ))}
+
+            {isGod && <NewRecord type={mode} />}
         </section>
     );
 }

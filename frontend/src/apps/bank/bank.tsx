@@ -52,12 +52,12 @@ export const Bank: FC = () => {
                 <div className="bank__balance">
                     {accounts.private && (
                         <span className={balanceClasses(AccountType.PRIVATE)}>
-                            {accounts.private.balance.toFixed(2)} ¤
+                            {accounts.private?.balance.toFixed(2) ?? '-'} ¤
                         </span>
                     )}
                     {accounts.business && (
                         <span className={balanceClasses(AccountType.BUSINESS)}>
-                            {accounts.business.balance.toFixed(2)} ¤
+                            {accounts.business?.balance.toFixed(2) ?? '-'} ¤
                         </span>
                     )}
                 </div>
