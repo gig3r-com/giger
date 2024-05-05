@@ -7,12 +7,14 @@ export function useApiService() {
     const [token, setToken] = useState(
         localStorage.getItem('authToken') ?? null
     );
+    const endpointBase =
+        import.meta.env.VITE_API_ENDPOINT ?? `${window.origin}/api/`;
 
     const loginCall = async (
         username: string,
         password: string
     ): Promise<IUserPrivate> => {
-        const authToken = await wretch(import.meta.env.VITE_API_ENDPOINT, {
+        const authToken = await wretch(endpointBase, {
             mode: 'cors'
         })
             .get(`Login/giger?userName=${username}&password=${password}`)
@@ -21,7 +23,7 @@ export function useApiService() {
         localStorage.setItem('authToken', authToken);
         setToken(authToken);
 
-        return wretch(import.meta.env.VITE_API_ENDPOINT, {
+        return wretch(endpointBase, {
             mode: 'cors'
         })
             .headers({ AuthToken: authToken as string })
@@ -42,7 +44,7 @@ export function useApiService() {
     };
 
     const api = useMemo(() => {
-        const updatedInstance = wretch(import.meta.env.VITE_API_ENDPOINT, {
+        const updatedInstance = wretch(endpointBase, {
             mode: 'cors'
         })
             .headers({ AuthToken: token as string })
