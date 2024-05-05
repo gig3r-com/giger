@@ -39,7 +39,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _programCodesService.CreateAsync(newCode);
             return CreatedAtAction(nameof(Post), new { id = newCode.Id }, newCode);
@@ -57,7 +57,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _programCodesService.RemoveAsync(id);
             return Ok();

@@ -2,6 +2,7 @@
 using Giger.Models.User;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using OperatingSystem = Giger.Models.Networks.OperatingSystem;
 
 namespace Giger.Controllers
@@ -20,7 +21,7 @@ namespace Giger.Controllers
             var network = await _networkService.GetNetworkByIdAsync(id);
             if (!IsAuthorized(network?.AdminId))
             {
-                return Forbid();
+                return Unauthorized();
             }
             return network;
         }
@@ -31,7 +32,7 @@ namespace Giger.Controllers
             var network = await _networkService.GetNetworkByIdAsync(id);
             if (!IsAuthorized(network?.AdminId))
             {
-                return Forbid();
+                return Unauthorized();
             }
             return network.Name;
         }
@@ -40,15 +41,18 @@ namespace Giger.Controllers
 
         #region Subnetworks
         [HttpGet("subnetwork/all")]
-        public async Task<List<Subnetwork>> GetSubnetworks() => await _networkService.GetAllSubnetworksAsync();
+        public async Task<List<Subnetwork>> GetSubnetworks()
+        {
+            return await _networkService.GetAllSubnetworksAsync();
+        }
 
         [HttpPost("subnetwork")]
         public async Task<IActionResult> PostSubnetwork(Subnetwork newSubnetwork)
         {
             var network = await _networkService.GetNetworkByIdAsync(newSubnetwork.NetworkId);
-            if (IsAuthorized(network?.AdminId) == false)
+            if (!IsAuthorized(network?.AdminId))
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _networkService.CreateSubnetworkAsync(newSubnetwork);
             return CreatedAtAction(nameof(PostSubnetwork), new { id = newSubnetwork.Id }, newSubnetwork);
@@ -57,6 +61,7 @@ namespace Giger.Controllers
         [HttpPatch("subnetwork/firewall")]
         public async Task<IActionResult> ChangeFirewall(string subnetworkId, string firewall)
         {
+
             var result = await ValidateSubnetworkRequest(subnetworkId);
             if (result.Result is not OkResult)
             {
@@ -162,8 +167,8 @@ namespace Giger.Controllers
                     return NotFound();
                 case BadRequestResult:
                     return BadRequest();
-                case ForbidResult:
-                    return Forbid();
+                case UnauthorizedResult:
+                    return Unauthorized();
                 default:
                     return BadRequest();
             }
@@ -183,8 +188,8 @@ namespace Giger.Controllers
                     return NotFound();
                 case BadRequestResult:
                     return BadRequest();
-                case ForbidResult:
-                    return Forbid();
+                case UnauthorizedResult:
+                    return Unauthorized();
                 default:
                     return BadRequest();
             }
@@ -197,7 +202,7 @@ namespace Giger.Controllers
             }
             if (!subnetwork.Users.Contains(userId))
             {
-                return Forbid("No such user in this subnetwork.");
+                return Unauthorized("No such user in this subnetwork.");
             }
             return user;
         }
@@ -264,7 +269,7 @@ namespace Giger.Controllers
             }
             if (!IsAuthorized(network.AdminId))
             {
-                return (Forbid(), null);
+                return (Unauthorized(), null);
             }
 
             return (Ok(), subnetwork);

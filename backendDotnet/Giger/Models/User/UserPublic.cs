@@ -25,9 +25,9 @@ namespace Giger.Models.User
 
         public required string ProfessionPublic { get; set; }
 
-        public required string Surname { get; set; }
+        public string? FactionRankPublic{ get; set; }
 
-        public required int Age { get; set; }
+        public required string Surname { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public required Vibe Vibe { get; set; }
@@ -42,5 +42,11 @@ namespace Giger.Models.User
         public string SubnetworkId { get; set; }
 
         public string SubnetworkName { get; set; }
+
+        public bool HasPlatinumPass { get; set; }
+
+        public bool HighSecurity { get; set; }
+
+        public string ReputationDescription { get; set; }
     }
 }

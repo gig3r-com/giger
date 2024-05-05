@@ -24,7 +24,7 @@ namespace Giger.Models.MessageModels
         [SetsRequiredMembers]
         public Message(string sender, string text)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = Guid.NewGuid().ToString();
             Date = GigerDateTime.Now;
             Sender = sender;
             Text = text;

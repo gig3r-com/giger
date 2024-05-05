@@ -11,7 +11,7 @@ namespace Giger.SerializededModels.Hacking
             CodesMapTable = [
                 new Models.Hacking.HackConfig()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Config = ""
                 }
             ];

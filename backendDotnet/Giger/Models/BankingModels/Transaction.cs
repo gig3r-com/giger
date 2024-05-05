@@ -26,7 +26,7 @@ namespace Giger.Models.BankingModels
         [SetsRequiredMembers]
         public Transaction(string from, string to, string title, decimal amount)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = Guid.NewGuid().ToString();
             From = from;
             To = to;
             Title = title;

@@ -3,12 +3,13 @@ using Giger.Models.BankingModels;
 using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Giger.Models.User;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService) 
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
@@ -16,6 +17,8 @@ namespace Giger.Controllers
         private readonly NetworksService _networksService = networksService;
 
         #region Account
+
+        [Obsolete]
         [HttpGet("byId")]
         public async Task<ActionResult<Account>> Get(string id)
         {
@@ -27,33 +30,51 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(account.Owner))
             {
-                Forbid();
+                Unauthorized();
             }
 
             return account;
         }
 
-        [HttpGet("byOwner")]
-        public async Task<ActionResult<Account>> GetByOwner(string owner)
+        [HttpGet("allAccounts")]
+        public async Task<List<string>> GetAllAccountNames()
         {
-            var account = await _accountService.GetByUserNameAsync(owner);
+            var allActiveAccounts = await _accountService.GetAllActiveAsync();
+            return allActiveAccounts.Select(a => a.Owner).ToList();
+        }
+
+        [HttpGet("byOwner")]
+        public async Task<ActionResult<List<Account>>> GetByOwner(string owner)
+        {
+            if (!IsAuthorized(owner))
+            {
+                Unauthorized();
+            }
+            var account = await _accountService.GetByAccountNameAsync(owner);
             if (account is null)
             {
                 return NotFound();
             }
 
-            if (!IsAuthorized(owner))
+            var retValue = new List<Account>() { account };
+
+            var user = await _userService.GetByUserNameAsync(owner);
+            if (user is not null)
             {
-                Forbid();
+                var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
+                if (businessAccount is not null)
+                {
+                    retValue.Add(businessAccount);
+                }
             }
 
-            return account;
+            return retValue;
         }
 
         [HttpGet("byAccountNumber")]
         public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
         {
-            var account = await _accountService.GetByUserNameAsync(accountNumber);
+            var account = await _accountService.GetByAccountNumberAsync(accountNumber);
             if (account is null)
             {
                 return NotFound();
@@ -61,7 +82,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(account.Owner))
             {
-                Forbid();
+                Unauthorized();
             }
 
             return account;
@@ -72,10 +93,10 @@ namespace Giger.Controllers
         {
             if (IsGodUser())
             {
-                Forbid();
+                Unauthorized();
             }
 
-            newAccount.Id = ObjectId.GenerateNewId().ToString();
+            newAccount.Id = Guid.NewGuid().ToString();
             await _accountService.CreateAsync(newAccount);
             return CreatedAtAction(nameof(CreatedAccount), new { id = newAccount.Id }, newAccount);
         }
@@ -85,7 +106,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -104,7 +125,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -122,7 +143,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -140,7 +161,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -148,7 +169,7 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            await _accountService.RemoveAsync(accountNo);
+            await _accountService.RemoveAsync(account.Id);
             return NoContent();
         }
         #endregion
@@ -165,7 +186,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(account.Owner))
             {
-                return Forbid();
+                return Unauthorized();
             }
             return account.Transactions;
         }
@@ -175,7 +196,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(newTransaction.From))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
@@ -196,7 +217,7 @@ namespace Giger.Controllers
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
-            newTransaction.Id = ObjectId.GenerateNewId().ToString();
+            newTransaction.Id = Guid.NewGuid().ToString();
             newTransaction.Date = GigerDateTime.Now;
 
             giverAcc.Transactions.Add(newTransaction);
@@ -229,13 +250,13 @@ namespace Giger.Controllers
             {
                 var log = new Log
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Timestamp = GigerDateTime.Now,
                     SourceUserId = senderAccount.OwnerId,
                     SourceUserName = senderAccount.Owner,
                     TargetUserId = receiverAccount.OwnerId,
                     TargetUserName = receiverAccount.Owner,
-                    LogType = LogType.Transfer,
+                    LogType = LogType.TRANSFER,
                     LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
                     SubnetworkId = subnetworkId,
                     SubnetworkName = subnetworkName

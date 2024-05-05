@@ -31,7 +31,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            newLog.Id = ObjectId.GenerateNewId().ToString();
+            newLog.Id = Guid.NewGuid().ToString();
             newLog.Timestamp = GigerDateTime.Now;
             _logService.CreateAsync(newLog);
 
@@ -80,7 +80,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            newLog.Id = ObjectId.GenerateNewId().ToString();
+            newLog.Id = Guid.NewGuid().ToString();
             newLog.Timestamp = GigerDateTime.Now;
             senderSubnetwork.PastHacks = [.. senderSubnetwork.PastHacks, newLog.Id];
             _networksService.UpdateSubnetworkAsync(senderSubnetwork);

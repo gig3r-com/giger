@@ -15,7 +15,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             return await _hackConfigService.GetAll();
         }
@@ -25,7 +25,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             return await _hackConfigService.GetById(id);
         }
@@ -35,7 +35,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _hackConfigService.CreateAsync(config);
             return CreatedAtAction(nameof(Post), new { id = config.Id }, config);
@@ -46,7 +46,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _hackConfigService.UpdateAsync(config);
             return Ok();
@@ -57,7 +57,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
             await _hackConfigService.RemoveAsync(id);
             return Ok();

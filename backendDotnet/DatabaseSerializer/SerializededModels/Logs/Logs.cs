@@ -12,13 +12,13 @@ namespace Giger.SerializededModels.Logs
             LogsTable = [
                 new Log()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     SourceUserId = "123456",
                     SourceUserName = "jsilver",
                     SourceHackerName = null,
                     TargetUserId = "123457",
                     TargetUserName = "triddle",
-                    LogType = LogType.Transfer,
+                    LogType = LogType.TRANSFER,
                     Timestamp = GigerDateTime.Now,
                     LogData = $"Transaction from jsilver to triddle on {GigerDateTime.Now}",
                     SubnetworkId = "SN999",

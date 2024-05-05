@@ -31,22 +31,22 @@ namespace Giger.Models.Networks
     [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]
     public enum Firewall
     {
-        EncryptGuard,
-        FirewallX,
-        VirtualVault
+        ENCRYPT_GUARD,
+        FIREWALL_X,
+        VIRTUAL_VAULT
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<OperatingSystem>))]
     public enum OperatingSystem
     {
-        ForceField,
-        EvilTwin,
-        JoanOfArc
+        FORCE_FIELD,
+        EVIL_TWIN,
+        JOAN_OF_ARC
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
     public enum Ice
     {
-        ToBeProvided
+        NONE,
     }
 }

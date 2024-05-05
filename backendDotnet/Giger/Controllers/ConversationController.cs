@@ -28,7 +28,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(participant))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var conversation = await _conversationService.GetAllWithParticipantAsync(participant);
@@ -42,7 +42,7 @@ namespace Giger.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Conversation newConversation)
         {
-            newConversation.Id = ObjectId.GenerateNewId().ToString();
+            newConversation.Id = Guid.NewGuid().ToString();
             await _conversationService.CreateAsync(newConversation);
 
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);

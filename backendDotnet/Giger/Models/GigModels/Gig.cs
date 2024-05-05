@@ -13,7 +13,7 @@ namespace Giger.Models.GigModels
 
         public required string Description { get; set; }
 
-        public string? ConversasionId { get; set; }
+        public string? ConversationId { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public required GigCategoryNames Category { get; set; }
@@ -21,20 +21,18 @@ namespace Giger.Models.GigModels
         [BsonRepresentation(BsonType.String)]
         public required GigSubcategoryNames Subcategory { get; set; }
 
-        public required GigRepuationLevels RepurationRequired { get; set; }
+        public required GigRepuationLevels ReputationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public required GigStatus Status { get; set; }
+        public GigStatus Status { get; set; }
 
         public required string AuthorId { get; set; }
 
         public required string AuthorName { get; set; }
 
         public string? TakenById { get; set; }
-
-        public Factions? TakenForCompany { get; set; }
 
         public string? ClientAccountNumber { get; set; }
 
@@ -48,16 +46,16 @@ namespace Giger.Models.GigModels
 
         public DateTime? AcceptedAt { get; set; }
 
-        public required GigModes Modes { get; set; }
+        public required GigModes Mode { get; set; }
 
-        public required bool IsRevealedByClient { get; set; } = true;
+        public bool IsRevealedByClient { get; set; } = true;
 
         public override void Obscure()
         {
             Payout = -1;
             Title = REDACTED;
             Description = REDACTED;
-            ConversasionId = null;
+            ConversationId = null;
             Category = GigCategoryNames.REDACTED;
             Subcategory = GigSubcategoryNames.REDACTED;
             Status = GigStatus.COMPLETED;

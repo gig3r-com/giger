@@ -7,6 +7,9 @@ namespace Giger.Models.User
     {
         INFLUENCER,
         ADMIN,
+        MODERATOR,
+        BOSS,
+        NPC,
         GOD
     }
 
@@ -55,8 +58,8 @@ namespace Giger.Models.User
     [JsonConverter(typeof(JsonStringEnumConverter<MindHacks>))]
     public enum MindHacks
     {
-        Enabled,
-        Disabled,
-        Banned
+        ENABLED,
+        DISABLED,
+        BANNED
     }
 }

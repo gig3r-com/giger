@@ -35,11 +35,19 @@ namespace Giger.Controllers
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (userName == null)
             {
-                Forbid(Messages.AUTH_TOKEN_EXPIRED);
+                Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
                 return Enumerable.Empty<Gig>().ToList();
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
-            var gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+            List<Gig> gigs;
+            if (IsRole(UserRoles.MODERATOR))
+            {
+                gigs = await _gigService.GetAllVisibleToModeratorAsync(requestSender.Id);
+            }
+            else
+            {
+                gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+            }
             gigs.ForEach(gig => ObscureGig(gig, requestSender.Id));
             return gigs;
         }
@@ -60,7 +68,7 @@ namespace Giger.Controllers
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (userName == null)
             {
-                Forbid(Messages.AUTH_TOKEN_EXPIRED);
+                Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
                 return null;
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
@@ -77,12 +85,12 @@ namespace Giger.Controllers
                 return NotFound(Messages.GIG_NOT_FOUND);
             }
 
-            if (gig.ConversasionId is null)
+            if (gig.ConversationId is null)
             {
                 return NotFound(Messages.GIG_NOT_FOUND_CONVERSATION);
             }
 
-            var conversation = await _conversationService.GetAsync(gig.ConversasionId);
+            var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
             {
                 return NotFound(Messages.GIG_NOT_FOUND_CONVERSATION);
@@ -95,13 +103,13 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(newGig.AuthorId))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
-            newGig.Id = ObjectId.GenerateNewId().ToString();
+            newGig.Id = Guid.NewGuid().ToString();
             newGig.CreatedAt = GigerDateTime.Now;
 
-            if (newGig.Modes == GigModes.CLIENT)
+            if (newGig.Mode == GigModes.CLIENT)
             {
                 var account = await _accountService.GetByAccountNumberAsync(newGig.ProviderAccountNumber);
                 if (account is null)
@@ -127,7 +135,7 @@ namespace Giger.Controllers
                 var anonymizedUserName = Guid.NewGuid().ToString();
                 var anonymizedUser = new AnonymizedUser
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     UserId = newGig.AuthorId,
                     DisplyedAs = anonymizedUserName
                 };
@@ -135,7 +143,7 @@ namespace Giger.Controllers
                 newGig.AuthorName = anonymizedUserName;
             }
 
-            newGig.ConversasionId = CreateNewGigConversation(newGig, openingMessage).Result.Id;
+            newGig.ConversationId = CreateNewGigConversation(newGig, openingMessage).Result.Id;
 
             await _gigService.CreateAsync(newGig);
             return CreatedAtAction(nameof(Post), new { id = newGig.Id }, newGig);
@@ -146,7 +154,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(updatedGig.AuthorId))
             {
-                return Forbid();
+                return Unauthorized();
             }
             var oldGig = await _gigService.GetAsync(updatedGig.Id);
             if (oldGig is null)
@@ -188,11 +196,11 @@ namespace Giger.Controllers
                 return NotFound(Messages.ACCOUNT_NOT_FOUND);
             }
 
-            if (gig.Modes == GigModes.CLIENT)
+            if (gig.Mode == GigModes.CLIENT)
             {
                 gig.ProviderAccountNumber = accountNo;
             }
-            else if (gig.Modes == GigModes.PROVIDER)
+            else if (gig.Mode == GigModes.PROVIDER)
             {
                 gig.ClientAccountNumber = accountNo;
                 if (!FreezeFunds(gig, account).Result)
@@ -201,20 +209,15 @@ namespace Giger.Controllers
                 }
             }
 
-            if (Enum.TryParse<Factions>(account.Owner, out var faction))
-            {
-                gig.TakenForCompany = faction;
-            }
-
             gig.TakenById = takenBy;
             gig.AcceptedAt = GigerDateTime.Now;
             gig.Status = GigStatus.IN_PROGRESS;
 
-            var conversation = await _conversationService.GetAsync(gig.ConversasionId);
+            var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
             {
                 conversation = await CreateNewGigConversation(gig, "");
-                gig.ConversasionId = conversation.Id;
+                gig.ConversationId = conversation.Id;
             }
             var userTakenBy = await _userService.GetAsync(takenBy);
             conversation.Participants.Add(userTakenBy.Handle);
@@ -259,7 +262,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(gig.TakenById))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             gig.Status = GigStatus.COMPLETED;
@@ -287,7 +290,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(gig.TakenById))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             gig.Status = GigStatus.DISPUTE;
@@ -299,8 +302,13 @@ namespace Giger.Controllers
         }
 
         [HttpPatch("{id}/resolve")]
-        public async Task<IActionResult> PatchResolveGig(string id, string clerkAccountNo, bool isProviderRight)
+        public async Task<IActionResult> PatchResolveGig(string id, string clerkAccountNo, bool isClientRight)
         {
+            if (!IsRole(UserRoles.MODERATOR))
+            {
+                return Unauthorized();
+            }
+
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
             {
@@ -312,14 +320,9 @@ namespace Giger.Controllers
                 return BadRequest("Gig is not taken");
             }
 
-            if (!IsAuthorized(gig.TakenById))
-            {
-                return Forbid();
-            }
-
             gig.Status = GigStatus.COMPLETED;
             ReturnFunds(gig);
-            if (isProviderRight)
+            if (!isClientRight)
             {
                 CompleteTransaction(gig);
                 var providerUser = await _userService.GetAsync(gig.TakenById);
@@ -342,7 +345,7 @@ namespace Giger.Controllers
             }
             if (!IsAuthorized(gig.AuthorId)) /// or isGodUser??
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             if (gig.Status != GigStatus.AVAILABLE || gig.Status != GigStatus.EXPIRED)
@@ -350,7 +353,7 @@ namespace Giger.Controllers
                 return BadRequest("Gig is not available for removal");
             }
 
-            if (gig.Modes == GigModes.CLIENT)
+            if (gig.Mode == GigModes.CLIENT)
             {
                 ReturnFunds(gig);
             }
@@ -363,14 +366,15 @@ namespace Giger.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> PatchStatus(string id, GigStatus value)
         {
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
+
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
             {
                 return NotFound();
-            }
-            if (!IsGodUser())
-            {
-                return Forbid();
             }
 
             gig.Status = value;
@@ -410,7 +414,7 @@ namespace Giger.Controllers
         {
             var conversation = new Conversation()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 GigConversation = true,
                 Participants = [newGig.AuthorName],
                 Messages = [new Message(newGig.AuthorName, openingMessage)]
@@ -428,7 +432,7 @@ namespace Giger.Controllers
                 
             Transaction reserve = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = "SYSTEM",
                 Date = GigerDateTime.Now,
@@ -440,7 +444,7 @@ namespace Giger.Controllers
 
             Transaction socialTax = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = "SOCIAL",
                 Date = GigerDateTime.Now,
@@ -456,7 +460,7 @@ namespace Giger.Controllers
         {
             Transaction reserve = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = "SYSTEM",
                 To = gig.ClientAccountNumber,
                 Date = GigerDateTime.Now,
@@ -471,7 +475,7 @@ namespace Giger.Controllers
         {
             Transaction trx = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = gig.ProviderAccountNumber,
                 Date = GigerDateTime.Now,
@@ -486,7 +490,7 @@ namespace Giger.Controllers
         {
             Transaction trx = new()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 From = "SOCIAL",
                 To = clerkAccountNo,
                 Date = GigerDateTime.Now,

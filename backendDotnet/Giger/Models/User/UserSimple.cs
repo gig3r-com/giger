@@ -43,7 +43,6 @@ namespace Giger.Models.User
             TypePublic = user.TypePublic;
             ProfessionPublic = user.ProfessionPublic;
             Surname = user.Surname;
-            Age = user.Age;
             Vibe = user.Vibe;
             WealthLevel = user.WealthLevel;
             NetworkId = user.NetworkId;
@@ -56,8 +55,8 @@ namespace Giger.Models.User
             TypeActual = user.TypeActual;
             Assets = user.Assets;
             HackingSkills = user.HackingSkills;
-            ConfrontationVsNegotiation = user.ConfrontationVsNegotiation;
-            CowardVsFighter = user.CowardVsFighter;
+            ConfrontationistVsAgreeable = user.ConfrontationistVsAgreeable;
+            CowardVsBrave = user.CowardVsBrave;
             TalkativeVsSilent = user.TalkativeVsSilent;
             ThinkerVsDoer = user.ThinkerVsDoer;
             CombatSkill = user.CombatSkill;

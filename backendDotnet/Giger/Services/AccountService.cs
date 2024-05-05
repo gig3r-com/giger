@@ -18,13 +18,16 @@ namespace Giger.Services
         public async Task<List<Account>> GetAllAsync() =>
             await _accountsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<List<Account>> GetAllActiveAsync() =>
+            await _accountsCollection.Find(x => x.IsActive).ToListAsync();
+
         public async Task<Account?> GetSystemAccountAsync() =>
             await _accountsCollection.Find(x => x.Owner == "SYSTEM").FirstOrDefaultAsync();
 
         public async Task<Account?> GetByIdAsync(string id) =>
             await _accountsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task<Account?> GetByUserNameAsync(string owner) =>
+        public async Task<Account?> GetByAccountNameAsync(string owner) =>
             await _accountsCollection.Find(x => x.Owner == owner).FirstOrDefaultAsync();
 
         public async Task<Account?> GetByUserIdAsync(string ownerId) =>

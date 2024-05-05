@@ -23,7 +23,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
             
             user = FilterOutGodUser(user);
@@ -45,7 +45,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             user = FilterOutGodUser(user);
@@ -67,7 +67,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             user = FilterOutGodUser(user);
@@ -85,7 +85,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             user = FilterOutGodUser(user);
@@ -114,7 +114,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var u = user as UserSimple;
@@ -134,7 +134,7 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(user.Id))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             FilterObscurableData(user);
@@ -146,7 +146,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                Forbid();
+                Unauthorized();
             }
 
             await _userService.CreateAsync(newUser);
@@ -158,7 +158,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(updatedUser.Id))
             {
-                Forbid();
+                Unauthorized();
             }
             var user = await _userService.GetAsync(updatedUser.Id);
             if (user is null)
@@ -175,7 +175,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);

@@ -22,6 +22,8 @@ namespace Giger.Models.BankingModels
         public required decimal Balance { get; set; }
         
         public required string AccountNumber { get; set; }
+
+        public bool IsActive { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]

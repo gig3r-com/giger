@@ -20,11 +20,11 @@ namespace Giger.Controllers
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
-                return Forbid();
+                return Unauthorized();
 
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (string.IsNullOrEmpty(userName))
-                return Forbid();
+                return Unauthorized();
 
             var obscuredData = await _obscuredDataService.GetByRevealCodeIdAsync(revealCode);
             if (obscuredData is null)

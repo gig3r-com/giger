@@ -46,6 +46,29 @@ namespace Giger.Controllers
             return false;
         }
 
+        protected bool IsRole(UserRoles allowedRole)
+        {
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return false;
+
+            var senderHandle = _loginService.GetByAuthTokenAsync(senderAuthToken).Result?.Username;
+            if (string.IsNullOrEmpty(senderHandle))
+                return false;
+
+            var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
+            if (senderUser != null)
+            {
+                if (senderUser.Roles.Contains(allowedRole))
+                    return true;
+
+                if (senderUser.Roles.Contains(UserRoles.GOD))
+                    return true;
+            }
+
+            return false;
+        }
+
         protected bool IsGodUser()
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);

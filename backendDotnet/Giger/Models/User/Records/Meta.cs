@@ -13,7 +13,7 @@ namespace Giger.Models.User.Records
 
         public Meta()
         {
-            RecordType = UserRecordTypes.Meta;
+            RecordType = UserRecordTypes.META;
         }
 
         public override void Obscure()
@@ -32,10 +32,10 @@ namespace Giger.Models.User.Records
     public enum MetaTypes
     {
         REDACTED,
-        Archetype,
-        Music,
-        Inspirations,
-        Aesthetics,
-        Procedure,
+        ARCHETYPE,
+        MUSIC,
+        INSPIRATIONS,
+        AESTHETICS,
+        PROCEDURE,
     }
 }

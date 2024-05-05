@@ -13,7 +13,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -35,7 +35,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -53,7 +53,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -75,7 +75,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -97,7 +97,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -119,7 +119,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -137,7 +137,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -159,7 +159,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -181,7 +181,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -203,7 +203,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -221,7 +221,7 @@ namespace Giger.Controllers
 		{
 			if (!IsAuthorized(id))
 			{
-				Forbid();
+				Unauthorized();
 			}
 
 			var user = await _userService.GetAsync(id);
@@ -243,7 +243,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -265,7 +265,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -287,7 +287,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -305,7 +305,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -327,7 +327,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -349,7 +349,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -371,7 +371,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -389,7 +389,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -411,7 +411,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -433,7 +433,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -455,7 +455,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -473,7 +473,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);
@@ -495,7 +495,7 @@ namespace Giger.Controllers
         {
             if (!IsAuthorized(id))
             {
-                Forbid();
+                Unauthorized();
             }
 
             var user = await _userService.GetAsync(id);

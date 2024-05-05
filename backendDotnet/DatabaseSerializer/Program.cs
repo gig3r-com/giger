@@ -5,7 +5,7 @@ namespace DatabaseSerializer
 {
     internal class Program
     {
-        static string[] _nonDbClasses = ["UserSimple, RecordHashes"];
+        static string[] _nonDbClasses = [ "UserSimple", "RecordHashes" ];
 
         static void Main(string[] args)
         {
