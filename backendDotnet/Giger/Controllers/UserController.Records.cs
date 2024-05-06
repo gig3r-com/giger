@@ -273,13 +273,8 @@ namespace Giger.Controllers
             {
                 return NotFound(Messages.USER_NOT_FOUND);
             }
-            var metas = user.Meta;
-            if (!IsGodUser())
-            {
-                FilterObscurableField(metas);
-            }
 
-            return metas;
+            return user.Meta;
         }
 
         [HttpPut("{id}/metas")]

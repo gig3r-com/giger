@@ -20,13 +20,6 @@
             }
             GoalsHash = goalsHashCode;
 
-            int metaHashCode = 7;
-            foreach (var meta in user.Meta)
-            {
-                metaHashCode ^= meta.GetHashCode();
-            }
-            MetaHash = metaHashCode;
-
             int criminalEventsHashCode = 13;
             foreach (var criminalEvent in user.CriminalEvents)
             {
@@ -52,8 +45,6 @@
         public int RelationsHash { get; set; }
 
         public int GoalsHash { get; set; }
-
-        public int MetaHash { get; set;}
 
         public int PrivateRecordsHash { get; set; }
 

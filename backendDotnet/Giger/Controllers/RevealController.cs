@@ -26,7 +26,7 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(userName))
                 return Unauthorized();
 
-            var obscuredData = await _obscuredDataService.GetByRevealCodeIdAsync(revealCode);
+            var obscuredData = await _obscuredDataService.GetByCodeAndUserAsync(revealCode, userName);
             if (obscuredData is null)
                 return NotFound("Wrong code");
 
@@ -87,7 +87,6 @@ namespace Giger.Controllers
         {
             ObscurableInfo? returnData = CheckCollection(user.PrivateRecords)
                 ?? CheckCollection(user.Goals)
-                ?? CheckCollection(user.Meta)
                 ?? CheckCollection(user.MedicalEvents)
                 ?? CheckCollection(user.CriminalEvents)
                 ?? CheckCollection(user.Relations);

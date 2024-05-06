@@ -1,8 +1,6 @@
-﻿using Giger.Extensions;
-using Giger.Models.EventModels;
+﻿using Giger.Models.EventModels;
 using Giger.Models.GigModels;
 using Giger.Models.User;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.User
 {
@@ -74,9 +72,6 @@ namespace Giger.SerializededModels.User
                             Id = Guid.NewGuid().ToString(),
                             Title = "Use this code if you took LSD drug",
                             Description = "q12we34r",
-                            Type = Models.User.Records.MetaTypes.INSPIRATIONS,
-                            IsLink = false,
-                            IsRevealed = true
                         }
                     ],
                     PrivateRecords = [
@@ -188,9 +183,6 @@ namespace Giger.SerializededModels.User
                             Id = Guid.NewGuid().ToString(),
                             Title = "Use this code if you took LSD drug",
                             Description = "q12we34r",
-                            Type = Models.User.Records.MetaTypes.INSPIRATIONS,
-                            IsLink = false,
-                            IsRevealed = true
                         }
                     ],
                     PrivateRecords = [],

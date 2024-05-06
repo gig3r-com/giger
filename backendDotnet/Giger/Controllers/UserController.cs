@@ -230,7 +230,6 @@ namespace Giger.Controllers
             FilterObscurableField(user.MedicalEvents);
             FilterObscurableField(user.CriminalEvents);
             FilterObscurableField(user.Relations);
-            FilterObscurableField(user.Meta);
             FilterObscurableField(user.Goals);
         }
 
