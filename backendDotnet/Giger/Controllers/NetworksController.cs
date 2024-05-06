@@ -113,20 +113,13 @@ namespace Giger.Controllers
             }
 
             var subnetwork = result.Subnetwork;
-            if (Enum.TryParse<Ice>(ice, out var iceEnum))
+            if (subnetwork.Ice.Contains(ice))
             {
-                if (subnetwork.Ice.Contains(iceEnum))
-                {
-                    return BadRequest($"Subnetwork already contains {ice} ICE.");
-                }
-                subnetwork.Ice = [.. subnetwork.Ice, iceEnum ];
-                await _networkService.UpdateSubnetworkAsync(subnetwork);
-                return Ok();
+                return BadRequest($"Subnetwork already contains {ice} ICE.");
             }
-            else
-            {
-                return BadRequest("Unsupported ICE");
-            }
+            subnetwork.Ice = [.. subnetwork.Ice, ice];
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
+            return Ok();
         }
 
         [HttpDelete("subnetwork/ice")]
@@ -138,20 +131,13 @@ namespace Giger.Controllers
                 return result.Result;
             }
             var subnetwork = result.Subnetwork;
-            if (Enum.TryParse<Ice>(ice, out var iceEnum))
+            if (subnetwork.Ice.Contains(ice))
             {
-                if (subnetwork.Ice.Contains(iceEnum))
-                {
-                    return BadRequest($"Subnetwork already contains {ice} ICE.");
-                }
-                subnetwork.Ice = subnetwork.Ice.Except([iceEnum]).ToArray();
-                await _networkService.UpdateSubnetworkAsync(subnetwork);
-                return Ok();
+                return BadRequest($"Subnetwork already contains {ice} ICE.");
             }
-            else
-            {
-                return BadRequest("Unsupported ICE");
-            }
+            subnetwork.Ice = subnetwork.Ice.Except([ice]).ToArray();
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
+            return Ok();
         }
 
         //TODO: this endpoint needs to be thought through if its needed and what to return

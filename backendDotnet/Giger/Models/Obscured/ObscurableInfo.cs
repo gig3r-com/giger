@@ -1,6 +1,4 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
-using ThirdParty.Json.LitJson;
 
 namespace Giger.Models.Obscured
 {

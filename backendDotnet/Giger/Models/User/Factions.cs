@@ -6,79 +6,88 @@ namespace Giger.Models.User
     [JsonConverter(typeof(JsonStringEnumConverter<Factions>))]
     public enum Factions
     {
-        [Description("Takayama")]
-        TAKAYAMA,
-
-        [Description("Social Network")]
-        SOCIAL_NETWORK,
-
-        [Description("ConTech")]
-        CONTECH,
-
         [Description("Gunners")]
-        GUNNERS,
-
-        [Description("Pawnshop 24/7")]
-        PAWNSHOP_24_7,
+        gunners,
 
         [Description("Spanks&Cuddles")]
-        SPANKS_N_CUDDLES,
+        spanks_and_cuddles,
 
         [Description("Rabbids")]
-        RABBIDS,
+        rabbids,
 
-        [Description("Takayama Finance Agency")]
-        TAKAYAMA_FINANCE_AGENCY,
-
-        [Description("Humanists")]
-        HUMANISTS,
+        [Description("Pawnshop 24/7")]
+        pawnshop_24_7,
 
         [Description("Omni Municipal Guard")]
-        OMNI_MUNICIPAL_GUARD,
+        o_m_g,
+
+        [Description("Humanists")]
+        humanists,
 
         [Description("Metamorphosis")]
-        METAMORPHOSIS,
+        metamorphosis,
 
-        [Description("Esthetics")]
-        ESTHETICS,
-
-        [Description("Quantum Elite Talent Syndicate")]
-        QUANTUM_ELITE_TALENT_SYNDICATE,
-
-        [Description("SynthPulse")]
-        SYNTHPULSE,
-
-        [Description("NuYu")]
-        NUYU,
-
-        [Description("Transcenders")]
-        TRANSCENDERS,
-
-        [Description("Hi-Tech Clinic")]
-        HI_TECH_CLINIC,
-
-        [Description("aSpot")]
-        ASPOT,
-
-        [Description("Beholder")]
-        BEHOLDER,
-
-        [Description("Anarchists")]
-        ANARCHISTS,
-
-        [Description("Head hunters")]
-        HEAD_HUNTERS,
-
-        [Description("Shaman")]
-        SHAMAN,
-
-        [Description("Nomads")]
-        NOMADS,
+        [Description("Takayama Finance Agency")]
+        t_f_a,
 
         [Description("DoubleD")]
-        DOUBLED,
+        double_d,
+
+        [Description("Esthetics")]
+        esthetics,
+
+        [Description("Quantum Elite Talent Syndicate")]
+        q_e_t_s,
+
+        [Description("SynthPulse")]
+        synth_pulse,
+
+        [Description("NuYu")]
+        nu_yu,
+
+        [Description("Transcenders")]
+        transhuman,
+
+        [Description("Hi-Tech Clinic")]
+        hi_tech,
+
+        [Description("aSpot")]
+        a_spot,
+
+        [Description("Beholder")]
+        beholder,
+
+        [Description("Anarchists")]
+        anarchy,
+
+        [Description("Nomads")]
+        nomads,
 
         [Description("Foundation")]
-        FOUNDATION,
+        foundation,
+
+        [Description("Shaman")]
+        shaman,
+
+        [Description("Head hunters")]
+        head_hunters,
+
+        [Description("Reapers")]
+        reapers,
+
+        [Description("The Loaded Chamber")]
+        loaded_chamber,
+
+        [Description("Byte Bar")]
+        byte_bar,
+
+        [Description("Takayama")]
+        takayama_official,
+
+        [Description("Social Network")]
+        social_net,
+
+        [Description("ConTech")]
+        contech_regional,
     }
 }

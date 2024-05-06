@@ -11,8 +11,8 @@
 
         public override void Obscure()
         {
-            UserName = REDACTED;
             base.Obscure();
+            UserName = REDACTED;
         }
 
         public override int GetHashCode()
