@@ -28,6 +28,7 @@ namespace Giger.SerializededModels.User
                     NetworkName = "The Matrix",
                     SubnetworkId = "SN999",
                     SubnetworkName = "Subnetwork1",
+                    NetworkAdminName = "triddle",
 
                     //private
                     CyberwareLevel = 4,
@@ -139,6 +140,7 @@ namespace Giger.SerializededModels.User
                     NetworkName = "The Matrix",
                     SubnetworkId = "SN999",
                     SubnetworkName = "Subnetwork2",
+                    NetworkAdminName = "triddle",
 
                     //private
                     CyberwareLevel = 4,

@@ -49,6 +49,7 @@ namespace Giger.Models.User
             NetworkName = user.NetworkName;
             SubnetworkId = user.SubnetworkId;
             SubnetworkName = user.SubnetworkName;
+            NetworkAdminName = user.NetworkAdminName;
 
             CyberwareLevel = user.CyberwareLevel;
             ProfessionActual = user.ProfessionActual;

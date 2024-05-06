@@ -45,6 +45,8 @@ namespace Giger.Models.User
 
         public Dictionary<GigCategoryNames, decimal> GigReputation { get; set; } = [];
 
+        public string NetworkAdminName { get; set; }
+
         // things below are obscured
         public virtual Relation[] Relations { get; set; } = [];
 

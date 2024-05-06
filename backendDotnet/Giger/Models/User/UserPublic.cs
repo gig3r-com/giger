@@ -43,6 +43,8 @@ namespace Giger.Models.User
 
         public string SubnetworkName { get; set; }
 
+        public string NetworkAdminName { get; set; }
+
         public bool HasPlatinumPass { get; set; }
 
         public bool HighSecurity { get; set; }
