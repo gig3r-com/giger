@@ -52,7 +52,6 @@ namespace Giger.SerializededModels.User
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Title = null,
                             UserName = "triddle",
                             Description = "Best friend",
                             IsRevealed = true
@@ -156,7 +155,7 @@ namespace Giger.SerializededModels.User
                     VibeFunction = "Gang Hacker",
                     VibeEngagement = VibeEngagement.DISINTERESTED,
                     FavoriteUserIds = ["123456"],
-                    Faction =  Factions.high_tech,
+                    Faction =  Factions.hi_tech,
                     FactionRankActual = "Hacker",
                     FactionRankPublic = "Janitor",
                     InsuredAmount = 1000,
@@ -164,7 +163,6 @@ namespace Giger.SerializededModels.User
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Title = "Boss",
                             UserName = "jsilver",
                             Description = "boss of the gang",
                             IsRevealed = true
@@ -296,11 +294,11 @@ namespace Giger.SerializededModels.User
                     Surname = "Johnson",
                     Vibe = Vibe.HEDONIZERS,
                     WealthLevel = WealthLevels.ELITE,
-                    NetworkId = "N888",
-                    NetworkName = "The Net",
-                    SubnetworkId = "SN777",
-                    SubnetworkName = "Subnetwork4",
-                    NetworkAdminName = "bob",
+                    NetworkId = "N666",
+                    NetworkName = "The Matrix",
+                    SubnetworkId = "SN999",
+                    SubnetworkName = "Subnetwork1",
+                    NetworkAdminName = "triddle",
                     CyberwareLevel = 3,
                     ProfessionActual = "Doctor",
                     TypeActual = UserTypes.HUMAN,
@@ -314,7 +312,7 @@ namespace Giger.SerializededModels.User
                     VibeFunction = "Doctor",
                     VibeEngagement = VibeEngagement.DISINTERESTED,
                     FavoriteUserIds = ["123456"],
-                    Faction = Factions.high_tech,
+                    Faction = Factions.hi_tech,
                     FactionRankActual = "Doctor",
                     FactionRankPublic = "Doctor",
                     InsuredAmount = 2000,
