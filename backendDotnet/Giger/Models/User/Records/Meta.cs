@@ -1,41 +1,21 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
+using static Giger.Models.User.Records.UserRecord;
 
 namespace Giger.Models.User.Records
 {
-    public class Meta : UserRecord
+    public class Meta
     {
+        [BsonId]
+        [BsonElement("_id")]
+
+        public string Id { get; set; }
+
+        public required string Title { get; set; }
+
+        public required string Description { get; set; }
+
         [BsonRepresentation(BsonType.String)]
-        public required MetaTypes Type { get; set; }
-
-        public bool IsLink { get; set; }
-
-        public Meta()
-        {
-            RecordType = UserRecordTypes.META;
-        }
-
-        public override void Obscure()
-        {
-            base.Obscure();
-            Type = MetaTypes.REDACTED;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode() * 17 + Type.GetHashCode() * 5 + IsLink.GetHashCode() * 3;
-        }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<MetaTypes>))]
-    public enum MetaTypes
-    {
-        REDACTED,
-        ARCHETYPE,
-        MUSIC,
-        INSPIRATIONS,
-        AESTHETICS,
-        PROCEDURE,
+        public UserRecordTypes RecordType { get; set; } = UserRecordTypes.META;
     }
 }
