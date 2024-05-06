@@ -24,6 +24,9 @@ namespace Giger.Services
         public async Task<ObscuredCodesMap?> GetByObscurableIdAsync(string obscruableId) =>
             await _obscuredCodesMapCollection.Find(x => x.ObscurableId == obscruableId).FirstOrDefaultAsync();
 
+        public async Task<ObscuredCodesMap?> GetByCodeAndUserAsync(string revealCode, string username) =>
+            await _obscuredCodesMapCollection.Find(x => x.ExpectedRevealCode == revealCode && x.Username == username).FirstOrDefaultAsync();
+
         public async Task<ObscuredCodesMap?> GetByRevealCodeIdAsync(string revealCode) =>
             await _obscuredCodesMapCollection.Find(x => x.ExpectedRevealCode == revealCode).FirstOrDefaultAsync();
 

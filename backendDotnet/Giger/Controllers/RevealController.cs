@@ -26,7 +26,7 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(userName))
                 return Unauthorized();
 
-            var obscuredData = await _obscuredDataService.GetByRevealCodeIdAsync(revealCode);
+            var obscuredData = await _obscuredDataService.GetByCodeAndUserAsync(revealCode, userName);
             if (obscuredData is null)
                 return NotFound("Wrong code");
 
