@@ -87,7 +87,6 @@ namespace Giger.Controllers
         {
             ObscurableInfo? returnData = CheckCollection(user.PrivateRecords)
                 ?? CheckCollection(user.Goals)
-                ?? CheckCollection(user.Meta)
                 ?? CheckCollection(user.MedicalEvents)
                 ?? CheckCollection(user.CriminalEvents)
                 ?? CheckCollection(user.Relations);
