@@ -65,7 +65,6 @@ jobs:
         uses: 'WyriHaximus/github-action-helm3@v3'
         with:
           exec: |
-            cp -r ./data ./chart/gig3r/
             helm upgrade --install \
             gig3r-${{ env.HELM_ENVIRONMENT }} \
             ./chart/gig3r \
@@ -75,12 +74,15 @@ jobs:
             --create-namespace \
             --set environment=${{ env.HELM_ENVIRONMENT }} \
             --set base_url=${{ inputs.BASE_URL }} \
+            --set dockerconfigjson=${{ secrets.REGCRED }} \
             --set frontend.image=${{ inputs.HELM_FRONTEND_IMAGE }} \
             --set frontend.tag=${{ env.HELM_FRONTEND_TAG }} \
             --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
             --set database.user=${{ env.HELM_ENVIRONMENT }} \
+            --set database.image=${{ env.HELM_DATABASE_IMAGE }} \
+            --set database.tag=${{ env.HELM_DATABASE_TAG }} \
             --set mongoexpress.user=${{ secrets.ME_USER }} \
             --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
                     

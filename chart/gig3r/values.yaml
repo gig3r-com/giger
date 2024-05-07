@@ -12,6 +12,8 @@ backend:
 database:
   name: admin
   user: gig3r
+  image: mivalsten/gig3r-mongo
+  tag: 0.2.0
 
 mongoexpress:
   user: changeme
