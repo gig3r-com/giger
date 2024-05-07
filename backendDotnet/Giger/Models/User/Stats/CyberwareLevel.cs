@@ -28,6 +28,10 @@
                 {
                     _stat = MAXVALUE;
                 }
+                else
+                {
+                    _stat = value;
+                }
             }
         }
 
