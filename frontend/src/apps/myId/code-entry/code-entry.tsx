@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMyIdService } from '../../../shared/services/myid.service';
+//import { useMyIdService } from '../../../shared/services/myid.service';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 
 import './code-entry.scss';
@@ -12,13 +12,13 @@ export const CodeEntry: FC = () => {
     const [messageToShow, setMessageToShow] = useState<
         'success' | 'wrongCode' | null
     >(null);
-    const { enterRevealCode } = useMyIdService();
-    const onEntry = async () => {
-        setLoading(true);
-        setMessageToShow(await enterRevealCode(code));
-        setCode('');
-        setLoading(false);
-    };
+    //const { enterRevealCode } = useMyIdService();
+    // const onEntry = async () => {
+    //     setLoading(true);
+    //     setMessageToShow(await enterRevealCode(code));
+    //     setCode('');
+    //     setLoading(false);
+    // };
 
     return (
         <div className="code-entry">
@@ -52,7 +52,8 @@ export const CodeEntry: FC = () => {
 
             <BigButton
                 disabled={code === ''}
-                onClick={() => onEntry()}
+                //onClick={() => onEntry()}
+                onClick={() => {}}
                 text={intl.formatMessage({ id: 'ENTER' })}
             />
         </div>
