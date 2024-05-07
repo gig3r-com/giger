@@ -18,7 +18,7 @@ export interface IUserPublic extends IUserBase {
     vibe: Vibe;
     wealthLevel: WealthLevels;
     hasPlatinumPass: boolean;
-    factionRankPublic: string;
+    factionRankPublic: Factions;
     highSecurity: boolean; 
 }
 
@@ -41,9 +41,10 @@ export interface IUserPrivate extends IUserPublic {
     networkName: string;
     subnetworkId: string;
     subnetworkName: string;
-    reputation: IReputationLevels;
+    gigReputation: IReputationLevels;
     insuredAmount: number;
-    factionRankActual: string; 
+    factionRankActual: string;
+    networkAdminName: string;
 }
 
 /**

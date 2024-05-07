@@ -2,8 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Giger } from './apps/giger/giger';
 import { MainMenu } from './shared/components/main-menu/main-menu';
-import { Chat } from './apps/chat/chat';
-import { Bank } from './apps/bank/bank';
+// import { Chat } from './apps/chat/chat';
+// import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
 import { ReportProblem } from './shared/components/report-problem/reportProblem';
 import { Login } from './apps/login/login';
@@ -22,17 +22,18 @@ import { EventRecordType } from './models/events';
 import { UserRecords } from './apps/myId/user-records/user-records';
 import { UserRecordTypes } from './models/user';
 import { AnimatePresence, motion } from 'framer-motion';
-import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
+//import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
-import { useBankingService } from './shared/services/banking.service';
+//import { useBankingService } from './shared/services/banking.service';
 import { useUserService } from './shared/services/user.service';
+import { NoAccess } from './shared/components/no-access/no-access';
 
 export const Router = () => {
     const intl = useIntl();
     const { test } = useNotificationsService();
     const { versionCheck } = useVersionService();
-    const { fetchAccounts } = useBankingService();
+    //const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
 
     useEffect(() => {
@@ -40,7 +41,7 @@ export const Router = () => {
         versionCheck();
         test();
         fetchAllUsers();
-        fetchAccounts();
+        //fetchAccounts();
     }, []);
 
     const isLoggedIn = useSelector(
@@ -64,7 +65,9 @@ export const Router = () => {
                                     <Route path=":gigId" element={<Giger />} />
                                 </Route>
                             </Route>
-                            <Route path="chat" element={<Chat />}>
+                            <Route path="chat" element={<NoAccess />}/>
+                            <Route path="bank" element={<NoAccess />}/>
+                            {/* <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />
                                 <Route path="new" element={<Chat />} />
                             </Route>
@@ -73,7 +76,7 @@ export const Router = () => {
                                     path="new"
                                     element={<NewTransaction />}
                                 />
-                            </Route>
+                            </Route> */}
                             <Route path="myid" element={<MyId />}>
                                 <Route path="details" element={<Details />}>
                                     <Route

@@ -1,31 +1,76 @@
 import { FC } from 'react';
 import { useUserService } from '../../../shared/services/user.service';
+import MemoizedFormattedMessage from 'react-intl/src/components/message';
+import {
+    VibeEngagement,
+    IUserPrivate,
+    Vibe as VibeNames
+} from '../../../models/user';
+import { AdminEditableField } from '../../../shared/components/admin-editable-field/admin-editable-field';
+import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 
 import './vibe.scss';
 
 export const Vibe: FC = () => {
-    const { currentUser } = useUserService();
-
+    const { updateUserData, currentUser } = useUserService();
     return (
-        <section className="neotribe">
-            <h1>{currentUser?.name}</h1>
-            <span>{descriptionMock}</span>
+        <section className="vibe">
+            <span className="vibe__label">
+                <MemoizedFormattedMessage id="VIBE" />:
+            </span>
+            <AdminEditableField
+                type={FieldTypes.SELECT}
+                className="vibe__entry"
+                options={[
+                    VibeNames.DIGIEVO,
+                    VibeNames.DIZORDERS,
+                    VibeNames.HEDONIZERS,
+                    VibeNames.OVERSEERS,
+                    VibeNames.SW4RM,
+                    VibeNames.NO_VIBE
+                ]}
+                value={currentUser!.vibe}
+                onChange={async (val) =>
+                    await updateUserData(currentUser!.id, {
+                        vibe: val as VibeNames
+                    })
+                }
+            />
+
+            <span className="vibe__label">
+                <MemoizedFormattedMessage id="VIBE_ENGAGEMENT" />:
+            </span>
+            <AdminEditableField
+                type={FieldTypes.SELECT}
+                className="vibe__entry"
+                options={[
+                    VibeEngagement.DISINTERESTED,
+                    VibeEngagement.DOUBTING,
+                    VibeEngagement.INTERESTED,
+                    VibeEngagement.HYPED,
+                    VibeEngagement.FANATIC
+                ]}
+                value={(currentUser as IUserPrivate)!.vibeEngagement}
+                onChange={async (val) =>
+                    await updateUserData(currentUser!.id, {
+                        vibeEngagement: val as VibeEngagement
+                    })
+                }
+            />
+
+            <span className="vibe__label">
+                <MemoizedFormattedMessage id="VIBE_FUNCTION" />:
+            </span>
+            <AdminEditableField
+                type={FieldTypes.TEXT}
+                className="vibe__entry"
+                value={(currentUser as IUserPrivate).vibeFunction}
+                onChange={async (val) =>
+                    await updateUserData(currentUser!.id, {
+                        vibeFunction: val
+                    })
+                }
+            />
         </section>
     );
 };
-
-const descriptionMock = `Stosunek Takayamy do:
-transhumanizmu: zdystansowany - każdy wszczep to dowód porażki, jednocześnie każdy wszczep zaznaczany jest kintsugi; wpływanie na emocje za pomocą ziół, czystej medytacji itd, ale też taniocha w postaci psychotropów
-
-wszczepy: użytkowo - im więcej wszczepów, tym niżej w hierarchii
-
-androidy: hell no - to tylko narzędzia - robotyzacja to proces przemysłowy
-
-czystości ludzkiego organizmu: jako jedna z najwyższych wartości + duch -> im większa robotyzacja, tym słabszy duch, dlatego oddalają się od człowieczeństwa
-
-systemu korporacyjnego: hell yeah
-
-handel ciałem/organami: hodowla organów - tylko dla wybranych (medycyna), wszczepy dostępne, ale zmniejszają człowieczeństwo, nielegalne organy - niesankcjonowane, ale nie wykrywane przez skanery, ale jak się rypnie, to ryzykuje się wszystkim - wytrych dla innych organizacji
-istnienie rządów: hierarchia tak, ale są niepotrzebne i nieefektywne
-używki: naturalne (oficjalnie), sztuczne dla mas
-Giger: Takayama zagląda, ale nie używa - załatw to za nas`;

@@ -9,7 +9,6 @@ import {
     SkillStat,
     UserTypes,
     Vibe,
-    VibeEngagement,
     WealthLevels
 } from '../../../models/user';
 import HumanSignature from '../../../assets/id-human.svg?react';
@@ -21,9 +20,10 @@ import { FieldTypes } from '../../../shared/components/admin-editable-field/admi
 import { useUserService } from '../../../shared/services/user.service';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import { SelectUser } from '../select-user/select-user';
-import { Factions } from '../../../models/companies';
+import { ReputationSummary } from '../reputation-summary/reputation-summary';
 
 import './char-summary.scss';
+import { Factions } from '../../../models/companies';
 
 export const CharSummary: FC<{
     mode: 'public' | 'private';
@@ -39,7 +39,11 @@ export const CharSummary: FC<{
         [userData, currentUser]
     );
     const signature = () => {
-        switch (user!.typePublic) {
+        const typeProperty = isPrivate
+            ? (user as IUserPrivate)!.typeActual
+            : user!.typePublic;
+
+        switch (typeProperty) {
             case UserTypes.HUMAN:
                 return <HumanSignature className="char-summary__signature" />;
             case UserTypes.AI:
@@ -68,15 +72,6 @@ export const CharSummary: FC<{
                     className="char-summary__surname"
                     onChange={async (val) =>
                         await updateUserData(user!.id, { surname: val })
-                    }
-                />
-                ,
-                <AdminEditableField
-                    type={FieldTypes.TEXT}
-                    className="char-summary__name"
-                    value={user!.name}
-                    onChange={async (val) =>
-                        await updateUserData(user!.id, { name: val })
                     }
                 />
                 <SelectUser />
@@ -144,60 +139,21 @@ export const CharSummary: FC<{
                         }
                     />
 
-                    {isPrivate && (
-                        <>
-                            <span className="char-summary__label">
-                                <MemoizedFormattedMessage id="VIBE_ENGAGEMENT" />
-                                :
-                            </span>
-                            <AdminEditableField
-                                type={FieldTypes.SELECT}
-                                className="char-summary__entry"
-                                options={[
-                                    VibeEngagement.DISINTERESTED,
-                                    VibeEngagement.DOUBTING,
-                                    VibeEngagement.INTERESTED,
-                                    VibeEngagement.HYPED,
-                                    VibeEngagement.FANATIC
-                                ]}
-                                value={(user as IUserPrivate)!.vibeEngagement}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        vibeEngagement: val as VibeEngagement
-                                    })
-                                }
-                            />
-                        </>
-                    )}
-
-                    {isPrivate && (
-                        <>
-                            <span className="char-summary__label">
-                                <MemoizedFormattedMessage id="VIBE_FUNCTION" />:
-                            </span>
-                            <AdminEditableField
-                                type={FieldTypes.TEXT}
-                                className="char-summary__entry"
-                                value={(user as IUserPrivate).vibeFunction}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        vibeFunction: val
-                                    })
-                                }
-                            />
-                        </>
-                    )}
-
                     <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="PROFESSION" />:
+                        <MemoizedFormattedMessage id="SPECIES" />:
                     </span>
                     <AdminEditableField
-                        type={FieldTypes.TEXT}
+                        type={FieldTypes.SELECT}
                         className="char-summary__entry"
-                        value={user!.professionPublic}
+                        options={[
+                            UserTypes.HUMAN,
+                            UserTypes.AI,
+                            UserTypes.ANDROID
+                        ]}
+                        value={user!.typePublic}
                         onChange={async (val) =>
                             await updateUserData(user!.id, {
-                                professionPublic: val
+                                typePublic: val as UserTypes
                             })
                         }
                     />
@@ -205,16 +161,54 @@ export const CharSummary: FC<{
                     {isPrivate && (
                         <>
                             <span className="char-summary__label">
-                                <MemoizedFormattedMessage id="PROFESSION_ACTUAL" />
+                                <MemoizedFormattedMessage id="SPECIES_PRIVATE" />
                                 :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                options={[
+                                    UserTypes.HUMAN,
+                                    UserTypes.AI,
+                                    UserTypes.ANDROID
+                                ]}
+                                value={(user as IUserPrivate)!.typeActual}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        typeActual: val as UserTypes
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    <span className="char-summary__label">
+                        <MemoizedFormattedMessage id="AFFILIATION" />:
+                    </span>
+                    <AdminEditableField
+                        type={FieldTypes.SELECT}
+                        className="char-summary__entry"
+                        options={Object.values(Factions) as Factions[]}
+                        value={user!.factionRankPublic}
+                        onChange={async (val) =>
+                            await updateUserData(user!.id, {
+                                factionRankPublic: val as Factions
+                            })
+                        }
+                    />
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="PROFESSION" />:
                             </span>
                             <AdminEditableField
                                 type={FieldTypes.TEXT}
                                 className="char-summary__entry"
-                                value={(user as IUserPrivate).professionActual}
+                                value={(user as IUserPrivate).factionRankActual}
                                 onChange={async (val) =>
                                     await updateUserData(user!.id, {
-                                        professionActual: val
+                                        factionRankActual: val
                                     })
                                 }
                             />
@@ -244,24 +238,6 @@ export const CharSummary: FC<{
                             })
                         }
                     />
-                    {isPrivate && (
-                        <>
-                            <span className="char-summary__label">
-                                <MemoizedFormattedMessage id="FACTION" />:
-                            </span>
-                            <AdminEditableField
-                                type={FieldTypes.SELECT}
-                                className="char-summary__entry"
-                                options={[...Object.values(Factions)]}
-                                value={user!.vibe}
-                                onChange={async (val) =>
-                                    await updateUserData(user!.id, {
-                                        faction: val as Factions
-                                    })
-                                }
-                            />
-                        </>
-                    )}
 
                     {isPrivate && isGod && (
                         <>
@@ -281,6 +257,115 @@ export const CharSummary: FC<{
                             />
                         </>
                     )}
+
+                    <span className="char-summary__label">
+                        <MemoizedFormattedMessage id="HIGH_SECURITY" />:
+                    </span>
+                    <AdminEditableField
+                        type={FieldTypes.BOOLEAN}
+                        className="char-summary__entry"
+                        value={user!.highSecurity}
+                        onChange={async (val) =>
+                            await updateUserData(user!.id, {
+                                highSecurity: val
+                            })
+                        }
+                    />
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="HAS_PLATINUM_PASS" />
+                                :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.BOOLEAN}
+                                className="char-summary__entry"
+                                value={user!.hasPlatinumPass}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        hasPlatinumPass: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="INSURED_AMOUNT" />
+                                :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.NUMBER}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate)!.insuredAmount}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        insuredAmount: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="NETWORK_ADMIN_NAME" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.TEXT}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate)!.networkAdminName}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        networkAdminName: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="NETWORK_NAME" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.TEXT}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate)!.networkName}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        networkName: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="SUBNETWORK_NAME" />
+                                :
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.TEXT}
+                                className="char-summary__entry"
+                                value={(user as IUserPrivate)!.subnetworkName}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        subnetworkName: val
+                                    })
+                                }
+                            />
+                        </>
+                    )}
+
+                    {isPrivate && <ReputationSummary />}
 
                     {isPrivate && (
                         <AdminEditableField
@@ -362,10 +447,10 @@ export const CharSummary: FC<{
                             showMax={false}
                             showValue={false}
                             label={intl.formatMessage({
-                                id: 'CONFRONTATIONAL'
+                                id: 'CONFRONTATIONIST'
                             })}
                             label2={intl.formatMessage({
-                                id: 'NEGOTIATOR'
+                                id: 'AGREEABLE'
                             })}
                             onChange={async (val) =>
                                 await updateUserData(user!.id, {
@@ -388,7 +473,7 @@ export const CharSummary: FC<{
                             showMax={false}
                             showValue={false}
                             label={intl.formatMessage({ id: 'COWARD' })}
-                            label2={intl.formatMessage({ id: 'FIGHTER' })}
+                            label2={intl.formatMessage({ id: 'BRAVE' })}
                             onChange={async (val) =>
                                 await updateUserData(user!.id, {
                                     cowardVsBrave: {

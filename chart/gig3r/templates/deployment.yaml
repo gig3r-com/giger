@@ -47,6 +47,8 @@ spec:
         - containerPort: 8080
           protocol: TCP
         env:
+        - name: DOTNET_USE_POLLING_FILE_WATCHER
+          value: "1"
         - name: GigerDB__Host
           value: {{ include "gig3r.mongodb.app" . }}
         - name: GigerDB__Port

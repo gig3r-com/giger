@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { motion } from 'framer-motion';
@@ -16,10 +16,14 @@ export const Contacts: FC = () => {
     const { contactId } = useParams();
     const [selectedUser, setSelectedUser] = useState<IUserPublic | null>(null);
     const userList = useSelector(selectActiveUsers);
-    const favorites = userList.filter((user) =>
+    const usersSansCurrent = useMemo(
+        () => userList.filter((user) => user.id !== currentUser?.id),
+        [userList, currentUser]
+    );
+    const favorites = usersSansCurrent.filter((user) =>
         currentUser?.favoriteUserIds.includes(user.id)
     );
-    const otherUsers = userList.filter(
+    const otherUsers = usersSansCurrent.filter(
         (user) => !currentUser?.favoriteUserIds.includes(user.id)
     );
 
