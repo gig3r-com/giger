@@ -10,7 +10,24 @@ namespace Giger.Controllers
     [Route("api/[controller]")]
     public partial class UserController(UserService userService, LoginService loginService) : AuthController(userService, loginService)
     {
+
+        [HttpGet("all")]
+        public async Task<List<string>> GetAllSimpleUsers2()
+        {
+            var allUsers = await _userService.GetAllPrivateUsersAsync();
+            allUsers = FilterOutAllGodUsers(allUsers);
+            return allUsers.Select(u => u.Handle).ToList();
+        }
+
         #region Simple User
+
+        [HttpGet("simple/all")]
+        public async Task<List<UserSimple>> GetAllSimpleUsers()
+        {
+            var allUsers = await _userService.GetAllPrivateUsersAsync();
+            allUsers = FilterOutAllGodUsers(allUsers);
+            return allUsers.Select(u => new UserSimple(u)).ToList();
+        }
 
         [HttpGet("simple/byId")]
         public async Task<ActionResult<UserSimple>> GetSimpleById(string id)
@@ -116,11 +133,13 @@ namespace Giger.Controllers
             {
                 return Unauthorized();
             }
-
-            var u = user as UserSimple;
-
+            user = FilterOutGodUser(user);
+            if (user is null)
+            {
+                return NoContent();
+            }
             FilterObscurableData(user);
-            return FilterOutGodUser(user);
+            return user;
         }
 
         [HttpGet("private/byUsername")]

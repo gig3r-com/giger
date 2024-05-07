@@ -2,7 +2,7 @@
 using Giger.Models.BankingModels;
 using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+using Giger.Extensions;
 using Giger.Models.User;
 
 namespace Giger.Controllers
@@ -28,9 +28,19 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            if (account.Type == AccountType.BUSINESS)
             {
-                Unauthorized();
+                if (!HasAccessToFactionAccount(await GetSenderUser(), account.Owner))
+                {
+                    return Unauthorized();
+                }
+            }
+            else
+            {
+                if (!IsAuthorized(account.Owner))
+                {
+                    return Unauthorized();
+                }
             }
 
             return account;
@@ -264,6 +274,17 @@ namespace Giger.Controllers
 
                 _logService.CreateAsync(log);
             }
+        }
+
+        private bool HasAccessToFactionAccount(UserPrivate sender, string accountName)
+        {
+            if (sender is null)
+                return false;
+
+            if (sender.Faction.ToString() == accountName)
+                return true;
+
+            return false;
         }
     }
 }
