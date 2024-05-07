@@ -41,7 +41,7 @@ namespace Giger.Models.User
             AliasMap = user.AliasMap;
             Active = user.Active;
             TypePublic = user.TypePublic;
-            ProfessionPublic = user.ProfessionPublic;
+            FactionRankPublic = user.FactionRankPublic;
             Surname = user.Surname;
             Vibe = user.Vibe;
             WealthLevel = user.WealthLevel;
@@ -52,7 +52,6 @@ namespace Giger.Models.User
             NetworkAdminName = user.NetworkAdminName;
 
             CyberwareLevel = user.CyberwareLevel;
-            ProfessionActual = user.ProfessionActual;
             TypeActual = user.TypeActual;
             Assets = user.Assets;
             HackingSkills = user.HackingSkills;
@@ -65,6 +64,7 @@ namespace Giger.Models.User
             VibeEngagement = user.VibeEngagement;
             FavoriteUserIds = user.FavoriteUserIds;
             Faction = user.Faction;
+            FactionRankActual = user.FactionRankActual;
             Relations = user.Relations;
             Goals = user.Goals;
             Meta = user.Meta;

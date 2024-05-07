@@ -11,8 +11,6 @@ namespace Giger.Models.User
     {
         public required CyberwareLevel CyberwareLevel { get; set; }
 
-        public required string ProfessionActual { get; set; }
-        
         [BsonRepresentation(BsonType.String)]
         public required UserTypes TypeActual { get; set; }
 

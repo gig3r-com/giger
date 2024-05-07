@@ -335,7 +335,41 @@ namespace Giger.Controllers
 			return Ok();
 		}
 
-		[HttpGet("{id}/professionPublic")]
+        [HttpGet("{id}/factionRank")]
+        public async Task<ActionResult<string>> GetFactionRank(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                Unauthorized();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return user.FactionRankActual;
+        }
+
+        [HttpPatch("{id}/factionRank")]
+        public async Task<IActionResult> PatchFactionRank(string id, string newRank)
+        {
+            if (!IsAuthorized(id))
+            {
+                Unauthorized();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            user.FactionRankActual = newRank;
+            await _userService.UpdateAsync(user);
+            return Ok();
+        }
+
+        [HttpGet("{id}/faction")]
 		public async Task<ActionResult<string>> GetProfessionPublic(string id)
 		{
 			if (!IsAuthorized(id))
@@ -348,11 +382,11 @@ namespace Giger.Controllers
 			{
 				return NotFound();
 			}
-			return user.ProfessionPublic;
+			return user.FactionRankPublic;
 		}
 
-		[HttpPatch("{id}/professionPublic")]
-		public async Task<IActionResult> PatchProfessionPublic(string id, string newProfession)
+		[HttpPatch("{id}/faction")]
+		public async Task<IActionResult> PatchProfessionPublic(string id, Factions newFaction)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -364,7 +398,7 @@ namespace Giger.Controllers
 			{
 				return NoContent();
 			}
-			user.ProfessionPublic = newProfession;
+			user.Faction = newFaction;
 			await _userService.UpdateAsync(user);
 			return Ok();
 		}

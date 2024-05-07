@@ -23,9 +23,7 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public required UserTypes TypePublic { get; set; }
 
-        public required string ProfessionPublic { get; set; }
-
-        public string? FactionRankPublic{ get; set; }
+        public string? FactionRankPublic { get; set; }
 
         public required string Surname { get; set; }
 
