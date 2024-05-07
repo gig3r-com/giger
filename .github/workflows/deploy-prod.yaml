@@ -33,4 +33,6 @@ jobs:
       HELM_FRONTEND_TAG: ${{ GITHUB.REF_NAME }}
       HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
       HELM_BACKEND_TAG: ${{ GITHUB.REF_NAME }}
+      HELM_DATABASE_IMAGE: "mivalsten/gig3r-mongo"
+      HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit

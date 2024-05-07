@@ -39,23 +39,6 @@ false
 {{- end -}}
 {{- end }}
 
-{{- define "gig3r.backend.config" -}}
-{
-  "postgres": {
-    "username": "{{ .Values.database.user }}",
-    "password": "{{ .Values.database.password }}",
-    "host": "postgres-postgresql.postgres.svc.cluster.local",
-    "database": "{{ .Values.database.name }}",
-    "db_init": false
-  },
-  "flask": {
-    "host": "{{ include "gig3r.host" . }}",
-    "port": "80",
-    "debug": {{ include "gig3r.backend.debug" . }}
-  }
-}
-{{- end }}
-
 #if .Values.environment != app then Development, else Production 
 {{- define "gig3r.backend.environment" -}}
   {{- if eq "app" .Values.environment -}}
@@ -70,7 +53,7 @@ gig3r-{{ default "app" .Values.environment }}-mongodb
 {{- end }}
 
 {{- define "gig3r.mongodb.image" -}}
-{{ default "mongo" .Values.mongodb.image }}:{{ default "latest" .Values.mongodb.tag }}
+{{ default "mivalsten/gig3r-mongo" .Values.database.image }}:{{ default "latest" .Values.database.tag }}
 {{- end }}
 
 {{- define "gig3r.mongo-express.app" -}}

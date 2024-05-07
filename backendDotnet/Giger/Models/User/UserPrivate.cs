@@ -11,8 +11,6 @@ namespace Giger.Models.User
     {
         public required CyberwareLevel CyberwareLevel { get; set; }
 
-        public required string ProfessionActual { get; set; }
-        
         [BsonRepresentation(BsonType.String)]
         public required UserTypes TypeActual { get; set; }
 
@@ -44,6 +42,8 @@ namespace Giger.Models.User
         public int InsuredAmount { get; set; }
 
         public Dictionary<GigCategoryNames, decimal> GigReputation { get; set; } = [];
+
+        public string NetworkAdminName { get; set; }
 
         // things below are obscured
         public virtual Relation[] Relations { get; set; } = [];

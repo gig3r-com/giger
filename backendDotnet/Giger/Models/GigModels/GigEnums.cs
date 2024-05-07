@@ -41,7 +41,6 @@ namespace Giger.Models.GigModels
     public enum GigSubcategoryNames
     {
         REDACTED,
-        INTEL,
         TECH,
         DELIVERY,
         GUNS_AND_AMMO,
@@ -55,12 +54,14 @@ namespace Giger.Models.GigModels
         BODYGUARD,
         HIT,
         LOVER_EXPERIENCE,
+        ENTERTAINMENT,
         SEX_DOLL,
         QUICKIE,
         FIRST_AID,
         CYBERWARE,
         MEDEVAC,
         RENTING_LOCATION,
+        INTEL,
         BANK_ACCOUNT_MANIPULATION,
         SPOOFING,
         SECURITY,

@@ -53,8 +53,8 @@ namespace Giger.SerializededModels.BankingModels
                 new Account()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Owner = Factions.GUNNERS.ToString(),
-                    OwnerId = Factions.GUNNERS.ToString(),
+                    Owner = Factions.gunners.ToString(),
+                    OwnerId = Factions.gunners.ToString(),
                     Transactions = [],
                     Type = AccountType.BUSINESS,
                     Balance = 10000,

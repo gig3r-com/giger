@@ -22,8 +22,7 @@ namespace Giger.Models.Networks
         [BsonRepresentation(BsonType.String)]
         public OperatingSystem? OperatingSystem { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public Ice[] Ice { get; set; } = [];
+        public string[] Ice { get; set; } = [];
 
         public string[] PastHacks { get; set; } = [];
     }
@@ -42,11 +41,5 @@ namespace Giger.Models.Networks
         FORCE_FIELD,
         EVIL_TWIN,
         JOAN_OF_ARC
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
-    public enum Ice
-    {
-        NONE,
     }
 }
