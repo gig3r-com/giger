@@ -17,6 +17,7 @@ import { useUserRecordsService } from './user-records.service';
 import { useUserService } from '../../../shared/services/user.service';
 
 import './user-records.scss';
+import { FormattedMessage } from 'react-intl';
 
 export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
@@ -61,8 +62,12 @@ export function UserRecords(props: IUserRecordsProps) {
             {records
                 .filter((record) => !record.isRevealed)
                 .map((record) => (
-                    <LockedEntry key={record.id} />
+                    <div className="user-records__locked" key={record.id}>
+                        <LockedEntry />
+                    </div>
                 ))}
+
+            {records.length === 0 && <FormattedMessage id="NO_RECORDS" />}
 
             {isGod && <NewRecord type={mode} />}
         </section>

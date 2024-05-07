@@ -60,13 +60,17 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         return convos.find((c) => c.id === gig.conversationId);
     }, [convos, gig]);
 
-    const showConvo = useMemo(() => {
-        return (
-            (gig.status !== GigStatus.AVAILABLE ||
-                gig.authorId === currentUser?.id) &&
-            convo !== undefined
-        );
-    }, [gig, currentUser, convo]);
+    const shouldFetchConvo = useMemo(
+        () =>
+            gig.status !== GigStatus.AVAILABLE ||
+            gig.authorId === currentUser?.id,
+        [gig, currentUser]
+    );
+
+    const showConvo = useMemo(
+        () => shouldFetchConvo && convo !== undefined,
+        [shouldFetchConvo, convo]
+    );
 
     const onClickHandler = useCallback(() => {
         if (gig.isRevealed) {
@@ -184,7 +188,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             {showComplaint && <ComplaintDetails gig={gig} />}
 
                             <AnimatePresence>
-                                {fetchingConvo && (
+                                {shouldFetchConvo && fetchingConvo && (
                                     <p key={gig.conversationId + 'fetch'}>
                                         <FormattedMessage id="FETCHING_CONVERSATION" />
                                     </p>

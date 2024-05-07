@@ -125,13 +125,14 @@ export function useGigsService() {
     };
 
     const getReputationLevel = (creditValue: number): GigRepuationLevels => {
+        let level = 0;
         reputationBrackets.forEach((value, key) => {
             if (creditValue >= value) {
-                return key;
+                level = key;
             }
         });
 
-        return 5;
+        return level as GigRepuationLevels;
     };
 
     /**

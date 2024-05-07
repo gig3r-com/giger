@@ -10,12 +10,6 @@ export const RelationEntry: FC<{ relation: IRelation }> = ({ relation }) => {
     const userList = useSelector((state: RootState) => state.users.users);
     const { updateRelation } = useEventsService();
 
-    const selectedName = (relation: IRelation) => {
-        return userList.find(
-            (u) => u.handle === (relation as IRelation).userName
-        )!.handle;
-    };
-
     const onUserChange = (userId: string) => {
         updateRelation(relation.id, userId, relation.description);
     };
@@ -32,7 +26,7 @@ export const RelationEntry: FC<{ relation: IRelation }> = ({ relation }) => {
                 <AdminEditableField
                     type={FieldTypes.SELECT}
                     skipTranslation={true}
-                    value={selectedName(relation)}
+                    value={relation.userName}
                     onChange={(val) => onUserChange(val)}
                     options={userOptions}
                 />

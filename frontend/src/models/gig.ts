@@ -54,6 +54,7 @@ export enum GigCategoryNames {
 export enum GigSubcategoryNames {
     INTEL = 'INTEL',
     TECH = 'TECH',
+    ENTERTAINMENT = 'ENTERTAINMENT',
     DELIVERY = 'DELIVERY',
     GUNS_AND_AMMO = 'GUNS_AND_AMMO',
     DRUGS = 'DRUGS',
@@ -83,7 +84,7 @@ export enum GigStatus {
     AVAILABLE = 'AVAILABLE',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
-    PENDING_CONFIRMATION = 'PENDING',
+    PENDING_CONFIRMATION = 'PENDING_CONFIRMATION',
     DISPUTE = 'DISPUTE',
     EXPIRED = 'EXPIRED'
 }
