@@ -8,8 +8,8 @@ import './code-entry.scss';
 export const CodeEntry: FC = () => {
     const intl = useIntl();
     const [code, setCode] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
-    const [messageToShow, setMessageToShow] = useState<
+    const [loading] = useState<boolean>(false);
+    const [messageToShow] = useState<
         'success' | 'wrongCode' | null
     >(null);
     //const { enterRevealCode } = useMyIdService();
