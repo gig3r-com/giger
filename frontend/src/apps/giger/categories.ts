@@ -90,7 +90,6 @@ export const categories: IGigCategory[] = [
         type: GigCategoryNames.FIXER,
         icon: IconInfo,
         subcategories: [
-            { type: GigSubcategoryNames.INTEL, minPayout: 40, maxPayout: 1200 },
             { type: GigSubcategoryNames.TECH, minPayout: 400, maxPayout: 7000 },
             {
                 type: GigSubcategoryNames.DELIVERY,
@@ -114,6 +113,11 @@ export const categories: IGigCategory[] = [
         type: GigCategoryNames.WELLBEING,
         icon: IconMed,
         subcategories: [
+            {
+                type: GigSubcategoryNames.ENTERTAINMENT,
+                minPayout: 30,
+                maxPayout: 1500
+            },
             {
                 type: GigSubcategoryNames.LOVER_EXPERIENCE,
                 minPayout: 100,

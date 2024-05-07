@@ -3,6 +3,11 @@
 .user-records {
     height: calc(#{$standard-viewport-height} - 60px);
     overflow: auto;
+
+    &__locked {
+        border-left: 4px solid $primary-color;
+        padding-left: 0.5rem;
+    }
 }
 
 .record {
