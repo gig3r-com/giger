@@ -15,8 +15,8 @@ on:
       - main
 
 jobs:
-  build-frontend: #pipeline @ current branch
-    uses: ./.github/workflows/build-docker-image.yaml
+  build-frontend:
+    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
       DOCKER_CONTEXT: ./frontend
       DOCKERFILE_NAME: ./frontend/Dockerfile

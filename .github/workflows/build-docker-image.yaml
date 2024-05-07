@@ -75,4 +75,3 @@ jobs:
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
         env:
           IMAGE_TAG: ${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
-          NODE_OPTIONS: "--openssl-legacy-provider"
