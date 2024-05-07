@@ -12,7 +12,7 @@ namespace Giger.Controllers
     {
 
         [HttpGet("all")]
-        public async Task<List<string>> GetAllSimpleUsers2()
+        public async Task<List<string>> GetAllUserNames()
         {
             var allUsers = await _userService.GetAllPrivateUsersAsync();
             allUsers = FilterOutAllGodUsers(allUsers);
@@ -22,8 +22,12 @@ namespace Giger.Controllers
         #region Simple User
 
         [HttpGet("simple/all")]
-        public async Task<List<UserSimple>> GetAllSimpleUsers()
+        public async Task<ActionResult<List<UserSimple>>> GetAllSimpleUsers()
         {
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
             var allUsers = await _userService.GetAllPrivateUsersAsync();
             allUsers = FilterOutAllGodUsers(allUsers);
             return allUsers.Select(u => new UserSimple(u)).ToList();
@@ -76,7 +80,7 @@ namespace Giger.Controllers
         [HttpGet("simple/byUsername")]
         public async Task<ActionResult<UserSimple>> GetSimpleByUsername(string username)
         {
-            var user = await _userService.GetAsync(username);
+            var user = await _userService.GetByUserNameAsync(username);
             if (user is null)
             {
                 return NotFound();

@@ -20,11 +20,11 @@
 
             set
             {
-                if (value < MINVALUE)
+                if (value <= MINVALUE)
                 {
                     _stat = MINVALUE;
                 }
-                if (value > MAXVALUE)
+                if (value >= MAXVALUE)
                 {
                     _stat = MAXVALUE;
                 }
