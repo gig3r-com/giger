@@ -27,6 +27,13 @@ on:
       HELM_BACKEND_TAG:
         type: string
         required: true
+      HELM_DATABASE_TAG:
+        type: string
+        required: true
+      HELM_DATABASE_IMAGE:
+        type: string
+        required: false
+        default: mivalsten/gig3r-mongo
     secrets:
       KUBECONFIG:
         required: true
