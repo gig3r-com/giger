@@ -88,7 +88,7 @@ jobs:
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
             --set database.user=${{ env.HELM_ENVIRONMENT }} \
-            --set database.image=${{ env.HELM_DATABASE_IMAGE }} \
+            --set database.image=${{ inputs.HELM_DATABASE_IMAGE }} \
             --set database.tag=${{ env.HELM_DATABASE_TAG }} \
             --set mongoexpress.user=${{ secrets.ME_USER }} \
             --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
@@ -98,6 +98,7 @@ jobs:
         env:
           HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          HELM_DATABASE_TAG: ${{ inputs.HELM_DATABASE_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
 
       - name: output address
