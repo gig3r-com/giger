@@ -70,67 +70,12 @@ spec:
               key: MONGO_INITDB_DATABASE
         - name: ASPNETCORE_ENVIRONMENT
           value: {{ include "gig3r.backend.environment" .}}
-        # volumeMounts:
-        # - mountPath: /app/.config.json
-        #   name: config
-        #   subPath: "backend_config.json"
-        #   readOnly: true
       volumes:
       - name: config
         secret:
           secretName: gig3r-secret
       restartPolicy: Always
 
----
-
-# mongodb deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "gig3r.mongodb.app" . }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: {{ include "gig3r.mongodb.app" . }}
-  template:
-    metadata:
-      labels:
-        app: {{ include "gig3r.mongodb.app" . }}
-        randstr: {{ randAlphaNum 20 }}
-    spec:
-      containers:
-      - image: {{ include "gig3r.mongodb.image" . }}
-        name: {{ include "gig3r.mongodb.app" . }}
-        ports:
-        - containerPort: 27017
-          protocol: TCP
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
-        - name: MONGO_INITDB_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
-        volumeMounts:
-        - name: mongo-scripts
-          mountPath: /docker-entrypoint-initdb.d
-      imagePullSecrets:
-      - name: regcred
-      restartPolicy: Always
-      volumes:
-        - name: "mongo-scripts"
-          configMap:
-            name: "mongo-scripts"
 ---
 
 # mongoexpress deployment
