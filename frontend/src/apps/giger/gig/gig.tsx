@@ -10,7 +10,7 @@ import { BigButton } from '../../../shared/components/big-button/big-button';
 // import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
 // import { useMessagesService } from '../../../shared/services/messages.service';
 import { useGigsService } from '../../../shared/services/gigs.service';
-import { NewMsg } from '../../../shared/components/new-msg/new-msg';
+//import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
 // import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
