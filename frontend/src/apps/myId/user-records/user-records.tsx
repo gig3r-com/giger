@@ -15,14 +15,21 @@ import { RelationEntry } from './relation-entry/relation-entry';
 import { LockedEntry } from '../../../shared/components/locked-entry/locked-entry';
 import { useUserRecordsService } from './user-records.service';
 import { useUserService } from '../../../shared/services/user.service';
+import { FormattedMessage } from 'react-intl';
+import { isIObscurableInfo } from '../../../models/general';
 
 import './user-records.scss';
-import { FormattedMessage } from 'react-intl';
 
 export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
     const { getRecords, fetchRecords } = useUserRecordsService();
     const { isGod } = useUserService();
+    const isRevealed = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
+        if (isIObscurableInfo(record) && !record.isRevealed) {
+            return false;
+        }
+        return true;
+    };
 
     const records = useMemo(() => getRecords(mode), [mode, getRecords]);
 
@@ -56,11 +63,11 @@ export function UserRecords(props: IUserRecordsProps) {
     return (
         <section className="user-records">
             {records
-                .filter((record) => record.isRevealed)
+                .filter((record) => isRevealed(record))
                 .map((record) => getRecord(record))}
 
             {records
-                .filter((record) => !record.isRevealed)
+                .filter((record) => !isRevealed(record))
                 .map((record) => (
                     <div className="user-records__locked" key={record.id}>
                         <LockedEntry />

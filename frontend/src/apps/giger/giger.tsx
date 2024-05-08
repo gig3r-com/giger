@@ -5,13 +5,17 @@ import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
 import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
+import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
+import { useIntl } from 'react-intl';
 
 import './giger.scss';
 
 export const Giger: FC = () => {
+    const intl = useIntl();
     const location = useLocation();
     const { gigId } = useParams();
     const navigate = useNavigate();
+    const [fetchingGigs, setFetchingGigs] = useState(true);
     const { fetchGigs, gigsVisibleToTheUser, filteredGigs } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
@@ -19,7 +23,9 @@ export const Giger: FC = () => {
 
     useEffect(function mountSetup() {
         if (filteredGigs.length === 0) {
-            fetchGigs();
+            fetchGigs().then(() => setFetchingGigs(false));
+        } else {
+            setFetchingGigs(false);
         }
     }, []);
 
@@ -51,15 +57,26 @@ export const Giger: FC = () => {
 
     return (
         <article className="giger">
-            <GigList toggleMenuState={toggleMenuState} />
-            <GigListFilters
-                toggleMenuState={toggleMenuState}
-                active={menuState === 'filters'}
-            />
-            <AnimatePresence>
-                <NewGig active={menuState === 'newGig'} />
-            </AnimatePresence>
-            <Outlet />
+            {fetchingGigs ? (
+                <LoadingBar
+                    showLogo={false}
+                    mode="cycle"
+                    isLoading={fetchingGigs}
+                    text={intl.formatMessage({ id: 'LOADING' })}
+                />
+            ) : (
+                <>
+                    <GigList toggleMenuState={toggleMenuState} />
+                    <GigListFilters
+                        toggleMenuState={toggleMenuState}
+                        active={menuState === 'filters'}
+                    />
+                    <AnimatePresence>
+                        <NewGig active={menuState === 'newGig'} />
+                    </AnimatePresence>
+                    <Outlet />
+                </>
+            )}
         </article>
     );
 };

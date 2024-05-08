@@ -5,11 +5,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useUserService } from '../../shared/services/user.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
-import GigerLogo from '../../assets/logo-giger.svg?react';
-import { DecodeText } from '../../shared/components/decode-text/decodeText';
 import LoginHelp from './login-help/login-help';
 import { SelectUser } from '../myId/select-user/select-user';
 import { selectRequiresGodUserSelection } from '../../store/users.selectors';
+import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 
 import './login.scss';
 
@@ -42,10 +41,6 @@ export const Login: FC = () => {
         'login__logo-wrapper': true,
         'login__logo-wrapper--loading': loading
     });
-    const loaderClasses = classNames({
-        login__loader: true,
-        'login__loader--hidden': !loading
-    });
     const inputsClasses = classNames({
         login__inputs: true,
         'login__inputs--hidden': loading
@@ -57,10 +52,12 @@ export const Login: FC = () => {
 
     const handleLogin = () => {
         setLoading(true);
-        login(username, password).catch(() => {
-            setLoading(false);
-            setError(intl.formatMessage({ id: 'LOGIN_FAILED' }));
-        });
+        login(username, password)
+            .catch(() => {
+                setLoading(false);
+                setError(intl.formatMessage({ id: 'LOGIN_FAILED' }));
+            })
+            .then(() => navigate('/giger'));
     };
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -88,15 +85,10 @@ export const Login: FC = () => {
             </div>
             <section className={mainClasses}>
                 <div className={logoClasses}>
-                    <GigerLogo />
-                    <span className={loaderClasses}></span>
-                    {loading && (
-                        <div className="login__decrypting">
-                            <DecodeText
-                                text={intl.formatMessage({ id: 'DECRYPTING' })}
-                            />
-                        </div>
-                    )}
+                    <LoadingBar
+                        isLoading={loading}
+                        text={intl.formatMessage({ id: 'DECRYPTING' })}
+                    />
                 </div>
                 <div className={inputsClasses}>
                     <label>

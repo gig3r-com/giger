@@ -19,7 +19,7 @@ export interface IUserPublic extends IUserBase {
     wealthLevel: WealthLevels;
     hasPlatinumPass: boolean;
     factionRankPublic: Factions;
-    highSecurity: boolean; 
+    highSecurity: boolean;
 }
 
 export interface IUserPrivate extends IUserPublic {
@@ -124,19 +124,19 @@ export enum WealthLevels {
     ELITE = 'ELITE'
 }
 
-export interface IUserRecord extends IObscurableInfo {
+export interface IUserRecord {
     id: string;
     userId?: string;
     description: string;
     recordType: UserRecordTypes;
 }
 
-export interface IRelation extends IUserRecord {
+export interface IRelation extends IUserRecord, IObscurableInfo {
     userName: string; // userId
     recordType: UserRecordTypes.RELATION;
 }
 
-export interface IGoal extends IUserRecord {
+export interface IGoal extends IUserRecord, IObscurableInfo {
     title: string;
     recordType: UserRecordTypes.GOAL;
 }
@@ -156,7 +156,7 @@ export enum MetaTypes {
     PROCEDURE = 'PROCEDURE'
 }
 
-export interface IPrivateRecord extends IUserRecord {
+export interface IPrivateRecord extends IUserRecord, IObscurableInfo {
     title: string;
 }
 

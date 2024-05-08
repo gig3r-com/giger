@@ -103,38 +103,6 @@
         }
     }
 
-    &__loader {
-        width: 233px;
-        height: 4.8px;
-        display: inline-block;
-        position: relative;
-        background: rgba(255, 255, 255, 0.15);
-        overflow: hidden;
-        margin-top: 0.5rem;
-        opacity: 1;
-        transition: opacity $fast-duration ease-in-out;
-
-        &:after {
-            content: '';
-            box-sizing: border-box;
-            width: 0;
-            height: 4.8px;
-            background: #fff;
-            position: absolute;
-            top: 0;
-            left: 0;
-            animation: animFw 3s $standard-timing-function infinite;
-        }
-
-        &--hidden {
-            opacity: 0;
-
-            &:after {
-                animation: none;
-            }
-        }
-    }
-
     &__error {
         opacity: 0;
         height: 0;
@@ -341,14 +309,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         opacity: 0;
         transform: translate3d(0, 0, 0);
         clip-path: polygon(0 0, 0 0, 0 0, 0 0);
-    }
-}
-
-@keyframes animFw {
-    0% {
-        width: 0;
-    }
-    100% {
-        width: 100%;
     }
 }
