@@ -1,18 +1,18 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { GigModes, GigStatus } from '../../../models/gig';
 import { IGigProps } from './gig.model';
 import { BigButton } from '../../../shared/components/big-button/big-button';
-import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
-import { useMessagesService } from '../../../shared/services/messages.service';
+// import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
+// import { useMessagesService } from '../../../shared/services/messages.service';
 import { useGigsService } from '../../../shared/services/gigs.service';
 import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { useGigHelpers } from './gig.helpers';
-import { RootState } from '../../../store/store';
+// import { RootState } from '../../../store/store';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import GigReputation from '../gig-reputation/gig-reputation';
 import { useUserService } from '../../../shared/services/user.service';
@@ -30,12 +30,12 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         useUserService();
     const { handleButtonAction } = useGigsService();
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
-    const { fetchConvo, fetchingConvo } = useMessagesService();
+    //const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
     const { hasCompanyAccount } = useBankingService();
-    const convos = useSelector(
-        (state: RootState) => state.conversations.gigConversations
-    );
+    // const convos = useSelector(
+    //     (state: RootState) => state.conversations.gigConversations
+    // );
     const showComplaint = useMemo(() => {
         const complaintExists = !!gig.complaintReason;
         const correctStatus =
@@ -56,21 +56,21 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         return gig.authorId === currentUser?.id;
     }, [gig, currentUser]);
 
-    const convo = useMemo(() => {
-        return convos.find((c) => c.id === gig.conversationId);
-    }, [convos, gig]);
+    // const convo = useMemo(() => {
+    //     return convos.find((c) => c.id === gig.conversationId);
+    // }, [convos, gig]);
 
-    const shouldFetchConvo = useMemo(
-        () =>
-            gig.status !== GigStatus.AVAILABLE ||
-            gig.authorId === currentUser?.id,
-        [gig, currentUser]
-    );
+    // const shouldFetchConvo = useMemo(
+    //     () =>
+    //         gig.status !== GigStatus.AVAILABLE ||
+    //         gig.authorId === currentUser?.id,
+    //     [gig, currentUser]
+    // );
 
-    const showConvo = useMemo(
-        () => shouldFetchConvo && convo !== undefined,
-        [shouldFetchConvo, convo]
-    );
+    // const showConvo = useMemo(
+    //     () => shouldFetchConvo && convo !== undefined,
+    //     [shouldFetchConvo, convo]
+    // );
 
     const onClickHandler = useCallback(() => {
         if (gig.isRevealed) {
@@ -80,9 +80,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
     useEffect(
         function fetch() {
-            if (selectedId === gig.id) {
-                fetchConvo(gig.conversationId);
-            }
+            // if (selectedId === gig.id) {
+            //     fetchConvo(gig.conversationId);
+            // }
         },
         [selectedId, gig]
     );
@@ -157,11 +157,11 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                         id: button.label
                                     })}
                                     color={isMine ? 'accent' : button.color}
-                                    onClick={() =>
-                                        handleButtonAction(
-                                            gig.id,
-                                            button.actionId
-                                        )
+                                    onClick={() => {}
+                                        // handleButtonAction(
+                                        //     gig.id,
+                                        //     button.actionId
+                                        // )
                                     }
                                 />
                             ))}
@@ -187,7 +187,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
 
                             {showComplaint && <ComplaintDetails gig={gig} />}
 
-                            <AnimatePresence>
+                            {/* <AnimatePresence>
                                 {shouldFetchConvo && fetchingConvo && (
                                     <p key={gig.conversationId + 'fetch'}>
                                         <FormattedMessage id="FETCHING_CONVERSATION" />
@@ -200,7 +200,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                         className="gig__conversation"
                                     />
                                 )}
-                            </AnimatePresence>
+                            </AnimatePresence> */}
 
                             {gig.status !== GigStatus.AVAILABLE && (
                                 <NewMsg convoId={gig.id} onSend={() => {}} />

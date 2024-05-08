@@ -158,7 +158,7 @@
     }
 
     &__conversation {
-        max-height: calc(100vh - 430px);
+        max-height: calc(100dvh - 430px);
         overflow: auto;
     }
 
