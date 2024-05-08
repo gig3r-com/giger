@@ -4,7 +4,7 @@ export interface IEvent extends IObscurableInfo {
     id: string;
     eventDescription: string;
     status: EventStatus;
-    timestamp: string; // ISO Date timestamp
+    timeStamp: string; // ISO Date timestamp
     name: string;
 }
 
