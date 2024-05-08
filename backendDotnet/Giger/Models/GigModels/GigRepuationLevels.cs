@@ -20,13 +20,17 @@
 
             set
             {
-                if (value < MINVALUE)
+                if (value <= MINVALUE)
                 {
                     _level = MINVALUE;
                 }
-                if (value > MAXVALUE)
+                if (value >= MAXVALUE)
                 {
                     _level = MAXVALUE;
+                }
+                else
+                {
+                    _level = value;
                 }
             }
         }
