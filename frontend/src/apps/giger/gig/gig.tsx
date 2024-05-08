@@ -130,7 +130,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                         <span className="gig__reputation">
                             {gig.reputationRequired !== undefined && (
                                 <GigReputation
-                                    reputation={gig.reputationRequired}
+                                    reputation={gig.reputationRequired.level}
                                     color={buttonColor(gig.status, isMine)}
                                 />
                             )}

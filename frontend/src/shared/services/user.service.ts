@@ -43,14 +43,17 @@ export function useUserService() {
             loginCall(username, password),
             new Promise<void>((resolve) => setTimeout(resolve, 3000))
         ]).then((res) => {
-            if (res[0].status !== 'fulfilled') return;
-            const userData = res[0].value;
-            const userIsGod = userData.roles.includes(UserRoles.GOD);
-            dispatch(setCurrentUser(userData));
-            saveLoginData(userData);
+            if (res[0].status !== 'fulfilled') {
+                displayToast(intl.formatMessage({ id: 'LOGIN_FAILED' }));
+            } else {
+                const userData = res[0].value;
+                const userIsGod = userData.roles.includes(UserRoles.GOD);
+                dispatch(setCurrentUser(userData));
+                saveLoginData(userData);
 
-            if (userIsGod) {
-                dispatch(setRequiresGodUserSelection(true));
+                if (userIsGod) {
+                    dispatch(setRequiresGodUserSelection(true));
+                }
             }
         });
     };
