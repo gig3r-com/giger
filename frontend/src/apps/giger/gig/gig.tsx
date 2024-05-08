@@ -156,7 +156,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                     text={intl.formatMessage({
                                         id: button.label
                                     })}
-                                    color={isMine ? 'accent' : button.color}
+                                    color={buttonColor(gig.status, isMine)}
                                     onClick={() => {}
                                         // handleButtonAction(
                                         //     gig.id,
@@ -202,9 +202,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 )}
                             </AnimatePresence> */}
 
-                            {gig.status !== GigStatus.AVAILABLE && (
+                            {/* {gig.status !== GigStatus.AVAILABLE && (
                                 <NewMsg convoId={gig.id} onSend={() => {}} />
-                            )}
+                            )} */}
                         </motion.article>
                     )}
                 </AnimatePresence>
