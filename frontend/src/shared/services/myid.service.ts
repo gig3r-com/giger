@@ -50,8 +50,8 @@ export function useMyIdService() {
                 return medicalEvents.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.CRIMINAL:
                 return criminalEvents.some((entry) => !entry.seen) ?? false;
-            case MyIdUncoverableSections.META:
-                return metas.some((entry) => !entry.seen) ?? false;
+            // case MyIdUncoverableSections.META:
+            //     return metas.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.RELATIONS:
                 return relations.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.PRIVATE_RECORDS:
