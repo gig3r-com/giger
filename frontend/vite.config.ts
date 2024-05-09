@@ -13,7 +13,7 @@ export default defineConfig({
                 theme_color: '#545ae9',
                 background_color: '#22193c',
                 scope: '',
-                start_url: '.',
+                start_url: '../',
                 display: 'standalone',
                 name: 'GIGER',
                 short_name: 'GIGER',
