@@ -18,9 +18,11 @@ export function getUserDataLines(data: UserType): string[] {
     // eslint-disable-next-line
     `${tabField('id', data.id)}, ${tabField('handle', data.handle,)}, ${field('name', data.name)}, ${field('surname', data.surname,)}`,
     // eslint-disable-next-line
-    `${tabField('network', data.networkId)} ${tabField('subnetwork', data.subnetworkId,)}`,
+    `${tabField('network', data.networkName)} ${tabField('id', data.networkId,)}`,
     // eslint-disable-next-line
-    `${field('type', data.type)}, ${field('profession', data.profession,)}, ${field('age', String(data.age))}`,
+    `${tabField('subnetwork', data.subnetworkName)} ${tabField('id', data.subnetworkId,)}`,
+    // eslint-disable-next-line
+    `${field('type', data.type)}`,
   ];
 }
 

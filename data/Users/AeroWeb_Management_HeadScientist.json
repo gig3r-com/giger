@@ -13,6 +13,10 @@
   "WealthLevel": "AFFLUENT",
   "NetworkId": "e743a2f5-0382-47a3-a11c-280471fc26be",
   "SubnetworkId": "38867391-d5bb-4815-b70b-4a4b93961a29",
+  "NetworkName": "AeroWeb",
+  "SubnetworkName": "Management",
+  "FactionRankPublic": "string",
+  "FactionRankActual": "",
   "CyberwareLevel": {
     "Stat": 0
   },
@@ -22,10 +26,10 @@
   "HackingSkills": {
     "Stat": 0
   },
-  "ConfrontationVsNegotiation": {
+  "ConfrontationistVsAgreeable": {
     "Stat": 0
   },
-  "CowardVsFighter": {
+  "CowardVsBrave": {
     "Stat": 0
   },
   "TalkativeVsSilent": {
@@ -40,7 +44,9 @@
   "VibeFunction": "None",
   "VibeEngagement": "INTERESTED",
   "FavoriteUserIds": [],
-  "Faction": "Takayama",
+  "Faction": "TAKAYAMA",
+  "InsuredAmount": 0,
+  "GigReputation": {},
   "Relations": [],
   "Goals": [],
   "Meta": [],
@@ -49,5 +55,7 @@
   "MedicalEvents": [],
   "Exploits": [],
   "MindHack": "Banned",
-  "HackerName": ""
+  "HackerName": "",
+  "HasPlatinumPass": true,
+  "HighSecurity": true
 }

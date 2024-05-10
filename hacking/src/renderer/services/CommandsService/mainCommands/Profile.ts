@@ -6,9 +6,7 @@ import {
 } from '../responseLines/profile';
 import {
   getErrorMessage,
-  noUserIdError,
-  notConnectedError,
-  userNotFoundInSubnetworkError,
+  noProfileError,
   evenrNotFound,
 } from '../responseLines/errors';
 import { ProfileType } from '../../../types';
@@ -27,7 +25,7 @@ export default class Profile {
       addLines,
       fireInitError,
       ServerConnectionService,
-      ApiService,
+      getProfile,
     } = this.Service;
     if (!setInputDisabled || !addLines) {
       fireInitError();
@@ -35,26 +33,11 @@ export default class Profile {
     }
     try {
       setInputDisabled(true);
-      const userId = this.getUserId();
       const eventId = parsedCommand[1];
+      const profile = await getProfile();
 
-      if (!userId) {
-        addLines(noUserIdError);
-        setInputDisabled(false);
-        return;
-      }
-      const profile = await ApiService.getUserProfile(userId);
-
-      const loginUserId = getLoginUserData()?.id;
-      const { isConnected, connectedSubnetwork } = ServerConnectionService;
-      if (!isConnected && userId !== loginUserId) {
-        addLines(notConnectedError);
-        setInputDisabled(false);
-        return;
-      }
-
-      if (isConnected && !connectedSubnetwork?.users?.includes(loginUserId)) {
-        addLines(userNotFoundInSubnetworkError);
+      if (!profile) {
+        addLines(noProfileError);
         setInputDisabled(false);
         return;
       }

@@ -1,4 +1,4 @@
-import {CommandsService} from "../../services";
+import {CommandsService, OverlayService} from '../../services';
 
 export const canTabSelector = 'data-can-tab';
 const selectedTabClass = 'selected-color';
@@ -6,13 +6,14 @@ const selectedTabClass = 'selected-color';
 type KeyHandlerType = {
   addUserLine: (value: string) => void;
   setInput: (value: string) => void;
-  executeCommand: (command: string) => void;
   userLines: string[];
   input: string;
   username: string;
   isLoggedIn: boolean;
   setUsername: (value: string) => void;
   enterPassword: (value: string) => void;
+
+  addLines: any;
 };
 
 export default function useKeyHandler({
@@ -22,9 +23,9 @@ export default function useKeyHandler({
   enterPassword,
   addUserLine,
   setInput,
-  executeCommand,
   userLines,
   input,
+  addLines,
 }: KeyHandlerType) {
   const clear = () => {
     const elements = document.querySelectorAll(`[${canTabSelector}]`);
@@ -128,12 +129,21 @@ export default function useKeyHandler({
     }
   };
 
+  const f9 = (event: KeyboardEvent) => {
+    addLines([``]);
+    addLines([`Ping v.3.12 ICE targeting successfully!`]);
+    addLines([`We have found you <span class="secondary-color">hackerman</span>!`]);
+    OverlayService.iceModal('Warning: ICE deployed');
+    console.log('test');
+  };
+
   const keyMap: { [key: number]: (event: KeyboardEvent) => void } = {
     9: tab,
     13: enter,
     32: space,
     38: upArrow,
     67: c,
+    120: f9,
   };
 
   const handleKey = (event: KeyboardEvent) => {

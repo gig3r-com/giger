@@ -3,7 +3,6 @@ import {
   decryptingLines,
   decryptingSuccessLines,
 } from '../../responseLines/runCommands';
-import { makeLoaderLine } from '../../utils/timelines';
 
 export type RunDecrypterType = {
   isConnected: boolean;

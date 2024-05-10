@@ -50,6 +50,10 @@ body {
   color: $disabled-color;
 }
 
+.green-color {
+  color: yellowgreen;;
+}
+
 .selected-color {
   color: black;
   background: $base-text-color;
@@ -98,14 +102,7 @@ input:focus{
   }
 }
 
-table.profile-table {
-  td {
-    padding: 0 10px;
-  }
-  margin: 0 20px;
-}
-
-table.list-table {
+table.list-table, table.profile-table, table.account-table {
   td {
     padding: 0 10px;
   }

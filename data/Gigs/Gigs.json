@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "a4546040-830f-40a3-b98b-4ef4895ada48",
+    "IsRevealed": true,
+    "Payout": 100,
+    "Title": "Test gig",
+    "Description": "Test Description",
+    "ConversasionId": "string",
+    "Category": "REDACTED",
+    "Subcategory": "REDACTED",
+    "RepurationRequired": {
+      "Level": 0
+    },
+    "IsAnonymizedAuthor": true,
+    "Status": "AVAILABLE",
+    "AuthorId": "string",
+    "AuthorName": "string",
+    "TakenById": "string",
+    "TakenForCompany": "Takayama",
+    "ClientAccountNumber": "string",
+    "ProviderAccountNumber": "string",
+    "MarkedAsComplaintAt": "2024-05-04T16:22:41.269Z",
+    "ComplaintReason": "string",
+    "CreatedAt": "2024-05-04T16:22:41.269Z",
+    "AcceptedAt": "2024-05-04T16:22:41.269Z",
+    "Modes": "CLIENT",
+    "IsRevealedByClient": true
+  }
+]

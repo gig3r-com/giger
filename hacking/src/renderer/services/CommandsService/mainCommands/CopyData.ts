@@ -31,6 +31,14 @@ export default class CopyData {
       fireInitError();
       return;
     }
+
+    if (!ServerConnectionService.isDecrypted) {
+      addLines([
+        `<span class="secondary-color">Error: </span>Access Denied! Command is encrypted.`,
+      ]);
+      setInputDisabled(false);
+      return;
+    }
     try {
       setInputDisabled(true);
       const userId = parsedCommand[0];

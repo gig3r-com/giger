@@ -6,34 +6,34 @@ module.exports = {
    */
   programs: {
     // Firewalls
-    EncryptGuard: {
+    ENCRYPT_GUARD: {
       name: 'EncryptGuard',
       type: 'firewall',
     },
-    FirewallX: {
+    FIREWALL_X: {
       name: 'FirewallX',
       type: 'firewall',
     },
-    VirtualVault: {
+    VIRTUAL_VAULT: {
       name: 'VirtualVault',
       type: 'firewall',
     },
     // Encrypter
-    ForceField: {
+    FORCE_FIELD: {
       name: 'ForceField',
       type: 'encrypter',
       timeOnPerfectBreach: 3000,
       timeOnImperfectBreach: 1500,
       encryptedCommands: ['transfer', 'copydata'],
     },
-    EvilTwin: {
+    EVIL_TWIN: {
       name: 'EvilTwin',
       type: 'encrypter',
       timeOnPerfectBreach: 2000,
       timeOnImperfectBreach: 1000,
       encryptedCommands: ['transfer', 'copydata'],
     },
-    JoanOfArc: {
+    JOAN_OF_ARC: {
       name: 'JoanOfArc',
       type: 'encrypter',
       timeOnPerfectBreach: 2000,
@@ -114,27 +114,27 @@ module.exports = {
       name: 'Worm',
       type: 'breacher',
       effect: {
-        EncryptGuard: { isConnected: true, perfect: true, breachTime: 100 },
-        FirewallX: { isConnected: true, perfect: false, breachTime: 100 },
-        VirtualVault: { isConnected: false, perfect: false, breachTime: 100 },
+        ENCRYPT_GUARD: { isConnected: true, perfect: true, breachTime: 100 },
+        FIREWALL_X: { isConnected: true, perfect: false, breachTime: 100 },
+        VIRTUAL_VAULT: { isConnected: false, perfect: false, breachTime: 100 },
       },
     },
     Sledgehammer: {
       name: 'Sledgehammer',
       type: 'breacher',
       effect: {
-        EncryptGuard: { isConnected: true, perfect: false, breachTime: 100 },
+        ENCRYPT_GUARD: { isConnected: true, perfect: false, breachTime: 100 },
         FirewallX: { isConnected: false, perfect: false, breachTime: 100 },
-        VirtualVault: { isConnected: true, perfect: true, breachTime: 100 },
+        VIRTUAL_VAULT: { isConnected: true, perfect: true, breachTime: 100 },
       },
     },
     Termite: {
       name: 'Termite',
       type: 'breacher',
       effect: {
-        EncryptGuard: { isConnected: false, perfect: true, breachTime: 100 },
-        FirewallX: { isConnected: true, perfect: true, breachTime: 100 },
-        VirtualVault: { isConnected: true, perfect: false, breachTime: 100 },
+        ENCRYPT_GUARD: { isConnected: false, perfect: true, breachTime: 100 },
+        FIREWALL_X: { isConnected: true, perfect: true, breachTime: 100 },
+        VIRTUAL_VAULT: { isConnected: true, perfect: false, breachTime: 100 },
       },
     },
     // Decrypters
@@ -142,27 +142,27 @@ module.exports = {
       name: 'Cybercracker',
       type: 'decrypter',
       effect: {
-        ForceField: { decryptingTime: 1000, activateICE: false },
-        EvilTwin: { decryptingTime: 1000, activateICE: false },
-        JoanOfArc: { decryptingTime: 1000, activateICE: false },
+        FORCE_FIELD: { decryptingTime: 1000, activateICE: false },
+        EVIL_TWIN: { decryptingTime: 1000, activateICE: false },
+        JOAN_OF_ARC: { decryptingTime: 1000, activateICE: false },
       },
     },
     WizardsBook: {
       name: 'WizardsBook',
       type: 'decrypter',
       effect: {
-        ForceField: { decryptingTime: 1000, activateICE: false },
-        EvilTwin: { decryptingTime: 1000, activateICE: false },
-        JoanOfArc: { decryptingTime: 1000, activateICE: false },
+        FORCE_FIELD: { decryptingTime: 1000, activateICE: false },
+        EVIL_TWIN: { decryptingTime: 1000, activateICE: false },
+        JOAN_OF_ARC: { decryptingTime: 1000, activateICE: false },
       },
     },
     TinWeasel: {
       name: 'TinWeasel',
       type: 'decrypter',
       effect: {
-        ForceField: { decryptingTime: 1000, activateICE: false },
-        EvilTwin: { decryptingTime: 1000, activateICE: false },
-        JoanOfArc: { decryptingTime: 1000, activateICE: false },
+        FORCE_FIELD: { decryptingTime: 1000, activateICE: false },
+        EVIL_TWIN: { decryptingTime: 1000, activateICE: false },
+        JOAN_OF_ARC: { decryptingTime: 1000, activateICE: false },
       },
     },
     // Disablers
