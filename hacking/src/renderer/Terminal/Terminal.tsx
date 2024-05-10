@@ -13,7 +13,9 @@ import {
   CommandsService,
   ConfigService,
   ServerConnectionService,
+  LineStateService,
 } from '../services';
+import initialization from './utils/initialization';
 
 export default function Terminal() {
   const [input, setInput] = useState('');
@@ -22,11 +24,15 @@ export default function Terminal() {
   const [inputDisabled, setInputDisabled] = useState(false);
   const [forceRefresh, setForceRefresh] = useState(false);
   const [inputTimer, setInputTimer] = useState<number | null>(null);
+  const [enableDirectInput, setEnableDirectInput] = useState(false);
+  const [directInput, setDirectInput] = useState('');
   const refreshPrefix = () => setForceRefresh(true);
   useEffect(() => {
     if (forceRefresh) setForceRefresh(false);
   }, [forceRefresh]);
   const changeInput = (e: Event) => setInput(e.target.value);
+
+  const changeDirrectInput = (e: Event) => setDirectInput(e.target.value);
   const stayFocused = (e: FocusEventHandler<HTMLInputElement>) =>
     e.target.focus();
   const { toggleDebugMode } = useDebugMode();
@@ -40,7 +46,7 @@ export default function Terminal() {
     addErrors,
   } = useLineStateHandler({ prefixType });
   const { enterPassword, isLoggedIn, logout, username, setUsername, userData } =
-    useLogin({ setInputDisabled, addLines, setPrefixType });
+    useLogin({ setInputDisabled, addLines, setPrefixType, removeLastLine });
   const {
     isConnected,
     isDecrypted,
@@ -72,6 +78,8 @@ export default function Terminal() {
     executeCommand,
     userLines,
     input,
+    enableDirectInput,
+    addLines,
   });
   const { prefix } = usePrefix({
     isConnected,
@@ -108,6 +116,15 @@ export default function Terminal() {
       setInputDisabled,
       logout,
       refreshPrefix,
+      removeLastLine,
+    });
+    LineStateService.init({
+      addLines,
+      directInput,
+      setDirectInput,
+      enableDirectInput,
+      setEnableDirectInput,
+      handleKey,
     });
     window.config.services = {
       ApiService,
@@ -116,23 +133,32 @@ export default function Terminal() {
     };
   }, [addLines, removeLastLine]);
 
+  const inputElement = enableDirectInput ? (
+    <input
+      autoFocus
+      type="text"
+      value={directInput}
+      onBlur={stayFocused}
+      onChange={changeDirrectInput}
+      onKeyDown={LineStateService.handleDirectKey}
+    />
+  ) : (
+    <input
+      autoFocus
+      type={!isLoggedIn && username ? 'password' : 'text'}
+      value={input}
+      onBlur={stayFocused}
+      onChange={changeInput}
+      onKeyDown={handleKey}
+    />
+  );
+
   return (
     <>
       {renderedLines}
       <div className="line input-line">
-        {prefix}
-        {inputDisabled ? (
-          <Loader />
-        ) : (
-          <input
-            autoFocus
-            type={!isLoggedIn && username ? 'password' : 'text'}
-            value={input}
-            onBlur={stayFocused}
-            onChange={changeInput}
-            onKeyDown={handleKey}
-          />
-        )}
+        {enableDirectInput ? '' : prefix}
+        {inputDisabled ? <Loader /> : inputElement}
       </div>
     </>
   );

@@ -1,5 +1,10 @@
 import { canTabSelector } from '../../../Terminal/hooks/useKeyHandler';
-import { ProfileType, EventType } from '../../../types';
+import {
+  ProfileType,
+  EventType,
+  BankAccountType,
+  ConversationType,
+} from '../../../types';
 import { field, tabField } from './utils';
 import { HACKING_TYPE, MINDHACK_TYPE } from '../../ApiService/mappers/profile';
 
@@ -8,10 +13,10 @@ export function getBaseProfileLines(data: ProfileType): string[] {
     `${tabField('id', data.id)}`,
     `${tabField('handle', data.handle)}`,
     `${tabField('name', data.name)}, ${tabField('surname', data.surname)}`,
-    `${tabField('network', data.networkId)}`,
-    `${tabField('subnetwork', data.subnetworkId)}`,
+    `${tabField('network', data.networkName)} ${tabField('id', data.networkId)}`,
+    `${tabField('subnetwork', data.subnetworkName)} ${tabField('id', data.subnetworkId)}`,
     // eslint-disable-next-line
-    `${field('type', data.typeActual)} ${field('profession', data.professionActual,)} ${field('age', String(data.age))} ${field('wealth', data.wealthLevel,)}`,
+    `${field('type', data.typeActual)} ${field('wealth', data.wealthLevel,)}`,
   ];
 
   // Events
@@ -31,10 +36,27 @@ export function getBaseProfileLines(data: ProfileType): string[] {
       'Records',
       data.privateRecords,
     )}`;
-  if (tableContent)
-    lines.push(`<table class="profile-table">${tableContent}</table>`);
+
+  // Conversations
+  // if (data.conversations.length)
+  //   tableContent = `${tableContent}${printConversationTablePart(
+  //     'Conversations',
+  //     data.conversations,
+  //   )}`;
 
   // Accounts
+  if (data.accounts.length)
+    tableContent = `${tableContent}${printAccountTablePart(
+      'Accounts',
+      data.accounts,
+    )}`;
+
+  // Gigs
+  if (data.gigs.length)
+    tableContent = `${tableContent}${printRecordTablePart('Gigs', data.gigs)}`;
+
+  if (tableContent)
+    lines.push(`<table class="profile-table">${tableContent}</table>`);
 
   return lines;
 
@@ -49,7 +71,7 @@ export function getBaseProfileLines(data: ProfileType): string[] {
           `<tr>
         <td>${withTab(event.id)}</td>
         <td>${event.name}</td>
-        <td><span class="accent-color">${event.date}</span></td>
+        <td><span class="accent-color">25.05.2077</span></td>
         <td>${event.type}</td>
         <td>${event.status}</td>
         </tr>`,
@@ -64,7 +86,42 @@ export function getBaseProfileLines(data: ProfileType): string[] {
           `<tr>
         <td>${withTab(event.id)}</td>
         <td>${event.name}</td>
-        <td><span class="accent-color">${event.date}</span></td>
+        <td><span class="accent-color">25.05.2077</span></td>
+        <td></td>
+        <td></td>
+        </tr>`,
+      )
+      .join('')}`;
+  }
+
+  function printAccountTablePart(
+    title: string,
+    children: BankAccountType[],
+  ): string {
+    return `<tr class="secondary-color table-title"><td colspan="5">${title}</td></tr> ${children
+      .map(
+        (event) =>
+          `<tr>
+        <td>${event.type}: ${withTab(event.accountNumber)}</td>
+        <td>Ballance: <span class="secondary-color">${event.balance}</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>`,
+      )
+      .join('')}`;
+  }
+  function printConversationTablePart(
+    title: string,
+    children: ConversationType[],
+  ): string {
+    return `<tr class="secondary-color table-title"><td colspan="5">${title}</td></tr> ${children
+      .map(
+        (event) =>
+          `<tr>
+        <td>${withTab(event.id)}</td>
+        <td>${event.participants ? event.participants.join(', ') : ''}</td>
+        <td></td>
         <td></td>
         <td></td>
         </tr>`,
@@ -75,7 +132,7 @@ export function getBaseProfileLines(data: ProfileType): string[] {
 
 export function getEventProfileLines(event: EventType): string[] {
   const lines: string[] = [
-    `<span class="accent-color-2" ${canTabSelector}>${event.id}</span> <span class="secondary-color">${event.name}</span> <span class="accent-color">${event.date}</span> <span>${event.type}</span> <span>${event.status}</span>`,
+    `<span class="accent-color-2" ${canTabSelector}>${event.id}</span> <span class="secondary-color">${event.name}</span> <span class="accent-color">25.05.2077</span> `, // todo <span>${event.type}</span> <span>${event.status}</span>
   ];
 
   if (event.additionalData) {

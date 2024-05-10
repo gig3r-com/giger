@@ -7,11 +7,24 @@ import mapRecordToApi from './mappers/record';
 import { getLoginUserData, setLoginUserData } from '../../Terminal/utils/store';
 import ProfileModule from './modules/Profile';
 import ScanModule from './modules/Scan';
+import AccountsModule from './modules/Accounts';
 
 export default class ApiService {
   profileModule = new ProfileModule();
 
   scanModule = new ScanModule();
+
+  accountsModule = new AccountsModule();
+
+  /*
+   ************************************************************************************************
+   * ACCOUNTS METHODS
+   ************************************************************************************************
+   */
+
+  getAccountByNumber = this.accountsModule.getAccountByNumber.bind(this);
+
+  sendTransaction = this.accountsModule.sendTransaction.bind(this);
 
   /*
    ************************************************************************************************
@@ -24,6 +37,8 @@ export default class ApiService {
 
   changeActiveUserHackingName =
     this.profileModule.changeActiveUserHackingName.bind(this);
+
+  getUserProfile = this.profileModule.getUserProfile.bind(this);
 
   /*
    ************************************************************************************************
@@ -39,6 +54,8 @@ export default class ApiService {
   scanForUserById = this.scanModule.scanForUserById.bind(this);
 
   scanForUserIdByName = this.scanModule.scanForUserIdByName.bind(this);
+
+  scanForUserIdByUsername = this.scanModule.scanForUserIdByUsername.bind(this);
 
   getUrls() {
     return {
@@ -74,7 +91,6 @@ export default class ApiService {
     const { gigerApiUrl } = this.getUrls();
     const userId = getLoginUserData()?.id;
     const url = `${gigerApiUrl}/User/private/byId?id=${userId}`;
-    console.log(url);
     return axios
       .get(url)
       .then((response) => {
@@ -109,18 +125,11 @@ export default class ApiService {
    * Profile
    ************************************************************************************************
    */
-  getUserProfile(userId: string): Promise<ProfileType> {
-    const { gigerApiUrl } = this.getUrls();
-    const url = `${gigerApiUrl}/User/private/byId?id=${userId}`;
-    return axios.get(url).then((response) => {
-      return mapProfile(response.data);
-    });
-  }
 
   addRecordToLoginUser(record): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();
     const loginUserData = getLoginUserData();
-    const url = `${gigerApiUrl}/User/${loginUserData.id}/privateRecord`;
+    const url = `${gigerApiUrl}/User/${loginUserData.id}/privateRecords`;
     return axios
       .patch(url, mapRecordToApi(record, loginUserData.id))
       .then((response) => {

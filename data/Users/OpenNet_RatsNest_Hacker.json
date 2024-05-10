@@ -8,7 +8,6 @@
   "TypePublic": "HUMAN",
   "ProfessionPublic": "JANITOR",
   "Surname": "Smart",
-  "Age": 19,
   "Vibe": "SW4RM",
   "WealthLevel": "BROKE",
   "NetworkId": "648eeb00-5102-4ca6-b127-5af49cf54342",
@@ -20,14 +19,16 @@
   },
   "ProfessionActual": "HACKER",
   "TypeActual": "HUMAN",
+  "FactionRankPublic": "string",
+  "FactionRankActual": "",
   "Assets": [],
   "HackingSkills": {
     "Stat": 1
   },
-  "ConfrontationVsNegotiation": {
+  "ConfrontationistVsAgreeable": {
     "Stat": 0
   },
-  "CowardVsFighter": {
+  "CowardVsBrave": {
     "Stat": 0
   },
   "TalkativeVsSilent": {
@@ -42,7 +43,9 @@
   "VibeFunction": "None",
   "VibeEngagement": "INTERESTED",
   "FavoriteUserIds": [],
-  "Faction": "Takayama",
+  "Faction": "TAKAYAMA",
+  "InsuredAmount": 0,
+  "GigReputation": {},
   "Relations": [],
   "Goals": [],
   "Meta": [],
@@ -159,5 +162,6 @@
   "Exploits": [],
   "MindHack": "Banned",
   "HackerName": "",
-  "HasPlatinumPass": false
+  "HasPlatinumPass": false,
+  "HighSecurity": false
 }

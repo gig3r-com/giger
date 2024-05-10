@@ -9,6 +9,8 @@ import Logout from './Logout';
 import Doc from './Doc';
 import Install from './Install';
 import CopyData from './CopyData';
+import Balance from './Balance';
+import Transfer from './Transfer';
 
 export {
   End,
@@ -22,4 +24,6 @@ export {
   Doc,
   Install,
   CopyData,
+  Balance,
+  Transfer,
 };

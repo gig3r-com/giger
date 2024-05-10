@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import {CommandsService, OverlayService} from '../../services';
+import { CommandsService, OverlayService } from '../../services';
 import Hacker1Modal from './modals/Hacker1Modal';
+import ICEModal from './modals/ICEModal';
 
 export default function Overlay() {
   const [modalInside, setModalInside] = useState<any>('');
@@ -21,6 +22,8 @@ export default function Overlay() {
   const setModal = (modalNumber: number) => {
     if (modalNumber === 0) {
       setModalInside(<Hacker1Modal testIsActive={false} />);
+    } else if (modalNumber === 99) {
+      setModalInside(<ICEModal />);
     }
   };
 

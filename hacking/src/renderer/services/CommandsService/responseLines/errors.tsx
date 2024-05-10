@@ -67,6 +67,14 @@ export const cantCopyFromSelf: string[] = [
   '<span class="error-title">ERROR</span>: You cant copy records from your own profile',
 ];
 
+export const noProfileError: string[] = [
+  '<span class="error-title">ERROR</span>: Profile not found',
+];
+
+export const noAccountFound: string[] = [
+  '<span class="error-title">ERROR</span>: Account not found',
+];
+
 export function getErrorMessage(error: any): string[] {
   let errorMsgKey;
   if (typeof error === 'string') {
@@ -83,7 +91,7 @@ export function getErrorMessage(error: any): string[] {
       '<span class="error-title">ERROR</span>: Network Error',
     ],
     'Request failed with status code 404': [
-      '<span class="error-title">ERROR</span>: User profile not found',
+      '<span class="error-title">ERROR</span>: No data was found',
     ],
     'All promises were rejected': [
       '<span class="error-title">ERROR</span>: No data was found',

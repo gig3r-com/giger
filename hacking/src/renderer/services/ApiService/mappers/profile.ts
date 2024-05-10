@@ -7,7 +7,7 @@ export const HACKING_TYPE = 'hacking';
 const MINDHACK_IMPLANT_NAMES = ['Symbiotica', 'Artificial Hormon Stabilizer'];
 export const MINDHACK_TYPE = 'mindhack';
 
-export default function mapProfile(data: any): ProfileType {
+export default function mapProfile(data: any, accounts = [], conversations = [], gigs = []): ProfileType {
   const hackingData = {
     alias: data.hackerName || data.handle,
     exploits: data.exploits,
@@ -17,13 +17,13 @@ export default function mapProfile(data: any): ProfileType {
   };
   const privateR = data.privateRecords?.filter(
     (event) => event.isRevealed === true,
-  );
+  ) || [];
   const medical = data.medicalEvents?.filter(
     (event) => event.isRevealed === true,
-  );
+  ) || [];
   const criminal = data.criminalEvents?.filter(
     (event) => event.isRevealed === true,
-  );
+  ) || [];
 
   return {
     ...mapUser(data),
@@ -36,9 +36,12 @@ export default function mapProfile(data: any): ProfileType {
     typeActual: data.typeActual,
     favoriteUserIds: data.favoriteUserIds,
     relations: data.relations,
-    privateRecords: privateR.map(mapRecord) || [],
-    criminalEvents: criminal.map(mapEvent) || [],
-    medicalEvents: medical.map(mapEvent) || [],
+    privateRecords: privateR?.map(mapRecord) || [],
+    criminalEvents: criminal?.map(mapEvent) || [],
+    medicalEvents: medical?.map(mapEvent) || [],
+    accounts: accounts || [],
+    conversations: conversations || [],
+    gigs: gigs || [],
   };
 
   function mapEvent(data: any): EventType {

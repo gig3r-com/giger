@@ -3,6 +3,8 @@ import { makeLoaderLine } from '../../Terminal/utils/timelines';
 import {
   connectingFailedLines,
   connectingSuccessLines,
+  decryptingSuccessLines,
+  decryptingFailedLines,
 } from '../../Terminal/responseLines/runCommands';
 import { SubnetworkType, ProgramType } from '../../types';
 
@@ -10,6 +12,8 @@ export default class ServerConnectionService {
   private breachTimer: ReturnType<typeof setInterval> | undefined;
 
   private connectionTimer: ReturnType<typeof setInterval> | undefined;
+
+  private decryptTimer: ReturnType<typeof setInterval> | undefined;
 
   private addLines: ((lines: string[]) => void) | undefined;
 
@@ -22,6 +26,8 @@ export default class ServerConnectionService {
   private ConfigService: any;
 
   public isConnected: boolean = false;
+
+  public isDecrypted: boolean = false;
 
   public connectionTimeLeft: number | null = null;
 
@@ -100,6 +106,42 @@ export default class ServerConnectionService {
     }, 100);
   }
 
+  decrypt(exploitName: string, subnetwork: SubnetworkType) {
+    const exploit = this.ConfigService.getExploit(exploitName);
+    if (!exploit) {
+      return new Error('No such exploit');
+    }
+
+    const decryptionEffect = {
+      decryptionTime: 100,
+      willDecryptionWork: true,
+      perfect: true,
+    };
+    let currentTime = decryptionEffect.decryptionTime;
+
+    this.decryptTimer = setInterval(() => {
+      this.setInputDisabled(true);
+      if (!this.removeLastLine || !this.addLines) return this.initializeError();
+      if (currentTime !== decryptionEffect.decryptionTime)
+        this.removeLastLine();
+      this.addLines([
+        makeLoaderLine(currentTime, decryptionEffect.decryptionTime),
+      ]);
+      currentTime -= 1;
+      if (currentTime <= 0) {
+        this.removeLastLine();
+        if (!decryptionEffect.willDecryptionWork) {
+          this.addLines(decryptingFailedLines);
+        } else {
+          this.addLines(decryptingSuccessLines);
+          this.decryptionDone(subnetwork, decryptionEffect.perfect);
+        }
+        this.setInputDisabled(false);
+        clearInterval(this.decryptTimer);
+      }
+    }, 100);
+  }
+
   // eslint-disable-next-line consistent-return
   connect(subnetwork: SubnetworkType, isPerfect: boolean) {
     this.setupConnectedSubnetwork(subnetwork, isPerfect);
@@ -115,6 +157,10 @@ export default class ServerConnectionService {
         clearInterval(this.connectionTimer);
       }
     }, 100);
+  }
+
+  decryptionDone(subnetwork: SubnetworkType, isPerfect: boolean) {
+    this.isDecrypted = true;
   }
 
   // eslint-disable-next-line consistent-return
@@ -133,7 +179,6 @@ export default class ServerConnectionService {
         : this.connectedSubnetworkSystem.timeOnImperfectBreach) || 0;
     this.connectionTimeLeft = this.timeInSubnetwork;
 
-    //    ['Ping', 'Boost']
     subnetwork.ice.forEach((iceName) => {
       const ice = this.ConfigService.getProgram(iceName);
       if (!ice) return;
@@ -246,6 +291,7 @@ export default class ServerConnectionService {
     this.setPrefixType('admin');
 
     this.isConnected = false;
+    this.isDecrypted = false;
     this.connectedSubnetwork = null;
     this.connectedSubnetworkSystem = null;
     this.timeInSubnetwork = 0;

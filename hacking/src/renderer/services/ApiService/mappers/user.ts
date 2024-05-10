@@ -6,14 +6,14 @@ export default function mapUser(data: any): UserType {
     name: data.name,
     surname: data.surname,
     handle: data.handle,
-    aliasMap: data.aliasMap,
 
     type: data.typePublic,
     profession: data.professionPublic,
-    age: data.age,
     wealthLevel: data.wealthLevel,
 
     networkId: data.networkId,
+    networkName: data.networkName,
     subnetworkId: data.subnetworkId,
+    subnetworkName: data.subnetworkName,
   };
 }

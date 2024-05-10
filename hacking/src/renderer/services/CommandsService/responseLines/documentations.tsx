@@ -1,3 +1,8 @@
+/*
+ * ************************************************************************************************************
+ * COMMANDS
+ * ************************************************************************************************************
+ */
 export const NAME: string[] = [
   '',
   `<span class="secondary-color">Documentation</span> NAME`,
@@ -80,6 +85,7 @@ export const SCAN: string[] = [
   `Full command path: <span class="secondary-color">list [subcommand]</span>`,
   `Command scans all networks for public data. As a subcommand you can enter userId, networkId or subnetworkId and get data about, respectively, user, network or subnetwork. You can also provide name and surname as a subcommand to try to find userId assigned to that user, if a user with that name and surname exists.`,
   'Scanning for userId, user data ot network data is simple and always provides all publicly available data. Scanning for subnetwork data may not be able to provide all data, sometimes information about Firewall, Operating system or ICE programs in subnetwork may be unavailable to you, they will be marked as <span class="disabled-color">Unknown</span>. Repeating scanning for a subnetwork will not yield different results, if you wont to get that information you will need to find different hacker and ask him to scan this subnetwork or upgrade your scanner and then try to scan subnetwork again.',
+  'When connected to a subnetwork you can use <span class="secondary-color">scan .</span> to get more detailed information about connected subnetwork.',
   'Version of your Scanner program directly affects your possibility to get correct subnetwork data.',
   '',
   `<span class="example-color">Example: <span class="secondary-color">scan john doe</span>`,
@@ -87,6 +93,9 @@ export const SCAN: string[] = [
   '',
   `<span class="example-color">Example: <span class="secondary-color">scan 5ab35395-f015-4af7-b89a-01ff2d2f499e</span>`,
   '<span class="example-color">              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ <--id of a user, network or subnetwork</span>',
+  '',
+  `<span class="example-color">Example: <span class="secondary-color">scan .</span>`,
+  '<span class="example-color">              ^ <--dot as a placeholder for a subnetwok you are connected to</span>',
   '',
 ];
 
@@ -120,11 +129,27 @@ export const COPY_DATA: string[] = [
   `<span class="secondary-color">Documentation</span> COPY DATA`,
   `Full command path: <span class="secondary-color">copydata [userId] [recordId]</span>`,
   '',
-  `<span class="example-color">Example: <span class="secondary-color">copydata 5ab35395-f015-4af7-b89a-01ff2d2f499e 88a8ed46-7a4d-4395-8340-d028bd123773</span>`,
+  `<span class="example-color">Example: <span class="secondary-color"><span class="secondary-color">copydata 5ab35395-f015-4af7-b89a-01ff2d2f499e 88a8ed46-7a4d-4395-8340-d028bd123773</span>`,
   '<span class="example-color">       user ID--> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ <--subnetwork ID</span>',
   '',
 ];
 
+export const DOC: string[] = [
+  '',
+  `<span class="secondary-color">Documentation</span> DOC`,
+  `Full command path: <span class="secondary-color">doc [options]</span> or <span class="secondary-color">help [options]</span>`,
+  'Command to check documentation about other things. Try using <span class="secondary-color">doc [command]</span> or <span class="secondary-color">doc [program]</span> whenever you wont to anderstand things beeter, you dont know what to do or you dont know why someting happened.',
+  'If you want to gather information try <span class="secondary-color">scan</span> command.',
+  'If you want to breach into subnetworks, or you want to decrypt it try <span class="secondary-color">run</span> command.',
+  'If you are connected to a subnetwork and want to gathjer information about user in it try <span class="secondary-color">profile</span>.',
+  '',
+];
+
+/*
+ * ************************************************************************************************************
+ * PROGRAMS
+ * ************************************************************************************************************
+ */
 export const SLEDGEHAMMER: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Sledgehammer`,
@@ -141,6 +166,26 @@ export const SCANNER_V1: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Scanner v1.22`,
   `Type: <span class="secondary-color">SCANNER</span>`,
-  'Scanner used to gather public information about networks, subnetworks and users. It can also detect subnetwork\'s firewall, operating system and ices but it is not fully reliable.',
+  "Scanner used to gather public information about networks, subnetworks and users. It can also detect subnetwork's firewall, operating system and ices but it is not fully reliable.",
   '',
 ];
+
+/*
+ * ************************************************************************************************************
+ * PROGRAM TYPES
+ * ************************************************************************************************************
+ */
+
+export const SCANNER: () => string[] = () => [
+  '',
+  `<span class="secondary-color">Documentation</span> Scanner type programs`,
+  `Type: <span class="secondary-color">SCANNER</span>`,
+  "Scanner used to gather public information about networks, subnetworks and users. It can also detect subnetwork's firewall, operating system and ices but it is not fully reliable.",
+  '',
+];
+
+/*
+ * ************************************************************************************************************
+ * GENERAL
+ * ************************************************************************************************************
+ */

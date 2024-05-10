@@ -2,17 +2,20 @@ import { useEffect, useState } from 'react';
 import { ApiService } from '../../services';
 import { loginSuccessful, loginFailed } from '../responseLines/login';
 import { getLoginUserData, setLoginUserData } from '../utils/store';
+import initialization from '../utils/initialization';
 
 type UseLoginType = {
   setInputDisabled: (value: boolean) => void;
   addLines: (lines: string[]) => void;
   setPrefixType: (value: string) => void;
+  removeLastLine: () => void;
 };
 
 export default function useLogin({
   setInputDisabled,
   addLines,
   setPrefixType,
+  removeLastLine,
 }: UseLoginType) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userData, setUserData] = useState<any>(null);
@@ -21,13 +24,18 @@ export default function useLogin({
     setInputDisabled(true);
     setUsername('');
     ApiService.getActiveUserProfile(username, password)
-      .then((hackerData: any) => {
+      .then(async (hackerData: any) => {
         setLoginUserData(hackerData);
         setUserData(hackerData);
         setIsLoggedIn(true);
         setInputDisabled(false);
         setPrefixType(hackerData.hackerName);
-        addLines(loginSuccessful(hackerData.hackerName));
+        await initialization({
+          addLines,
+          setInputDisabled,
+          removeLastLine,
+          hackerName: hackerData.hackerName,
+        });
       })
       .catch(() => {
         addLines(loginFailed);

@@ -54,6 +54,7 @@ export default class Scan {
       }
 
       const subcommand = parsedCommand.join(' ');
+      console.log('TEST')
       const scanData: ScanType = await ApiService.scan(
         subcommand,
         this.scannerVersion,

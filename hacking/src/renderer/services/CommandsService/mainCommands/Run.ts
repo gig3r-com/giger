@@ -7,7 +7,10 @@ import {
   programNotFound,
   subnetworkNotFound,
 } from '../responseLines/errors';
-import { connectingLines } from '../../../Terminal/responseLines/runCommands';
+import {
+  connectingLines,
+  decryptingLines,
+} from '../../../Terminal/responseLines/runCommands';
 
 export default class Run {
   private Service: CommandsServiceType;
@@ -40,7 +43,7 @@ export default class Run {
       }
 
       if (exploit.type === 'breacher') await this.runBreacher(exploit);
-      if (exploit.type === 'decrypter') this.runMonitor();
+      if (exploit.type === 'decrypter') await this.runDecrypter(exploit);
       if (exploit.type === 'monitor') MonitorService.enableMonitor();
 
       setInputDisabled(false);
@@ -82,6 +85,36 @@ export default class Run {
       );
     addLines(connectingLines(subnetwork.name));
     ServerConnectionService.breach(exploit.name, subnetwork);
+  }
+
+  async runDecrypter(exploit: ExploitType) {
+    const {
+      addErrors,
+      addLines,
+      fireInitError,
+      parsedCommand,
+      ServerConnectionService,
+      ApiService,
+    } = this.Service;
+    if (!addLines || !addErrors) {
+      fireInitError();
+      return;
+    }
+    const subnetworkId = this.getSubnetworkId(
+      ServerConnectionService.isConnected,
+      parsedCommand[1],
+    );
+    const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+    if (!subnetwork) {
+      addErrors(subnetworkNotFound);
+      return;
+    }
+    if (!ServerConnectionService.isConnected)
+      throw new Error(
+        'Cannot decrypt while still not  connected to any subnetwork.',
+      );
+    addLines(decryptingLines(subnetwork.name));
+    ServerConnectionService.decrypt(exploit.name, subnetwork);
   }
 
   getSubnetworkId(isConnected: boolean, commandStatement: string) {

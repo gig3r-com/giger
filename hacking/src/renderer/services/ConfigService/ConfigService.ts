@@ -2,6 +2,7 @@ import { ExploitType, ProgramType } from '../../types';
 // @ts-ignore
 import data from './hackingConfig';
 
+//  todo acces points
 export default class ConfigService {
   private ApiService: any;
 

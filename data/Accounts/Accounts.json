@@ -1,0 +1,79 @@
+[
+  {
+    "_id": "586f7096-624d-4dd8-9f12-b727f94d93ba",
+    "Owner": "smart_one",
+    "OwnerId": "a4546040-830f-40a3-b98b-4ef4895ada48",
+    "Transactions": [
+      {
+        "_id": "e2067dde-b26f-40f5-b797-97671707e94c",
+        "To": "2356 7841 9032 6714",
+        "From": "4809 3562 1078 9243",
+        "Title": "Loan",
+        "Amount": 200,
+        "Date": "2024-05-02T17:56:19.672Z"
+      },
+      {
+        "_id": "29024d1b-9052-4f0a-abd1-63ff040d5d10",
+        "To": "2356 7841 9032 6714",
+        "From": "4809 3562 1078 9243",
+        "Title": "For drinks",
+        "Amount": 150,
+        "Date": "2024-05-02T17:56:19.672Z"
+      },
+      {
+        "_id": "7286befc-a129-47f1-9746-89ee0830b4d3",
+        "To": "4809 3562 1078 9243",
+        "From": "2356 7841 9032 6714",
+        "Title": "For programs",
+        "Amount": 50,
+        "Date": "2024-05-02T17:56:19.672Z"
+      }
+    ],
+    "Type": "PRIVATE",
+    "Balance": 320,
+    "AccountNumber": "2356 7841 9032 6714"
+  },
+  {
+    "_id": "f2d8e243-837b-449e-bb5c-9bb7aefd12d4",
+    "Owner": "smart_one",
+    "OwnerId": "a4546040-830f-40a3-b98b-4ef4895ada48",
+    "Transactions": [],
+    "Type": "BUSINESS",
+    "Balance": 2320,
+    "AccountNumber": "2356 7841 9032 6714"
+  },
+  {
+    "_id": "cc62e3af-ebaf-440d-a1c6-e80dcb2037e4",
+    "Owner": "ward_r",
+    "OwnerId": "03c3913f-9a1e-4ff9-9f06-a0d975762ba1",
+    "Transactions": [
+      {
+        "_id": "e2067dde-b26f-40f5-b797-97671707e94c",
+        "To": "2356 7841 9032 6714",
+        "From": "4809 3562 1078 9243",
+        "Title": "Loan",
+        "Amount": 200,
+        "Date": "2024-05-02T17:56:19.672Z"
+      },
+      {
+        "_id": "29024d1b-9052-4f0a-abd1-63ff040d5d10",
+        "To": "2356 7841 9032 6714",
+        "From": "4809 3562 1078 9243",
+        "Title": "For drinks",
+        "Amount": 150,
+        "Date": "2024-05-02T17:56:19.672Z"
+      },
+      {
+        "_id": "7286befc-a129-47f1-9746-89ee0830b4d3",
+        "To": "4809 3562 1078 9243",
+        "From": "2356 7841 9032 6714",
+        "Title": "For programs",
+        "Amount": 50,
+        "Date": "2024-05-02T17:56:19.672Z"
+      }
+    ],
+    "Type": "PRIVATE",
+    "Balance": 1200,
+    "AccountNumber": "4809 3562 1078 9243"
+  }
+]

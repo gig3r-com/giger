@@ -12,6 +12,7 @@ export default class Scan {
         this.scanForNetworkById(id),
         this.scanForUserIdByName(id),
         this.scanForUserById(id),
+        this.scanForUserIdByUsername(id),
       ]);
     } catch (error) {
       console.log(error);
@@ -43,6 +44,14 @@ export default class Scan {
   scanForUserById(userId: string): Promise<{ type: string; data: UserType }> {
     const { gigerApiUrl } = this.getUrls();
     const url = `${gigerApiUrl}/User/public/byId?id=${userId}`;
+    return axios.get(url).then((response) => {
+      return { type: 'user', data: mapUser(response.data) };
+    });
+  }
+
+  scanForUserIdByUsername(username: string): Promise<{ type: string; data: UserType }> {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/User/simple/byUsername?username=${username}`;
     return axios.get(url).then((response) => {
       return { type: 'user', data: mapUser(response.data) };
     });

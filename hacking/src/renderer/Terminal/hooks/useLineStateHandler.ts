@@ -8,7 +8,7 @@ type LineStatHandlerTypes = {
 export default function useLineStateHandler({
   prefixType,
 }: LineStatHandlerTypes) {
-  const [lines, setLines] = useState<any[]>(gigerArt);
+  const [lines, setLines] = useState<any[]>([]);
   const [userLines, setUserLines] = useState<any[]>([]);
 
   const mapLines = (linesToMap: string[]) => {
@@ -46,11 +46,12 @@ export default function useLineStateHandler({
       addLine(`<span class="error">${errorLines}</span>`);
     }
   };
-  const removeLastLine = () =>{
+  const removeLastLine = () => {
     setLines((oldLines) => {
       oldLines.pop();
       return [...oldLines];
-    });}
+    });
+  };
 
   return {
     lines,

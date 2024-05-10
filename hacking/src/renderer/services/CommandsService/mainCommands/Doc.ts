@@ -17,17 +17,22 @@ export default class Doc {
     }
 
     if (!this.documents[parsedCommand[0]]) {
-      addLines(noDocumentationError);
+      addLines(this.documents.doc);
       return;
     }
+
     if (typeof this.documents[parsedCommand[0]] === 'function') {
       addLines(this.documents[parsedCommand[0]]());
     } else if (Array.isArray(this.documents[parsedCommand[0]])) {
       addLines(this.documents[parsedCommand[0]]);
+    } else {
+      addLines(noDocumentationError);
     }
   }
 
   documents: { [key: string]: DocType } = {
+    doc: DOCUMENTATIONS.DOC,
+    help: DOCUMENTATIONS.DOC,
     name: DOCUMENTATIONS.NAME,
     profile: DOCUMENTATIONS.PROFILE,
     clear: DOCUMENTATIONS.CLEAR,
@@ -41,6 +46,16 @@ export default class Doc {
 
     sledgehammer: DOCUMENTATIONS.SLEDGEHAMMER,
     scanner_v1: DOCUMENTATIONS.SCANNER_V1,
+
+    scanner: '',
+    breacher: '',
+
+    network: '',
+    subnetwork: '',
+    user: '',
+    firewall: '',
+    os: '',
+    ice: '',
   };
 }
 

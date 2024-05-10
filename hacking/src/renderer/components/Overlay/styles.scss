@@ -11,7 +11,6 @@
     .quest-modal {
       padding: 30px 0;
       width: 600px;
-      //height: 600px;
       background: black;
       border: 1px solid white;
       display: flex;
@@ -40,6 +39,14 @@
           }
         }
       }
+    }
+
+    .ice-modal {
+      padding: 30px;
+      border: 2px red solid;
+      font-size: 22px;
+      color: red;
+      font-weight: bold;
     }
   }
 
