@@ -8,7 +8,9 @@ namespace Giger.Models.Auths
         [BsonElement("_id")]
         public required string Id { get; set; }
 
-        public required string Username { get; set; } // UserBase.Handle
+        public required string Username { get; set; } // UserPublic.Handle
+
+        public string? HackerName { get; set; } // UserPrivate.HackerName
 
         public required string Password { get; set; }
         

@@ -1,4 +1,4 @@
-import { Factions } from './companies';
+import { IObscurableInfo } from './general';
 
 export interface IGigBase {
     createdAt: string; //ISO date string
@@ -8,24 +8,28 @@ export interface IGigBase {
     description: string;
     category: GigCategoryNames;
     subcategory: GigSubcategoryNames;
-    reputationRequired?: GigRepuationLevels;
+    reputationRequired?: {
+        level: GigRepuationLevels;
+    };
     id: string;
-    accountId: string;
+    providerAccountNumber: string | null; // account id
+    clientAccountNumber: string | null; // account id
     anonymizedAuthor?: boolean;
     mode: GigModes;
+    authorName: string;
 }
 
 export interface IDraftGig extends IGigBase {
     message: string;
 }
 
-export interface IGig extends IGigBase {
+export interface IGig extends IGigBase, IObscurableInfo {
     status: GigStatus;
     authorId: string;
     takenById?: string;
-    takenForCompany?: Factions;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;
+    conversationId: string;
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;
@@ -43,15 +47,16 @@ export interface IGigSubcategory {
 }
 
 export enum GigCategoryNames {
-    FIXER = 'fixer',
-    KILLER = 'killer',
-    HACKING = 'hacking',
-    WELLBEING = 'wellbeing'
+    FIXER = 'FIXER',
+    KILLER = 'KILLER',
+    HACKING = 'HACKING',
+    WELLBEING = 'WELLBEING'
 }
 
 export enum GigSubcategoryNames {
     INTEL = 'INTEL',
     TECH = 'TECH',
+    ENTERTAINMENT = 'ENTERTAINMENT',
     DELIVERY = 'DELIVERY',
     GUNS_AND_AMMO = 'GUNS_AND_AMMO',
     DRUGS = 'DRUGS',
@@ -78,17 +83,17 @@ export enum GigSubcategoryNames {
 }
 
 export enum GigStatus {
-    AVAILABLE = 'available',
-    IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed',
-    PENDING_CONFIRMATION = 'pending',
-    DISPUTE = 'dispute',
-    EXPIRED = 'expired'
+    AVAILABLE = 'AVAILABLE',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    PENDING_CONFIRMATION = 'PENDING_CONFIRMATION',
+    DISPUTE = 'DISPUTE',
+    EXPIRED = 'EXPIRED'
 }
 
 export enum GigModes {
-    PROVIDER = 'provider',
-    CLIENT = 'client'
+    PROVIDER = 'PROVIDER',
+    CLIENT = 'CLIENT'
 }
 
 export const reputationLabels = new Map<GigRepuationLevels, string>([

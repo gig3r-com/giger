@@ -1,6 +1,6 @@
 import { Factions } from './companies';
-import { ICriminalEvent, IMedEvent } from './events';
 import { IObscurableInfo } from './general';
+import { GigCategoryNames } from './gig';
 
 export interface IUserBase {
     id: string;
@@ -15,9 +15,11 @@ export interface IUserBase {
 export interface IUserPublic extends IUserBase {
     professionPublic: string;
     typePublic: UserTypes;
-    age: number;
     vibe: Vibe;
     wealthLevel: WealthLevels;
+    hasPlatinumPass: boolean;
+    factionRankPublic: Factions;
+    highSecurity: boolean;
 }
 
 export interface IUserPrivate extends IUserPublic {
@@ -25,23 +27,24 @@ export interface IUserPrivate extends IUserPublic {
     professionActual: string;
     typeActual: UserTypes;
     assets: string[];
-    hackingSkill: SkillStat;
-    confrontationVsNegotiation: CharStat;
-    cowardVsFighter: CharStat;
+    hackingSkills: SkillStat;
+    confrontationistVsAgreeable: CharStat;
+    cowardVsBrave: CharStat;
     talkativeVsSilent: CharStat;
     thinkerVsDoer: CharStat;
     combatSkill: SkillStat;
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
     favoriteUserIds: string[];
-    relations: IRelation[];
-    goals: IGoal[];
-    meta: IMeta[];
-    privateRecords: IPrivateRecord[];
-    criminalRecord: ICriminalEvent[];
-    medHistory: IMedEvent[];
     faction: Factions;
     revealCodes: string[];
+    networkName: string;
+    subnetworkId: string;
+    subnetworkName: string;
+    gigReputation: IReputationLevels;
+    insuredAmount: number;
+    factionRankActual: string;
+    networkAdminName: string;
 }
 
 /**
@@ -52,52 +55,47 @@ export interface IAliasMap {
     [key: string]: string; // key: convo or gig id, value: displayedName
 }
 
+export interface IReputationLevels {
+    [GigCategoryNames.FIXER]: number;
+    [GigCategoryNames.KILLER]: number;
+    [GigCategoryNames.HACKING]: number;
+    [GigCategoryNames.WELLBEING]: number;
+}
+
 export interface IAnonymizedUser {
     userId: string;
     displayedAs: string;
 }
 
 export enum UserTypes {
-    HUMAN = 'human',
-    AI = 'ai',
-    ANDROID = 'android'
+    HUMAN = 'HUMAN',
+    AI = 'AI',
+    ANDROID = 'ANDROID'
 }
 
 export enum UserRoles {
-    ADMIN = 'admin',
-    INFLUENCER = 'influencer',
-    DIRECTOR = 'director',
-    GOD = 'god'
+    ADMIN = 'ADMIN',
+    INFLUENCER = 'INFLUENCER',
+    GOD = 'GOD',
+    BOSS = 'BOSS',
+    NPC = 'NPC',
+    MODERATOR = 'MODERATOR'
 }
 
 export interface ICharStats {
-    hackingSkill: SkillStat;
-    confrontationVsNegotiation: CharStat;
-    cowardVsFighter: CharStat;
+    hackingSkills: SkillStat;
+    confrontationistVsAgreeable: CharStat;
+    cowardVsBrave: CharStat;
     talkativeVsSilent: CharStat;
     thinkerVsDoer: CharStat;
     combatSkill: SkillStat;
 }
 
-export type SkillStat = 0 | 1 | 2 | 3;
-export type CharStat = 0 | 1 | 2 | 3 | 4;
-export type CyberwareLevel =
-    | 0
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 13
-    | 14
-    | 15;
+export type SkillStat = { stat: 0 | 1 | 2 | 3 };
+export type CharStat = { stat: 0 | 1 | 2 | 3 | 4 };
+export type CyberwareLevel = {
+    stat: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+};
 
 export enum Vibe {
     DIZORDERS = 'DIZORDERS',
@@ -126,19 +124,19 @@ export enum WealthLevels {
     ELITE = 'ELITE'
 }
 
-export interface IUserRecord extends IObscurableInfo {
+export interface IUserRecord {
     id: string;
     userId?: string;
     description: string;
     recordType: UserRecordTypes;
 }
 
-export interface IRelation extends IUserRecord {
-    relationTo: string; // userId
+export interface IRelation extends IUserRecord, IObscurableInfo {
+    userName: string; // userId
     recordType: UserRecordTypes.RELATION;
 }
 
-export interface IGoal extends IUserRecord {
+export interface IGoal extends IUserRecord, IObscurableInfo {
     title: string;
     recordType: UserRecordTypes.GOAL;
 }
@@ -158,7 +156,7 @@ export enum MetaTypes {
     PROCEDURE = 'PROCEDURE'
 }
 
-export interface IPrivateRecord extends IUserRecord {
+export interface IPrivateRecord extends IUserRecord, IObscurableInfo {
     title: string;
 }
 

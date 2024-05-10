@@ -1,5 +1,5 @@
-import { FC, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FC, useMemo, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
     FieldTypes,
     IAdminEditableFieldProps
@@ -10,6 +10,7 @@ import { Slider } from '../slider/slider';
 import './admin-editable-field.scss';
 
 export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
+    const intl = useIntl();
     const textInput = props.type === FieldTypes.TEXT;
     const numberInput = props.type === FieldTypes.NUMBER;
     const booleanInput = props.type === FieldTypes.BOOLEAN;
@@ -17,6 +18,16 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
     const sliderInput = props.type === FieldTypes.SLIDER;
     const { isGod } = useUserService();
     const [value, setValue] = useState<string | number | boolean>(props.value);
+
+    const rawValue = useMemo(() => {
+        if (booleanInput) {
+            return value
+                ? intl.formatMessage({ id: 'YES' })
+                : intl.formatMessage({ id: 'NO' });
+        }
+
+        return value;
+    }, [value, booleanInput]);
 
     return (
         <>
@@ -53,16 +64,22 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                         setValue(event.target.value === 'true')
                     }
                 >
-                    <option value="true">yes</option>
-                    <option value="false">no</option>
+                    <option value="true">
+                        <FormattedMessage id="YES" />
+                    </option>
+                    <option value="false">
+                        <FormattedMessage id="NO" />
+                    </option>
                 </select>
             )}
             {isGod && selectInput && (
                 <select
                     className={`${props.className} admin-editable-field admin-editable-field__select admin-editable-field__admin-mode`}
                     value={value as string}
-                    onBlur={() => props.onChange(value as string)}
-                    onChange={(event) => setValue(event.target.value)}
+                    onChange={(event) => {
+                        setValue(event.target.value);
+                        props.onChange(value as string);
+                    }}
                 >
                     {props.options?.map((option) => (
                         <option key={option} value={option}>
@@ -95,7 +112,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     className={`admin-editable-field ${props.className}`}
                     onClick={props.onClick}
                 >
-                    {props.value}
+                    {rawValue}
                 </span>
             )}
         </>

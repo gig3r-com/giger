@@ -20,13 +20,13 @@ spec:
   - host: {{ include "gig3r.host" . }}
     http:
       paths:
-      - path: /(api/.*)
+      - path: /((?:api|swagger)/.*)
         pathType: ImplementationSpecific
         backend:
           service:
             name: {{ include "gig3r.backend.app" . }}
             port:
-              number: 80
+              number: 8080
       - path: /(.*)
         pathType: ImplementationSpecific
         backend:
@@ -34,20 +34,18 @@ spec:
             name: {{ include "gig3r.frontend.app" . }}
             port:
               number: 80
-  {{- if ne .Values.environment "app" }}
-  - host: {{ include "gig3r.swagger.url" . }}
+  - host: express.{{ include "gig3r.host" . }}
     http:
       paths:
       - path: /(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "gig3r.swagger.app" . }}
+            name: {{ include "gig3r.mongo-express.app" . }}
             port:
-              number: 80
-  {{- end }}
+              number: 8080
   tls:
   - hosts:
     - {{ include "gig3r.host" . }}
-    - {{ include "gig3r.swagger.url" . }}
+    - express.{{ include "gig3r.host" . }}
     secretName: tls-secret-gig3r-{{ default "app" .Values.environment }}

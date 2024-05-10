@@ -30,8 +30,8 @@ namespace Giger.Services
         public async Task CreateAsync(AnonymizedUser newAnonymizedUser) =>
             await _anonymizedCollection.InsertOneAsync(newAnonymizedUser);
 
-        public async Task UpdateAsync(string id, AnonymizedUser newAnonymizedUser) =>
-            await _anonymizedCollection.ReplaceOneAsync(x => x.Id == id, newAnonymizedUser);
+        public async Task UpdateAsync(AnonymizedUser newAnonymizedUser) =>
+            await _anonymizedCollection.ReplaceOneAsync(x => x.Id == newAnonymizedUser.Id, newAnonymizedUser);
 
         public async Task RemoveAsync(string id) =>
             await _anonymizedCollection.DeleteOneAsync(x => x.Id == id);

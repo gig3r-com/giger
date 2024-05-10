@@ -1,32 +1,33 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { motion } from 'framer-motion';
 import { useUserService } from '../../../shared/services/user.service';
 import { EventRecordType } from '../../../models/events';
 import { criminalLists, medicalLists } from './event-lists';
 import { NewEntry } from './new-entry/new-entry';
-import { useEventsService } from '../../../shared/services/events.service';
 import { EventEntry } from './entry/event-entry';
+import { useEventRecordService } from './event-record.service';
 
 import './event-record.scss';
-
 /**
  * A component that displays the event history of the user.
  * Supports both medical and criminal events.
- * Allows editing in admin mode
+ * Allows editing in god mode
  */
 export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
     const intl = useIntl();
-    const { getEventRecordForUser } = useEventsService();
-    const { currentUser, isGod } = useUserService();
+    const { getEvents, fetchEvents } = useEventRecordService();
+    const { isGod } = useUserService();
 
     const getEventList = () => {
-        return type === 'medical' ? medicalLists : criminalLists;
+        return type === EventRecordType.MEDICAL ? medicalLists : criminalLists;
     };
 
-    const eventRecord = useMemo(() => {
-        return currentUser && getEventRecordForUser(type);
-    }, [currentUser]);
+    const events = useMemo(() => getEvents(type), [type, getEvents]);
+
+    useEffect(function fetchData() {
+        fetchEvents(type);
+    }, []);
 
     return (
         <motion.div key="event-record" className="event-record">
@@ -36,8 +37,8 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                         {intl.formatMessage({ id: section.msgId })}:
                     </span>
                     <ol className="event-record__list">
-                        {eventRecord
-                            ?.filter((event) => event.type === section.name)
+                        {events
+                            .filter((event) => event.type === section.name)
                             .map((entry) => (
                                 <li
                                     className="event-record__entry"

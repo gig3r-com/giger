@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
-import { getUserPublicDataById, users } from '../../mocks/users';
 import {
     setCurrentUser,
-    setIsGod,
     setRequiresGodUserSelection,
     setUser,
+    setUsers,
     updateCurrentUser
 } from '../../store/users.slice';
 import {
@@ -18,81 +17,74 @@ import { RootState } from '../../store/store';
 import {
     selectActiveUsers,
     selectCurrentUser,
-    selectIsAdmin,
+    selectIsModerator,
     selectIsGod
 } from '../../store/users.selectors';
+import { useApiService } from './api.service';
+import { useNotificationsService } from './notifications.service';
+import { useIntl } from 'react-intl';
 
-/**
- * TODO: Connect to backend once it exists
- */
 export function useUserService() {
+    const intl = useIntl();
     const dispatch = useDispatch();
+    const { api, loginCall } = useApiService();
+    const { displayToast } = useNotificationsService();
     const userList = useSelector((state: RootState) => state.users.users);
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
     const isGod = useSelector(selectIsGod);
-    const isAdmin = useSelector(selectIsAdmin);
+    const isModerator = useSelector(selectIsModerator);
 
     /**
-     * completely mocked now, obviously the password test will take place on backend
-     * in case an godmode user logs in, we set the requiresGodUserSelection to true.
-     * also we return a token for the godmode to use as authentication
+     * in case an godmode user logs in, we set the requiresGodUserSelection to true
      */
-    const login = async (username: string, password: string) =>
-        new Promise<void>((resolve, reject) => {
-            if (password === 'test' && username === 'test') {
-                console.log(`logging in ${username} with password ${password}`);
-
-                setTimeout(() => {
-                    dispatch(setCurrentUser(users[35]));
-                    saveLoginData(users[35]);
-                    resolve();
-                }, 3000);
-            } else if (
-                (username === 'god' && password === 'god') ||
-                (username === 'admin' && password === 'admin')
-            ) {
-                console.log(`logging in ${username} with password ${password}`);
-                setTimeout(() => {
-                    dispatch(setRequiresGodUserSelection(true));
-                    dispatch(setIsGod(true));
-                    saveIsGod(true);
-                    resolve();
-                }, 3000);
+    const login = async (username: string, password: string) => {
+        Promise.allSettled([
+            loginCall(username, password),
+            new Promise<void>((resolve) => setTimeout(resolve, 3000))
+        ]).then((res) => {
+            if (res[0].status !== 'fulfilled') {
+                displayToast(intl.formatMessage({ id: 'LOGIN_FAILED' }));
             } else {
-                console.log(
-                    `login failed for ${username} with password ${password}`
-                );
-                setTimeout(() => {
-                    reject('wrong password');
-                }, 3000);
+                const userData = res[0].value;
+                const userIsGod = userData.roles.includes(UserRoles.GOD);
+                dispatch(setCurrentUser(userData));
+                saveLoginData(userData);
+
+                if (userIsGod) {
+                    dispatch(setRequiresGodUserSelection(true));
+                }
             }
         });
+    };
+
+    const fetchAllUsers = () => {
+        api.get('User/public/all')
+            .json<IUserPublic[]>()
+            .then((data) => {
+                dispatch(setUsers(data));
+            })
+            .catch(() =>
+                displayToast(intl.formatMessage({ id: 'ERROR_FETCHING_USERS' }))
+            );
+    };
 
     const saveLoginData = (userData: IUserPrivate) => {
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
     };
 
-    const saveIsGod = (isGod: boolean) => {
-        localStorage.setItem('isGod', JSON.stringify(isGod));
-    };
-
     const retrieveLoginData = (): void => {
         const userData = localStorage.getItem('loggedInUser');
-        const isGod = localStorage.getItem('isGod');
 
         if (userData) {
             dispatch(setCurrentUser(JSON.parse(userData)));
-        }
-
-        if (isGod) {
-            dispatch(setIsGod(JSON.parse(isGod)));
         }
     };
 
     const logout = (): void => {
         localStorage.removeItem('loggedInUser');
-        localStorage.removeItem('isGod');
+        localStorage.removeItem('authToken');
+        api.get('Login/logout');
         dispatch(setCurrentUser(undefined));
     };
 
@@ -100,24 +92,22 @@ export function useUserService() {
         userId: string,
         userData: Partial<IUserPrivate>
     ) => {
-        if (!userList.map((user) => user.id).includes(userId)) {
-            throw new Error(`User with id ${userId} not found`);
-        }
-
         const updatedData: Partial<IUserPrivate> = {
+            ...currentUser,
             ...userData
         };
 
-        //! API CALL
+        api.url('User').put(updatedData);
+
         if (currentUser?.id === userId) {
-            dispatch(updateCurrentUser(updatedData));
+            dispatch(updateCurrentUser(userData));
         } else {
-            dispatch(setUser({ ...updatedData }));
+            dispatch(setUser({ ...userData }));
         }
     };
 
     const canAnonymizeChatHandle = () => {
-        return (currentUser && currentUser.hackingSkill >= 1) || isGod;
+        return (currentUser && currentUser.hackingSkills.stat >= 1) || isGod;
     };
 
     const getAnonymizedHandle = () => {
@@ -145,11 +135,50 @@ export function useUserService() {
     ): Promise<IUserPrivate | IUserPublic> {
         switch (type) {
             case 'private':
-                return users.find((user) => user.id === userId)!;
+                return await api
+                    .get(`User/private/byId?id=${userId}`)
+                    .json<IUserPrivate>();
             case 'public':
-                return getUserPublicDataById(userId);
+                return await api
+                    .get(`User/public/byId?id=${userId}`)
+                    .json<IUserPrivate>();
         }
     }
+
+    async function getUserByName(
+        name: string,
+        type: 'private'
+    ): Promise<IUserPrivate>;
+    async function getUserByName(
+        name: string,
+        type: 'public'
+    ): Promise<IUserPublic>;
+    async function getUserByName(
+        name: string,
+        type: 'private' | 'public'
+    ): Promise<IUserPrivate | IUserPublic> {
+        switch (type) {
+            case 'private':
+                return await api
+                    .get(`User/private/byName/${name}`)
+                    .json<IUserPrivate>();
+            case 'public':
+                return await api
+                    .get(`User/public/byName/${name}`)
+                    .json<IUserPublic>();
+        }
+    }
+
+    const fetchCurrentUser = async () => {
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        const userdata = await api
+            .get(`User/private/byId?id=${currentUser.id}`)
+            .json<IUserPrivate>();
+        dispatch(updateCurrentUser(userdata));
+    };
 
     const getBasicUserDataById = (userId: string): IUserBase | undefined => {
         return userList.find((user) => user.id === userId);
@@ -158,7 +187,11 @@ export function useUserService() {
     const getHandleForConvo = (convoId: string, userId: string) => {
         const user = userList.find((user) => userId === user.id);
 
-        return user?.aliasMap[convoId] ?? user?.handle;
+        return (
+            user?.aliasMap[convoId] ??
+            user?.handle ??
+            intl.formatMessage({ id: 'UNKNOWN' })
+        );
     };
 
     const toggleUserAsFavorite = async (favoriteUserId: string) => {
@@ -185,8 +218,9 @@ export function useUserService() {
         login,
         logout,
         retrieveLoginData,
+        fetchCurrentUser,
         isGod,
-        isAdmin,
+        isModerator,
         updateUserData,
         currentUser,
         saveLoginData,
@@ -194,10 +228,12 @@ export function useUserService() {
         canAnonymizeChatHandle,
         getBasicUserDataById,
         getUserById,
+        getUserByName,
         getHandleForConvo,
         toggleUserAsFavorite,
         isInfluencer,
         getCurrentUserFaction,
-        visibleUsers
+        visibleUsers,
+        fetchAllUsers
     };
 }

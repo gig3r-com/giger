@@ -38,7 +38,7 @@ export const EventEntry: FC<{ entry: EventType; type: EventRecordType }> = ({
             <div className="event-entry__summary">
                 <AdminEditableField
                     type={FieldTypes.NUMBER}
-                    value={dayjs(entry.timestamp).year()}
+                    value={dayjs(entry.timeStamp).year()}
                     className="event-entry__year"
                     onClick={() => setExpanded(!expanded)}
                     onChange={(val) => updateData('year', val)}

@@ -4,7 +4,9 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "local": "env-cmd -f src/env/.env.local vite",
+        "dev": "env-cmd -f src/env/.env.dev vite",
+        "prod": "env-cmd -f src/env/.env.prod vite",
         "build": "tsc && vite build",
         "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -15,6 +17,7 @@
         "@reduxjs/toolkit": "^1.9.5",
         "classnames": "^2.3.2",
         "dayjs": "^1.11.10",
+        "env-cmd": "^10.1.0",
         "framer-motion": "^10.15.1",
         "lodash-es": "^4.17.21",
         "material-icons": "^1.13.12",
@@ -26,7 +29,8 @@
         "react-router": "^6.14.2",
         "react-router-dom": "^6.14.2",
         "shader-canvas": "^0.8.3",
-        "uuid": "^9.0.0"
+        "uuid": "^9.0.0",
+        "wretch": "^2.8.1"
     },
     "devDependencies": {
         "@types/lodash-es": "^4.17.12",

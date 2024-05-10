@@ -7,8 +7,6 @@ namespace Giger.Models.User.Records
 {
     public abstract class UserRecord : ObscurableInfo
     {
-        public required string Title { get; set; }
-        
         public required string Description { get; set; }
         
         [BsonRepresentation(BsonType.String)]
@@ -16,17 +14,21 @@ namespace Giger.Models.User.Records
 
         public override void Obscure()
         {
-            Title = REDACTED;
             Description = REDACTED;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 7 + Description.GetHashCode() * 11 + RecordType.GetHashCode() * 7;
         }
 
         [JsonConverter(typeof(JsonStringEnumConverter<UserRecordTypes>))]
         public enum UserRecordTypes
         {
-            Relation,
-            Goal,
-            Meta,
-            PrivateRecord
+            RELATION,
+            GOAL,
+            META,
+            PRIVATE_RECORD
         }
     }
 }

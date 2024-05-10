@@ -2,17 +2,22 @@
 {
     public class Relation : UserRecord
     {
-        public required string UserId { get; set; }
+        public required string UserName { get; set; }
 
         public Relation()
         {
-            RecordType = UserRecordTypes.Relation;
+            RecordType = UserRecordTypes.RELATION;
         }
 
         public override void Obscure()
         {
-            UserId = REDACTED;
             base.Obscure();
+            UserName = REDACTED;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 27 + UserName.GetHashCode() * 31;
         }
     }
 }

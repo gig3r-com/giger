@@ -14,35 +14,37 @@ namespace Giger.Models.User
         public required string Handle { get; set; } // username
 
         [BsonRepresentation(BsonType.String)]
-        public UserRoles[] Roles { get; set; } = []; // changeable
+        public UserRoles[] Roles { get; set; } = [];
 
-        public Dictionary<string, string> AliasMap { get; set; } = []; // changeable
+        public Dictionary<string, string> AliasMap { get; set; } = [];
 
-        public bool Active { get; set; } // changeable
+        public bool Active { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public required UserTypes TypePublic { get; set; } // changeable
+        public required UserTypes TypePublic { get; set; }
 
-        public required string ProfessionPublic { get; set; } // changeable
+        public string? FactionRankPublic { get; set; }
 
         public required string Surname { get; set; }
 
-        public required int Age { get; set; }
-
         [BsonRepresentation(BsonType.String)]
-        public required Vibe Vibe { get; set; } // changeable ??
+        public required Vibe Vibe { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public required WealthLevels WealthLevel { get; set; }
 
-        public required string NetworkId { get; set; }
+        public string NetworkId { get; set; }
 
-        //[BsonIgnore]
-        public required string NetworkName { get; set; }
+        public string NetworkName { get; set; }
 
-        public required string SubnetworkId { get; set; }
+        public string SubnetworkId { get; set; }
 
-        //[BsonIgnore]
-        public required string SubnetworkName { get; set; }
+        public string SubnetworkName { get; set; }
+
+        public bool HasPlatinumPass { get; set; }
+
+        public bool HighSecurity { get; set; }
+
+        public string ReputationDescription { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 export function useVersionService() {
-    const version = '0.2';
+    const version = '0.3';
 
     const versionCheck = () => {
         const localVersion = localStorage.getItem('version') ?? '0.0';

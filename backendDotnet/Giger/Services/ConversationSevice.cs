@@ -27,11 +27,11 @@ namespace Giger.Services
         public async Task CreateAsync(Conversation newConversation) =>
             await _conversationsCollection.InsertOneAsync(newConversation);
 
-        public async Task UpdateAsync(string id, Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == id, updatedConversation);
+        public async Task UpdateAsync(Conversation updatedConversation) =>
+            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation);
 
-        public async Task UpsertAsync(string id, Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == id, updatedConversation, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpsertAsync(Conversation updatedConversation) =>
+            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation, new ReplaceOptions() { IsUpsert = true });
 
         public async Task RemoveAsync(string id) =>
             await _conversationsCollection.DeleteOneAsync(x => x.Id == id);

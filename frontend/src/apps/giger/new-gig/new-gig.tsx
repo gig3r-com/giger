@@ -20,6 +20,7 @@ import { Controls } from '../../../shared/components/controls/controls';
 import { Slider } from '../../../shared/components/slider/slider';
 import { useBankingService } from '../../../shared/services/banking.service';
 import { AccountType } from '../../../models/banking';
+import { useUserService } from '../../../shared/services/user.service';
 
 import './new-gig.scss';
 
@@ -28,6 +29,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const intl = useIntl();
     const { currentPrivateBalance, currentBusinessBalance, hasCompanyAccount } =
         useBankingService();
+    const { currentUser } = useUserService();
     const { addNewGig, gigerCommission } = useGigsService();
     const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
     const [gigName, setGigName] = useState<string>('');
@@ -66,11 +68,15 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     };
 
     const onSubcategoryChange = (subcategory: GigSubcategoryNames) => {
-        const categoryData = categories.find((c) => c.type === selectedCategory);
-        const subCatData = categoryData?.subcategories.find(cat => cat.type === subcategory);
+        const categoryData = categories.find(
+            (c) => c.type === selectedCategory
+        );
+        const subCatData = categoryData?.subcategories.find(
+            (cat) => cat.type === subcategory
+        );
         setSelectedSubcategory(subcategory);
         setPayout(subCatData?.minPayout ?? 0);
-    }
+    };
 
     const subcategoryData = useMemo(() => {
         return categories
@@ -132,22 +138,28 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   ...(hasCompanyAccount && {
                       fromAccount: fromAccount as AccountType
                   }),
-                  reputationRequired: selectedRepuation as GigRepuationLevels,
+                  reputationRequired: {level: selectedRepuation as GigRepuationLevels},
+                  subcategory: selectedSubcategory! as GigSubcategoryNames,
+                  mode: mode as GigModes,
+                  authorName: anonymize ? 'Anonymous' : currentUser?.handle,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
               } as IDraftGig)
             : undefined;
     }, [
+        gigReady,
         gigName,
-        anonymize,
         publicDescription,
         privateMessage,
         payout,
-        selectedRepuation,
-        selectedCategory,
+        anonymize,
         hasCompanyAccount,
         fromAccount,
-        gigReady
+        selectedRepuation,
+        selectedSubcategory,
+        mode,
+        currentUser?.handle,
+        selectedCategory
     ]);
 
     const handleAddingNewGig = () => {

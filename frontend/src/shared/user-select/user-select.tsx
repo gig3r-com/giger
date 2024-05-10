@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { IUserSelectProps } from './user-select.model';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
@@ -42,7 +42,6 @@ export const UserSelect: FC<IUserSelectProps> = ({
     const handleSelection = (user: IUserBase) => {
         if (mode === 'single') {
             setSelectedUsers(selectedUsers.includes(user) ? [] : [user]);
-            onSelection([user]);
             return;
         }
 
@@ -51,7 +50,6 @@ export const UserSelect: FC<IUserSelectProps> = ({
         } else {
             setSelectedUsers([...selectedUsers, user]);
         }
-        onSelection(selectedUsers);
         adjustContainerSize();
     };
 
@@ -69,6 +67,13 @@ export const UserSelect: FC<IUserSelectProps> = ({
                 }px`;
             }
         }, 0);
+
+    useEffect(
+        function emitSelectionChange() {
+            onSelection(selectedUsers);
+        },
+        [selectedUsers]
+    );
 
     return (
         <>

@@ -2,13 +2,14 @@
 using Giger.Models.BankingModels;
 using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+using Giger.Extensions;
+using Giger.Models.User;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService) 
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
@@ -16,6 +17,8 @@ namespace Giger.Controllers
         private readonly NetworksService _networksService = networksService;
 
         #region Account
+
+        [Obsolete]
         [HttpGet("byId")]
         public async Task<ActionResult<Account>> Get(string id)
         {
@@ -25,35 +28,63 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            if (account.Type == AccountType.BUSINESS)
             {
-                Forbid();
+                if (!HasAccessToFactionAccount(await GetSenderUser(), account.Owner))
+                {
+                    return Unauthorized();
+                }
+            }
+            else
+            {
+                if (!IsAuthorized(account.Owner))
+                {
+                    return Unauthorized();
+                }
             }
 
             return account;
         }
 
-        [HttpGet("byOwner")]
-        public async Task<ActionResult<Account>> GetByOwner(string owner)
+        [HttpGet("allAccounts")]
+        public async Task<List<string>> GetAllAccountNames()
         {
-            var account = await _accountService.GetByUserNameAsync(owner);
+            var allActiveAccounts = await _accountService.GetAllActiveAsync();
+            return allActiveAccounts.Select(a => a.Owner).ToList();
+        }
+
+        [HttpGet("byOwner")]
+        public async Task<ActionResult<List<Account>>> GetByOwner(string owner)
+        {
+            if (!IsAuthorized(owner))
+            {
+                Unauthorized();
+            }
+            var account = await _accountService.GetByAccountNameAsync(owner);
             if (account is null)
             {
                 return NotFound();
             }
 
-            if (!IsAuthorized(owner))
+            var retValue = new List<Account>() { account };
+
+            var user = await _userService.GetByUserNameAsync(owner);
+            if (user is not null)
             {
-                Forbid();
+                var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
+                if (businessAccount is not null)
+                {
+                    retValue.Add(businessAccount);
+                }
             }
 
-            return account;
+            return retValue;
         }
 
         [HttpGet("byAccountNumber")]
         public async Task<ActionResult<Account>> GetByAccountNumber(string accountNumber)
         {
-            var account = await _accountService.GetByUserNameAsync(accountNumber);
+            var account = await _accountService.GetByAccountNumberAsync(accountNumber);
             if (account is null)
             {
                 return NotFound();
@@ -61,23 +92,42 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(account.Owner))
             {
-                Forbid();
+                Unauthorized();
             }
 
             return account;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Account newAccount)
+        public async Task<IActionResult> CreatedAccount(Account newAccount)
         {
             if (IsGodUser())
             {
-                Forbid();
+                Unauthorized();
             }
 
-            newAccount.Id = ObjectId.GenerateNewId().ToString();
+            newAccount.Id = Guid.NewGuid().ToString();
             await _accountService.CreateAsync(newAccount);
-            return CreatedAtAction(nameof(Get), new { id = newAccount.Id }, newAccount);
+            return CreatedAtAction(nameof(CreatedAccount), new { id = newAccount.Id }, newAccount);
+        }
+
+        [HttpPut("{accountNo}")]
+        public async Task<IActionResult> Update(string accountNo, Account updatedAccount)
+        {
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
+
+            var account = await _accountService.GetByAccountNumberAsync(accountNo);
+            if (account is null)
+            {
+                return NotFound();
+            }
+
+            account = updatedAccount;
+            await _accountService.UpdateAsync(account);
+            return NoContent();
         }
 
         [HttpPatch("{accountNo}/balance/add")]
@@ -85,7 +135,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -94,7 +144,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance += value;
-            await _accountService.UpdateAsync(accountNo, account);
+            await _accountService.UpdateAsync(account);
             return NoContent();
         }
 
@@ -103,7 +153,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -112,7 +162,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance -= value;
-            await _accountService.UpdateAsync(accountNo, account);
+            await _accountService.UpdateAsync(account);
             return NoContent();
         }
 
@@ -121,7 +171,7 @@ namespace Giger.Controllers
         {
             if (!IsGodUser())
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -129,7 +179,7 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            await _accountService.RemoveAsync(accountNo);
+            await _accountService.RemoveAsync(account.Id);
             return NoContent();
         }
         #endregion
@@ -146,17 +196,17 @@ namespace Giger.Controllers
 
             if (!IsAuthorized(account.Owner))
             {
-                return Forbid();
+                return Unauthorized();
             }
-            return account.Transactions.ToList();
+            return account.Transactions;
         }
 
         [HttpPost("transaction")]
-        public async Task<IActionResult> Post(Transaction newTransaction)
+        public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
         {
             if (!IsAuthorized(newTransaction.From))
             {
-                return Forbid();
+                return Unauthorized();
             }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
@@ -174,69 +224,67 @@ namespace Giger.Controllers
 
             if (giverAcc.Balance < newTransaction.Amount)
             {
-                return BadRequest("Not enough balance");
+                return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
-            newTransaction.Id = ObjectId.GenerateNewId().ToString();
+            newTransaction.Id = Guid.NewGuid().ToString();
             newTransaction.Date = GigerDateTime.Now;
 
-            giverAcc.Transactions = [..giverAcc.Transactions, newTransaction];
-            
+            giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
-            _accountService.UpdateAsync(giverAcc.Id, giverAcc);
+            await _accountService.UpdateAsync(giverAcc);
 
-            receiverAcc.Transactions = [.. receiverAcc.Transactions, newTransaction];
+            receiverAcc.Transactions.Add(newTransaction);
             receiverAcc.Balance += newTransaction.Amount;
-            _accountService.UpdateAsync(receiverAcc.Id, receiverAcc);
+            await _accountService.UpdateAsync(receiverAcc);
 
-            LogTransaction(newTransaction, giverAcc.OwnerId, receiverAcc.OwnerId);
+            LogTransaction(newTransaction, giverAcc, receiverAcc);
 
-            return CreatedAtAction(nameof(Post), new { id = newTransaction.Id }, newTransaction);
+            return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
 
-        private async void LogTransaction(Transaction transaction, string giverId, string receiverId)
+        private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {
-            // giver and receiver are not null at this point
-            var giver = await _userService.GetByUserNameAsync(giverId);
-            var receiver = await _userService.GetByUserNameAsync(receiverId);
-            var giverSubNetwork = await _networksService.GetSubnetworkByIdAsync(giver.SubnetworkId);
-            var receiverSubNetwork = await _networksService.GetSubnetworkByIdAsync(receiver.SubnetworkId);
+            var giverUser = await _userService.GetByUserNameAsync(senderAccount.Owner);
+            var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
-            var log = new Log
+            Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
+          
+            if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
             {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUserId = giver.Id,
-                SourceUserName = giver.Handle,
-                TargetUserId = receiver.Id,
-                TargetUserName = receiver.Handle,
-                LogType = LogType.Transfer,
-                LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                SubnetworkId = giver.SubnetworkId,
-                SubnetworkName = giverSubNetwork.Name
-            };
+                Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
+            }
 
-            _logService.CreateAsync(log);
-
-            if (giverSubNetwork.Id != receiverSubNetwork.Id)
+            void Log(string subnetworkId, string subnetworkName)
             {
-                log = new Log
+                var log = new Log
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     Timestamp = GigerDateTime.Now,
-                    SourceUserId = giver.Id,
-                    SourceUserName = giver.Handle,
-                    TargetUserId = receiver.Id,
-                    TargetUserName = receiver.Handle,
-                    LogType = LogType.Transfer,
+                    SourceUserId = senderAccount.OwnerId,
+                    SourceUserName = senderAccount.Owner,
+                    TargetUserId = receiverAccount.OwnerId,
+                    TargetUserName = receiverAccount.Owner,
+                    LogType = LogType.TRANSFER,
                     LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                    SubnetworkId = receiver.SubnetworkId,
-                    SubnetworkName = receiverSubNetwork.Name
+                    SubnetworkId = subnetworkId,
+                    SubnetworkName = subnetworkName
                 };
 
                 _logService.CreateAsync(log);
             }
+        }
+
+        private bool HasAccessToFactionAccount(UserPrivate sender, string accountName)
+        {
+            if (sender is null)
+                return false;
+
+            if (sender.Faction.ToString() == accountName)
+                return true;
+
+            return false;
         }
     }
 }

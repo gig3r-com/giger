@@ -3,7 +3,7 @@ import { GigModes, GigStatus } from '../../../models/gig';
 interface IButtonDefinition {
     label: string;
     actionId?: ActionId;
-    color: 'primary' | 'secondary' | 'accent' | 'accent2';
+    color: 'primary' | 'secondary' | 'accent' | 'accent2' | 'muted-accent';
     disabled?: boolean;
 }
 
@@ -165,7 +165,7 @@ const buttonDefinitions: {
         buttons: [
             {
                 label: 'DONE',
-                color: 'primary',
+                color: 'muted-accent',
                 disabled: true
             }
         ]
@@ -175,7 +175,7 @@ const buttonDefinitions: {
         buttons: [
             {
                 label: 'EXPIRED',
-                color: 'primary',
+                color: 'muted-accent',
                 disabled: true
             }
         ]

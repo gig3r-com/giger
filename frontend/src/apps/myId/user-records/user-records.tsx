@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
-import { useUserService } from '../../../shared/services/user.service';
-import { IUserRecordsProps, modeMap } from './user-records.model';
+import { useEffect, useMemo } from 'react';
+import { IUserRecordsProps } from './user-records.model';
 import {
     IRelation,
     IMeta,
@@ -13,18 +12,30 @@ import { GoalEntry } from './goal-entry/goal-entry';
 import { MetaEntry } from './meta-entry/meta-entry';
 import { PrivateRecordEntry } from './private-record-entry/private-record-entry';
 import { RelationEntry } from './relation-entry/relation-entry';
+import { LockedEntry } from '../../../shared/components/locked-entry/locked-entry';
+import { useUserRecordsService } from './user-records.service';
+import { useUserService } from '../../../shared/services/user.service';
+import { FormattedMessage } from 'react-intl';
+import { isIObscurableInfo } from '../../../models/general';
 
 import './user-records.scss';
-import { LockedEntry } from '../../../shared/components/locked-entry/locked-entry';
 
 export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
-    const { currentUser } = useUserService();
-    const entriesProperty = modeMap.get(mode)!.entriesProperty;
-    const entries = useMemo(
-        () => currentUser![entriesProperty],
-        [currentUser, entriesProperty]
-    );
+    const { getRecords, fetchRecords } = useUserRecordsService();
+    const { isGod } = useUserService();
+    const isRevealed = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
+        if (isIObscurableInfo(record) && !record.isRevealed) {
+            return false;
+        }
+        return true;
+    };
+
+    const records = useMemo(() => getRecords(mode), [mode, getRecords]);
+
+    useEffect(function fetchData() {
+        fetchRecords(mode);
+    }, []);
 
     const getRecord = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
         switch (record.recordType) {
@@ -51,9 +62,21 @@ export function UserRecords(props: IUserRecordsProps) {
 
     return (
         <section className="user-records">
-            {entries.map((record) => getRecord(record))}
-            <LockedEntry />
-            <NewRecord type={mode} />
+            {records
+                .filter((record) => isRevealed(record))
+                .map((record) => getRecord(record))}
+
+            {records
+                .filter((record) => !isRevealed(record))
+                .map((record) => (
+                    <div className="user-records__locked" key={record.id}>
+                        <LockedEntry />
+                    </div>
+                ))}
+
+            {records.length === 0 && <FormattedMessage id="NO_RECORDS" />}
+
+            {isGod && <NewRecord type={mode} />}
         </section>
     );
 }

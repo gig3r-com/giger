@@ -4,20 +4,20 @@ export interface IEvent extends IObscurableInfo {
     id: string;
     eventDescription: string;
     status: EventStatus;
-    timestamp: string; // ISO Date timestamp
+    timeStamp: string; // ISO Date timestamp
     name: string;
 }
 
 export type EventType = IMedEvent | ICriminalEvent;
 
 export enum EventStatus {
-    CURRENT = 'current',
-    HISTORICAL = 'historical'
+    CURRENT = 'CURRENT',
+    HISTORICAL = 'HISTORICAL'
 }
 
 export enum EventRecordType {
-    MEDICAL = 'medical',
-    CRIMINAL = 'criminal'
+    MEDICAL = 'MEDICAL',
+    CRIMINAL = 'CRIMINAL'
 }
 
 export interface ICriminalEvent extends IEvent {
@@ -25,11 +25,11 @@ export interface ICriminalEvent extends IEvent {
 }
 
 export enum CriminalEventType {
-    VICTIM = 'victim',
-    SUSPECT = 'suspect',
-    WANTED = 'wanted',
-    WITNESS = 'witness',
-    PUNISHMENT = 'punishment'
+    VICTIM = 'VICTIM',
+    SUSPECT = 'SUSPECT',
+    WANTED = 'WANTED',
+    WITNESS = 'WITNESS',
+    PUNISHMENT = 'PUNISHMENT'
 }
 
 export interface IMedEvent extends IEvent {
@@ -37,13 +37,13 @@ export interface IMedEvent extends IEvent {
 }
 
 export enum MedicalEventType {
-    CYBERWARE = 'cyberware',
-    MEDICAL_DRUG = 'medical drug',
-    MEDICAL_PROCEDURE = 'medical procedure',
-    SYMPTOM = 'symptom'
+    CYBERWARE = 'CYBERWARE',
+    MEDICAL_DRUG = 'MEDICAL_DRUG',
+    MEDICAL_PROCEDURE = 'MEDICAL_PROCEDURE',
+    SYMPTOM = 'SYMPTOM'
 }
 
 export enum MedicalEventStatus {
-    CURRENT = 'current',
-    HISTORICAL = 'historical'
+    CURRENT = 'CURRENT',
+    HISTORICAL = 'HISTORICAL'
 }

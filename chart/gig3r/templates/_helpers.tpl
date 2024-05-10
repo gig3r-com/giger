@@ -25,7 +25,7 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- $len := 24 | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
 {{- if $obj }}
-{{- index $obj "DB_PASSWORD" -}}
+{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" | b64dec -}}
 {{- else -}}
 {{- randAlphaNum $len | b64enc -}}
 {{- end -}}
@@ -39,27 +39,23 @@ false
 {{- end -}}
 {{- end }}
 
-{{- define "gig3r.backend.config" -}}
-{
-  "postgres": {
-    "username": "{{ .Values.database.user }}",
-    "password": "{{ .Values.database.password }}",
-    "host": "postgres-postgresql.postgres.svc.cluster.local",
-    "database": "{{ .Values.database.name }}",
-    "db_init": false
-  },
-  "flask": {
-    "host": "{{ include "gig3r.host" . }}",
-    "port": "80",
-    "debug": {{ include "gig3r.backend.debug" . }}
-  }
-}
+#if .Values.environment != app then Development, else Production 
+{{- define "gig3r.backend.environment" -}}
+  {{- if eq "app" .Values.environment -}}
+    "Production"
+  {{- else -}}
+    "Development"
+  {{- end -}}
+{{- end -}}
+
+{{- define "gig3r.mongodb.app" -}}
+gig3r-{{ default "app" .Values.environment }}-mongodb
 {{- end }}
 
-{{- define "gig3r.swagger.app" -}}
-gig3r-{{ default "app" .Values.environment }}-swagger
+{{- define "gig3r.mongodb.image" -}}
+{{ default "mivalsten/gig3r-mongo" .Values.database.image }}:{{ default "latest" .Values.database.tag }}
 {{- end }}
 
-{{- define "gig3r.swagger.url" -}}
-{{- cat "swagger." (include "gig3r.host" .) | nospace -}}
+{{- define "gig3r.mongo-express.app" -}}
+gig3r-{{ default "app" .Values.environment }}-mongo-express
 {{- end }}

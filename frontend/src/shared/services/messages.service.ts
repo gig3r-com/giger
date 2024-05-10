@@ -3,16 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import { IConversation, IMessage, IMessageStatus } from '../../models/message';
-import { users } from '../../mocks/users';
-import { mockConvos } from '../../mocks/convos';
 import {
     setConversations,
     setGigConversations
 } from '../../store/messages.slice';
 import { RootState } from '../../store/store';
-import { mockUserConvos } from '../../mocks/userConvos';
 import { useUserService } from './user.service';
-import { IUserBase } from '../../models/user';
+import { useApiService } from './api.service';
+import { useNotificationsService } from './notifications.service';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -20,7 +18,10 @@ import { IUserBase } from '../../models/user';
 export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
-    const { currentUser, updateUserData, getBasicUserDataById } = useUserService();
+    const { api } = useApiService();
+    const { displayToast } = useNotificationsService();
+    const { currentUser, updateUserData, getBasicUserDataById } =
+        useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
@@ -30,7 +31,8 @@ export function useMessagesService() {
     );
 
     const createMessage: (text: string, senderId?: string) => IMessage = (
-        text, senderId
+        text,
+        senderId
     ) => {
         return {
             id: uuidv4(),
@@ -75,6 +77,12 @@ export function useMessagesService() {
         return convoId;
     };
 
+    const getGigConvo = async (gigId: string): Promise<IConversation> => {
+        return await api
+            .get(`Gig/get/${gigId}/conversation`)
+            .json<IConversation>();
+    };
+
     const createInitialMessages = (participants: string[]): IMessage[] => {
         const initialMessages: IMessage[] = [];
         participants.forEach((participant) => {
@@ -93,17 +101,27 @@ export function useMessagesService() {
 
     const fetchConvo: (id: string) => void = (id) => {
         setFetchingConvo(true);
-        const convo = mockConvos.find((convo) => convo.id === id);
-        setFetchingConvo(false);
-
-        convo && dispatch(setGigConversations([...gigConversations, convo]));
+        api.get(`Conversation/${id}`)
+            .json<IConversation>()
+            .then((convo) => {
+                convo &&
+                    dispatch(setGigConversations([...gigConversations, convo]));
+                setFetchingConvo(false);
+            });
     };
 
     const fetchUserConvos: (userId: string) => void = (userId) => {
-        const filteredConvos = mockUserConvos.filter((convo) =>
-            convo.participants.some((user) => user === userId)
-        );
-        dispatch(setConversations(JSON.parse(JSON.stringify(filteredConvos))));
+        api.query({ participant: userId })
+            .get('Conversation/byParticipant')
+            .json<IConversation[]>()
+            .then((convos) => {
+                dispatch(setConversations(convos));
+            })
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'FAILED_TO_FETCH_MESSAGES' })
+                )
+            );
     };
 
     const sendMessage: (messageText: string, convoId: string) => void = (
@@ -145,26 +163,13 @@ export function useMessagesService() {
         }
     };
 
-    /**
-     * TODO: Connect to backend once it exists
-     * ? Move to a different service?
-     * Returns a list of users that match the given string
-     * @param name
-     */
-    const findUserByName: (name: string) => IUserBase[] = (name) => {
-        console.log(name);
-        return users.filter((user) =>
-            user.name.toLowerCase().includes(name.toLowerCase())
-        );
-    };
-
     return {
         createMessage,
         sendMessage,
-        findUserByName,
         createConvo,
         fetchConvo,
         fetchingConvo,
-        fetchUserConvos
+        fetchUserConvos,
+        getGigConvo
     };
 }

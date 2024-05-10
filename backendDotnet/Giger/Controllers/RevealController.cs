@@ -7,24 +7,26 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService)
+    public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService, ImplantsController implantsController)
         : AuthController(userService, loginService)
     {
         private readonly GigService _gigService = gigService;
         private readonly ObscuredDataService _obscuredDataService = obscuredDataService;
+
+        private readonly ImplantsController _implantsController = implantsController;
 
         [HttpPatch("code")]
         public async Task<IActionResult> RevealData(string revealCode)
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
-                return Forbid();
+                return Unauthorized();
 
             var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
             if (string.IsNullOrEmpty(userName))
-                return Forbid();
+                return Unauthorized();
 
-            var obscuredData = await _obscuredDataService.GetByRevealCodeIdAsync(revealCode);
+            var obscuredData = await _obscuredDataService.GetByCodeAndUserAsync(revealCode, userName);
             if (obscuredData is null)
                 return NotFound("Wrong code");
 
@@ -43,7 +45,7 @@ namespace Giger.Controllers
 
             if (matchingObscurableData is null)
             {
-                return Redirect($"/api/implants?userId={user.Id}&revealCode={revealCode}");
+                return await _implantsController.Install(user.Id, revealCode);
             }
 
             var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
@@ -56,15 +58,15 @@ namespace Giger.Controllers
                     else if (gig.AuthorId == user.Id)
                         gig.IsRevealed = true;
 
-                    await _gigService.UpdateAsync(matchingObscurableData.Id, gig);
+                    await _gigService.UpdateAsync(gig);
                 }
                 else
                 {
                     matchingObscurableData.IsRevealed = true;
-                    await _userService.UpdateAsync(user.Id, user);
+                    await _userService.UpdateAsync(user);
                 }
                 obscuredData.IsUsed = true;
-                await _obscuredDataService.UpdateAsync(obscuredData.Id, obscuredData);
+                await _obscuredDataService.UpdateAsync(obscuredData);
                 return Ok();
             }
             return NotFound("Wrong code");
@@ -81,12 +83,10 @@ namespace Giger.Controllers
             return gig;
         }
 
-
         private ObscurableInfo? GetObscurableInfoFromUserProfile(UserPrivate user, string obscurableId)
         {
             ObscurableInfo? returnData = CheckCollection(user.PrivateRecords)
                 ?? CheckCollection(user.Goals)
-                ?? CheckCollection(user.Meta)
                 ?? CheckCollection(user.MedicalEvents)
                 ?? CheckCollection(user.CriminalEvents)
                 ?? CheckCollection(user.Relations);

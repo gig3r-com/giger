@@ -9,10 +9,38 @@ namespace Giger.Controllers
         protected readonly LoginService _loginService = loginService;
         protected readonly UserService _userService = userService;
 
-        // TODO: For testing purposes only
+#if DEBUG
         public static bool AuthEnabled { get; set; } = false;
+#endif
 
-        protected bool IsAuthorized(string ownerId = "", short minimumHackingLevel = 1)
+        protected async Task<UserPrivate> GetSenderUser()
+        {
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return null;
+
+            var senderHandle = await _loginService.GetByAuthTokenAsync(senderAuthToken);
+            if (senderHandle == null) 
+                return null;
+
+            return await _userService.GetByUserNameAsync(senderHandle.Username);
+        }
+
+        protected async Task<string> GetSenderUsername()
+        {
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return null;
+
+            var senderHandle = await _loginService.GetByAuthTokenAsync(senderAuthToken);
+            if (senderHandle == null)
+                return null;
+
+            return senderHandle.Username;
+        }
+
+        // owner can be either User.Id or User.Handle (username)
+        protected bool IsAuthorized(string owner = "", short minimumHackingLevel = 1)
         {
 #if DEBUG
             if (!AuthEnabled)
@@ -30,7 +58,7 @@ namespace Giger.Controllers
 
             if (senderUser != null)
             {
-                if (senderUser.Id == ownerId)
+                if (owner == senderUser.Id || owner == senderUser.Handle || owner == senderUser.HackerName)
                     return true;
 
                 if (senderUser.Roles.Contains(UserRoles.GOD))
@@ -40,6 +68,29 @@ namespace Giger.Controllers
                     return true;
 
                 if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
+                    return true;
+            }
+
+            return false;
+        }
+
+        protected bool IsRole(UserRoles allowedRole)
+        {
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return false;
+
+            var senderHandle = _loginService.GetByAuthTokenAsync(senderAuthToken).Result?.Username;
+            if (string.IsNullOrEmpty(senderHandle))
+                return false;
+
+            var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
+            if (senderUser != null)
+            {
+                if (senderUser.Roles.Contains(allowedRole))
+                    return true;
+
+                if (senderUser.Roles.Contains(UserRoles.GOD))
                     return true;
             }
 

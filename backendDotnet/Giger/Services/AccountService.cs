@@ -18,10 +18,16 @@ namespace Giger.Services
         public async Task<List<Account>> GetAllAsync() =>
             await _accountsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<List<Account>> GetAllActiveAsync() =>
+            await _accountsCollection.Find(x => x.IsActive).ToListAsync();
+
+        public async Task<Account?> GetSystemAccountAsync() =>
+            await _accountsCollection.Find(x => x.Owner == "SYSTEM").FirstOrDefaultAsync();
+
         public async Task<Account?> GetByIdAsync(string id) =>
             await _accountsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task<Account?> GetByUserNameAsync(string owner) =>
+        public async Task<Account?> GetByAccountNameAsync(string owner) =>
             await _accountsCollection.Find(x => x.Owner == owner).FirstOrDefaultAsync();
 
         public async Task<Account?> GetByUserIdAsync(string ownerId) =>
@@ -33,8 +39,8 @@ namespace Giger.Services
         public async Task CreateAsync(Account newAccount) =>
             await _accountsCollection.InsertOneAsync(newAccount);
 
-        public async Task UpdateAsync(string id, Account updatedAccount) =>
-            await _accountsCollection.ReplaceOneAsync(x => x.Id == id, updatedAccount);
+        public async Task UpdateAsync(Account updatedAccount) =>
+            await _accountsCollection.ReplaceOneAsync(x => x.Id == updatedAccount.Id, updatedAccount);
 
         public async Task RemoveAsync(string id) =>
             await _accountsCollection.DeleteOneAsync(x => x.Id == id);

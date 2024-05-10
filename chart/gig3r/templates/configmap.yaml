@@ -1,10 +1,21 @@
 ---
-{{- if ne .Values.environment "app" -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: swagger-config
+  name: mongo-scripts
 data:
-  config: |-
-{{ .Values.swagger.config | indent 4 -}}
-{{- end -}}
+  1-loadFiles.sh: |-
+    printenv | grep MONGO_INITDB
+    for COL in `ls /init/*.json`; do
+      echo "Processing $COL file..."
+      mongoimport --host localhost \
+                  --db $MONGO_INITDB_DATABASE \
+                  --collection $(basename $COL .json) \
+                  --type json \
+                  --file $COL \
+                  --jsonArray \
+                  --authenticationDatabase $MONGO_INITDB_DATABASE \
+                  --username $MONGO_INITDB_ROOT_USERNAME \
+                  --password $MONGO_INITDB_ROOT_PASSWORD
+    done

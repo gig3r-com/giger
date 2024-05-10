@@ -22,8 +22,7 @@ namespace Giger.Models.Networks
         [BsonRepresentation(BsonType.String)]
         public OperatingSystem? OperatingSystem { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public Ice[] Ice { get; set; } = [];
+        public string[] Ice { get; set; } = [];
 
         public string[] PastHacks { get; set; } = [];
     }
@@ -31,22 +30,16 @@ namespace Giger.Models.Networks
     [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]
     public enum Firewall
     {
-        EncryptGuard,
-        FirewallX,
-        VirtualVault
+        ENCRYPT_GUARD,
+        FIREWALL_X,
+        VIRTUAL_VAULT
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<OperatingSystem>))]
     public enum OperatingSystem
     {
-        ForceField,
-        EvilTwin,
-        JoanOfArc
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<Ice>))]
-    public enum Ice
-    {
-        ToBeProvided
+        FORCE_FIELD,
+        EVIL_TWIN,
+        JOAN_OF_ARC
     }
 }

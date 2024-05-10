@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen(config =>
 });
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
+builder.Services.AddMvc().AddControllersAsServices();
 builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();
@@ -42,37 +43,44 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.Use((context, next) =>
-{
-#if DEBUG
-    if (!AuthController.AuthEnabled)
-    {
-        return next();
-    }
-#endif
-
-    if (context.Request.Path.StartsWithSegments("/api/Login"))
-    {
-        return next();
-    }
-
-    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
-    {
-        return next();
-    }
-    context.Response.Clear();
-    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-    context.Response.WriteAsync("Unauthorized. Please login.");
-    return null;
-});
-
-app.UseAuthorization();
-
 var webSocketOptions = new WebSocketOptions() { KeepAliveInterval = TimeSpan.FromSeconds(120) };
 app.UseWebSockets(webSocketOptions);
 app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
 app.UseStaticFiles();
 app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
+
+app.Use(async (context, next) =>
+{
+#if DEBUG
+    if (!AuthController.AuthEnabled)
+    {
+        await next();
+        return;
+    }
+#endif
+
+    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
+    {
+        await next();
+        return;
+    }
+
+    if (context.Request.Path.StartsWithSegments("/api/Login"))
+    {
+        await next();
+        return;
+    }
+    
+
+    if (context.Request.Path.StartsWithSegments("/api/HealthCheck"))
+    {
+        await next();
+        return;
+    }
+
+    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+    await context.Response.WriteAsync("Unauthorized. Please login.");
+});
 
 app.Run();

@@ -1,0 +1,35 @@
+@import '../../../variables.scss';
+
+.reputation-summary {
+    &__title {
+        color: $base-text-color;
+        font-family: 'Saira', sans-serif;
+        text-align: center;
+        width: 100%;
+        font-size: 16px;
+        margin-top: .25rem;
+    }
+
+    &__list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-bottom: 1px solid $primary-color;
+        padding-bottom: 0.5rem;
+    }
+
+    &__label {
+        color: $base-text-color;
+        font-family: 'Saira', sans-serif;
+    }
+
+    &__entry {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.25rem 1rem;
+        box-sizing: border-box;
+    }
+}

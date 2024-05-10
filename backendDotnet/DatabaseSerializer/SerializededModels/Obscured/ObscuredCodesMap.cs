@@ -11,25 +11,28 @@ namespace Giger.SerializededModels.Obscured
             CodesMapTable = [
                 new Models.Obscured.ObscuredCodesMap()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     ObscurableId = "661737df07174e02083a9ef5",
                     ExpectedRevealCode = "q12we34r",
+                    Username = "jsilver",
                     IsUsed = false,
                 },
-                new Models.Obscured.ObscuredCodesMap()
-                {
-                    Id = ObjectId.GenerateNewId().ToString(),
-                    ObscurableId = "2",
-                    ExpectedRevealCode = "code1",
-                    IsUsed = false,
-                },
-                new Models.Obscured.ObscuredCodesMap()
-                {
-                    Id = ObjectId.GenerateNewId().ToString(),
-                    ObscurableId = "2",
-                    ExpectedRevealCode = "code2",
-                    IsUsed = false,
-                }
+                //new Models.Obscured.ObscuredCodesMap()
+                //{
+                //    Id = Guid.NewGuid().ToString(),
+                //    ObscurableId = "2",
+                //    ExpectedRevealCode = "code1",
+                //    Username = "",
+                //    IsUsed = false,
+                //},
+                //new Models.Obscured.ObscuredCodesMap()
+                //{
+                //    Id = Guid.NewGuid().ToString(),
+                //    ObscurableId = "2",
+                //    ExpectedRevealCode = "code2",
+                //    Username = "",
+                //    IsUsed = false,
+                //}
             ];
         }
     }

@@ -20,7 +20,6 @@ export const MyId: FC = () => {
     const wrapperClassnames = classNames({
         'my-id__content': true
     });
-
     return (
         <motion.section className="my-id">
             {location.pathname !== '/myid' && (

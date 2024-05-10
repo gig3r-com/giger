@@ -13,7 +13,7 @@
     top: 100vh;
     left: 0;
     width: 100vw;
-    height: calc(100vh - #{$menu-size});
+    height: calc(100dvh - #{$menu-size});
     transition: $standard-timing-function $standard-duration transform;
     background: $app-background;
 
@@ -31,6 +31,7 @@
         width: 100%;
         flex-wrap: wrap;
         position: relative;
+        transform: translateX(-22px);
 
         &:nth-child(even) {
             left: 55px;

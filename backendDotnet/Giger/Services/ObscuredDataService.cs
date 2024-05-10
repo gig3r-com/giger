@@ -24,14 +24,17 @@ namespace Giger.Services
         public async Task<ObscuredCodesMap?> GetByObscurableIdAsync(string obscruableId) =>
             await _obscuredCodesMapCollection.Find(x => x.ObscurableId == obscruableId).FirstOrDefaultAsync();
 
+        public async Task<ObscuredCodesMap?> GetByCodeAndUserAsync(string revealCode, string username) =>
+            await _obscuredCodesMapCollection.Find(x => x.ExpectedRevealCode == revealCode && x.Username == username).FirstOrDefaultAsync();
+
         public async Task<ObscuredCodesMap?> GetByRevealCodeIdAsync(string revealCode) =>
             await _obscuredCodesMapCollection.Find(x => x.ExpectedRevealCode == revealCode).FirstOrDefaultAsync();
 
         public async Task CreateAsync(ObscuredCodesMap newObscuredRevealedMap) =>
             await _obscuredCodesMapCollection.InsertOneAsync(newObscuredRevealedMap);
 
-        public async Task UpdateAsync(string id, ObscuredCodesMap updatedObscuredRevealedMap) =>
-            await _obscuredCodesMapCollection.ReplaceOneAsync(x => x.Id == id, updatedObscuredRevealedMap);
+        public async Task UpdateAsync(ObscuredCodesMap updatedObscuredRevealedMap) =>
+            await _obscuredCodesMapCollection.ReplaceOneAsync(x => x.Id == updatedObscuredRevealedMap.Id, updatedObscuredRevealedMap);
 
         public async Task RemoveAsync(string id) =>
             await _obscuredCodesMapCollection.DeleteOneAsync(x => x.Id == id);

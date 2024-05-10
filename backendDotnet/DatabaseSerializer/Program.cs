@@ -5,12 +5,14 @@ namespace DatabaseSerializer
 {
     internal class Program
     {
+        static string[] _nonDbClasses = [ "UserSimple", "RecordHashes" ];
+
         static void Main(string[] args)
         {
             string nspace = "Giger.Models";
             var assembly = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Giger.dll"));
             var modelTypes = from t in assembly.GetTypes()
-                             where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace)
+                             where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace) && !_nonDbClasses.Contains(t.Name)
                              select t;
             var modelTypesArray = modelTypes.ToArray();
 
@@ -20,7 +22,7 @@ namespace DatabaseSerializer
             nspace = "Giger.SerializededModels";
             assembly = Assembly.GetExecutingAssembly();
             modelTypes = from t in assembly.GetTypes()
-                             where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace)
+                             where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace) && !_nonDbClasses.Contains(t.Name)
                              select t;
             modelTypesArray = modelTypes.ToArray();
             var outputDirModels = Path.Combine(Path.GetDirectoryName(outputDirModelTypes), "ModelsExample");

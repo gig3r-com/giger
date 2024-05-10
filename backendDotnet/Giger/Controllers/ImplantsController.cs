@@ -15,87 +15,84 @@ namespace Giger.Controllers
         [HttpGet]
         public async Task<List<MedicalEvent>> Get() => await _gigerImplantsService.GetAllAsync();
 
-        [HttpGet("install")]
-        public async Task<ActionResult<string>> Get(string userId, string revealCode)
+        [HttpPatch("install")]
+        public async Task<IActionResult> Install(string userId, string revealCode)
         {
             var obscurableData = await _obscuredDataService.GetByRevealCodeIdAsync(revealCode);
             if (obscurableData is null)
             {
-                HttpContext.Response.StatusCode = 406;
-                return "Invalid code";
+                return BadRequest("Invalid code.");
             }
             
             var implantData = await _gigerImplantsService.GetAsync(obscurableData.ObscurableId);
             if (implantData is null)
             {
-                HttpContext.Response.StatusCode = 406;
-                return "Invalid code";
+                return BadRequest("Invalid code.");
             }
 
             var targetUser = await _userService.GetAsync(userId);
             if (targetUser is null)
             {
-                HttpContext.Response.StatusCode = 404;
-                return "Target user not found";
+                return NotFound("User not found.");
+            }
+
+            if (targetUser.MedicalEvents.Any(x => x.Name == implantData.Name))
+            {
+                return BadRequest("User already has this implant.");
             }
 
             implantData.TimeStamp = GigerDateTime.Now;
             targetUser.MedicalEvents = [.. targetUser.MedicalEvents, implantData];
-            await _userService.UpdateAsync(userId, targetUser);
+            await _userService.UpdateAsync(targetUser);
 
-            HttpContext.Response.StatusCode = 200;
-            return $"An ... implant has been succesfully activated.";
-        }
-
-        [HttpGet("byName")]
-        public async Task<ActionResult<MedicalEvent>> GetOwner(string name)
-        {
-            var gigerEvent = await _gigerImplantsService.GetByFirstNameAsync(name);
-            if (gigerEvent is null)
-            {
-                return NotFound();
-            }
-
-            return gigerEvent;
+            return Ok($"An {implantData.Name} implant has been succesfully activated.");
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(MedicalEvent newEvent)
         {
-            await _gigerImplantsService.CreateAsync(newEvent);
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
 
-            return CreatedAtAction(nameof(Get), new { id = newEvent.Id }, newEvent);
+            await _gigerImplantsService.CreateAsync(newEvent);
+            return CreatedAtAction(nameof(Post), new { id = newEvent.Id }, newEvent);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, MedicalEvent updatedEvent)
         {
-            var gigerEvent = await _gigerImplantsService.GetAsync(id);
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
 
+            var gigerEvent = await _gigerImplantsService.GetAsync(id);
             if (gigerEvent is null)
             {
                 return NotFound();
             }
 
             updatedEvent.Id = gigerEvent.Id;
-
-            await _gigerImplantsService.UpdateAsync(id, updatedEvent);
-
-            return NoContent();
+            await _gigerImplantsService.UpdateAsync(updatedEvent);
+            return Ok();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var gigerEvent = await _gigerImplantsService.GetAsync(id);
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
 
+            var gigerEvent = await _gigerImplantsService.GetAsync(id);
             if (gigerEvent is null)
             {
                 return NotFound();
             }
-
             await _gigerImplantsService.RemoveAsync(id);
-
             return NoContent();
         }
     }

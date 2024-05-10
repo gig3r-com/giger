@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { useNavigate } from 'react-router';
+import { FC, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { IControlsProps } from './controls.model';
@@ -22,7 +22,12 @@ export const Controls: FC<IControlsProps> = ({
     onRightSideClick,
     navigateBack = true
 }) => {
+    const location = useLocation();
     const navigate = useNavigate();
+    const goBack = useCallback(() => {
+        const newPath = location.pathname.split('/').slice(0, -1).join('/');
+        navigate(newPath);
+    }, [location.pathname, navigate]);
 
     return (
         <header className="controls">
@@ -39,19 +44,25 @@ export const Controls: FC<IControlsProps> = ({
                 <motion.span
                     {...anim}
                     className="controls__back controls__left-side"
-                    onClick={navigateBack ? () => navigate('../') : () => onLeftSideClick && onLeftSideClick()}
+                    onClick={
+                        navigateBack
+                            ? () => goBack()
+                            : () => onLeftSideClick && onLeftSideClick()
+                    }
                 >
                     <ChevronLeft />
                     <MemoizedFormattedMessage id="BACK" />
                 </motion.span>
             )}
-            {rightSideOption && <motion.span
-                {...anim}
-                className="controls__right-side"
-                onClick={onRightSideClick}
-            >
-                {rightSideOption}
-            </motion.span>}
+            {rightSideOption && (
+                <motion.span
+                    {...anim}
+                    className="controls__right-side"
+                    onClick={onRightSideClick}
+                >
+                    {rightSideOption}
+                </motion.span>
+            )}
         </header>
     );
 };

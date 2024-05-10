@@ -12,7 +12,7 @@ namespace Giger.SerializededModels.EventModels
             ImplantsTable = [
                 new MedicalEvent()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     IsRevealed = true,
                     Name = "Cyberware Implantation",
                     EventDescription = "You have been implanted with a cyberware.",
@@ -22,7 +22,7 @@ namespace Giger.SerializededModels.EventModels
                 },
                 new MedicalEvent()
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     IsRevealed = true,
                     Name = "BioArm",
                     EventDescription = "You have been implanted with a bio arm.",

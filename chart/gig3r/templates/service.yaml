@@ -27,30 +27,47 @@ metadata:
 spec:
   ports:
   - name: {{ include "gig3r.backend.app" . }}
-    port: 80
+    port: 8080
     protocol: TCP
-    targetPort: 80
+    targetPort: 8080
   selector:
     app: {{ include "gig3r.backend.app" . }}
   sessionAffinity: None
 
 ---
-{{- if ne .Values.environment "app" -}}
 
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ include "gig3r.swagger.app" . }}
-  name: {{ include "gig3r.swagger.app" . }}
+    app: {{ include "gig3r.mongodb.app" . }}
+  name: {{ include "gig3r.mongodb.app" . }}
 spec:
   ports:
-  - name: {{ include "gig3r.swagger.app" . }}
-    port: 80
+  - name: {{ include "gig3r.mongodb.app" . }}
+    port: 27017
     protocol: TCP
-    targetPort: 8080
+    targetPort: 27017
   selector:
-    app: {{ include "gig3r.swagger.app" . }}
+    app: {{ include "gig3r.mongodb.app" . }}
   sessionAffinity: None
 
-{{- end -}}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.mongo-express.app" . }}
+  name: {{ include "gig3r.mongo-express.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.mongo-express.app" . }}
+    port: 8080
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: {{ include "gig3r.mongo-express.app" . }}
+  sessionAffinity: None
+
+---

@@ -28,4 +28,4 @@ $slow-duration:             0.4s;
 
 // SIZES 
 $menu-size:                 60px;
-$standard-viewport-height:  calc(100vh - #{$menu-size});
+$standard-viewport-height:  calc(100dvh - #{$menu-size});

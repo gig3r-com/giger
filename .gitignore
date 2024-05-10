@@ -6,3 +6,6 @@ backendDotnet/TestWebSocketClientChat/bin/*
 backendDotnet/DatabaseSerializer/obj/*
 backendDotnet/DatabaseSerializer/bin/*
 backendDotnet/Models/*
+docker-compose.override.yaml
+.env
+
