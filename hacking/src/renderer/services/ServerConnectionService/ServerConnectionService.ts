@@ -85,6 +85,12 @@ export default class ServerConnectionService {
     const breachEffect = exploit.effect[subnetwork.firewall];
     let currentTime = breachEffect.breachTime;
 
+    // LOG BREACH
+    console.log('LOG');
+    this.ApiService.addLog();
+
+    // END LOG
+
     // eslint-disable-next-line consistent-return
     this.breachTimer = setInterval(() => {
       this.setInputDisabled(true);

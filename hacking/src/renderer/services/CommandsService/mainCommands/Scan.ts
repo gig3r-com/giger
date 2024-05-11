@@ -91,19 +91,19 @@ export default class Scan {
     const { ApiService } = this.Service;
     const programs = await ApiService.getAvailablePrograms();
     if (
-      programs.filter((program) => program.name === EXPLOITS.Scanner_v1.name)
+      programs.filter((program) => program?.name === EXPLOITS.Scanner_v1.name)
         .length
     ) {
       this.scannerVersion = 1;
     }
     if (
-      programs.filter((program) => program.name === EXPLOITS.Scanner_v2.name)
+      programs.filter((program) => program?.name === EXPLOITS.Scanner_v2.name)
         .length
     ) {
       this.scannerVersion = 1;
     }
     if (
-      programs.filter((program) => program.name === EXPLOITS.Scanner_v3.name)
+      programs.filter((program) => program?.name === EXPLOITS.Scanner_v3.name)
         .length
     ) {
       this.scannerVersion = 1;

@@ -8,6 +8,7 @@ import { getLoginUserData, setLoginUserData } from '../../Terminal/utils/store';
 import ProfileModule from './modules/Profile';
 import ScanModule from './modules/Scan';
 import AccountsModule from './modules/Accounts';
+import LogsModule from './modules/Log';
 
 export default class ApiService {
   profileModule = new ProfileModule();
@@ -15,6 +16,16 @@ export default class ApiService {
   scanModule = new ScanModule();
 
   accountsModule = new AccountsModule();
+
+  logsModule = new LogsModule();
+
+  /*
+   ************************************************************************************************
+   * LOGS METHODS
+   ************************************************************************************************
+   */
+
+  addLog = this.logsModule.addLog.bind(this);
 
   /*
    ************************************************************************************************

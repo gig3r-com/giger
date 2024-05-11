@@ -12,12 +12,32 @@ export function getBaseProfileLines(data: ProfileType): string[] {
   const lines = [
     `${tabField('id', data.id)}`,
     `${tabField('handle', data.handle)}`,
-    `${tabField('name', data.name)}, ${tabField('surname', data.surname)}`,
-    `${tabField('network', data.networkName)} ${tabField('id', data.networkId)}`,
-    `${tabField('subnetwork', data.subnetworkName)} ${tabField('id', data.subnetworkId)}`,
-    // eslint-disable-next-line
-    `${field('type', data.typeActual)} ${field('wealth', data.wealthLevel,)}`,
   ];
+
+  if (data.name) {
+    lines.push(
+      `${tabField('name', data.name)}, ${tabField('surname', data.surname)}`,
+    );
+  } else {
+    lines.push(
+      `${tabField('surname', data.surname)}`,
+    );
+  }
+
+  if (data.networkId) {
+    lines.push(
+      `${tabField('network', data.networkName)} ${tabField('id', data.networkId)}`,
+    );
+  }
+
+  if (data.subnetworkId) {
+    lines.push(
+      `${tabField('subnetwork', data.subnetworkName)} ${tabField('id', data.subnetworkId)}`,
+    );
+  }
+  lines.push(
+    `${field('type', data.typeActual)}, ${field('wealth', data.wealthLevel,)}`,
+  );
 
   // Events
   let tableContent = '';

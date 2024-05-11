@@ -3,8 +3,9 @@ import { canTabSelector } from '../../../Terminal/hooks/useKeyHandler';
 export function title(value: string): string {
   return `<span class="secondary-color">${value}</span> found!`;
 }
-export function field(key: string, value: string): string {
-  return `<span>${key}:</span> <span>${value}</span>`;
+export function field(key: string, value: string, addon?: string): string {
+  if (!value) return '';
+  return `<span>${key}:</span> <span>${value}</span>${addon ? addon : ''}`;
 }
 export function fieldUN(key: string, value: string): string {
   if (value === 'Unknown')
@@ -13,6 +14,7 @@ export function fieldUN(key: string, value: string): string {
 }
 
 export function tabField(key: string, value: string): string {
+  if (!value) return '';
   return `<span>${key}:</span> ${onlyTab(value)}`;
 }
 

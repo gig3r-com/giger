@@ -1,0 +1,80 @@
+[
+  {
+    "_id": "7faca19a-6919-4d3e-8621-8603f2fe7df8",
+    "Handle": "hackerbot",
+    "HackerName": null,
+    "Name": "",
+    "Surname": "HackerBot",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "HEDONIZERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "esthetics",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 0,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [],
+    "NetworkId": "",
+    "NetworkName": "",
+    "SubnetworkId": "",
+    "SubnetworkName": "",
+    "NetworkAdminName": "",
+    "HasPlatinumPass": false,
+    "ReputationDescription": null,
+    "HighSecurity": false,
+    "Exploits": [
+      "Worm",
+      "Sledgehammer",
+      "Termite",
+      "Cybercracker",
+      "WizardsBook",
+      "TinWeasel",
+      "MindFlayer",
+      "Scanner_v1",
+      "Scanner_v2",
+      "Scanner_v3",
+      "Monitor"
+    ],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [],
+    "CriminalEvents": [],
+    "MedicalEvents": []
+  }
+]

@@ -112,6 +112,10 @@ table.list-table, table.profile-table, table.account-table {
   margin: 0 20px;
 }
 
+table.list-table {
+  margin: -20px 0 0 -10px;
+}
+
 @keyframes loading {
   0% {
     content: '-';
