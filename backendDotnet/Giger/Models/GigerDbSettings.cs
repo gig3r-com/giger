@@ -14,6 +14,7 @@
         public string AuthsCollectionName { get; set; } = null!;
         public string ConversationsCollectionName { get; set; } = null!;
         public string GigsCollectionName { get; set; } = null!;
+        public string GigerConfigCollectionName { get; set; } = null!;
         public string HackConfigCollectionName { get; set; } = null!;
         public string ImplantsCollectionName { get; set; } = null!;
         public string LogsCollectionName { get; set; } = null!;
