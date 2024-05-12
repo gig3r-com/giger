@@ -58,7 +58,6 @@ namespace Giger.Models.GigModels
             ConversationId = null;
             Category = GigCategoryNames.REDACTED;
             Subcategory = GigSubcategoryNames.REDACTED;
-            Status = GigStatus.COMPLETED;
             AuthorId = REDACTED;
             AuthorName = REDACTED;
             ComplaintReason = ComplaintReason == null ? null : REDACTED;
