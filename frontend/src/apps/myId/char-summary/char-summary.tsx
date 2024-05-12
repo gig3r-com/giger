@@ -369,7 +369,7 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    {isPrivate && <ReputationSummary />}
+                    <ReputationSummary />
 
                     {isPrivate && (
                         <AdminEditableField
