@@ -11,6 +11,7 @@ import Install from './Install';
 import CopyData from './CopyData';
 import Balance from './Balance';
 import Transfer from './Transfer';
+import Log from './Log';
 
 export {
   End,
@@ -26,4 +27,5 @@ export {
   CopyData,
   Balance,
   Transfer,
+  Log,
 };

@@ -1,0 +1,10 @@
+[
+  {
+    _id: 'd3484b46-a31c-43b5-87fe-7465f5b3be3e',
+    Name: 'DirectorsNetwork',
+    Subnetworks: [
+      '04782487-aea5-4639-a439-e7ffd51fda92'
+    ],
+    AdminId: 'hackerbot'
+  }
+]

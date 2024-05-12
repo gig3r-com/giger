@@ -1,6 +1,6 @@
 import type CommandsServiceType from '../CommandsService';
-import { getDisconectMessage } from '../responseLines/misc';
-import { notConnectedError } from '../responseLines/errors';
+import { getErrorMessage, notConnectedError } from '../responseLines/errors';
+import { getLogsMessage } from '../responseLines/logs';
 
 export default class End {
   private Service: CommandsServiceType;
@@ -9,8 +9,14 @@ export default class End {
     this.Service = CommandsService;
   }
 
-  execute() {
-    const { addLines, fireInitError, ServerConnectionService } = this.Service;
+  async execute() {
+    const {
+      addLines,
+      fireInitError,
+      ServerConnectionService,
+      setInputDisabled,
+      ApiService,
+    } = this.Service;
     if (!addLines) {
       fireInitError();
       return;
@@ -19,11 +25,18 @@ export default class End {
       addLines(notConnectedError);
       return;
     }
-    addLines(
-      getDisconectMessage(
-        ServerConnectionService.connectedSubnetwork?.name || '',
-      ),
-    );
-    ServerConnectionService.disconnect();
+
+    try {
+      setInputDisabled(true);
+      const logs = await ApiService.getSubnetworksLogs(
+        ServerConnectionService.connectedSubnetwork?.id,
+      );
+      console.log(logs);
+      addLines(getLogsMessage(logs));
+      setInputDisabled(false);
+    } catch (err) {
+      setInputDisabled(false);
+      addLines(getErrorMessage(err));
+    }
   }
 }

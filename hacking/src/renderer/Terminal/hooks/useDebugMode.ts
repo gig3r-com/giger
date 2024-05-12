@@ -6,8 +6,8 @@ export default function useDebugMode() {
   useEffect(() => {
     // @ts-ignore
     window.config = {
-      // gigerApiUrl: 'http://localhost:5174/api',
-      // gigerUrl: 'http://localhost:5174',
+      // gigerApiUrl: 'http://localhost:9090/api',
+      // gigerUrl: 'http://localhost:9090',
       gigerApiUrl: 'http://192.168.50.100:9090/api',
       gigerUrl: 'http://192.168.50.100:9090',
     };

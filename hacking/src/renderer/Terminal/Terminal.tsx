@@ -15,7 +15,6 @@ import {
   ServerConnectionService,
   LineStateService,
 } from '../services';
-import initialization from './utils/initialization';
 
 export default function Terminal() {
   const [input, setInput] = useState('');

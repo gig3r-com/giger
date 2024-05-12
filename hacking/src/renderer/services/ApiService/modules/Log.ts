@@ -1,23 +1,32 @@
 import axios from 'axios';
+import {getLoginUserData} from "../../../Terminal/utils/store";
+import mapLog from "../mappers/log";
 
 export default class Log {
-  async addLog(): Promise<> {
+  async addLog({ type, breachEffect, subnetwork }): Promise<> {
     const { gigerApiUrl } = this.getUrls();
-    const logUrl = `${gigerApiUrl}/Log`;
+    const loginUserData = getLoginUserData();
+    const logUrl = `${gigerApiUrl}/Log/hack`;
     const logData = {
-      // id: 'string',
-      // timestamp: '2024-05-10T12:59:37.761Z',
-      sourceUserId: 'string',
-      sourceUserName: 'string',
-      sourceHackerName: 'string',
-      targetUserId: 'string',
-      targetUserName: 'string',
-      logType: 'MESSAGE',
-      logData: 'string',
-      subnetworkId: 'string',
-      subnetworkName: 'string',
+      id: crypto.randomUUID(),
+      sourceUserId: loginUserData.id,
+      sourceUserName: loginUserData.handle,
+      sourceHackerName: loginUserData.hackerName,
+      targetUserId: '',
+      targetUserName: '',
+      logType: 'SUBNETWORK_SECURITY_BREACH',
+      logData: 'Breach',
+      subnetworkId: subnetwork.id,
+      subnetworkName: subnetwork.name,
     };
     const respone = await axios.post(logUrl, logData);
-    console.log({ respone });
+    return respone.data;
+  }
+
+  async getSubnetworksLogs(subnetworkId): Promise<> {
+    const { gigerApiUrl } = this.getUrls();
+    const logUrl = `${gigerApiUrl}/Log/${subnetworkId}/all`;
+    const respone = await axios.get(logUrl);
+    return respone.data.map(mapLog);
   }
 }

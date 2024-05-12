@@ -87,7 +87,7 @@ export default class ServerConnectionService {
 
     // LOG BREACH
     console.log('LOG');
-    this.ApiService.addLog();
+    this.ApiService.addLog({ type: 'breach', breachEffect, subnetwork });
 
     // END LOG
 

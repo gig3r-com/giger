@@ -12,6 +12,7 @@ import {
   CopyData,
   Balance,
   Transfer,
+  Log,
 } from './mainCommands';
 import {
   getErrorMessage,
@@ -62,6 +63,7 @@ export default class CommandsService {
     help: new Doc(this),
     balance: new Balance(this),
     transfer: new Transfer(this),
+    log: new Log(this),
   };
 
   public activeCommand: string = '';

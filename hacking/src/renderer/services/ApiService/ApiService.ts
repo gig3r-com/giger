@@ -27,6 +27,8 @@ export default class ApiService {
 
   addLog = this.logsModule.addLog.bind(this);
 
+  getSubnetworksLogs = this.logsModule.getSubnetworksLogs.bind(this);
+
   /*
    ************************************************************************************************
    * ACCOUNTS METHODS
