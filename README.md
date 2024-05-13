@@ -37,7 +37,7 @@ Contributions are welcome! Feel free to fork the repository and submit pull requ
 ## License
 This project is licensed under the Creative Commons License.
 
-Created with ❤️ by LarpVenture
+Created with ❤️ by GIG3R Larp Team and LarpVenture
 
 For any inquiries, please contact juskiw.borys - at - gmail.com
 
