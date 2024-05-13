@@ -39,17 +39,23 @@ export function useUserService() {
      * in case an godmode user logs in, we set the requiresGodUserSelection to true
      */
     const login = async (username: string, password: string) => {
-        const userData = await loginCall(username, password);
+        Promise.allSettled([
+            loginCall(username, password),
+            new Promise<void>((resolve) => setTimeout(resolve, 3000))
+        ]).then((res) => {
+            if (res[0].status !== 'fulfilled') {
+                displayToast(intl.formatMessage({ id: 'LOGIN_FAILED' }));
+            } else {
+                const userData = res[0].value;
+                const userIsGod = userData.roles.includes(UserRoles.GOD);
+                dispatch(setCurrentUser(userData));
+                saveLoginData(userData);
 
-        const userIsGod = userData.roles.includes(UserRoles.GOD);
-        dispatch(setCurrentUser(userData));
-        saveLoginData(userData);
-
-        if (userIsGod) {
-            dispatch(setRequiresGodUserSelection(true));
-        }
-
-        setTimeout(() => {}, 3000);
+                if (userIsGod) {
+                    dispatch(setRequiresGodUserSelection(true));
+                }
+            }
+        });
     };
 
     const fetchAllUsers = () => {

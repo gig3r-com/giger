@@ -4,7 +4,7 @@ export interface IEvent extends IObscurableInfo {
     id: string;
     eventDescription: string;
     status: EventStatus;
-    timestamp: string; // ISO Date timestamp
+    timeStamp: string; // ISO Date timestamp
     name: string;
 }
 
@@ -38,8 +38,8 @@ export interface IMedEvent extends IEvent {
 
 export enum MedicalEventType {
     CYBERWARE = 'CYBERWARE',
-    MEDICAL_DRUG = 'MEDICAL DRUG',
-    MEDICAL_PROCEDURE = 'MEDICAL PROCEDURE',
+    MEDICAL_DRUG = 'MEDICAL_DRUG',
+    MEDICAL_PROCEDURE = 'MEDICAL_PROCEDURE',
     SYMPTOM = 'SYMPTOM'
 }
 

@@ -28,10 +28,12 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
             [...filteredGigs].sort((a, b) => {
                 const aPriority =
                     a.authorId === currentUser?.id &&
-                    a.status !== GigStatus.EXPIRED;
+                    a.status !== GigStatus.EXPIRED &&
+                    a.status !== GigStatus.COMPLETED;
                 const bIsOwn =
                     b.authorId === currentUser?.id &&
-                    a.status !== GigStatus.EXPIRED;
+                    b.status !== GigStatus.EXPIRED &&
+                    b.status !== GigStatus.COMPLETED;
                 const statusesRank = {
                     [GigStatus.DISPUTE]: 0,
                     [GigStatus.PENDING_CONFIRMATION]: 1,

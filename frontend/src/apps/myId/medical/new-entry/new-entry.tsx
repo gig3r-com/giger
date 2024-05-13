@@ -39,7 +39,7 @@ export const NewEntry: FC<{
 
         const newEntry: EventType = {
             id: v4(),
-            timestamp: dayjs().set('year', year).toISOString(),
+            timeStamp: dayjs().set('year', year).toISOString(),
             name,
             status: EventStatus.HISTORICAL,
             type,

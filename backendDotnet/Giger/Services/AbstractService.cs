@@ -6,23 +6,30 @@ namespace Giger.Services
 {
     public abstract class AbstractService
     {
-        protected IMongoDatabase _mongoDatabase;
+        protected static IMongoDatabase _mongoDatabase;
+        private static object padlock = new object();
 
         public AbstractService(IOptions<GigerDbSettings> gigerDatabaseSettings)
         {
-            var MongoSettings = new MongoClientSettings()
+            lock (padlock)
             {
-                Server = new MongoServerAddress(gigerDatabaseSettings.Value.Host, gigerDatabaseSettings.Value.Port),
-                Credential = MongoCredential.CreateCredential(
-                    gigerDatabaseSettings.Value.DatabaseName,
-                    gigerDatabaseSettings.Value.Username,
-                    gigerDatabaseSettings.Value.Password),
-                LinqProvider = MongoDB.Driver.Linq.LinqProvider.V3,
-            };
-            var mongoClient = new MongoClient(MongoSettings);
+                if (_mongoDatabase == null)
+                {
+                    var MongoSettings = new MongoClientSettings()
+                    {
+                        Server = new MongoServerAddress(gigerDatabaseSettings.Value.Host, gigerDatabaseSettings.Value.Port),
+                        Credential = MongoCredential.CreateCredential(
+                            gigerDatabaseSettings.Value.DatabaseName,
+                            gigerDatabaseSettings.Value.Username,
+                            gigerDatabaseSettings.Value.Password),
+                        LinqProvider = MongoDB.Driver.Linq.LinqProvider.V3,
+                    };
+                    var mongoClient = new MongoClient(MongoSettings);
 
-            _mongoDatabase = mongoClient.GetDatabase(
-                gigerDatabaseSettings.Value.DatabaseName);
+                    _mongoDatabase = mongoClient.GetDatabase(
+                        gigerDatabaseSettings.Value.DatabaseName);
+                }
+            }
         }
     }
 }

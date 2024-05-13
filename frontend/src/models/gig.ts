@@ -1,4 +1,4 @@
-import { IObscurableInfo } from "./general";
+import { IObscurableInfo } from './general';
 
 export interface IGigBase {
     createdAt: string; //ISO date string
@@ -8,7 +8,9 @@ export interface IGigBase {
     description: string;
     category: GigCategoryNames;
     subcategory: GigSubcategoryNames;
-    reputationRequired?: GigRepuationLevels;
+    reputationRequired?: {
+        level: GigRepuationLevels;
+    };
     id: string;
     providerAccountNumber: string | null; // account id
     clientAccountNumber: string | null; // account id

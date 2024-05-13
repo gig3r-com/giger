@@ -4,7 +4,7 @@ import { RootState } from '../../store/store';
 import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
 import {
     selectRelations,
-    selectMeta,
+    //selectMeta,
     selectPrivateRecords,
     selectGoals,
     selectCriminalEvents,
@@ -19,7 +19,7 @@ export function useMyIdService() {
         (state: RootState) => state.users.currentUser
     );
     const relations = useSelector(selectRelations);
-    const metas = useSelector(selectMeta);
+    //const metas = useSelector(selectMeta);
     const privateRecords = useSelector(selectPrivateRecords);
     const goals = useSelector(selectGoals);
     const criminalEvents = useSelector(selectCriminalEvents);
@@ -50,8 +50,8 @@ export function useMyIdService() {
                 return medicalEvents.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.CRIMINAL:
                 return criminalEvents.some((entry) => !entry.seen) ?? false;
-            case MyIdUncoverableSections.META:
-                return metas.some((entry) => !entry.seen) ?? false;
+            // case MyIdUncoverableSections.META:
+            //     return metas.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.RELATIONS:
                 return relations.some((entry) => !entry.seen) ?? false;
             case MyIdUncoverableSections.PRIVATE_RECORDS:

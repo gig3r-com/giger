@@ -138,7 +138,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   ...(hasCompanyAccount && {
                       fromAccount: fromAccount as AccountType
                   }),
-                  reputationRequired: selectedRepuation as GigRepuationLevels,
+                  reputationRequired: {level: selectedRepuation as GigRepuationLevels},
                   subcategory: selectedSubcategory! as GigSubcategoryNames,
                   mode: mode as GigModes,
                   authorName: anonymize ? 'Anonymous' : currentUser?.handle,

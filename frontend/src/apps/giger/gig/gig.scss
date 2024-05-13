@@ -58,7 +58,7 @@
         &--in-progress {
             border-color: $secondary-color;
         }
-        &--mine {
+        &--mine:not(.gig__summary--completed):not(.gig__summary--expired) {
             border-color: $accent-color!important;
         }
         &--pending {
@@ -81,8 +81,8 @@
         &--in-progress:after {
             background-color: $secondary-color;
         }
-        &--mine:before,
-        &--mine:after {
+        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):before,
+        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):after {
             background-color: $accent-color!important;
         }
 
@@ -158,7 +158,7 @@
     }
 
     &__conversation {
-        max-height: calc(100vh - 430px);
+        max-height: calc(100dvh - 430px);
         overflow: auto;
     }
 
@@ -174,7 +174,7 @@
         }
     }
 
-    &--mine &__title {
+    &--mine:not(.gig--completed):not(.gig--expired) &__title {
         &:before {
             background: $accent-color!important;
         }

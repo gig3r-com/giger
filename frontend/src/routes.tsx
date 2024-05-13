@@ -166,14 +166,6 @@ export const Router = () => {
                                 </Route>
                             </Route>
                         </Routes>
-                        <Toaster
-                            position="bottom-center"
-                            containerStyle={{
-                                bottom: 80
-                            }}
-                        >
-                            {(t) => <ToastItem toast={t} />}
-                        </Toaster>
                         <MainMenu />
                         <GodMarker />
                     </>
@@ -183,6 +175,14 @@ export const Router = () => {
                         <Route path="*" element={<Login />} />
                     </Routes>
                 )}
+                <Toaster
+                    position="bottom-center"
+                    containerStyle={{
+                        bottom: 80
+                    }}
+                >
+                    {(t) => <ToastItem toast={t} />}
+                </Toaster>
             </BrowserRouter>
         </AnimatePresence>
     );

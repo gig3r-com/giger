@@ -1,0 +1,61 @@
+
+# mongodb deployment
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "gig3r.mongodb.app" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "gig3r.mongodb.app" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gig3r.mongodb.app" . }}
+        randstr: {{ randAlphaNum 20 }}
+    spec:
+      containers:
+      - image: {{ include "gig3r.mongodb.image" . }}
+        name: {{ include "gig3r.mongodb.app" . }}
+        ports:
+        - containerPort: 27017
+          protocol: TCP
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+        - name: MONGO_INITDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: gig3r-secret
+              key: MONGO_INITDB_DATABASE
+        volumeMounts:
+        - name: mongo-scripts
+          mountPath: /docker-entrypoint-initdb.d
+        {{- if eq "app" .Values.environment }}
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+          {{- end }}
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always
+      volumes:
+        - name: "mongo-scripts"
+          configMap:
+            name: "mongo-scripts"
+        {{- if eq "app" .Values.environment }}
+        - name: mongo-persistent-storage
+          hostPath:
+            path: /opt/mongo/{{ .Values.environment }}
+            type: DirectoryOrCreate
+        {{- end }}
+
+---

@@ -25,7 +25,7 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- $len := 24 | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
 {{- if $obj }}
-{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" -}}
+{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" | b64dec -}}
 {{- else -}}
 {{- randAlphaNum $len | b64enc -}}
 {{- end -}}

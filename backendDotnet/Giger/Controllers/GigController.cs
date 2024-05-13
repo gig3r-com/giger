@@ -12,11 +12,12 @@ namespace Giger.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class GigController(GigService gigService, UserService userService, LoginService loginService, AnonymizedService anonymizedService,
-        AccountService accountService, ConversationService conversationService, AccountController accountController)
+        AccountService accountService, ConversationService conversationService, GigerConfigService gigerConfigService, AccountController accountController)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
         private readonly ConversationService _conversationService = conversationService;
+        private readonly GigerConfigService _gigerConfigService = gigerConfigService;
         private readonly AnonymizedService _anonymizedService = anonymizedService;
         private readonly GigService _gigService = gigService;
 
@@ -188,6 +189,12 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(accountNo))
             {
                 return BadRequest("Account number is required");
+            }
+
+            var gigsTakenCount = await _gigService.GetLimitedUserGigsCountAsync(takenBy);
+            if (gigsTakenCount >= _gigerConfigService.Get().Result.MaxGigsPerUser)
+            {
+                return BadRequest(Messages.GIG_MAX_GIGS_TAKEN);
             }
 
             var account = await _accountService.GetByAccountNumberAsync(accountNo);
@@ -431,7 +438,9 @@ namespace Giger.Controllers
 
         private async Task<bool> FreezeFunds(Gig gig, Account account)
         {
-            if (account.Balance < gig.Payout * 1.2m)
+            var gigFeePercent = _gigerConfigService.Get().Result.GigFeePercentage;
+            var gigFeeAmount = gig.Payout * gigFeePercent / 100m;
+            if (account.Balance < gig.Payout + gigFeeAmount)
             {
                 return false;
             }
@@ -452,10 +461,10 @@ namespace Giger.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
-                To = "SOCIAL",
+                To = Factions.social_net.ToString(),
                 Date = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
-                Amount = gig.Payout * 0.2m
+                Amount = gigFeeAmount
             };
 
             await _accountController.CreateTransaction(socialTax);
@@ -494,6 +503,7 @@ namespace Giger.Controllers
 
         private async void PayDisputeFeeToClerk(Gig gig, string clerkAccountNo)
         {
+            var commissionPercent = _gigerConfigService.Get().Result.ModeratorCommissionPercentage/100m;
             Transaction trx = new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -501,7 +511,7 @@ namespace Giger.Controllers
                 To = clerkAccountNo,
                 Date = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_DISPUTE_FEE_TITLE, gig.Title),
-                Amount = gig.Payout * 0.2m,
+                Amount = gig.Payout * commissionPercent,
             };
 
             await _accountController.CreateTransaction(trx);
