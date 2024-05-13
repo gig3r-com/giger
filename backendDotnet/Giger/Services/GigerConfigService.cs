@@ -11,7 +11,7 @@ namespace Giger.Services
         public GigerConfigService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _gigerConfig = _mongoDatabase.GetCollection<GigerConfig>(
-                gigerDatabaseSettings.Value.GigerConfigsCollectionName);
+                gigerDatabaseSettings.Value.GigerConfigCollectionName);
         }
 
         public async Task<GigerConfig> Get() =>
