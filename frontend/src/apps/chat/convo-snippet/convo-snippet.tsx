@@ -1,6 +1,6 @@
 import { FC, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import MemoizedFormattedMessage from 'react-intl/src/components/message';
+//import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
@@ -72,14 +72,14 @@ export const ConvoSnippet: FC<{
                                             lastMessage.date
                                         ).toLocaleTimeString()}
                                     </span>
-                                    {' > '}
+                                    {/* {' > '}
                                     <span className="convo-snippet__status">
                                         {lastMessage.status && (
                                             <MemoizedFormattedMessage
                                                 id={lastMessage.status.toUpperCase()}
                                             />
                                         )}
-                                    </span>
+                                    </span> */}
                                 </section>
                                 <span className="convo-snippet__message">
                                     {lastMessage.text}

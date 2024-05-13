@@ -188,6 +188,7 @@ export const CharSummary: FC<{
                     <AdminEditableField
                         type={FieldTypes.SELECT}
                         className="char-summary__entry"
+                        skipTranslation={true}
                         options={Object.values(Factions) as Factions[]}
                         value={user!.factionRankPublic}
                         onChange={async (val) =>

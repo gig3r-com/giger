@@ -19,3 +19,8 @@ export function isIObscurableInfo(obj: any): obj is IObscurableInfo {
 export interface IObscurableInfoWithLockData {
     locked: boolean;
 }
+
+export interface IHashData {
+    lastSeen: number;
+    current: number;
+}

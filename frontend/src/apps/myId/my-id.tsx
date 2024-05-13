@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import classNames from 'classnames';
@@ -20,6 +20,11 @@ export const MyId: FC = () => {
     const wrapperClassnames = classNames({
         'my-id__content': true
     });
+
+    useEffect(function checkNewRecords() {
+        
+    }, [])
+
     return (
         <motion.section className="my-id">
             {location.pathname !== '/myid' && (

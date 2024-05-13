@@ -24,6 +24,7 @@ export interface IAdminEditableFieldPropsBase {
     type: FieldTypes;
     className?: string;
     onClick?: () => void;
+    skpTranslation?: boolean;
     value: string | number | boolean;
     /**
      * is fired when the user completes changing the input

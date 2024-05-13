@@ -45,6 +45,10 @@ export interface IUserPrivate extends IUserPublic {
     insuredAmount: number;
     factionRankActual: string;
     networkAdminName: string;
+    /**
+     * to be removed.
+     */
+    reputationDescription: string;
 }
 
 /**
