@@ -8,7 +8,7 @@ namespace Giger.Controllers
     {
         private readonly GigerConfigService _gigerConfigService = gigerConfigService;
 
-        [HttpGet()]
+        [HttpGet("all")]
         public async Task<ActionResult<GigerConfig>> GetAll()
         {
             if (!IsGodUser())
@@ -18,7 +18,7 @@ namespace Giger.Controllers
             return await _gigerConfigService.Get();
         }
 
-        [HttpPatch()]
+        [HttpPatch("update")]
         public async Task<IActionResult> Update(GigerConfig config)
         {
             if (!IsGodUser())
