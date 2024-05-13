@@ -74,7 +74,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     );
 
     const onClickHandler = useCallback(() => {
-        if (gig.isRevealed) {
+        if (!isLocked(gig)) {
             navigate(`/giger/${gig.id}`);
         }
     }, [gig]);

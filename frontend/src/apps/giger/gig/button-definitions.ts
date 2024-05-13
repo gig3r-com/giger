@@ -36,7 +36,6 @@ const buttonDefinitions: {
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
-        moderation: false,
         hasCompanyAccount: false,
         buttons: [
             {
@@ -50,7 +49,6 @@ const buttonDefinitions: {
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
-        moderation: false,
         hasCompanyAccount: true,
         buttons: [
             {
