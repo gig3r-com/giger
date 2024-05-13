@@ -3,14 +3,15 @@ import { updateCurrentUser } from '../../store/users.slice';
 import { RootState } from '../../store/store';
 import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
 import {
-    selectRelations,
-    //selectMeta,
-    selectPrivateRecords,
-    selectGoals,
-    selectCriminalEvents,
-    selectMedicalEvents
+    selectCriminalEventsHash,
+    selectGoalsHash,
+    selectMedicalEventsHash,
+    selectPrivateRecordsHash,
+    selectRelationsHash
 } from '../../store/events.selectors';
 import { useApiService } from './api.service';
+import { useMemo } from 'react';
+import { RecordHashTypes, setAllHashes, setSeenHash } from '../../store/events.slice';
 
 export function useMyIdService() {
     const dispatch = useDispatch();
@@ -18,12 +19,11 @@ export function useMyIdService() {
     const currentUser = useSelector(
         (state: RootState) => state.users.currentUser
     );
-    const relations = useSelector(selectRelations);
-    //const metas = useSelector(selectMeta);
-    const privateRecords = useSelector(selectPrivateRecords);
-    const goals = useSelector(selectGoals);
-    const criminalEvents = useSelector(selectCriminalEvents);
-    const medicalEvents = useSelector(selectMedicalEvents);
+    const medicalEventsHash = useSelector(selectMedicalEventsHash);
+    const criminalEventsHash = useSelector(selectCriminalEventsHash);
+    const goalsHash = useSelector(selectGoalsHash);
+    const relationsHash = useSelector(selectRelationsHash);
+    const privateRecordsHash = useSelector(selectPrivateRecordsHash);
 
     const enterRevealCode = (code: string): Promise<'success' | 'wrongCode'> =>
         new Promise((resolve) => {
@@ -44,27 +44,76 @@ export function useMyIdService() {
                 .catch(() => resolve('wrongCode'));
         });
 
+    const fetchHashes = () => {
+        api.url('User/simple/hashes/byId')
+            .get()
+            .json<Record<string, number>>()
+            .then((hashes) => {
+                dispatch(setAllHashes(hashes));
+            });
+    };
+
+    const setLastSeenHash = (sectionType: RecordHashTypes) => {
+        switch (sectionType) {
+            case RecordHashTypes.MEDICAL:
+                dispatch(setSeenHash({type: sectionType, hash: medicalEventsHash.current}));
+                break;
+            case RecordHashTypes.CRIMINAL:
+                dispatch(setSeenHash({type: sectionType, hash: criminalEventsHash.current}));
+                break;
+            case RecordHashTypes.RELATION:
+                dispatch(setSeenHash({type: sectionType, hash: relationsHash.current}));
+                break;
+            case RecordHashTypes.PRIVATE_RECORD:
+                dispatch(setSeenHash({type: sectionType, hash: privateRecordsHash.current}));
+                break;
+            case RecordHashTypes.GOAL:
+                dispatch(setSeenHash({type: sectionType, hash: goalsHash.current}));
+                break;
+        }
+    };
+
     const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {
         switch (sectionType) {
             case MyIdUncoverableSections.MEDICAL:
-                return medicalEvents.some((entry) => !entry.seen) ?? false;
+                return hasNewMedicalEvents;
             case MyIdUncoverableSections.CRIMINAL:
-                return criminalEvents.some((entry) => !entry.seen) ?? false;
-            // case MyIdUncoverableSections.META:
-            //     return metas.some((entry) => !entry.seen) ?? false;
+                return hasNewCriminalEvents;
             case MyIdUncoverableSections.RELATIONS:
-                return relations.some((entry) => !entry.seen) ?? false;
+                return hasNewRelations;
             case MyIdUncoverableSections.PRIVATE_RECORDS:
-                return privateRecords.some((entry) => !entry.seen) ?? false;
+                return hasNewPrivateRecords;
             case MyIdUncoverableSections.GOALS:
-                return goals.some((entry) => !entry.seen) ?? false;
+                return hasNewGoals;
             default:
                 return false;
         }
     };
 
+    const hasNewPrivateRecords = useMemo(() => {
+        return privateRecordsHash.lastSeen !== privateRecordsHash.current;
+    }, [privateRecordsHash]);
+
+    const hasNewGoals = useMemo(() => {
+        return goalsHash.lastSeen !== goalsHash.current;
+    }, [goalsHash]);
+
+    const hasNewRelations = useMemo(() => {
+        return relationsHash.lastSeen !== relationsHash.current;
+    }, [relationsHash]);
+
+    const hasNewMedicalEvents = useMemo(() => {
+        return medicalEventsHash.lastSeen !== medicalEventsHash.current;
+    }, [medicalEventsHash]);
+
+    const hasNewCriminalEvents = useMemo(() => {
+        return criminalEventsHash.lastSeen !== criminalEventsHash.current;
+    }, [criminalEventsHash]);
+
     return {
         enterRevealCode,
-        hasNewEntries
+        hasNewEntries,
+        fetchHashes,
+        setLastSeenHash
     };
 }

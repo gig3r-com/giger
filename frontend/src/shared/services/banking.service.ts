@@ -89,7 +89,7 @@ export function useBankingService() {
                 .res(() => {
                     dispatch(
                         addTransaction({
-                            accountType: fromAccount,
+                            //accountType: fromAccount,
                             transaction
                         })
                     );

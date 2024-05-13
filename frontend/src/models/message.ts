@@ -3,7 +3,6 @@ export interface IMessage {
     date: string; // Date timestamp
     sender: string; // user id
     text: string;
-    status?: IMessageStatus;
 }
 
 export interface IConversation {
@@ -16,12 +15,4 @@ export interface IConversation {
      */
     participantsAllowedToSendMsgs?: string[];
     gigConversation?: boolean;
-}
-
-export enum IMessageStatus {
-    SENT = 'sent',
-    RECEIVED = 'received',
-    READ = 'read',
-    ERROR = 'error',
-    AWAITING = 'awaiting'
 }

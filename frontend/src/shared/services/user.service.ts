@@ -38,25 +38,28 @@ export function useUserService() {
     /**
      * in case an godmode user logs in, we set the requiresGodUserSelection to true
      */
-    const login = async (username: string, password: string) => {
-        Promise.allSettled([
-            loginCall(username, password),
-            new Promise<void>((resolve) => setTimeout(resolve, 3000))
-        ]).then((res) => {
-            if (res[0].status !== 'fulfilled') {
-                displayToast(intl.formatMessage({ id: 'LOGIN_FAILED' }));
-            } else {
-                const userData = res[0].value;
-                const userIsGod = userData.roles.includes(UserRoles.GOD);
-                dispatch(setCurrentUser(userData));
-                saveLoginData(userData);
+    const login = async (username: string, password: string) =>
+        new Promise<void>((resolve, reject) => {
+            return Promise.allSettled([
+                loginCall(username, password),
+                new Promise<void>((resolve) => setTimeout(resolve, 3000))
+            ]).then((res) => {
+                if (res[0].status !== 'fulfilled') {
+                    reject();
+                } else {
+                    const userData = res[0].value;
+                    const userIsGod = userData.roles.includes(UserRoles.GOD);
 
-                if (userIsGod) {
-                    dispatch(setRequiresGodUserSelection(true));
+                    if (userIsGod) {
+                        dispatch(setRequiresGodUserSelection(true));
+                    }
+
+                    dispatch(setCurrentUser(userData));
+                    saveLoginData(userData);
+                    resolve();
                 }
-            }
+            });
         });
-    };
 
     const fetchAllUsers = () => {
         api.get('User/public/all')
@@ -94,6 +97,7 @@ export function useUserService() {
     ) => {
         const updatedData: Partial<IUserPrivate> = {
             ...currentUser,
+            reputationDescription: '',
             ...userData
         };
 
@@ -175,7 +179,7 @@ export function useUserService() {
         }
 
         const userdata = await api
-            .get(`User/private/byId?id=${currentUser.id}`)
+            .get(`User/simple/byId?id=${currentUser.id}`)
             .json<IUserPrivate>();
         dispatch(updateCurrentUser(userdata));
     };

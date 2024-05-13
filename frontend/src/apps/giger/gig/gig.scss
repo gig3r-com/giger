@@ -59,7 +59,7 @@
             border-color: $secondary-color;
         }
         &--mine:not(.gig__summary--completed):not(.gig__summary--expired) {
-            border-color: $accent-color!important;
+            border-color: $accent-color !important;
         }
         &--pending {
             border-color: $secondary-color;
@@ -81,9 +81,13 @@
         &--in-progress:after {
             background-color: $secondary-color;
         }
-        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):before,
-        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):after {
-            background-color: $accent-color!important;
+        &--mine:not(.gig__summary--completed):not(
+                .gig__summary--expired
+            ):before,
+        &--mine:not(.gig__summary--completed):not(
+                .gig__summary--expired
+            ):after {
+            background-color: $accent-color !important;
         }
 
         &--dispute:before,
@@ -176,7 +180,7 @@
 
     &--mine:not(.gig--completed):not(.gig--expired) &__title {
         &:before {
-            background: $accent-color!important;
+            background: $accent-color !important;
         }
     }
 
@@ -217,7 +221,8 @@
 
     &__details {
         max-height: calc(
-            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height} - 79px
+            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height} -
+                79px
         );
         overflow: auto;
     }
@@ -270,19 +275,48 @@
             display: block;
         }
 
-        &--primary { color: $primary-color }
-        &--primary::before { background-color: $primary-color }
+        &--primary {
+            color: $primary-color;
+        }
+        &--primary::before {
+            background-color: $primary-color;
+        }
 
-        &--secondary { color: $secondary-color }
-        &--secondary::before { background-color: $secondary-color }
+        &--secondary {
+            color: $secondary-color;
+        }
+        &--secondary::before {
+            background-color: $secondary-color;
+        }
 
-        &--accent { color: $accent-color }
-        &--accent::before { background-color: $accent-color }
+        &--accent {
+            color: $accent-color;
+        }
+        &--accent::before {
+            background-color: $accent-color;
+        }
 
-        &--accent2 { color: $accent-color-2 }
-        &--accent2::before { background-color: $accent-color-2 }
-        
-        &--muted-accent { color: $muted-accent }
-        &--muted-accent::before { background-color: $muted-accent }
+        &--accent2 {
+            color: $accent-color-2;
+        }
+        &--accent2::before {
+            background-color: $accent-color-2;
+        }
+
+        &--muted-accent {
+            color: $muted-accent;
+        }
+        &--muted-accent::before {
+            background-color: $muted-accent;
+        }
+    }
+
+    .locked-entry {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
     }
 }

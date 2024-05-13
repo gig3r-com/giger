@@ -5,7 +5,8 @@ import {
     IPrivateRecord,
     IRelation,
     IUserRecord,
-    UserRecordTypes} from '../models/user';
+    UserRecordTypes
+} from '../models/user';
 import {
     EventRecordType,
     EventType,
@@ -13,6 +14,15 @@ import {
     IEvent,
     IMedEvent
 } from '../models/events';
+import { IHashData } from '../models/general';
+
+export enum RecordHashTypes {
+    GOAL = 'goalsHash',
+    PRIVATE_RECORD = 'privateRecordsHash',
+    RELATION = 'relationsHash',
+    CRIMINAL = 'criminalEventsHash',
+    MEDICAL = 'medicalEventsHash'
+}
 
 export interface IEventsState {
     privateRecords: IPrivateRecord[];
@@ -21,6 +31,7 @@ export interface IEventsState {
     goals: IGoal[];
     relations: IRelation[];
     meta: IMeta[];
+    hashes: Record<RecordHashTypes, IHashData>;
 }
 
 const initialState: IEventsState = {
@@ -30,21 +41,56 @@ const initialState: IEventsState = {
     goals: [],
     relations: [],
     meta: [],
+    hashes: {
+        [RecordHashTypes.GOAL]: {
+            lastSeen: 0,
+            current: 0
+        },
+        [RecordHashTypes.PRIVATE_RECORD]: {
+            lastSeen: 0,
+            current: 0
+        },
+        [RecordHashTypes.RELATION]: {
+            lastSeen: 0,
+            current: 0
+        },
+        [RecordHashTypes.CRIMINAL]: {
+            lastSeen: 0,
+            current: 0
+        },
+        [RecordHashTypes.MEDICAL]: {
+            lastSeen: 0,
+            current: 0
+        }
+    }
 };
 
 export const eventsSlice = createSlice({
     name: 'events',
     initialState,
     reducers: {
-        setEvents: (state, action: PayloadAction<{type: EventRecordType, events: EventType[]}>) => {
+        setEvents: (
+            state,
+            action: PayloadAction<{
+                type: EventRecordType;
+                events: EventType[];
+            }>
+        ) => {
             if (action.payload.type === EventRecordType.CRIMINAL) {
-                state.criminalEvents = action.payload.events as ICriminalEvent[];
+                state.criminalEvents = action.payload
+                    .events as ICriminalEvent[];
             }
             if (action.payload.type === EventRecordType.MEDICAL) {
                 state.medicalEvents = action.payload.events as IMedEvent[];
             }
         },
-        setRecords: (state, action: PayloadAction<{type: UserRecordTypes, records: IUserRecord[]}>) => {
+        setRecords: (
+            state,
+            action: PayloadAction<{
+                type: UserRecordTypes;
+                records: IUserRecord[];
+            }>
+        ) => {
             if (action.payload.type === UserRecordTypes.META) {
                 state.meta = action.payload.records as IMeta[];
             }
@@ -52,7 +98,8 @@ export const eventsSlice = createSlice({
                 state.goals = action.payload.records as IGoal[];
             }
             if (action.payload.type === UserRecordTypes.PRIVATE_RECORD) {
-                state.privateRecords = action.payload.records as IPrivateRecord[];
+                state.privateRecords = action.payload
+                    .records as IPrivateRecord[];
             }
             if (action.payload.type === UserRecordTypes.RELATION) {
                 state.relations = action.payload.records as IRelation[];
@@ -69,9 +116,7 @@ export const eventsSlice = createSlice({
             }
 
             if (action.payload.type === EventRecordType.MEDICAL) {
-                state.medicalEvents.push(
-                    action.payload.event as IMedEvent
-                );
+                state.medicalEvents.push(action.payload.event as IMedEvent);
             }
         },
         updateEvent: (
@@ -130,9 +175,7 @@ export const eventsSlice = createSlice({
             }
 
             if (action.payload.type === UserRecordTypes.RELATION) {
-                state.relations.push(
-                    action.payload.record as IRelation
-                );
+                state.relations.push(action.payload.record as IRelation);
             }
         },
         updateRecord: (
@@ -151,7 +194,7 @@ export const eventsSlice = createSlice({
                 if (recordIndex !== -1) {
                     state.meta[recordIndex] = {
                         ...state.meta[recordIndex],
-                        ...action.payload.updateData as IMeta
+                        ...(action.payload.updateData as IMeta)
                     };
                 }
             }
@@ -164,7 +207,7 @@ export const eventsSlice = createSlice({
                 if (recordIndex !== -1) {
                     state.goals[recordIndex] = {
                         ...state.goals[recordIndex],
-                        ...action.payload.updateData as IGoal
+                        ...(action.payload.updateData as IGoal)
                     };
                 }
             }
@@ -177,7 +220,7 @@ export const eventsSlice = createSlice({
                 if (recordIndex !== -1) {
                     state.privateRecords[recordIndex] = {
                         ...state.privateRecords[recordIndex],
-                        ...action.payload.updateData as IPrivateRecord
+                        ...(action.payload.updateData as IPrivateRecord)
                     };
                 }
             }
@@ -190,10 +233,21 @@ export const eventsSlice = createSlice({
                 if (recordIndex !== -1) {
                     state.relations[recordIndex] = {
                         ...state.relations[recordIndex],
-                        ...action.payload.updateData as IRelation
+                        ...(action.payload.updateData as IRelation)
                     };
                 }
             }
+        },
+        setSeenHash: (state, action: PayloadAction<{ type: RecordHashTypes; hash: number }>) => {
+            state.hashes[action.payload.type].lastSeen = action.payload.hash;
+        },
+        setCurrentHash: (state, action: PayloadAction<{ type: RecordHashTypes; hash: number }>) => {
+            state.hashes[action.payload.type].current = action.payload.hash;
+        },
+        setAllHashes: (state, action: PayloadAction<Record<RecordHashTypes, number>>) => {
+            Object.entries(action.payload).forEach(([hashType, hash]) => {
+                state.hashes[hashType as RecordHashTypes].current = hash;
+            });
         }
     }
 });
@@ -204,7 +258,10 @@ export const {
     addEvent,
     addRecord,
     updateEvent,
-    updateRecord
+    updateRecord,
+    setCurrentHash,
+    setSeenHash,
+    setAllHashes
 } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
-import { IConversation, IMessage, IMessageStatus } from '../../models/message';
+import { IConversation, IMessage } from '../../models/message';
 import {
     setConversations,
     setGigConversations
@@ -38,8 +38,7 @@ export function useMessagesService() {
             id: uuidv4(),
             date: new Date().toString(),
             sender: senderId || currentUser!.id,
-            text: text,
-            status: IMessageStatus.AWAITING
+            text: text
         };
     };
 

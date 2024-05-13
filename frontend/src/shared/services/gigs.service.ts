@@ -18,11 +18,13 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
 import { useApiService } from './api.service';
+import { useBankingService } from './banking.service';
 
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { api } = useApiService();
+    const { accounts } = useBankingService();
     const { currentUser, updateUserData } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const selectedCategories = useSelector(
@@ -41,6 +43,7 @@ export function useGigsService() {
         authorId: currentUser!.id,
         status: GigStatus.AVAILABLE,
         isRevealed: true,
+        isRevealedByClient: true,
         conversationId: ''
     });
 
@@ -97,7 +100,6 @@ export function useGigsService() {
     };
 
     /**
-     * ! NEEDS UPDATE 
      * Accepts the gig and marks it as in progress.
      * @param id
      * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
@@ -111,8 +113,11 @@ export function useGigsService() {
             ...(asCompany && { takenByCompany: currentUser?.faction })
         };
 
-        api.url('Gig/update')
-            .put(updatedGig)
+        api.query({
+            accountNo: asCompany ? accounts.business : accounts.private
+        })
+            .url(`Gig/${id}/accept/${currentUser?.id}`)
+            .patch(updatedGig)
             .res()
             .catch(() =>
                 displayToast(
@@ -133,6 +138,15 @@ export function useGigsService() {
         });
 
         return level as GigRepuationLevels;
+    };
+
+    const canAcceptGig = (gig: IGig): boolean => {
+        const userReputation = getReputationLevel(
+            currentUser!.gigReputation[gig.category]
+        );
+        const gigReputation = gig.reputationRequired.level;
+
+        return userReputation >= gigReputation;
     };
 
     /**
@@ -365,12 +379,18 @@ export function useGigsService() {
         });
     }, [gigsVisibleToTheUser, selectedCategories, selectedMode, userGigMode]);
 
+    const isLocked = (gig: IGig) => {
+        const userIsProvider = userGigMode(gig) === GigModes.PROVIDER;
+        return userIsProvider ? !gig.isRevealed : !gig.isRevealedByClient;
+    };
+
     return {
         addNewGig,
         updateGig,
         fetchGigs,
         acceptGig,
         deleteGig,
+        canAcceptGig,
         getReputationLevel,
         handleButtonAction,
         gigerCommission,
@@ -378,6 +398,7 @@ export function useGigsService() {
         sendComplaint,
         userGigMode,
         filteredGigs,
-        joinGigConvo
+        joinGigConvo,
+        isLocked
     };
 }

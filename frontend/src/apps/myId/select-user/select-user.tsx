@@ -2,8 +2,8 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
-import { selectActiveUsers, selectUsers } from '../../../store/users.selectors';
-import { setCurrentUser } from '../../../store/users.slice';
+import { selectUsers } from '../../../store/users.selectors';
+import { setRequiresGodUserSelection, setViewAsUser } from '../../../store/users.slice';
 
 import './select-user.scss';
 
@@ -13,13 +13,13 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
     const dispatch = useDispatch();
     const ref = useRef<HTMLSelectElement>(null);
     const { isGod, getUserById, saveLoginData } = useUserService();
-    const activeUsers = useSelector(selectActiveUsers);
     const allUsers = useSelector(selectUsers);
     const [showSelection, setShowSelection] = useState(false);
 
     const onSelection = async (userId: string) => {
         const user = await getUserById(userId, 'private');
-        dispatch(setCurrentUser(user!));
+        dispatch(setViewAsUser(user!));
+        dispatch(setRequiresGodUserSelection(false));
         saveLoginData(user);
     };
 
@@ -57,7 +57,7 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
                         <option disabled hidden value={''}>
                             <FormattedMessage id="SELECT_USER" />
                         </option>
-                        {(isGod ? allUsers : activeUsers).map((user) => (
+                        {allUsers.map((user) => (
                             <option key={user.id} value={user.id}>
                                 {user.handle}
                             </option>

@@ -1,5 +1,3 @@
-import { IObscurableInfo } from './general';
-
 export interface IGigBase {
     createdAt: string; //ISO date string
     acceptedAt?: string; //ISO date string
@@ -8,7 +6,7 @@ export interface IGigBase {
     description: string;
     category: GigCategoryNames;
     subcategory: GigSubcategoryNames;
-    reputationRequired?: {
+    reputationRequired: {
         level: GigRepuationLevels;
     };
     id: string;
@@ -23,13 +21,15 @@ export interface IDraftGig extends IGigBase {
     message: string;
 }
 
-export interface IGig extends IGigBase, IObscurableInfo {
+export interface IGig extends IGigBase {
     status: GigStatus;
     authorId: string;
     takenById?: string;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;
     conversationId: string;
+    isRevealed: boolean;
+    isRevealedByClient: boolean;
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;

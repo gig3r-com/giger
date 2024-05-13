@@ -13,7 +13,7 @@ const GigReputation: FC<{
         [`gig-reputation__bar--${index < reputation ? 'filled' : 'empty'}`]: true
     })
 
-    const bars = Array.from({ length: 6 }, (_, index) => (
+    const bars = Array.from({ length: 5 }, (_, index) => (
         <div
             key={index}
             className={classes(index, reputation)}

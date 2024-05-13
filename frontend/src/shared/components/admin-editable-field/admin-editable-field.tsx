@@ -50,9 +50,7 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={value as number}
                     onBlur={() => props.onChange(parseInt(value as string))}
-                    onChange={(event) => {
-                        setValue(event.target.value);
-                    }}
+                    onChange={(event) => setValue(event.target.value)}
                 />
             )}
             {isGod && booleanInput && (
@@ -60,9 +58,9 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     className={`${props.className} admin-editable-field admin-editable-field__number admin-editable-field__admin-mode`}
                     value={`${value}`}
                     onBlur={() => props.onChange(value as boolean)}
-                    onChange={(event) =>
+                    onChange={(event) => {
                         setValue(event.target.value === 'true')
-                    }
+                    }}
                 >
                     <option value="true">
                         <FormattedMessage id="YES" />
@@ -85,6 +83,8 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                         <option key={option} value={option}>
                             {props.skipTranslation ? (
                                 option
+                            ) : props.skipTranslation ? (
+                                option
                             ) : (
                                 <FormattedMessage id={option} />
                             )}
@@ -101,7 +101,10 @@ export const AdminEditableField: FC<IAdminEditableFieldProps> = (props) => {
                     showValue={props.showValue ?? true}
                     showMax={props.showMax ?? true}
                     showMin={props.showMin ?? true}
-                    onChange={setValue}
+                    onChange={(value) => {
+                        setValue(value);
+                        props.onChange(`${value}`);
+                    }}
                     min={props.min}
                     max={props.max}
                     disabled={!isGod}

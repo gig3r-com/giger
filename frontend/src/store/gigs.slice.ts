@@ -53,6 +53,7 @@ export const gigsSlice = createSlice({
 export const {
     setGigs,
     addCategory,
+    updateGig,
     removeCategory,
     setCategories,
     setMode,

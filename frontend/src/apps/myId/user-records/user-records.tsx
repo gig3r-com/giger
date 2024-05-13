@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { IUserRecordsProps } from './user-records.model';
+import { IUserRecordsProps, modeMap } from './user-records.model';
 import {
     IRelation,
     IMeta,
@@ -17,6 +17,7 @@ import { useUserRecordsService } from './user-records.service';
 import { useUserService } from '../../../shared/services/user.service';
 import { FormattedMessage } from 'react-intl';
 import { isIObscurableInfo } from '../../../models/general';
+import { useMyIdService } from '../../../shared/services/myid.service';
 
 import './user-records.scss';
 
@@ -24,6 +25,7 @@ export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
     const { getRecords, fetchRecords } = useUserRecordsService();
     const { isGod } = useUserService();
+    const { setLastSeenHash } = useMyIdService();
     const isRevealed = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
         if (isIObscurableInfo(record) && !record.isRevealed) {
             return false;
@@ -35,6 +37,11 @@ export function UserRecords(props: IUserRecordsProps) {
 
     useEffect(function fetchData() {
         fetchRecords(mode);
+    }, []);
+
+    useEffect(function setSeenHash() {
+        const hashType = modeMap.get(mode)?.hashProperty;
+        hashType && setLastSeenHash(hashType);
     }, []);
 
     const getRecord = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
