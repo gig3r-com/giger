@@ -12,7 +12,7 @@ namespace Giger.Services
         public HackConfigService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _hackConfigsCollection = _mongoDatabase.GetCollection<HackConfig>(
-                gigerDatabaseSettings.Value.HackConfigCollectionName);
+                gigerDatabaseSettings.Value.HackConfigsCollectionName);
         }
 
         public async Task<List<HackConfig>> GetAll() =>

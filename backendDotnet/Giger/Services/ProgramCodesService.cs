@@ -12,7 +12,7 @@ namespace Giger.Services
         public ProgramCodesService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
         {
             _programCodesCollection = _mongoDatabase.GetCollection<ProgramCodes>(
-                gigerDatabaseSettings.Value.HackConfigCollectionName);
+                gigerDatabaseSettings.Value.ProgramCodesMapCollectionName);
         }
 
         public async Task<List<ProgramCodes>> GetAll() =>
