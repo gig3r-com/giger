@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace Giger.Models.MessageModels
 {
@@ -16,9 +15,6 @@ namespace Giger.Models.MessageModels
 
         public required string Text { get; set; }
         
-        [BsonRepresentation(BsonType.String)]
-        public required MessageStatus Status { get; set; }
-
         public Message() { }
 
         [SetsRequiredMembers]
@@ -28,18 +24,6 @@ namespace Giger.Models.MessageModels
             Date = GigerDateTime.Now;
             Sender = sender;
             Text = text;
-            Status = MessageStatus.SENT;
         }
-
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<MessageStatus>))]
-    public enum MessageStatus
-    {
-        SENT,
-        RECEIVED,
-        READ,
-        ERROR,
-        AWAITING,
     }
 }
