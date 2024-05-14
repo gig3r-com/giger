@@ -1,5 +1,4 @@
 ﻿using Giger.Models.EventModels;
-using Giger.Models.GigModels;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
 using MongoDB.Bson;
@@ -41,7 +40,7 @@ namespace Giger.Models.User
 
         public int InsuredAmount { get; set; }
 
-        public Dictionary<GigCategoryNames, decimal> GigReputation { get; set; } = [];
+        public Dictionary<string, decimal> GigReputation { get; set; } = [];
 
         public string NetworkAdminName { get; set; }
 

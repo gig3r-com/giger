@@ -111,11 +111,11 @@ namespace Giger.SerializededModels.User
                     HasPlatinumPass = true,
                     HighSecurity = true,
                     HackerName = null,
-                    GigReputation = new Dictionary<GigCategoryNames, decimal>() {
-                        { GigCategoryNames.HACKING, 0m },
-                        { GigCategoryNames.KILLER, 5500m },
-                        { GigCategoryNames.FIXER, 500m },
-                        { GigCategoryNames.WELLBEING, 2000m }
+                    GigReputation = new Dictionary<string, decimal>() {
+                        { GigCategoryNames.HACKING.ToString(), 0m },
+                        { GigCategoryNames.KILLER.ToString(), 5500m },
+                        { GigCategoryNames.FIXER.ToString(), 500m },
+                        { GigCategoryNames.WELLBEING.ToString(), 2000m },
                     },
                     ReputationDescription = "Fancy hitman"
                 },
@@ -212,11 +212,11 @@ namespace Giger.SerializededModels.User
                     HasPlatinumPass = false,
                     HighSecurity = false,
                     HackerName = "voldemort",
-                    GigReputation = new Dictionary<GigCategoryNames, decimal>() {
-                        { GigCategoryNames.HACKING, 100000m },
-                        { GigCategoryNames.KILLER, 0m },
-                        { GigCategoryNames.FIXER, 2000m },
-                        { GigCategoryNames.WELLBEING, 3000m }
+                    GigReputation = new Dictionary<string, decimal>() {
+                        { GigCategoryNames.HACKING.ToString(), 100000m },
+                        { GigCategoryNames.KILLER.ToString(), 0m },
+                        { GigCategoryNames.FIXER.ToString(), 2000m },
+                        { GigCategoryNames.WELLBEING.ToString(), 3000m }
                     },
                     ReputationDescription = "Master hacker, but not killer"
                 },
@@ -266,11 +266,11 @@ namespace Giger.SerializededModels.User
                     HasPlatinumPass = false,
                     HighSecurity = false,
                     HackerName = null,
-                    GigReputation = new Dictionary<GigCategoryNames, decimal>() {
-                        { GigCategoryNames.HACKING, 0m },
-                        { GigCategoryNames.KILLER, 0m },
-                        { GigCategoryNames.FIXER, 0m },
-                        { GigCategoryNames.WELLBEING, 0m }
+                    GigReputation = new Dictionary<string, decimal>() {
+                        { GigCategoryNames.HACKING.ToString(), 0m },
+                        { GigCategoryNames.KILLER.ToString(), 0m },
+                        { GigCategoryNames.FIXER.ToString(), 0m },
+                        { GigCategoryNames.WELLBEING.ToString(), 0m }
                     },
                     ReputationDescription = "Engineer"
                 },
@@ -320,11 +320,11 @@ namespace Giger.SerializededModels.User
                     HasPlatinumPass = true,
                     HighSecurity = true,
                     HackerName = null,
-                    GigReputation = new Dictionary<GigCategoryNames, decimal>() {
-                        { GigCategoryNames.HACKING, 0m },
-                        { GigCategoryNames.KILLER, 0m },
-                        { GigCategoryNames.FIXER, 0m },
-                        { GigCategoryNames.WELLBEING, 0m }
+                    GigReputation = new Dictionary<string, decimal>() {
+                        { GigCategoryNames.HACKING.ToString(), 0m },
+                        { GigCategoryNames.KILLER.ToString(), 0m },
+                        { GigCategoryNames.FIXER.ToString(), 0m },
+                        { GigCategoryNames.WELLBEING.ToString(), 0m },
                     },
                     ReputationDescription = "Doctor"
                 }

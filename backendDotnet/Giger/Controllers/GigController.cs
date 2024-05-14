@@ -275,7 +275,7 @@ namespace Giger.Controllers
             gig.Status = GigStatus.COMPLETED;
             ReturnFunds(gig);
             CompleteTransaction(gig);
-            await UpdateGigReputation(gig);
+            await UpdateGigReputation(gig, true);
 
             await _gigService.UpdateAsync(gig);
 
@@ -333,7 +333,11 @@ namespace Giger.Controllers
             if (!isClientRight)
             {
                 CompleteTransaction(gig);
-                await UpdateGigReputation(gig);
+                await UpdateGigReputation(gig, true);
+            }
+            else
+            {
+                await UpdateGigReputation(gig, false);
             }
             PayDisputeFeeToClerk(gig, clerkAccountNo);
 
@@ -341,10 +345,17 @@ namespace Giger.Controllers
             return Ok();
         }
 
-        private async Task UpdateGigReputation(Gig? gig)
+        private async Task UpdateGigReputation(Gig? gig, bool isPositive)
         {
             var providerUser = await _userService.GetAsync(gig.TakenById);
-            providerUser.GigReputation[gig.Category] += gig.Payout;
+            if (isPositive)
+            {
+                providerUser.GigReputation[gig.Category.ToString()] += gig.Payout;
+            }
+            else
+            {
+                providerUser.GigReputation[gig.Category.ToString()] -= gig.Payout;
+            }
             _userService.UpdateAsync(providerUser);
         }
 
