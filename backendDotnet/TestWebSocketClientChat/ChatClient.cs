@@ -1,4 +1,4 @@
-// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 
 using Giger.Connections.Payloads;
 using System.Diagnostics;
@@ -36,7 +36,7 @@ internal class ChatClient
         //await client.ConnectAsync(new Uri($"ws://localhost:5174/ws?userId={UserId}"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:18556/ws"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:5000/ws"), CancellationToken.None);
-        await client.ConnectAsync(new Uri($"ws://localhost:5174/ws2137"), CancellationToken.None);
+        await client.ConnectAsync(new Uri($"wss://feat-ingress-websocket-support.gig3r.com/ws2137"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:5174/ws1337"), CancellationToken.None);
         var send = Task.Run(async () =>
         {
