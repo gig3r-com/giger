@@ -8,13 +8,9 @@ namespace Giger.Controllers
     {
         private readonly GigerConfigService _gigerConfigService = gigerConfigService;
 
-        [HttpGet("all")]
-        public async Task<ActionResult<GigerConfig>> GetAll()
+        [HttpGet("get")]
+        public async Task<ActionResult<GigerConfig>> Get()
         {
-            if (!IsGodUser())
-            {
-                return Unauthorized();
-            }
             return await _gigerConfigService.Get();
         }
 
@@ -38,6 +34,19 @@ namespace Giger.Controllers
             }
             var config = await _gigerConfigService.Get();
             config.GigFeePercentage = tax;
+            await _gigerConfigService.UpdateAsync(config);
+            return Ok();
+        }
+
+        [HttpPatch("commission")]
+        public async Task<IActionResult> UpdateCommission(int commisssion)
+        {
+            if (!IsGodUser())
+            {
+                return Unauthorized();
+            }
+            var config = await _gigerConfigService.Get();
+            config.ModeratorCommissionPercentage = commisssion;
             await _gigerConfigService.UpdateAsync(config);
             return Ok();
         }
