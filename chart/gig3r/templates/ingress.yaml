@@ -20,7 +20,17 @@ spec:
   - host: {{ include "gig3r.host" . }}
     http:
       paths:
-      - path: /((?:api|swagger|ws2137|ws1337)/.*)
+      - path: /((?:api|swagger)/.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "gig3r.backend.app" . }}
+            port:
+              number: 8080
+  - host: {{ include "gig3r.host" . }}
+    http:
+      paths:
+      - path: /((?:ws2137|ws1337).*)
         pathType: ImplementationSpecific
         backend:
           service:

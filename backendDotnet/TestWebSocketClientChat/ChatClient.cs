@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
 using Giger.Connections.Payloads;
 using System.Diagnostics;
@@ -23,7 +23,7 @@ internal class ChatClient
         { "0_connor", "1f2ca9a0-e2af-4677-b7f2-2461ee33b20f" },
     };
 
-    string convId1 = "9b3fe3d6-71fb-4b00-8e77-4b92e2f6eb00";
+    string convId1 = "0c0bee8f-1ef1-4da2-996c-5a8f9bea6649";
     string convId2 = "a3a502ce-ae9b-4421-a371-515691b3a3cc";
     
 
