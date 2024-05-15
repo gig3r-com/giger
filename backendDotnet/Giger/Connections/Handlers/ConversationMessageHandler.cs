@@ -28,7 +28,6 @@ namespace Giger.Connections.Handlers
             await base.SendMessageToParticipantsAsync(serializedMessage, participants);
         }
 
-
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
             if (result.MessageType == WebSocketMessageType.Close)
