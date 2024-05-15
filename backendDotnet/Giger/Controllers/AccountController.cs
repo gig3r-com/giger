@@ -4,17 +4,22 @@ using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Extensions;
 using Giger.Models.User;
+using Giger.Connections.Handlers;
+using System.Linq.Expressions;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService)
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService,
+        LogService logService, NetworksService networksService, NotificationsSocketHandler notificationsHandler)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
         private readonly LogService _logService = logService;
         private readonly NetworksService _networksService = networksService;
+
+        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
         #region Account
 
@@ -127,6 +132,7 @@ namespace Giger.Controllers
 
             account = updatedAccount;
             await _accountService.UpdateAsync(account);
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -145,6 +151,7 @@ namespace Giger.Controllers
             }
             account.Balance += value;
             await _accountService.UpdateAsync(account);
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -162,7 +169,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance -= value;
-            await _accountService.UpdateAsync(account);
+            await _accountService.UpdateAsync(account); 
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -237,12 +245,60 @@ namespace Giger.Controllers
             receiverAcc.Transactions.Add(newTransaction);
             receiverAcc.Balance += newTransaction.Amount;
             await _accountService.UpdateAsync(receiverAcc);
-
+            NotifyTransaction(receiverAcc, newTransaction);
             LogTransaction(newTransaction, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
+
+        private async Task NotifyTransaction(Account account, Transaction transaction)
+        {
+            switch (account.Type)
+            {
+                case AccountType.PRIVATE:
+                {
+                    await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                    break;
+                }
+                case AccountType.BUSINESS:
+                {
+                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    {
+                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
+                        foreach (var user in allFactionUsers)
+                        {
+                            await _notificationsHandler.NotifyTransaction(user.Handle, account.Id, transaction.Id);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        private async Task NotifyAccount(Account account)
+        {
+            switch (account.Type)
+            {
+                case AccountType.PRIVATE:
+                {
+                    await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                    break;
+                }
+                case AccountType.BUSINESS:
+                {
+                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    {
+                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
+                        foreach (var user in allFactionUsers)
+                        {
+                            await _notificationsHandler.NotifyAccount(user.Handle, account.Id);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
         private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {

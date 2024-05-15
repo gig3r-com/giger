@@ -1,4 +1,5 @@
 ﻿using Giger.Models.EventModels;
+using Giger.Models.Hashes;
 using Giger.Models.User.Records;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
