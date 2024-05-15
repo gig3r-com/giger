@@ -1,5 +1,4 @@
-﻿using MongoDB.Driver.Core.Events;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 
 namespace Giger.Connections.SocketsManagment
 {
@@ -22,7 +21,7 @@ namespace Giger.Connections.SocketsManagment
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
 
-            await Handler.OnConnected(socket);
+            await Handler.OnConnected(socket, context);
             await Receive(socket, async (result, buffer) => 
             {
                 if (result.MessageType == WebSocketMessageType.Text)
@@ -41,7 +40,7 @@ namespace Giger.Connections.SocketsManagment
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
             {
-                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None);
+                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 messageHandler(result, buffer);
             }
         }

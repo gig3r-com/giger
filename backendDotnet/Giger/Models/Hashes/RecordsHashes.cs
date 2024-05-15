@@ -1,4 +1,6 @@
-﻿namespace Giger.Models.User.Records
+﻿using Giger.Models.User;
+
+namespace Giger.Models.Hashes
 {
     public class RecordsHashes
     {

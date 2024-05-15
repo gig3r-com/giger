@@ -1,6 +1,6 @@
-﻿using Giger.Models.Obscured;
+﻿using Giger.Models.Hashes;
+using Giger.Models.Obscured;
 using Giger.Models.User;
-using Giger.Models.User.Records;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 

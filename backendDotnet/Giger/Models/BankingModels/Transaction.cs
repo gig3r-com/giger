@@ -9,9 +9,9 @@ namespace Giger.Models.BankingModels
         [BsonElement("_id")]
         public required string Id { get; set; }
         
-        public required string From { get; set; }
+        public required string From { get; set; } // AccountNumber
 
-        public required string To { get; set; }
+        public required string To { get; set; } // AccountNumber
 
         public required string Title { get; set; }
 
@@ -32,6 +32,18 @@ namespace Giger.Models.BankingModels
             Title = title;
             Amount = amount;
             Date = GigerDateTime.Now;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash *= 11 * Id.GetHashCode();
+            hash *= 13 * From.GetHashCode();
+            hash *= 17 * To.GetHashCode();
+            hash *= 19 * Title.GetHashCode();
+            hash *= 23 * Amount.GetHashCode();
+            hash *= 27 * Date.GetHashCode();
+            return hash;
         }
     }
 }

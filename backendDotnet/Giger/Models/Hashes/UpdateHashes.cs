@@ -1,37 +1,41 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using Giger.Models.BankingModels;
+﻿using Giger.Models.BankingModels;
 using Giger.Models.MessageModels;
 using Giger.Models.GigModels;
 
-namespace Giger.Connections.Payloads
+namespace Giger.Models.Hashes
 {
-    public class HashesPayload
+    public class UpdateHashes
     {
-        HashesPayload() { }
-
-        HashesPayload(Account privateAccount, Account businessAccount, 
+        public UpdateHashes(Account privateAccount, Account businessAccount,
             List<Conversation> userConversations, List<Conversation> gigConversationHashes, List<Gig> gigStatusHashes)
         {
-            PrivateAccountHash = privateAccount.GetHashCode();
-            BusinessAccountHash = businessAccount.GetHashCode();
+            PrivateAccountTransactionsHashes = CalculateTransactionsHashes(privateAccount.Transactions);
+            BusinessAccountTransactionsHashes = CalculateTransactionsHashes(businessAccount.Transactions);
             CoversationHashes = CalculateConversationHashes(userConversations);
             GigConversationHashes = CalculateConversationHashes(gigConversationHashes);
             GigStatusHashes = CalculateGigStatuses(gigStatusHashes);
         }
 
-        [BsonRepresentation(BsonType.String)]
-        SocketMessageType MessageType = SocketMessageType.HASH_UPDATE;
-
-        public int PrivateAccountHash { get; set; }
-        public int BusinessAccountHash { get; set; }
+        
+        public Dictionary<string, int> PrivateAccountTransactionsHashes { get; set; }
+        public Dictionary<string, int> BusinessAccountTransactionsHashes { get; set; }
         public Dictionary<string, int> CoversationHashes { get; set; }
         public Dictionary<string, int> GigConversationHashes { get; set; }
         public Dictionary<string, int> GigStatusHashes { get; set; }
 
+        private Dictionary<string, int> CalculateTransactionsHashes(List<Transaction> transactions)
+        {
+            Dictionary<string, int> hashes = [];
+            foreach (var transaction in transactions)
+            {
+                hashes.Add(transaction.Id, transaction.GetHashCode());
+            }
+            return hashes;
+        }
+
         private Dictionary<string, int> CalculateConversationHashes(List<Conversation> userConversations)
         {
-            Dictionary<string, int> hashes = new Dictionary<string, int>();
+            Dictionary<string, int> hashes = [];
             foreach (var conversation in userConversations)
             {
                 hashes.Add(conversation.Id, conversation.GetHashCode());
@@ -41,7 +45,7 @@ namespace Giger.Connections.Payloads
 
         private Dictionary<string, int> CalculateGigStatuses(List<Gig> userGigs)
         {
-            Dictionary<string, int> hashes = new Dictionary<string, int>();
+            Dictionary<string, int> hashes = [];
             foreach (var gig in userGigs)
             {
                 hashes.Add(gig.Id, (int)gig.Status);

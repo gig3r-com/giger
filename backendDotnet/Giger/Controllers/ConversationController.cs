@@ -2,14 +2,20 @@
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ConversationController(UserService userService, LoginService loginService, ConversationService conversationService) : AuthController(userService, loginService)
+    public class ConversationController(UserService userService, LoginService loginService,
+        ConversationService conversationService, NotificationsSocketHandler notificationsHandler, ConversationMessageHandler conversationSocketHandler)
+        : AuthController(userService, loginService)
     {
         private readonly ConversationService _conversationService = conversationService;
+
+        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+        private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)
@@ -48,6 +54,24 @@ namespace Giger.Controllers
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
         }
 
+        [HttpPost("{conversationId}/message")]
+        public async Task<IActionResult> PostMessage(string conversationId, Message newMessage)
+        {
+            var conversation = await _conversationService.GetAsync(conversationId);
+            if (conversation is null)
+            {
+                return NotFound();
+            }
+            conversation.Messages.Add(newMessage);
+            await _conversationService.UpdateAsync(conversation);
+            _conversationSocketHandler.SendMessageAsync(conversation.Participants, conversation.Id, newMessage);
+            foreach (var participant in conversation.Participants)
+            {
+                _notificationsHandler.NotifyConversationId(participant, conversation.Id);
+            }
+            return Ok();
+        }
+
         [HttpPatch("{id}/participants")]
         public async Task<IActionResult> Update(string id, string userName)
         {
@@ -65,6 +89,10 @@ namespace Giger.Controllers
 
             if (!conversation.Participants.Contains(userName))
             {
+                foreach (var participant in conversation.Participants)
+                {
+                    _notificationsHandler.NotifyConversationId(participant, conversation.Id);
+                }
                 conversation.Participants.Add(userName);
                 await _conversationService.UpdateAsync(conversation);
             }

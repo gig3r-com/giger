@@ -1,23 +1,20 @@
 ﻿using Giger.Models.MessageModels;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
 
 namespace Giger.Connections.Payloads
 {
     public class MessagePayload
     {
         public MessagePayload() { }
-        public MessagePayload(Message message, string conversationId, SocketMessageType messageType)
+
+        public MessagePayload(Message message, string conversationId, bool isGigConveration)
         {
             Message = message;
             ConversationId = conversationId;
-            MessageType = messageType;
+            IsGigConveration = isGigConveration;
         }
 
-        [BsonRepresentation(BsonType.String)]
-        SocketMessageType MessageType { get; set; }
-        
         public Message Message { get; set; }
         public string ConversationId { get; set; }
+        public bool IsGigConveration { get; set; }
     }
 }

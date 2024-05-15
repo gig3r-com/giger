@@ -6,13 +6,15 @@ using MongoDB.Bson;
 using Giger.Models.BankingModels;
 using Giger.Models.MessageModels;
 using System.ComponentModel;
+using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GigController(GigService gigService, UserService userService, LoginService loginService, AnonymizedService anonymizedService,
-        AccountService accountService, ConversationService conversationService, GigerConfigService gigerConfigService, AccountController accountController)
+    public class GigController(GigService gigService, UserService userService, LoginService loginService,
+        AnonymizedService anonymizedService, AccountService accountService, ConversationService conversationService,
+        GigerConfigService gigerConfigService, AccountController accountController, NotificationsSocketHandler notificationsHandler)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
@@ -22,6 +24,8 @@ namespace Giger.Controllers
         private readonly GigService _gigService = gigService;
 
         private readonly AccountController _accountController = accountController;
+
+        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
         #region Endpoints
 
@@ -40,6 +44,11 @@ namespace Giger.Controllers
                 return Enumerable.Empty<Gig>().ToList();
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
+            if (requestSender is null)
+            {
+                BadRequest(Messages.USER_NOT_FOUND);
+                return Enumerable.Empty<Gig>().ToList();
+            }
             List<Gig> gigs;
             if (IsRole(UserRoles.MODERATOR))
             {
@@ -229,8 +238,8 @@ namespace Giger.Controllers
             var userTakenBy = await _userService.GetAsync(takenBy);
             conversation.Participants.Add(userTakenBy.Handle);
             conversation.Messages.Add(new Message(userTakenBy.Handle, "ACCEPTED"));
-            _conversationService.UpdateAsync(conversation);
-
+            await _conversationService.UpdateAsync(conversation);
+            await NotifyStatusChanged(gig, false);
             await _gigService.UpdateAsync(gig);
             return Ok();
         }
@@ -250,6 +259,7 @@ namespace Giger.Controllers
             }
             gig.Status = GigStatus.PENDING_CONFIRMATION;
             await _gigService.UpdateAsync(gig);
+            await NotifyStatusChanged(gig, true);
             return Ok();
         }
 
@@ -278,7 +288,7 @@ namespace Giger.Controllers
             await UpdateGigReputation(gig, true);
 
             await _gigService.UpdateAsync(gig);
-
+            await NotifyStatusChanged(gig, true);
             return Ok();
         }
 
@@ -306,6 +316,7 @@ namespace Giger.Controllers
             gig.ComplaintReason = reason;
 
             await _gigService.UpdateAsync(gig);
+            await NotifyStatusChanged(gig, true);
             return Ok();
         }
 
@@ -342,6 +353,7 @@ namespace Giger.Controllers
             PayDisputeFeeToClerk(gig, clerkAccountNo);
 
             await _gigService.UpdateAsync(gig);
+            await NotifyStatusChanged(gig, true);
             return Ok();
         }
 
@@ -403,6 +415,7 @@ namespace Giger.Controllers
 
             gig.Status = value;
             await _gigService.UpdateAsync(gig);
+            await NotifyStatusChanged(gig, true);
             return Ok();
         }
 
@@ -434,11 +447,46 @@ namespace Giger.Controllers
 
         #region Helpers methods
 
+        private async Task NotifyConversationChanged(Gig gig)
+        {
+            var authorOriginalName = gig.AuthorName;
+            if (gig.IsAnonymizedAuthor)
+            {
+                authorOriginalName = _userService.GetAsync(gig.AuthorId).Result.Handle;
+            }
+            await _notificationsHandler.NotifyGigConversation(authorOriginalName, gig.ConversationId);
+
+            _conversationService.GetAsync(gig.ConversationId).Result.Participants.ForEach(async participant =>
+            {
+                if (participant != gig.AuthorName)
+                {
+                    await _notificationsHandler.NotifyGigConversation(participant, gig.ConversationId);
+                }
+            });
+        }
+
+        private async Task NotifyStatusChanged(Gig gig, bool notifyTaker)
+        {
+            var authorOriginalName = gig.AuthorName;
+            if (gig.IsAnonymizedAuthor)
+            {
+                await _notificationsHandler.NotifyGigStatus(_userService.GetAsync(gig.AuthorId).Result.Handle, gig.Id);
+            }
+            else
+            {
+                await _notificationsHandler.NotifyGigStatus(authorOriginalName, gig.Id);
+            }
+            if (notifyTaker && !string.IsNullOrEmpty(gig.TakenById))
+            {
+                await _notificationsHandler.NotifyGigStatus(gig.TakenById, gig.Id);
+            }
+        }
+
         private async Task<Conversation> CreateNewGigConversation(Gig newGig, string openingMessage)
         {
             var conversation = new Conversation()
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = newGig.Id,
                 GigConversation = true,
                 Participants = [newGig.AuthorName],
                 Messages = [new Message(newGig.AuthorName, openingMessage)]
