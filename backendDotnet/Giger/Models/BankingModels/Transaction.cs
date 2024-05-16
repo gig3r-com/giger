@@ -19,7 +19,7 @@ namespace Giger.Models.BankingModels
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
-        public required DateTime Date { get; set; }
+        public required DateTime Timestamp { get; set; }
 
         public Transaction() { }
 
@@ -31,7 +31,7 @@ namespace Giger.Models.BankingModels
             To = to;
             Title = title;
             Amount = amount;
-            Date = GigerDateTime.Now;
+            Timestamp = GigerDateTime.Now;
         }
 
         public override int GetHashCode()
@@ -42,7 +42,7 @@ namespace Giger.Models.BankingModels
             hash *= 17 * To.GetHashCode();
             hash *= 19 * Title.GetHashCode();
             hash *= 23 * Amount.GetHashCode();
-            hash *= 27 * Date.GetHashCode();
+            hash *= 27 * Timestamp.GetHashCode();
             return hash;
         }
     }

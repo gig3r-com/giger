@@ -5,7 +5,7 @@ export interface ITransaction {
     to: string; //accountId
     from: string; //accountId
     amount: number;
-    date: string; // date timestamp
+    timestamp: string; // date timestamp
     title?: string;
 }
 

@@ -16,24 +16,26 @@ export interface IHashUpdatePayload {
     gigStatusHashes: Record<string, number>; //gigId: hash
 }
 
-export interface ISocketMessage<T = IMessage | ITransaction | IHashUpdatePayload> {
+export interface IConversationUpdatePayload {
+    conversationId: string;
+    message: IMessage;
+}
+
+export interface ISocketMessage<T = IConversationUpdatePayload | ITransaction | IHashUpdatePayload> {
     type: SocketMessageType;
     payload: T;
 } 
 
 export interface ISocketHashUpdate extends ISocketMessage<IHashUpdatePayload> {
     type: SocketMessageType.HASH_UPDATE;
-    payload: IHashUpdatePayload
 }
 
-export interface ISocketNewChatMessage extends ISocketMessage<IMessage> {
+export interface ISocketNewChatMessage extends ISocketMessage<IConversationUpdatePayload> {
     type: SocketMessageType.NEW_MESSAGE;
-    payload: IMessage;
 }
 
 export interface ISocketNewGigMessage extends ISocketMessage<IMessage> {
     type: SocketMessageType.NEW_GIG_MESSAGE;
-    payload: IMessage;
 }
 
 // export interface ISocketGigStatusUpdate extends ISocketMessage<ITransaction>{

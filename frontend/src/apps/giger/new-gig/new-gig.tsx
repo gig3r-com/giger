@@ -100,6 +100,15 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         return categoryData?.subcategories ?? [];
     }, [selectedCategory]);
 
+    const step = useMemo(() => {
+        return Math.pow(
+            10,
+            Math.floor(
+                Math.log(subcategoryData?.minPayout ?? 100) / Math.log(10)
+            )
+        );
+    }, [subcategoryData]);
+
     const gigReady = useMemo(() => {
         return gigName !== '' &&
             anonymize !== '' &&
@@ -138,7 +147,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   ...(hasCompanyAccount && {
                       fromAccount: fromAccount as AccountType
                   }),
-                  reputationRequired: {level: selectedRepuation as GigRepuationLevels},
+                  reputationRequired: {
+                      level: selectedRepuation as GigRepuationLevels
+                  },
                   subcategory: selectedSubcategory! as GigSubcategoryNames,
                   mode: mode as GigModes,
                   authorName: anonymize ? 'Anonymous' : currentUser?.handle,
@@ -325,13 +336,22 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     max={subcategoryData?.maxPayout ?? 50000}
                     value={payout}
                     className="new-gig__slider"
-                    step={100}
+                    step={step}
                     showValue={true}
                     showMax={true}
                     showMin={true}
                     label={intl.formatMessage({ id: 'PAYOUT' })}
                     onChange={(value) => onPayoutChange(value)}
                 />
+
+                <span className="new-gig__total">
+                    <span className="new-gig__total-desc">
+                        {intl.formatMessage({ id: 'TOTAL_DESC' })}
+                    </span>
+                    <span className="new-gig__total-value">
+                        {payout + payout * gigerCommission}{' '}
+                    </span>
+                </span>
 
                 {notEnoughMoneyWarning && (
                     <p className="new-gig__warning">

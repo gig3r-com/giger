@@ -19,7 +19,7 @@
     left: 0;
     position: fixed;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
 }
 
 a {
@@ -37,7 +37,7 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 h1 {

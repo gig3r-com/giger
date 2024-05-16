@@ -4,13 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import { IConversation, IMessage } from '../../models/message';
 import {
+    setAllConversationHashes,
+    setAllGigConversationHashes,
     setConversations,
-    setGigConversations
+    setGigConversations,
+    updateConversation
 } from '../../store/messages.slice';
-import { RootState } from '../../store/store';
 import { useUserService } from './user.service';
 import { useApiService } from './api.service';
 import { useNotificationsService } from './notifications.service';
+import {
+    selectConversations,
+    selectGigConversations,
+    selectUnreadMessages
+} from './messages.selectors';
+import dayjs from 'dayjs';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -23,21 +31,18 @@ export function useMessagesService() {
     const { currentUser, updateUserData, getBasicUserDataById } =
         useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
-    const conversations = useSelector(
-        (state: RootState) => state.conversations.conversations
-    );
-    const gigConversations = useSelector(
-        (state: RootState) => state.conversations.gigConversations
-    );
+    const conversations = useSelector(selectConversations);
+    const gigConversations = useSelector(selectGigConversations);
+    const unreadMessages = useSelector(selectUnreadMessages);
 
-    const createMessage: (text: string, senderId?: string) => IMessage = (
+    const createMessage: (text: string, senderHandle?: string) => IMessage = (
         text,
-        senderId
+        senderHandle
     ) => {
         return {
             id: uuidv4(),
-            date: new Date().toString(),
-            sender: senderId || currentUser!.id,
+            date: dayjs().toISOString(),
+            sender: senderHandle || currentUser!.handle,
             text: text
         };
     };
@@ -109,8 +114,8 @@ export function useMessagesService() {
             });
     };
 
-    const fetchUserConvos: (userId: string) => void = (userId) => {
-        api.query({ participant: userId })
+    const fetchUserConvos = () => {
+        api.query({ participant: currentUser?.handle })
             .get('Conversation/byParticipant')
             .json<IConversation[]>()
             .then((convos) => {
@@ -132,36 +137,71 @@ export function useMessagesService() {
         }
 
         const message = createMessage(messageText);
+        api.url(`Conversation/${convoId}/message`).post(message).res().then(() => {
+            
+        });
 
-        try {
-            // send message
-            const updatedConvo: IConversation = JSON.parse(
-                JSON.stringify(
-                    [...conversations, ...gigConversations].find(
-                        (convo) => convo.id === convoId
-                    )
-                )
-            );
-            updatedConvo?.messages.push(message);
+        // try {
+        //     // send message
+        //     const updatedConvo: IConversation = JSON.parse(
+        //         JSON.stringify(
+        //             [...conversations, ...gigConversations].find(
+        //                 (convo) => convo.id === convoId
+        //             )
+        //         )
+        //     );
+        //     updatedConvo?.messages.push(message);
 
-            if (updatedConvo.gigConversation) {
-                const updatedConvos = [...gigConversations].filter(
-                    (conversation) => conversation.id !== convoId
-                );
-                updatedConvos.push(updatedConvo);
-                dispatch(setGigConversations(updatedConvos));
-            } else {
-                const updatedConvos = [...conversations].filter(
-                    (conversation) => conversation.id !== convoId
-                );
-                updatedConvos.push(updatedConvo);
-                dispatch(setConversations(updatedConvos));
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        //     if (updatedConvo.gigConversation) {
+        //         const updatedConvos = [...gigConversations].filter(
+        //             (conversation) => conversation.id !== convoId
+        //         );
+        //         updatedConvos.push(updatedConvo);
+        //         dispatch(setGigConversations(updatedConvos));
+        //     } else {
+        //         const updatedConvos = [...conversations].filter(
+        //             (conversation) => conversation.id !== convoId
+        //         );
+        //         updatedConvos.push(updatedConvo);
+        //         dispatch(setConversations(updatedConvos));
+        //     }
+        // } catch (error) {
+        //     console.error(error);
+        //}
     };
 
+    const isMessageUnread = (convoId: string, messageId: string): boolean => {
+        const unread = unreadMessages[convoId]?.find(
+            (msgId) => msgId === messageId
+        );
+        return unread !== undefined;
+    };
+
+    const convoHasUnreadMessages = (convoId: string): boolean => {
+        return unreadMessages[convoId]?.length > 0;
+    };
+
+    const insertNewMessage = (
+        convoId: string,
+        message: IMessage,
+        gigConvo: boolean
+    ) => {
+        dispatch(
+            updateConversation({
+                convoId,
+                message,
+                gigConvo
+            })
+        );
+    };
+
+    const updateConversationHashes = (hashes: Record<string, number>, gigConversationHashes: boolean) => {
+        if (gigConversationHashes) {
+            dispatch(setAllGigConversationHashes(hashes));
+        } else {
+            dispatch(setAllConversationHashes(hashes));
+        }
+    }
     return {
         createMessage,
         sendMessage,
@@ -169,6 +209,10 @@ export function useMessagesService() {
         fetchConvo,
         fetchingConvo,
         fetchUserConvos,
-        getGigConvo
+        getGigConvo,
+        isMessageUnread,
+        convoHasUnreadMessages,
+        insertNewMessage,
+        updateConversationHashes
     };
 }

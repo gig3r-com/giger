@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IConversation } from '../models/message';
+import { IConversation, IMessage } from '../models/message';
 import { IHashData } from '../models/general';
 
 export interface IConversationState {
@@ -7,13 +7,15 @@ export interface IConversationState {
     gigConversations: IConversation[];
     conversationHashes: Record<string, IHashData>;
     gigConversationHashes: Record<string, IHashData>;
+    unreadMessages: Record<string, string[]>; // convoId, messageId[]
 }
 
 const initialState: IConversationState = {
     conversations: [],
     gigConversations: [],
     conversationHashes: {},
-    gigConversationHashes: {}
+    gigConversationHashes: {},
+    unreadMessages: {}
 };
 
 export const conversationsSlice = createSlice({
@@ -71,6 +73,29 @@ export const conversationsSlice = createSlice({
             Object.entries(action.payload).forEach(([gigId, hash]) => {
                 state.gigConversationHashes[gigId].current = hash;
             });
+        },
+        updateConversation: (
+            state,
+            action: PayloadAction<{
+                convoId: string;
+                message: IMessage;
+                gigConvo: boolean;
+            }>
+        ) => {
+            const convo = state[
+                action.payload.gigConvo ? 'gigConversations' : 'conversations'
+            ].find((c) => c.id === action.payload.convoId);
+
+            if (convo) {
+                convo.messages.push(action.payload.message);
+                state.unreadMessages[convo.id].push(action.payload.message.id);
+            }
+        },
+        setMessagesAsRead: (
+            state,
+            action: PayloadAction<{ convoId: string }>
+        ) => {
+            state.unreadMessages[action.payload.convoId] = [];
         }
     }
 });
@@ -82,7 +107,9 @@ export const {
     setAllConversationHashes,
     setAllGigConversationHashes,
     setSeenConversationHash,
-    setSeenGigConversationHash
+    setSeenGigConversationHash,
+    updateConversation,
+    setMessagesAsRead
 } = conversationsSlice.actions;
 
 export default conversationsSlice.reducer;

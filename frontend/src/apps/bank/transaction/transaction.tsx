@@ -31,8 +31,11 @@ export const Transaction: FC<{
                 <span className="transaction__other-party">
                     {getAccountHolderName(otherParty)}
                 </span>
+                <span className="transaction__title">
+                    {transaction.title ?? 'No title'}
+                </span>
                 <span className="transaction__date">
-                    {new Date(transaction.date).toLocaleDateString()}
+                    {new Date(transaction.timestamp).toLocaleDateString()}
                 </span>
             </div>
             <span className="transaction__amount">

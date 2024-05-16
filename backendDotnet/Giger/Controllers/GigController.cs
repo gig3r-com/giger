@@ -509,7 +509,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = "SYSTEM",
-                Date = GigerDateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout
             };
@@ -521,7 +521,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = Factions.social_net.ToString(),
-                Date = GigerDateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
                 Amount = gigFeeAmount
             };
@@ -537,7 +537,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = "SYSTEM",
                 To = gig.ClientAccountNumber,
-                Date = GigerDateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_REFUND_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout,
             };
@@ -552,7 +552,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 To = gig.ProviderAccountNumber,
-                Date = GigerDateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_PAYMENT_TITLE, gig.Title),
                 Amount = gig.Payout,
             };
@@ -568,7 +568,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = "SOCIAL",
                 To = clerkAccountNo,
-                Date = GigerDateTime.Now,
+                Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_DISPUTE_FEE_TITLE, gig.Title),
                 Amount = gig.Payout * commissionPercent,
             };

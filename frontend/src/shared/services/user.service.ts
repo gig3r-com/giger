@@ -119,8 +119,8 @@ export function useUserService() {
         return [rand[0], rand[1]].join('');
     };
 
-    const isInfluencer = (userId: string) => {
-        const user = userList.find((user) => user.id === userId);
+    const isInfluencer = (handle: string) => {
+        const user = userList.find((user) => user.handle === handle);
 
         return user?.roles?.includes(UserRoles.INFLUENCER);
     };

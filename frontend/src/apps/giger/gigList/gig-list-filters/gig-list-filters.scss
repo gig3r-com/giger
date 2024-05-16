@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 100vh;
+    top: 100dvh;
     left: 0;
     width: 100vw;
     height: calc(100dvh - #{$menu-size});
@@ -18,7 +18,7 @@
     background: $app-background;
 
     &--active {
-        transform: translateY(-100vh);
+        transform: translateY(-100dvh);
     }
 
     &__mode-select {
