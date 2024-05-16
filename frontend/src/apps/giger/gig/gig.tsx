@@ -163,16 +163,15 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 isMine,
                                 isModerator,
                                 gig.mode,
-                                hasCompanyAccount
+                                hasCompanyAccount,
+                                canAcceptGig(gig)
                             ).map((button) => (
                                 <BigButton
                                     key={button.label}
                                     text={intl.formatMessage({
                                         id: button.label
                                     })}
-                                    disabled={
-                                        button.disabled && !canAcceptGig(gig)
-                                    }
+                                    disabled={button.disabled}
                                     color={buttonColor(gig.status, isMine)}
                                     onClick={() => {
                                         handleButtonAction(

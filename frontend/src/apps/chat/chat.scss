@@ -14,8 +14,9 @@
 
 
         &--msg-open {
-            height: calc(#{$standard-viewport-height} - 60px);
+            height: calc(#{$standard-viewport-height} - 30px);
             border: none;
+            margin: 0;
         }
     }
 }

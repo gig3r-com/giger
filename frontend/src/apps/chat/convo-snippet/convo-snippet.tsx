@@ -1,6 +1,5 @@
 import { FC, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-//import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
@@ -9,6 +8,8 @@ import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
 import { useUserService } from '../../../shared/services/user.service';
+import { useMessagesService } from '../../../shared/services/messages.service';
+import MemoizedFormattedMessage from 'react-intl/src/components/message';
 
 import './convo-snippet.scss';
 
@@ -17,8 +18,8 @@ export const ConvoSnippet: FC<{
     delayMultiplier: number;
 }> = ({ convo, delayMultiplier }) => {
     const { chatId } = useParams();
-    const { getHandleForConvo } = useUserService();
     const { generateAnimation } = useStandardizedAnimation();
+    const { convoHasUnreadMessages } = useMessagesService();
     const { currentUser } = useUserService();
     const lastMessage = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
@@ -60,11 +61,7 @@ export const ConvoSnippet: FC<{
                             <Link to={`/chat/${convo.id}`}>
                                 <section className="convo-snippet__meta">
                                     <span className="convo-snippet__sender">
-                                        @
-                                        {getHandleForConvo(
-                                            convo.id,
-                                            lastMessage.sender
-                                        )}
+                                        @{lastMessage.sender}
                                     </span>
                                     {' > '}
                                     <span className="convo-snippet__date">
@@ -72,14 +69,14 @@ export const ConvoSnippet: FC<{
                                             lastMessage.date
                                         ).toLocaleTimeString()}
                                     </span>
-                                    {/* {' > '}
+                                    {' > '}
                                     <span className="convo-snippet__status">
-                                        {lastMessage.status && (
-                                            <MemoizedFormattedMessage
-                                                id={lastMessage.status.toUpperCase()}
-                                            />
+                                        {convoHasUnreadMessages(convo.id) ? (
+                                            <MemoizedFormattedMessage id="NEW_MESSAGES_ABBREVIATION" />
+                                        ) : (
+                                            <MemoizedFormattedMessage id="READ" />
                                         )}
-                                    </span> */}
+                                    </span>
                                 </section>
                                 <span className="convo-snippet__message">
                                     {lastMessage.text}

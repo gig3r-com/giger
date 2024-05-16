@@ -107,10 +107,10 @@ export const reputationLabels = new Map<GigRepuationLevels, string>([
 
 export const reputationBrackets = new Map<GigRepuationLevels, number>([
     [0, 0],
-    [1, 10000],
-    [2, 20000],
-    [3, 30000],
-    [4, 40000],
+    [1, 2000],
+    [2, 5000],
+    [3, 10000],
+    [4, 20000],
     [5, Infinity]
 ]);
 

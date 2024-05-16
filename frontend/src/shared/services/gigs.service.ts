@@ -380,8 +380,8 @@ export function useGigsService() {
     }, [gigsVisibleToTheUser, selectedCategories, selectedMode, userGigMode]);
 
     const isLocked = (gig: IGig) => {
-        const userIsProvider = userGigMode(gig) === GigModes.PROVIDER;
-        return userIsProvider ? !gig.isRevealed : !gig.isRevealedByClient;
+        const userIsAuthor = gig.authorId === currentUser?.id;
+        return userIsAuthor ? !gig.isRevealed : !gig.isRevealedByClient;
     };
 
     return {
