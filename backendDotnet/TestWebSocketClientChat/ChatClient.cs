@@ -23,7 +23,7 @@ internal class ChatClient
         { "0_connor", "1f2ca9a0-e2af-4677-b7f2-2461ee33b20f" },
     };
 
-    string convId1 = "9b3fe3d6-71fb-4b00-8e77-4b92e2f6eb00";
+    string convId1 = "0c0bee8f-1ef1-4da2-996c-5a8f9bea6649";
     string convId2 = "a3a502ce-ae9b-4421-a371-515691b3a3cc";
     
 
@@ -36,7 +36,7 @@ internal class ChatClient
         //await client.ConnectAsync(new Uri($"ws://localhost:5174/ws?userId={UserId}"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:18556/ws"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:5000/ws"), CancellationToken.None);
-        await client.ConnectAsync(new Uri($"ws://localhost:5174/ws2137"), CancellationToken.None);
+        await client.ConnectAsync(new Uri($"wss://feat-ingress-websocket-support.gig3r.com/ws2137"), CancellationToken.None);
         //await client.ConnectAsync(new Uri($"ws://localhost:5174/ws1337"), CancellationToken.None);
         var send = Task.Run(async () =>
         {
