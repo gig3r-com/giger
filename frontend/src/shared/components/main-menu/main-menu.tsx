@@ -34,6 +34,11 @@ export const MainMenu = () => {
                                 hasUnreadMessages && (
                                     <span className="main-menu__new-indicator"></span>
                                 )}
+
+                            {option.name === MainMenuNames.GIGS &&
+                                hasUnreadMessages && (
+                                    <span className="main-menu__new-indicator"></span>
+                                )}
                         </li>
                     </Fragment>
                 ))}

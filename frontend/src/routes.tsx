@@ -27,10 +27,13 @@ import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
 import { useBankingService } from './shared/services/banking.service';
 import { useUserService } from './shared/services/user.service';
+import { useWebsocketService } from './shared/services/websocket.service';
 
 export const Router = () => {
     const intl = useIntl();
     const { test } = useNotificationsService();
+    const { setupNotificationSocket, setupMessageSocket } =
+        useWebsocketService();
     const { versionCheck } = useVersionService();
     const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
@@ -41,10 +44,13 @@ export const Router = () => {
         test();
         fetchAllUsers();
         fetchAccounts();
+        setupNotificationSocket();
+        setupMessageSocket();
     }, []);
 
     const isLoggedIn = useSelector(
-        (state: RootState) => !!(state.users.currentUser && !state.users.requiresGodUserSelection)
+        (state: RootState) =>
+            !!(state.users.currentUser && !state.users.requiresGodUserSelection)
     );
 
     return (
