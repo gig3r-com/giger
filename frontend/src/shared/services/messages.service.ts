@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import { IConversation, IMessage } from '../../models/message';
 import {
+    addConversation,
     setAllConversationHashes,
     setAllGigConversationHashes,
     setConversations,
@@ -14,7 +15,6 @@ import { useUserService } from './user.service';
 import { useApiService } from './api.service';
 import { useNotificationsService } from './notifications.service';
 import {
-    selectConversations,
     selectGigConversations,
     selectUnreadMessages
 } from './messages.selectors';
@@ -28,10 +28,8 @@ export function useMessagesService() {
     const intl = useIntl();
     const { api } = useApiService();
     const { displayToast } = useNotificationsService();
-    const { currentUser, updateUserData, getBasicUserDataById } =
-        useUserService();
+    const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
-    const conversations = useSelector(selectConversations);
     const gigConversations = useSelector(selectGigConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
 
@@ -49,37 +47,32 @@ export function useMessagesService() {
 
     const createConvo: (
         participants: string[],
-        msg?: IMessage,
         id?: string,
         anonymize?: boolean
-    ) => string = (participants, msg, id, anonymize) => {
-        const convoId = id ?? uuidv4();
-        const anonymizedHandle = uuidv4().substring(0, 8);
+    ) => Promise<string> = (participants, id) =>
+        new Promise((resolve, reject) => {
+            const convoId = id ?? uuidv4();
+            //const anonymizedHandle = uuidv4().substring(0, 8);
+            const convo: IConversation = {
+                id: convoId,
+                gigConversation: false,
+                participants,
+                messages: [...createInitialMessages(participants)]
+            };
 
-        dispatch(
-            setConversations([
-                ...conversations,
-                {
-                    id: convoId,
-                    participants: participants,
-                    messages: msg
-                        ? [...createInitialMessages(participants), msg]
-                        : [...createInitialMessages(participants)]
-                }
-            ])
-        );
-
-        if (anonymize) {
-            updateUserData(currentUser!.id, {
-                aliasMap: {
-                    ...currentUser!.aliasMap,
-                    [convoId]: anonymizedHandle
-                }
-            });
-        }
-
-        return convoId;
-    };
+            api.url('Conversation')
+                .post(convo)
+                .json<IConversation>()
+                .catch(() => reject())
+                .then((conversation) => {
+                    if (!conversation) {
+                        reject();
+                        return;
+                    }
+                    dispatch(addConversation(conversation));
+                    resolve(conversation.id);
+                });
+        });
 
     const getGigConvo = async (gigId: string): Promise<IConversation> => {
         return await api
@@ -90,14 +83,13 @@ export function useMessagesService() {
     const createInitialMessages = (participants: string[]): IMessage[] => {
         const initialMessages: IMessage[] = [];
         participants.forEach((participant) => {
-            const handle = getBasicUserDataById(participant)?.handle;
             const message = createMessage(
-                `<@${handle} ${intl.formatMessage({
+                `<@${participant} ${intl.formatMessage({
                     id: 'ENTERED_THE_CHAT'
                 })}>`,
                 participant
             );
-            message.sender = currentUser!.id;
+            message.sender = participant;
             initialMessages.push(message);
         });
         return initialMessages;
@@ -137,9 +129,10 @@ export function useMessagesService() {
         }
 
         const message = createMessage(messageText);
-        api.url(`Conversation/${convoId}/message`).post(message).res().then(() => {
-            
-        });
+        api.url(`Conversation/${convoId}/message`)
+            .post(message)
+            .res()
+            .then(() => {});
 
         // try {
         //     // send message
@@ -195,13 +188,16 @@ export function useMessagesService() {
         );
     };
 
-    const updateConversationHashes = (hashes: Record<string, number>, gigConversationHashes: boolean) => {
+    const updateConversationHashes = (
+        hashes: Record<string, number>,
+        gigConversationHashes: boolean
+    ) => {
         if (gigConversationHashes) {
             dispatch(setAllGigConversationHashes(hashes));
         } else {
             dispatch(setAllConversationHashes(hashes));
         }
-    }
+    };
     return {
         createMessage,
         sendMessage,

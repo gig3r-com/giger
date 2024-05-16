@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router';
 import { ActionId } from '../../apps/giger/gig/button-definitions';
 import { useApiService } from './api.service';
 import { useBankingService } from './banking.service';
+import { AccountType } from '../../models/banking';
 
 export function useGigsService() {
     const navigate = useNavigate();
@@ -37,15 +38,28 @@ export function useGigsService() {
     const { displayToast } = useNotificationsService();
     const gigerCommission = 0.2;
 
-    const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => ({
-        ...draftGig,
-        createdAt: dayjs().add(100, 'days').toISOString(),
-        authorId: currentUser!.id,
-        status: GigStatus.AVAILABLE,
-        isRevealed: true,
-        isRevealedByClient: true,
-        conversationId: ''
-    });
+    const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => {
+        const accountNo =
+            draftGig.fromAccount === AccountType.PRIVATE
+                ? accounts.private?.accountNumber
+                : accounts.business?.accountNumber;
+
+        return {
+            ...draftGig,
+            ...(draftGig.mode === GigModes.PROVIDER
+                ? { providerAccountNumber: accountNo }
+                : {}),
+            ...(draftGig.mode === GigModes.CLIENT
+                ? { clientAccountNumber: accountNo }
+                : {}),
+            createdAt: dayjs().add(100, 'days').toISOString(),
+            authorId: currentUser!.id,
+            status: GigStatus.AVAILABLE,
+            isRevealed: true,
+            isRevealedByClient: true,
+            conversationId: ''
+        };
+    };
 
     /**
      * Creates a gig. Requires the user to have the amount of money set as payout + 20% commission for social network.

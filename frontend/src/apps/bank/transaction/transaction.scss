@@ -35,11 +35,20 @@
 
     &__direction {
         background-color: $primary-color;
-        width: 34px;
-        height: 34px;
+        width: 45px;
+        height: 45px;
         margin-right: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
+
+        svg {
+            width: 39px;
+            height: 39px;
+        }
+    }
+
+    &__title {
+        font-size: 0.7rem;
     }
 }

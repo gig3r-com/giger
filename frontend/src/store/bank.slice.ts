@@ -55,7 +55,7 @@ export const selectAccounts = createSelector(
     (bank) => {
         return {
             private: bank.account,
-            business: bank.businessAccount
+            ...(bank.businessAccount ? { business: bank.businessAccount } : {})
         };
     }
 );

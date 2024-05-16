@@ -15,6 +15,11 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
             'cards__card-bg--business': accountType === AccountType.BUSINESS
         });
 
+    const scrollerClassNames = classNames({
+        'cards__scroller': true,
+        'cards__scroller--double': accounts.length > 1
+    });
+
     useEffect(() => {
         if (!scrollerRef.current) return;
 
@@ -44,7 +49,7 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
 
     return (
         <article className="cards">
-            <div className="cards__scroller" ref={scrollerRef}>
+            <div className={scrollerClassNames} ref={scrollerRef}>
                 {accounts.map((account) => (
                     <div
                         className='cards__card'

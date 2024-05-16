@@ -5,8 +5,12 @@
     margin: 1rem 0;
 
     &__scroller {
-        width: 200%;
+        width: 100%;
         display: flex;
+
+        &--double {
+            width: 200%;
+        }
     }
 
     &__card {

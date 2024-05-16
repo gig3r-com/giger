@@ -1,3 +1,5 @@
+import { AccountType } from "./banking";
+
 export interface IGigBase {
     createdAt: string; //ISO date string
     acceptedAt?: string; //ISO date string
@@ -19,6 +21,7 @@ export interface IGigBase {
 
 export interface IDraftGig extends IGigBase {
     message: string;
+    fromAccount: AccountType;
 }
 
 export interface IGig extends IGigBase {

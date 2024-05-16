@@ -3,10 +3,12 @@ import { RootState } from '../../store/store';
 import {
     selectAccounts,
     addTransaction,
-    setAccount
+    setAccount,
+    setBusinessAccount
 } from '../../store/bank.slice';
 import {
     AccountType,
+    IBusinessAccount,
     IPrivateAccount,
     ITransaction
 } from '../../models/banking';
@@ -38,18 +40,12 @@ export function useBankingService() {
     const accounts = useSelector(selectAccounts);
     const fetchAccounts = async () => {
         if (!currentUser) return;
-        const privateAccount = (
-            await api
-                .query({ owner: currentUser?.handle })
-                .get(`Account/byOwner`)
-                .json<IPrivateAccount[]>()
-        )[0];
-        // const businessAccount = (await api
-        //     .query({ owner: currentUser?.faction })
-        //     .get(`Account/byOwner`)
-        //     .json<IBusinessAccount[]>())[0];
+        const [privateAccount, businessAccount] = await api
+            .query({ owner: currentUser?.handle })
+            .get(`Account/byOwner`)
+            .json<[IPrivateAccount, IBusinessAccount?]>();
         dispatch(setAccount(privateAccount));
-        //dispatch(setBusinessAccount(businessAccount));
+        businessAccount && dispatch(setBusinessAccount(businessAccount));
     };
     const hasCompanyAccount = !!accounts.business;
 
