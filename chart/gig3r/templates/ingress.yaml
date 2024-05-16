@@ -13,9 +13,9 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
   name: gig3r-ingress
 spec:
   ingressClassName: nginx
