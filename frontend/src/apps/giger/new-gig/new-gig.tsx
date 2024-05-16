@@ -31,7 +31,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         useBankingService();
     const { currentUser } = useUserService();
     const { addNewGig, gigerCommission } = useGigsService();
-    const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
+    const [fromAccount, setFromAccount] = useState<AccountType>(
+        AccountType.PRIVATE
+    );
     const [gigName, setGigName] = useState<string>('');
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const [publicDescription, setPublicDescription] = useState<string>('');
@@ -110,7 +112,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     }, [subcategoryData]);
 
     const gigReady = useMemo(() => {
-        return gigName !== '' &&
+        return (
+            gigName !== '' &&
             anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&
@@ -119,9 +122,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
             selectedSubcategory !== '' &&
-            hasCompanyAccount
-            ? fromAccount !== ''
-            : true && mode !== '';
+            mode !== ''
+        );
     }, [
         gigName,
         anonymize,
@@ -131,8 +133,6 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         selectedRepuation,
         selectedCategory,
         selectedSubcategory,
-        hasCompanyAccount,
-        fromAccount,
         mode
     ]);
 
@@ -234,24 +234,26 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     </option>
                 </select>
 
-                <select
-                    className="new-gig__input"
-                    value={fromAccount}
-                    onChange={(event) => {
-                        setFromAccount(event.target.value as AccountType);
-                        checkBalance();
-                    }}
-                >
-                    <option value={''} disabled hidden>
-                        <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
-                    </option>
-                    <option value={AccountType.PRIVATE}>
-                        <MemoizedFormattedMessage id="PRIVATE" />
-                    </option>
-                    <option value={AccountType.BUSINESS}>
-                        <MemoizedFormattedMessage id="BUSINESS" />
-                    </option>
-                </select>
+                {hasCompanyAccount && (
+                    <select
+                        className="new-gig__input"
+                        value={fromAccount}
+                        onChange={(event) => {
+                            setFromAccount(event.target.value as AccountType);
+                            checkBalance();
+                        }}
+                    >
+                        <option value={''} disabled hidden>
+                            <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
+                        </option>
+                        <option value={AccountType.PRIVATE}>
+                            <MemoizedFormattedMessage id="PRIVATE" />
+                        </option>
+                        <option value={AccountType.BUSINESS}>
+                            <MemoizedFormattedMessage id="BUSINESS" />
+                        </option>
+                    </select>
+                )}
 
                 <select
                     className="new-gig__input"

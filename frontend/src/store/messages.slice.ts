@@ -44,6 +44,9 @@ export const conversationsSlice = createSlice({
                 state.conversations.push(action.payload);
             }
         },
+        addConversation: (state, action: PayloadAction<IConversation>) => {
+            state.conversations.push(action.payload);
+        },
         setSeenConversationHash: (
             state,
             action: PayloadAction<{ convoId: string; hash: number }>
@@ -109,7 +112,8 @@ export const {
     setSeenConversationHash,
     setSeenGigConversationHash,
     updateConversation,
-    setMessagesAsRead
+    setMessagesAsRead,
+    addConversation
 } = conversationsSlice.actions;
 
 export default conversationsSlice.reducer;
