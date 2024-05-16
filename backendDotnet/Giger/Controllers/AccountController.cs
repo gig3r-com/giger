@@ -236,7 +236,7 @@ namespace Giger.Controllers
             }
 
             newTransaction.Id = Guid.NewGuid().ToString();
-            newTransaction.Date = GigerDateTime.Now;
+            newTransaction.Timestamp = GigerDateTime.Now;
 
             giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;

@@ -370,7 +370,7 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    <ReputationSummary />
+                    {user && <ReputationSummary reputation={user?.gigReputation} />}
 
                     {isPrivate && (
                         <AdminEditableField

@@ -76,7 +76,7 @@ export function useBankingService() {
                 amount,
                 title,
                 id: v4(),
-                date: dayjs().add(100, 'years').toISOString(),
+                timestamp: dayjs().add(100, 'years').toISOString(),
                 ...(fromAccount === AccountType.BUSINESS
                     ? {
                           orderingParty: currentUser?.id
