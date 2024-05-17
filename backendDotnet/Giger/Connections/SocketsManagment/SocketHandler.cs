@@ -14,7 +14,7 @@ namespace Giger.Connections.SocketsManagment
 
         public virtual async Task OnConnected(WebSocket socket, HttpContext context)
         {
-            context.Request.Headers.TryGetValue("AuthToken", out var token);
+            context.Request.Query.TryGetValue("AuthToken", out var token);
             if (string.IsNullOrEmpty(token))
             {
                 await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "No token", CancellationToken.None);
