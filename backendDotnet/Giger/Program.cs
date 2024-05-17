@@ -61,7 +61,7 @@ app.Use(async (context, next) =>
     }
 #endif
 
-    if (context.Request.Query.TryGetValue("AuthToken", out var authTokenString))
+    if (context.Request.Headers.TryGetValue("AuthToken", out var authTokenString))
     {
         await next();
         return;
