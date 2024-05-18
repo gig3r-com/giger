@@ -20,7 +20,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         localStorage.getItem('authToken') ?? null
     );
     const [isConnected, setIsConnected] = useState(false);
-    const baseUrl = `wss${window.origin.substr(4, window.origin.length)}`;
+    const baseUrl = `wss${window.origin.substr(4, window.origin.length)}/`;
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
 
     useEffect(
