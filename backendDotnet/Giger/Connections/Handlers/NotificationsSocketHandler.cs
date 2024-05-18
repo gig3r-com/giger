@@ -23,17 +23,31 @@ namespace Giger.Connections.Handlers
         
         public async Task NotifyConversationId(string username, string conversationId) 
             => await NotifyPayload(username, new NotificationPayload() { ConversationId = conversationId });
-        
+
         public async Task NotifyUpdate()
         {
-            var payload = new NotificationPayload() { UpdateRequired = true };
-            await SendMessageToAllAsync(JsonSerializer.Serialize(payload));
+            try
+            {
+                var payload = new NotificationPayload() { UpdateRequired = true };
+                await SendMessageToAllAsync(JsonSerializer.Serialize(payload));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private async Task NotifyPayload(string username, NotificationPayload payload)
         {
-            var message = JsonSerializer.Serialize(payload);
-            await SendMessageAsync(username, message);
+            try
+            {
+                var message = JsonSerializer.Serialize(payload);
+                await SendMessageAsync(username, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
