@@ -19,13 +19,21 @@ namespace Giger.Connections.Handlers
 
         public async Task SendMessageAsync(IEnumerable<string> participants, string converasationId, Message message)
         {
-            var payload = new MessagePayload
+            try
             {
-                ConversationId = converasationId,
-                Message = message
-            };
-            var serializedMessage = JsonSerializer.Serialize(payload);
-            await base.SendMessageToParticipantsAsync(serializedMessage, participants);
+                var payload = new MessagePayload
+                {
+                    ConversationId = converasationId,
+                    Message = message
+                };
+                var serializedMessage = JsonSerializer.Serialize(payload);
+                await base.SendMessageToParticipantsAsync(serializedMessage, participants);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
 
