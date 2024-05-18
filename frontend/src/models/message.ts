@@ -1,8 +1,15 @@
 export interface IMessage {
     id: string;
     date: string; // Date timestamp
-    sender: string; // user id
+    sender: string; // user handle
     text: string;
+}
+
+export interface IWebsocketMessage {
+    Id: string;
+    Date: string;
+    Sender: string;
+    Text: string;
 }
 
 export interface IConversation {

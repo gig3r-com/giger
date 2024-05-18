@@ -1,5 +1,5 @@
 import { ITransaction } from "./banking";
-import { IMessage } from "./message";
+import { IMessage, IWebsocketMessage } from "./message";
 
 export enum SocketMessageType {
     HASH_UPDATE = 'HASH_UPDATE',
@@ -16,8 +16,18 @@ export interface IHashUpdatePayload {
     gigStatusHashes: Record<string, number>; //gigId: hash
 }
 
+/**
+ * ! these two have to go, it's a dirty workaround for backend giving PascalCase instead of camelCase
+ */
 export interface IConversationUpdatePayload {
+    ConversationId: string;
+    IsGigConversation: boolean;
+    Message: IWebsocketMessage;
+}
+
+export interface IConversationConsumablePayload {
     conversationId: string;
+    isGigConversation: boolean;
     message: IMessage;
 }
 

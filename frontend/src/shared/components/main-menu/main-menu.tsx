@@ -7,9 +7,12 @@ import {
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { Fragment } from 'react/jsx-runtime';
+import {
+    selectHasUnreadGigMessages,
+    selectHasUnreadMessages
+} from '../../../store/messages.selectors';
 
 import './main-menu.scss';
-import { selectHasUnreadMessages } from '../../../store/messages.selectors';
 
 export const MainMenu = () => {
     const location = useLocation();
@@ -21,6 +24,7 @@ export const MainMenu = () => {
                 .some((entry) => `/${entry}` === option.link)
         });
     const hasUnreadMessages = useSelector(selectHasUnreadMessages);
+    const hasUnreadGigMessages = useSelector(selectHasUnreadGigMessages);
 
     return (
         <header className="main-menu">
@@ -36,7 +40,7 @@ export const MainMenu = () => {
                                 )}
 
                             {option.name === MainMenuNames.GIGS &&
-                                hasUnreadMessages && (
+                                hasUnreadGigMessages && (
                                     <span className="main-menu__new-indicator"></span>
                                 )}
                         </li>

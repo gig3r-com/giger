@@ -8,6 +8,7 @@ export interface IConversationState {
     conversationHashes: Record<string, IHashData>;
     gigConversationHashes: Record<string, IHashData>;
     unreadMessages: Record<string, string[]>; // convoId, messageId[]
+    unreadGigMessages: Record<string, string[]>; // convoId, messageId[]
 }
 
 const initialState: IConversationState = {
@@ -15,7 +16,8 @@ const initialState: IConversationState = {
     gigConversations: [],
     conversationHashes: {},
     gigConversationHashes: {},
-    unreadMessages: {}
+    unreadMessages: {},
+    unreadGigMessages: {}
 };
 
 export const conversationsSlice = createSlice({
@@ -83,22 +85,42 @@ export const conversationsSlice = createSlice({
                 convoId: string;
                 message: IMessage;
                 gigConvo: boolean;
+                currentUserHandle: string;
             }>
         ) => {
             const convo = state[
                 action.payload.gigConvo ? 'gigConversations' : 'conversations'
             ].find((c) => c.id === action.payload.convoId);
 
-            if (convo) {
+            if (!convo) return;
+            const messageAlreadyExists = convo.messages
+                .map((m) => m.id)
+                .includes(action.payload.message.id);
+            const isCurrentUsersMessage =
+                action.payload.message.sender ===
+                action.payload.currentUserHandle;
+
+            if (!messageAlreadyExists) {
                 convo.messages.push(action.payload.message);
-                state.unreadMessages[convo.id].push(action.payload.message.id);
+
+                if (isCurrentUsersMessage) return;
+                state[
+                    action.payload.gigConvo
+                        ? 'unreadGigMessages'
+                        : 'unreadMessages'
+                ][convo.id] = [
+                    ...(state.unreadMessages[convo.id] ?? []),
+                    action.payload.message.id
+                ];
             }
         },
         setMessagesAsRead: (
             state,
-            action: PayloadAction<{ convoId: string }>
+            action: PayloadAction<{ convoId: string; gigConvo: boolean }>
         ) => {
-            state.unreadMessages[action.payload.convoId] = [];
+            state[
+                action.payload.gigConvo ? 'unreadGigMessages' : 'unreadMessages'
+            ][action.payload.convoId] = [];
         }
     }
 });

@@ -1,7 +1,12 @@
 import { FC, useEffect, useRef } from 'react';
 import { cubicBezier, motion } from 'framer-motion';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
 import { IConversation } from '../../../../models/message';
 import { Message } from '../message/message';
+import { setMessagesAsRead } from '../../../../store/messages.slice';
+import { IWebsocketContext } from '../../../providers/websocket.model';
+import { useWebSocketContext } from '../../../providers/websocket.provider';
 
 import './conversation.scss';
 
@@ -9,14 +14,38 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
     convo,
     className
 }) => {
+    const dispatch = useDispatch();
     const convoWrapper = useRef<HTMLDivElement>(null);
+    const { lastMessage } = useWebSocketContext() as IWebsocketContext;
+    const { chatId, gigId } = useParams();
 
     useEffect(() => {
-        convoWrapper.current?.scrollTo({
-            top: convoWrapper.current.scrollHeight,
-            behavior: 'smooth'
+        setTimeout(() => {
+            convoWrapper.current?.scrollTo({
+                top: convoWrapper.current.scrollHeight,
+                behavior: 'smooth'
+            }),
+                50;
         });
-    }, []);
+    }, [lastMessage]);
+
+    useEffect(
+        function setAsRead() {
+            const gigIdMatching = convo.id === gigId;
+            const chatIdMatching = convo.id === chatId || gigIdMatching;
+            const idMatching = gigIdMatching || chatIdMatching;
+
+            if (!idMatching) return;
+
+            dispatch(
+                setMessagesAsRead({
+                    convoId: convo.id,
+                    gigConvo: gigIdMatching
+                })
+            );
+        },
+        [chatId, convo.id, dispatch, gigId, lastMessage]
+    );
 
     return (
         <motion.div

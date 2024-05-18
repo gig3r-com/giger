@@ -88,9 +88,9 @@
 
     &__new-indicator {
         position: absolute;
-        height: 1.3rem;
-        width: 1.3rem;
-        background-color: $secondary-color;
+        height: 12px;
+        width: 12px;
+        background-color: $accent-color;
         border-radius: 50%;
         top: 10px;
         right: 13px;

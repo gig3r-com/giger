@@ -9,10 +9,10 @@ import './new-msg.scss';
 export const NewMsg: FC<INewMsgProps> = ({ convoId, onSend }) => {
     const intl = useIntl();
     const [newMessage, setNewMessage] = useState('');
-    const { sendMessage } = useMessagesService();
-    const send = () => {
+    const { send } = useMessagesService();
+    const sendMessage = () => {
         setNewMessage('');
-        sendMessage(newMessage, convoId);
+        send(newMessage, convoId);
         onSend && onSend();
     };
 
@@ -21,14 +21,14 @@ export const NewMsg: FC<INewMsgProps> = ({ convoId, onSend }) => {
             <input
                 type="text"
                 value={newMessage}
-                onKeyDown={(event) => event.key === 'Enter' && send()}
+                onKeyDown={(event) => event.key === 'Enter' && sendMessage()}
                 onChange={(event) => setNewMessage(event.target.value)}
                 placeholder={intl.formatMessage({
                     id: 'NEW_MESSAGE'
                 })}
                 className="new-msg__message"
             />
-            <button className="new-msg__send-message" onClick={send}>
+            <button className="new-msg__send-message" onClick={sendMessage}>
                 <span>+</span>
             </button>
         </motion.div>

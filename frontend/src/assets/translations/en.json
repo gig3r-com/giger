@@ -218,5 +218,6 @@
     "HACKER": "Hacker",
     "HACKING": "Hacking",
     "WELLBEING": "Wellbeing",
-    "INSUFFICIENT_REPUTATION": "Reputation too low"
+    "INSUFFICIENT_REPUTATION": "Reputation too low",
+    "FAILED_TO_FETCH_MESSAGES": "Failed to fetch messages. Try again or contact support."
 }

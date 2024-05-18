@@ -27,13 +27,10 @@ import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
 import { useBankingService } from './shared/services/banking.service';
 import { useUserService } from './shared/services/user.service';
-import { useWebsocketService } from './shared/services/websocket.service';
 
 export const Router = () => {
     const intl = useIntl();
     const { test } = useNotificationsService();
-    const { setupNotificationSocket, setupMessageSocket } =
-        useWebsocketService();
     const { versionCheck } = useVersionService();
     const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
@@ -42,15 +39,20 @@ export const Router = () => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
         test();
-        fetchAllUsers();
-        fetchAccounts();
-        setupNotificationSocket();
-        setupMessageSocket();
     }, []);
 
     const isLoggedIn = useSelector(
         (state: RootState) =>
             !!(state.users.currentUser && !state.users.requiresGodUserSelection)
+    );
+
+    useEffect(
+        function fetchData() {
+            if (!isLoggedIn) return;
+            fetchAllUsers();
+            fetchAccounts();
+        },
+        [isLoggedIn]
     );
 
     return (
@@ -70,8 +72,6 @@ export const Router = () => {
                                     <Route path=":gigId" element={<Giger />} />
                                 </Route>
                             </Route>
-                            {/* <Route path="chat" element={<NoAccess />}/>
-                            <Route path="bank" element={<NoAccess />}/> */}
                             <Route path="chat" element={<Chat />}>
                                 <Route path=":chatId" element={<Chat />} />
                                 <Route path="new" element={<Chat />} />

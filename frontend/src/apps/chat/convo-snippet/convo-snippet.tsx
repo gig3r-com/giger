@@ -21,7 +21,7 @@ export const ConvoSnippet: FC<{
     const { generateAnimation } = useStandardizedAnimation();
     const { convoHasUnreadMessages } = useMessagesService();
     const { currentUser } = useUserService();
-    const lastMessage = convo.messages[convo.messages.length - 1];
+    const msgToDisplayAsSnippet = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({
         'convo-snippet': true,
@@ -29,6 +29,10 @@ export const ConvoSnippet: FC<{
         'convo-snippet--selected': chatId === convo.id,
         'convo-snippet--other-selected':
             chatId !== convo.id && isConversationExpanded
+    });
+    const messageClasses = classNames({
+        'convo-snippet__message': true,
+        'convo-snippet__message--unread': convoHasUnreadMessages(convo.id)
     });
     const canSendMessages = useMemo(() => {
         return (
@@ -57,16 +61,16 @@ export const ConvoSnippet: FC<{
                         })}
                         className="convo-snippet__summary"
                     >
-                        {lastMessage && (
+                        {msgToDisplayAsSnippet && (
                             <Link to={`/chat/${convo.id}`}>
                                 <section className="convo-snippet__meta">
                                     <span className="convo-snippet__sender">
-                                        @{lastMessage.sender}
+                                        @{msgToDisplayAsSnippet.sender}
                                     </span>
                                     {' > '}
                                     <span className="convo-snippet__date">
                                         {new Date(
-                                            lastMessage.date
+                                            msgToDisplayAsSnippet.date
                                         ).toLocaleTimeString()}
                                     </span>
                                     {' > '}
@@ -78,8 +82,8 @@ export const ConvoSnippet: FC<{
                                         )}
                                     </span>
                                 </section>
-                                <span className="convo-snippet__message">
-                                    {lastMessage.text}
+                                <span className={messageClasses}>
+                                    {msgToDisplayAsSnippet.text}
                                 </span>
                             </Link>
                         )}

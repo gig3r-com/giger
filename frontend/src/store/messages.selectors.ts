@@ -3,11 +3,17 @@ import { IConversationState } from './messages.slice';
 
 export const selectHasUnreadMessages = createSelector(
     (state: { conversations: IConversationState }) =>
-        state.conversations.conversationHashes,
-    (conversationHashes) => {
-        return Object.values(conversationHashes).some(
-            (hashData) => hashData.lastSeen !== hashData.current
-        );
+        state.conversations.unreadMessages,
+    (unreadMessages) => {
+        return Object.values(unreadMessages).flat().length > 0;
+    }
+);
+
+export const selectHasGigUnreadMessages = createSelector(
+    (state: { conversations: IConversationState }) =>
+        state.conversations.unreadGigMessages,
+    (unreadMessages) => {
+        return Object.values(unreadMessages).flat().length > 0;
     }
 );
 export const selectHasUnreadGigMessages = createSelector(
