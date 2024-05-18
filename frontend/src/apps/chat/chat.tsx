@@ -34,7 +34,7 @@ export const Chat: FC = () => {
                 b.messages[b.messages.length - 1]?.date
             ).getMilliseconds();
 
-            return aLastMessageTime - bLastMessageTime;
+            return bLastMessageTime - aLastMessageTime;
         });
     }, [conversations]);
 

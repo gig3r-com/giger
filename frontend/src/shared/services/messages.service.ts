@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
@@ -19,6 +19,8 @@ import {
     selectUnreadMessages
 } from './messages.selectors';
 import dayjs from 'dayjs';
+import { useWebSocketContext } from '../providers/websocket.provider';
+import { IWebsocketContext } from '../providers/websocket.model';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -27,6 +29,8 @@ export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
     const { api } = useApiService();
+    const { sendMessage, lastMessage } =
+        useWebSocketContext() as IWebsocketContext;
     const { displayToast } = useNotificationsService();
     const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
@@ -39,7 +43,7 @@ export function useMessagesService() {
     ) => {
         return {
             id: uuidv4(),
-            date: dayjs().toISOString(),
+            date: dayjs().add(100, 'year').toISOString(),
             sender: senderHandle || currentUser!.handle,
             text: text
         };
@@ -120,47 +124,27 @@ export function useMessagesService() {
             );
     };
 
-    const sendMessage: (messageText: string, convoId: string) => void = (
-        messageText,
-        convoId
-    ) => {
+    const send: (
+        messageText: string,
+        convoId: string,
+        isGigConversation?: boolean
+    ) => void = (messageText, convoId, isGigConversation = false) => {
         if (messageText.trim() === '') {
             console.error('Message text cannot be empty');
         }
 
         const message = createMessage(messageText);
-        api.url(`Conversation/${convoId}/message`)
-            .post(message)
-            .res()
-            .then(() => {});
 
-        // try {
-        //     // send message
-        //     const updatedConvo: IConversation = JSON.parse(
-        //         JSON.stringify(
-        //             [...conversations, ...gigConversations].find(
-        //                 (convo) => convo.id === convoId
-        //             )
-        //         )
-        //     );
-        //     updatedConvo?.messages.push(message);
-
-        //     if (updatedConvo.gigConversation) {
-        //         const updatedConvos = [...gigConversations].filter(
-        //             (conversation) => conversation.id !== convoId
-        //         );
-        //         updatedConvos.push(updatedConvo);
-        //         dispatch(setGigConversations(updatedConvos));
-        //     } else {
-        //         const updatedConvos = [...conversations].filter(
-        //             (conversation) => conversation.id !== convoId
-        //         );
-        //         updatedConvos.push(updatedConvo);
-        //         dispatch(setConversations(updatedConvos));
-        //     }
-        // } catch (error) {
-        //     console.error(error);
-        //}
+        sendMessage({
+            ConversationId: convoId,
+            Message: {
+                Id: message.id,
+                Date: message.date,
+                Sender: message.sender,
+                Text: message.text
+            },
+            IsGigConversation: isGigConversation
+        });
     };
 
     const isMessageUnread = (convoId: string, messageId: string): boolean => {
@@ -174,20 +158,6 @@ export function useMessagesService() {
         return unreadMessages[convoId]?.length > 0;
     };
 
-    const insertNewMessage = (
-        convoId: string,
-        message: IMessage,
-        gigConvo: boolean
-    ) => {
-        dispatch(
-            updateConversation({
-                convoId,
-                message,
-                gigConvo
-            })
-        );
-    };
-
     const updateConversationHashes = (
         hashes: Record<string, number>,
         gigConversationHashes: boolean
@@ -198,9 +168,36 @@ export function useMessagesService() {
             dispatch(setAllConversationHashes(hashes));
         }
     };
+
+    const addModeratorToConvo = (convoId: string) => {
+        api.url(`Conversation/${convoId}/participants`)
+            .query({ userName: currentUser!.handle })
+            .patch()
+            .res();
+    };
+
+    useEffect(
+        function handleNewMessage() {
+            if (!lastMessage) {
+                return;
+            }
+            lastMessage &&
+                dispatch(
+                    updateConversation({
+                        convoId: lastMessage.conversationId,
+                        message: lastMessage.message,
+                        gigConvo: false,
+                        currentUserHandle: currentUser!.handle
+                    })
+                );
+        },
+        [dispatch, lastMessage, currentUser]
+    );
+
     return {
         createMessage,
-        sendMessage,
+        addModeratorToConvo,
+        send,
         createConvo,
         fetchConvo,
         fetchingConvo,
@@ -208,7 +205,6 @@ export function useMessagesService() {
         getGigConvo,
         isMessageUnread,
         convoHasUnreadMessages,
-        insertNewMessage,
         updateConversationHashes
     };
 }

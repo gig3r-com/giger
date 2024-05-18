@@ -5,6 +5,7 @@ import { store } from './store/store.ts';
 import { Provider } from 'react-redux';
 import { Router } from './routes.tsx';
 import messages from './assets/translations/en.json';
+import { WebSocketProvider } from './shared/providers/websocket.provider.tsx';
 
 import './index.css';
 import 'material-icons/iconfont/material-icons.css';
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <Provider store={store}>
             <IntlProvider messages={messages} locale="en" defaultLocale="en">
-                <Router />
+                <WebSocketProvider>
+                    <Router />
+                </WebSocketProvider>
             </IntlProvider>
         </Provider>
     </React.StrictMode>

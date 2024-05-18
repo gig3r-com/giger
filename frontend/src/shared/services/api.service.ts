@@ -2,8 +2,11 @@ import { useMemo, useState } from 'react';
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
 import { IUserPrivate } from '../../models/user';
+import { useWebSocketContext } from '../providers/websocket.provider';
+import { IWebsocketContext } from '../providers/websocket.model';
 
 export function useApiService() {
+    const { setAuthToken } = useWebSocketContext() as IWebsocketContext;
     const [token, setToken] = useState(
         localStorage.getItem('authToken') ?? null
     );
@@ -21,6 +24,7 @@ export function useApiService() {
             .res((r) => r.text());
 
         localStorage.setItem('authToken', authToken);
+        setAuthToken(authToken);
         setToken(authToken);
 
         return wretch(endpointBase, {
