@@ -2,6 +2,7 @@ FROM node:18-alpine3.18 as builder
 
 WORKDIR /src
 COPY package*.json ./
+RUN apk add --update --no-cache vips-dev
 RUN npm install
 COPY . .
 RUN npm run build
