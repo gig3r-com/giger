@@ -52,7 +52,7 @@ export function useGigsService() {
             ...(draftGig.mode === GigModes.CLIENT
                 ? { clientAccountNumber: accountNo }
                 : {}),
-            createdAt: dayjs().add(100, 'days').toISOString(),
+            createdAt: dayjs().add(100, 'years').toISOString(),
             authorId: currentUser!.id,
             status: GigStatus.AVAILABLE,
             isRevealed: true,

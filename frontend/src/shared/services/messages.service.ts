@@ -43,7 +43,7 @@ export function useMessagesService() {
     ) => {
         return {
             id: uuidv4(),
-            date: dayjs().toISOString(),
+            date: dayjs().add(100, 'year').toISOString(),
             sender: senderHandle || currentUser!.handle,
             text: text
         };
