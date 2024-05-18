@@ -169,6 +169,13 @@ export function useMessagesService() {
         }
     };
 
+    const addModeratorToConvo = (convoId: string) => {
+        api.url(`Conversation/${convoId}/participants`)
+            .query({ userName: currentUser!.handle })
+            .patch()
+            .res();
+    };
+
     useEffect(
         function handleNewMessage() {
             if (!lastMessage) {
@@ -189,6 +196,7 @@ export function useMessagesService() {
 
     return {
         createMessage,
+        addModeratorToConvo,
         send,
         createConvo,
         fetchConvo,

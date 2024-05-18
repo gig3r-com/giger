@@ -219,7 +219,13 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                             </AnimatePresence>
 
                             {gig.status !== GigStatus.AVAILABLE && (
-                                <NewMsg convoId={gig.id} onSend={() => {}} />
+                                <NewMsg
+                                    convoId={gig.id}
+                                    onSend={() => {}}
+                                    userIsParticipant={convo?.participants.includes(
+                                        currentUser?.handle ?? ''
+                                    )}
+                                />
                             )}
                         </motion.article>
                     )}
