@@ -45,6 +45,6 @@ namespace Giger.Models.User
 
         public bool HighSecurity { get; set; }
 
-        public string ReputationDescription { get; set; }
+        public string? ReputationDescription { get; set; }
     }
 }

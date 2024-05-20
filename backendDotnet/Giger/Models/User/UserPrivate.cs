@@ -29,7 +29,7 @@ namespace Giger.Models.User
 
         public required SkillStat CombatSkill { get; set; }
 
-        public required string VibeFunction { get; set; }
+        public string? VibeFunction { get; set; }
         
         [BsonRepresentation(BsonType.String)]
         public required VibeEngagement VibeEngagement { get; set; }

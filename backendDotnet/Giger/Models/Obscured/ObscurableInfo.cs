@@ -6,7 +6,7 @@ namespace Giger.Models.Obscured
     {
         [BsonId]
         [BsonElement("_id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         public bool IsRevealed { get; set; } = true;
 

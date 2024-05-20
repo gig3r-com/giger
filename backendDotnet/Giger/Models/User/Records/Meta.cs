@@ -9,7 +9,7 @@ namespace Giger.Models.User.Records
         [BsonId]
         [BsonElement("_id")]
 
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         public required string Title { get; set; }
 
