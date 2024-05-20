@@ -1,7 +1,6 @@
 ﻿using Giger.Services;
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
@@ -45,13 +44,37 @@ namespace Giger.Controllers
             return conversation;
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<IActionResult> Post(Conversation newConversation)
         {
-            newConversation.Id = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(newConversation.Id))
+            {
+                newConversation.Id = Guid.NewGuid().ToString();
+            }
+            await _conversationService.CreateAsync(newConversation);
+            return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
+        }
+            
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(Conversation newConversation, bool isAnonymizedHandle)
+        {
+            if (string.IsNullOrEmpty(newConversation.Id))
+            {
+                newConversation.Id = Guid.NewGuid().ToString();
+            }
+
+            if (isAnonymizedHandle)
+            {
+                var sender = GetSenderUsername().Result;
+                if (sender is null)
+                {
+                    return BadRequest(Messages.UNKNOWN_SENDER_USER_NOT_FOUND);
+                }
+                newConversation.AnonymizedUsers.Add(sender);
+            }
             await _conversationService.CreateAsync(newConversation);
 
-            return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
+            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, newConversation);
         }
 
         [HttpPost("{conversationId}/message")]
@@ -62,6 +85,13 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
+
+            if (string.IsNullOrEmpty(newMessage.Id))
+            {
+                newMessage = new Message(newMessage.Sender, newMessage.Text);
+                newMessage.Date = DateTime.Now;
+            }
+
             conversation.Messages.Add(newMessage);
             await _conversationService.UpdateAsync(conversation);
             _conversationSocketHandler.SendMessageAsync(conversation.Participants, conversation.Id, newMessage);

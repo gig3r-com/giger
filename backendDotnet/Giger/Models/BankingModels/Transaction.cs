@@ -11,7 +11,11 @@ namespace Giger.Models.BankingModels
         
         public required string From { get; set; } // AccountNumber
 
+        public required string FromUser { get; set; } // Handle / Anonymized
+
         public required string To { get; set; } // AccountNumber
+
+        public required string ToUser { get; set; } // Handle / Anonymized
 
         public required string Title { get; set; }
 

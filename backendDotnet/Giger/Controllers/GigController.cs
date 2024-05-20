@@ -7,6 +7,7 @@ using Giger.Models.BankingModels;
 using Giger.Models.MessageModels;
 using System.ComponentModel;
 using Giger.Connections.Handlers;
+using Microsoft.VisualBasic;
 
 namespace Giger.Controllers
 {
@@ -109,19 +110,22 @@ namespace Giger.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Post(Gig newGig, string openingMessage)
+        public async Task<IActionResult> Post(Gig newGig)
         {
             if (!IsAuthorized(newGig.AuthorId))
             {
                 return Unauthorized();
             }
 
-            newGig.Id = Guid.NewGuid().ToString();
-            newGig.CreatedAt = GigerDateTime.Now;
+            if (string.IsNullOrEmpty(newGig.Id))
+            {
+                newGig.Id = Guid.NewGuid().ToString();
+                newGig.CreatedAt = GigerDateTime.Now;
+            }
 
             if (newGig.Mode == GigModes.CLIENT)
             {
-                var account = await _accountService.GetByAccountNumberAsync(newGig.ProviderAccountNumber);
+                var account = await _accountService.GetByAccountNumberAsync(newGig.ClientAccountNumber);
                 if (account is null)
                 {
                     return BadRequest(Messages.ACCOUNT_NOT_FOUND);
@@ -140,20 +144,20 @@ namespace Giger.Controllers
                 }
             }
 
-            if (newGig.IsAnonymizedAuthor)
-            {
-                var anonymizedUserName = Guid.NewGuid().ToString();
-                var anonymizedUser = new AnonymizedUser
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    UserId = newGig.AuthorId,
-                    DisplyedAs = anonymizedUserName
-                };
-                await _anonymizedService.CreateAsync(anonymizedUser);
-                newGig.AuthorName = anonymizedUserName;
-            }
+            //if (newGig.IsAnonymizedAuthor)
+            //{
+            //    var anonymizedUserName = Guid.NewGuid().ToString();
+            //    var anonymizedUser = new AnonymizedUser
+            //    {
+            //        Id = Guid.NewGuid().ToString(),
+            //        UserId = newGig.AuthorId,
+            //        DisplyedAs = anonymizedUserName
+            //    };
+            //    await _anonymizedService.CreateAsync(anonymizedUser);
+            //    newGig.AuthorName = anonymizedUserName;
+            //}
 
-            newGig.ConversationId = CreateNewGigConversation(newGig, openingMessage).Result.Id;
+            newGig.ConversationId = CreateNewGigConversation(newGig).Result.Id;
 
             await _gigService.CreateAsync(newGig);
             return CreatedAtAction(nameof(Post), new { id = newGig.Id }, newGig);
@@ -172,7 +176,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (oldGig.Status != GigStatus.AVAILABLE)
+            if (oldGig.Status != GigStatus.AVAILABLE || !IsGodUser())
             {
                 return BadRequest("Gig is not available for update");
             }
@@ -232,13 +236,18 @@ namespace Giger.Controllers
             var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
             {
-                conversation = await CreateNewGigConversation(gig, "");
+                conversation = await CreateNewGigConversation(gig);
+                if (gig.IsAnonymizedAuthor)
+                {
+                    conversation.AnonymizedUsers.Add(gig.AuthorName);
+                }
                 gig.ConversationId = conversation.Id;
             }
             var userTakenBy = await _userService.GetAsync(takenBy);
             conversation.Participants.Add(userTakenBy.Handle);
             conversation.Messages.Add(new Message(userTakenBy.Handle, "ACCEPTED"));
             await _conversationService.UpdateAsync(conversation);
+            await NotifyConversationChanged(gig);
             await NotifyStatusChanged(gig, false);
             await _gigService.UpdateAsync(gig);
             return Ok();
@@ -452,11 +461,11 @@ namespace Giger.Controllers
             var authorOriginalName = gig.AuthorName;
             if (gig.IsAnonymizedAuthor)
             {
-                authorOriginalName = _userService.GetAsync(gig.AuthorId).Result.Handle;
+                authorOriginalName = _userService.GetAsync(gig.AuthorId).Result?.Handle;
             }
             await _notificationsHandler.NotifyGigConversation(authorOriginalName, gig.ConversationId);
 
-            _conversationService.GetAsync(gig.ConversationId).Result.Participants.ForEach(async participant =>
+            _conversationService.GetAsync(gig.ConversationId).Result?.Participants.ForEach(async participant =>
             {
                 if (participant != gig.AuthorName)
                 {
@@ -470,7 +479,7 @@ namespace Giger.Controllers
             var authorOriginalName = gig.AuthorName;
             if (gig.IsAnonymizedAuthor)
             {
-                await _notificationsHandler.NotifyGigStatus(_userService.GetAsync(gig.AuthorId).Result.Handle, gig.Id);
+                await _notificationsHandler.NotifyGigStatus(_userService.GetAsync(gig.AuthorId).Result?.Handle, gig.Id);
             }
             else
             {
@@ -482,14 +491,14 @@ namespace Giger.Controllers
             }
         }
 
-        private async Task<Conversation> CreateNewGigConversation(Gig newGig, string openingMessage)
+        private async Task<Conversation> CreateNewGigConversation(Gig newGig)
         {
             var conversation = new Conversation()
             {
                 Id = newGig.Id,
                 GigConversation = true,
                 Participants = [newGig.AuthorName],
-                Messages = [new Message(newGig.AuthorName, openingMessage)]
+                Messages = []
             };
             await _conversationService.CreateAsync(conversation);
             return conversation;
@@ -503,12 +512,23 @@ namespace Giger.Controllers
             {
                 return false;
             }
-                
+
+            string clientName = gig.Mode == GigModes.CLIENT ? gig.AuthorName : _userService.GetAsync(gig.TakenById).Result?.Handle;
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                if (gig.IsAnonymizedAuthor)
+                {
+                    clientName = Gig.ANONIMIZED;
+                }
+            }
+
             Transaction reserve = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
+                FromUser = clientName,
                 To = "SYSTEM",
+                ToUser = "SYSTEM",
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout
@@ -520,7 +540,9 @@ namespace Giger.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
+                FromUser = clientName,
                 To = Factions.social_net.ToString(),
+                ToUser = Factions.social_net.ToString(),
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
                 Amount = gigFeeAmount
@@ -532,11 +554,22 @@ namespace Giger.Controllers
 
         private async void ReturnFunds(Gig gig)
         {
+            string clientName = gig.Mode == GigModes.CLIENT ? gig.AuthorName : _userService.GetAsync(gig.TakenById).Result?.Handle;
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                if (gig.IsAnonymizedAuthor)
+                {
+                    clientName = Gig.ANONIMIZED;
+                }
+            }
+
             Transaction reserve = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 From = "SYSTEM",
+                FromUser = "SYSTEM",
                 To = gig.ClientAccountNumber,
+                ToUser = clientName,
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_REFUND_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout,
@@ -547,11 +580,40 @@ namespace Giger.Controllers
 
         private async void CompleteTransaction(Gig gig)
         {
+            string clientName, providerName;
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                clientName = gig.AuthorName;
+                providerName = _userService.GetAsync(gig.TakenById).Result?.Handle;
+            }
+            else
+            {
+                clientName = _userService.GetAsync(gig.TakenById).Result?.Handle;
+                providerName = gig.AuthorName;
+            }
+
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                if (gig.IsAnonymizedAuthor)
+                {
+                    clientName = Gig.ANONIMIZED;
+                }
+            }
+            else
+            {
+                if (gig.IsAnonymizedAuthor)
+                {
+                    providerName = Gig.ANONIMIZED;
+                }
+            }
+
             Transaction trx = new()
             {
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
+                FromUser = clientName,
                 To = gig.ProviderAccountNumber,
+                ToUser = providerName,
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_PAYMENT_TITLE, gig.Title),
                 Amount = gig.Payout,
@@ -566,8 +628,10 @@ namespace Giger.Controllers
             Transaction trx = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                From = "SOCIAL",
+                From = Factions.social_net.ToString(),
+                FromUser = Factions.social_net.ToString(),
                 To = clerkAccountNo,
+                ToUser = _accountService.GetByAccountNumberAsync(clerkAccountNo).Result?.Owner,
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_DISPUTE_FEE_TITLE, gig.Title),
                 Amount = gig.Payout * commissionPercent,
