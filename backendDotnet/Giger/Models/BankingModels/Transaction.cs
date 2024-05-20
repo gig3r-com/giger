@@ -9,13 +9,13 @@ namespace Giger.Models.BankingModels
         [BsonElement("_id")]
         public required string Id { get; set; }
         
-        public string From { get; set; } // AccountNumber
+        public string? From { get; set; } // AccountNumber
 
-        public string FromUser { get; set; } // Handle / Anonymized
+        public string? FromUser { get; set; } // Handle / Anonymized
 
-        public string To { get; set; } // AccountNumber
+        public string? To { get; set; } // AccountNumber
 
-        public string ToUser { get; set; } // Handle / Anonymized
+        public string? ToUser { get; set; } // Handle / Anonymized
 
         public string Title { get; set; }
 

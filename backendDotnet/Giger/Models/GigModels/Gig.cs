@@ -12,7 +12,7 @@ namespace Giger.Models.GigModels
 
         public required string Title { get; set; }
 
-        public required string Description { get; set; }
+        public string? Description { get; set; }
 
         public string? ConversationId { get; set; }
 
@@ -51,7 +51,7 @@ namespace Giger.Models.GigModels
 
         public bool IsRevealedByClient { get; set; } = true;
 
-        public string DescriptionDetailed { get; set; }
+        public string? DescriptionDetailed { get; set; }
 
         public override void Obscure()
         {
