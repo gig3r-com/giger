@@ -24,3 +24,11 @@ export interface IHashData {
     lastSeen: number;
     current: number;
 }
+
+export interface IHashDataUpdatePayload {
+    conversationHashes: Record<string, number>;
+    gigConversationHashes: Record<string, number>;
+    gigStatusHashes: Record<string, number>;
+    privateAccountTransactionsHashes: Record<string, number>;
+    businessAccountTransactionsHashes: Record<string, number>;
+}

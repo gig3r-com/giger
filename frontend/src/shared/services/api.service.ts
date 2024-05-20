@@ -1,15 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
 import { IUserPrivate } from '../../models/user';
-import { useWebSocketContext } from '../providers/websocket.provider';
-import { IWebsocketContext } from '../providers/websocket.model';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuthToken, setAuthToken } from '../../store/auth.slice';
 
 export function useApiService() {
-    const { setAuthToken } = useWebSocketContext() as IWebsocketContext;
-    const [token, setToken] = useState(
-        localStorage.getItem('authToken') ?? null
-    );
+    const dispatch = useDispatch();
+    const token = useSelector(selectAuthToken);
     const endpointBase =
         import.meta.env.VITE_API_ENDPOINT ?? `${window.origin}/api/`;
 
@@ -24,8 +22,7 @@ export function useApiService() {
             .res((r) => r.text());
 
         localStorage.setItem('authToken', authToken);
-        setAuthToken(authToken);
-        setToken(authToken);
+        dispatch(setAuthToken(authToken));
 
         return wretch(endpointBase, {
             mode: 'cors'
@@ -42,7 +39,7 @@ export function useApiService() {
             .then(() => {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('loggedInUser');
-                setToken(null);
+                dispatch(setAuthToken(null));
                 window.location.reload();
             });
     };
@@ -54,7 +51,7 @@ export function useApiService() {
             .headers({ AuthToken: token as string })
             .addon(QueryStringAddon);
         return updatedInstance;
-    }, [token]);
+    }, [token, endpointBase]);
 
     return { loginCall, logout, api };
 }

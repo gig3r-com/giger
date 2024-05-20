@@ -44,7 +44,7 @@ export function useMessagesService() {
         return {
             id: uuidv4(),
             date: dayjs().add(100, 'year').toISOString(),
-            sender: senderHandle || currentUser!.handle,
+            sender: senderHandle ?? currentUser!.handle,
             text: text
         };
     };
@@ -53,12 +53,12 @@ export function useMessagesService() {
         participants: string[],
         id?: string,
         anonymize?: boolean
-    ) => Promise<string> = (participants, id) =>
+    ) => Promise<string> = (participants, id, anonymize) =>
         new Promise((resolve, reject) => {
             const convoId = id ?? uuidv4();
-            //const anonymizedHandle = uuidv4().substring(0, 8);
             const convo: IConversation = {
                 id: convoId,
+                anonymizedUsers: anonymize ? [currentUser!.handle] : [],
                 gigConversation: false,
                 participants,
                 messages: [...createInitialMessages(participants)]

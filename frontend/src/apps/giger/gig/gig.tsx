@@ -201,6 +201,13 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 {gig.description}
                             </p>
 
+                            {gig.status !== GigStatus.AVAILABLE &&
+                                gig.descriptionDetailed && (
+                                    <p className="gig__description">
+                                        {gig.descriptionDetailed}
+                                    </p>
+                                )}
+
                             {showComplaint && <ComplaintDetails gig={gig} />}
 
                             <AnimatePresence>

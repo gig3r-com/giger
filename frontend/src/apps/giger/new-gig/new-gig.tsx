@@ -141,7 +141,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             ? ({
                   title: gigName!,
                   description: publicDescription!,
-                  message: privateMessage,
+                  descriptionDetailed: privateMessage,
                   payout: payout!,
                   anonymizedAuthor: anonymize === 'YES',
                   ...(hasCompanyAccount && {
@@ -152,7 +152,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   },
                   subcategory: selectedSubcategory! as GigSubcategoryNames,
                   mode: mode as GigModes,
-                  authorName: anonymize ? 'Anonymous' : currentUser?.handle,
+                  authorName: currentUser?.handle,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
               } as IDraftGig)
@@ -327,7 +327,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
                 <textarea
                     className="new-gig__input"
-                    placeholder="Private message to the contractor"
+                    placeholder={intl.formatMessage({ id: 'PRIVATE_DESC' })}
                     value={privateMessage}
                     rows={3}
                     onChange={(event) => setPrivateMessage(event.target.value)}
