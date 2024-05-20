@@ -1,13 +1,20 @@
 ﻿using Giger.Connections.Payloads;
 using Giger.Connections.SocketsManagment;
+using Giger.Extensions;
+using Giger.Models.GigModels;
+using Giger.Models.Logs;
+using Giger.Services;
 using System.Net.WebSockets;
 using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class NotificationsSocketHandler : SocketHandler
+    public class NotificationsSocketHandler(ConnectionsManager connections, GigService gigService,
+        UserService userService, LogService logService) : SocketHandler(connections)
     {
-        public NotificationsSocketHandler(ConnectionsManager connections) : base(connections) { }
+        private readonly GigService _gigService = gigService;
+        private readonly UserService _userService = userService;
+        private readonly LogService _logService = logService;
 
         public async Task NotifyAccount(string username, string accountId) 
             => await NotifyPayload(username, new NotificationPayload() { AccountId = accountId });
@@ -43,6 +50,10 @@ namespace Giger.Connections.Handlers
             {
                 var message = JsonSerializer.Serialize(payload);
                 await SendMessageAsync(username, message);
+                if (payload.GigIdStatus != null)
+                {
+                    LogGigStatusChanged(payload.GigIdStatus);
+                }
             }
             catch (Exception ex)
             {
@@ -57,6 +68,99 @@ namespace Giger.Connections.Handlers
                 await OnDisconnected(socket);
                 return;
             }
+        }
+
+        private async void LogGigStatusChanged(string gigId)
+        {
+            var gig = await _gigService.GetAsync(gigId);
+            var taker = await _userService.GetAsync(gig.TakenById);
+            var author = await _userService.GetAsync(gig.AuthorId);
+
+            var authorName = gig.IsAnonymizedAuthor ? Gig.ANONIMIZED : gig.AuthorName;
+            string sourceId, sourceName, targetId, targetName, subnetworkId, subnetworkName;
+            LogType logType;
+            switch (gig.Status)
+            {
+                case GigStatus.AVAILABLE:
+                    sourceId = author.Id;
+                    sourceName = authorName;
+                    subnetworkId = author.SubnetworkId;
+                    subnetworkName = author.SubnetworkName;
+                    targetId = null;
+                    targetName = null;
+                    logType = LogType.GIG_CREATED;
+                    break;
+                case GigStatus.IN_PROGRESS:
+                    sourceId = taker.Id;
+                    sourceName = taker.Handle;
+                    subnetworkId = taker.SubnetworkId;
+                    subnetworkName = taker.SubnetworkName;
+                    targetId = author.Id;
+                    targetName = authorName;
+                    logType = LogType.GIG_ACCEPTED;
+                    break;
+                case GigStatus.PENDING_CONFIRMATION:
+                    if (gig.Mode == GigModes.PROVIDER)
+                    {
+                        sourceId = author.Id;
+                        sourceName = authorName;
+                        subnetworkId = author.SubnetworkId;
+                        subnetworkName = author.SubnetworkName;
+                        targetId = taker.Id;
+                        targetName = taker.Handle;
+                    }
+                    else
+                    {
+                        sourceId = taker.Id;
+                        sourceName = taker.Handle;
+                        subnetworkId = taker.SubnetworkId;
+                        subnetworkName = taker.SubnetworkName;
+                        targetId = author.Id;
+                        targetName = authorName;
+                    }
+                    logType = LogType.GIG_UPDATED;
+                    break;
+                case GigStatus.DISPUTE:
+                case GigStatus.COMPLETED:
+                    if (gig.Mode == GigModes.CLIENT)
+                    {
+                        sourceId = author.Id;
+                        sourceName = authorName;
+                        subnetworkId = author.SubnetworkId;
+                        subnetworkName = author.SubnetworkName;
+                        targetId = taker.Id;
+                        targetName = taker.Handle;
+                    }
+                    else
+                    {
+                        sourceId = taker.Id;
+                        sourceName = taker.Handle;
+                        subnetworkId = taker.SubnetworkId;
+                        subnetworkName = taker.SubnetworkName;
+                        targetId = author.Id;
+                        targetName = authorName;
+                    }
+                    logType = LogType.GIG_UPDATED;
+                    break;
+                default:
+                    return;
+            }
+
+            var log = new Log()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Timestamp = GigerDateTime.Now,
+                SourceUserId = sourceId,
+                SourceUserName = sourceName,
+                TargetUserId = targetId,
+                TargetUserName = targetName,
+                LogType = logType,
+                LogData = $"Gig {gig.Title} status has been changed to '{gig.Status.GetDescription()}' by {sourceName}.",
+                SubnetworkId = subnetworkId,
+                SubnetworkName = subnetworkName,
+            };
+
+            _logService.CreateAsync(log);
         }
     }
 }

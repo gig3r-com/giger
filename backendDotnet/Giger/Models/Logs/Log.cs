@@ -67,6 +67,7 @@ namespace Giger.Models.Logs
         GIG_CREATED,
         GIG_ACCEPTED,
         GIG_MESSAGESENT,
+        GIG_UPDATED,
         MIND_EXPLOIT_CHANGED
     }
 }

@@ -268,6 +268,14 @@ namespace Giger.Controllers
             }
             gig.Status = GigStatus.PENDING_CONFIRMATION;
             await _gigService.UpdateAsync(gig);
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                await NotifyStatusChanged(gig, false);
+            }
+            else
+            {
+                await NotifyStatusChanged(gig, true);
+            }
             await NotifyStatusChanged(gig, true);
             return Ok();
         }
