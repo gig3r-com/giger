@@ -63,6 +63,7 @@ namespace Giger.Models.User
             CombatSkill = user.CombatSkill;
             VibeFunction = user.VibeFunction;
             VibeEngagement = user.VibeEngagement;
+            VibeOpinions = "";
             FavoriteUserIds = user.FavoriteUserIds;
             Faction = user.Faction;
             FactionRankActual = user.FactionRankActual;
