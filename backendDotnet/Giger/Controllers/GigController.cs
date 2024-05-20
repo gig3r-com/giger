@@ -30,6 +30,19 @@ namespace Giger.Controllers
 
         #region Endpoints
 
+        [HttpGet("hack/{userId}/getAll")]
+        public async Task<List<Gig>> GetGigsHacked(string userId)
+        {
+            if (!IsAuthorized(userId))
+            {
+                Unauthorized(Messages.NO_ACCESS);
+                return Enumerable.Empty<Gig>().ToList();
+            }
+            var gigs = await _gigService.GetAllOwnAsync(userId);
+            gigs.ForEach(gig => ObscureGig(gig, userId));
+            return gigs;
+        }
+
         [HttpGet("get/all")]
         public async Task<List<Gig>> GetAll()
         {

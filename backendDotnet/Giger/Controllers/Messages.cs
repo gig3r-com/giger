@@ -2,7 +2,9 @@
 {
     public class Messages
     {
-        public const string AUTH_TOKEN_EXPIRED = "User authentication token expired"; 
+        public const string AUTH_TOKEN_EXPIRED = "User authentication token expired";
+        public const string NO_ACCESS = "No access for this resource."; 
+
 
         public const string GIG_NOT_FOUND = "No gig found with that ID";
         public const string GIG_NOT_FOUND_CONVERSATION = "Gig has no conversation";
