@@ -13,6 +13,7 @@ import {
 } from '../responseLines/errors';
 import { NetworkType, SubnetworkType, UserType } from '../../../types';
 import * as EXPLOITS from '../../../Terminal/data/exploits';
+import { ConfigService } from '../../index';
 
 export type ScanType = {
   type: string;
@@ -54,7 +55,7 @@ export default class Scan {
       }
 
       const subcommand = parsedCommand.join(' ');
-      console.log('TEST')
+      await ConfigService.checkHacking('scan', subcommand);
       const scanData: ScanType = await ApiService.scan(
         subcommand,
         this.scannerVersion,

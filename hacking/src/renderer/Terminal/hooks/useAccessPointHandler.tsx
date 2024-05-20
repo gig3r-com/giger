@@ -30,7 +30,7 @@ export default function useAccessPointHandler({ setAccessPoint }) {
         }
       }
     });
-  });
+  }, []);
 
   return { test: 1 };
 }

@@ -1,4 +1,4 @@
-export const getListLines = (list = []) => {
+export const getListLines = (list: string[] = [], showDisabled?: boolean) => {
   const lines = [`<table class="list-table"><tbody>`];
 
   list.forEach((command) =>

@@ -1,3 +1,3 @@
-export default function ICEModal() {
-  return <div className="ice-modal">Warning: ICE deployed</div>;
+export default function ICEModal({ message }) {
+  return <div className="ice-modal">{message}</div>;
 }

@@ -19,7 +19,6 @@ export const DebugService = new DebugServiceConstructor();
 export const LineStateService = new LineStateServiceConstructor();
 export const ServerConnectionService = new ServerConnectionServiceConstructor(
   ConfigService,
-  ApiService,
   MonitorService,
 );
 

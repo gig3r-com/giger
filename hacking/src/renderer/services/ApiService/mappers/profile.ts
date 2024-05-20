@@ -7,7 +7,12 @@ export const HACKING_TYPE = 'hacking';
 const MINDHACK_IMPLANT_NAMES = ['Symbiotica', 'Artificial Hormon Stabilizer'];
 export const MINDHACK_TYPE = 'mindhack';
 
-export default function mapProfile(data: any, accounts = [], conversations = [], gigs = []): ProfileType {
+export default function mapProfile(
+  data: any,
+  accounts = [],
+  conversations = [],
+  gigs = [],
+): ProfileType {
   const hackingData = {
     alias: data.hackerName || data.handle,
     exploits: data.exploits,
@@ -15,15 +20,12 @@ export default function mapProfile(data: any, accounts = [], conversations = [],
   const mindHackData = {
     mindHack: data.mindHack,
   };
-  const privateR = data.privateRecords?.filter(
-    (event) => event.isRevealed === true,
-  ) || [];
-  const medical = data.medicalEvents?.filter(
-    (event) => event.isRevealed === true,
-  ) || [];
-  const criminal = data.criminalEvents?.filter(
-    (event) => event.isRevealed === true,
-  ) || [];
+  const privateR =
+    data.privateRecords?.filter((event) => event.isRevealed === true) || [];
+  const medical =
+    data.medicalEvents?.filter((event) => event.isRevealed === true) || [];
+  const criminal =
+    data.criminalEvents?.filter((event) => event.isRevealed === true) || [];
 
   return {
     ...mapUser(data),
@@ -51,7 +53,7 @@ export default function mapProfile(data: any, accounts = [], conversations = [],
       status: data.status,
       type: data.type,
       description: data.eventDescription,
-      date: moment(data.timeStamp).format('DD.MM.YYYY'),
+      date: moment(data.timeStamp).format('DD/MM HH:mm:ss'),
     };
     if (eventData.name === CYBERDECK_IMPLANT_NAME) {
       eventData.additionalData = {
@@ -73,7 +75,7 @@ export default function mapProfile(data: any, accounts = [], conversations = [],
       id: data.id,
       name: data.title,
       description: data.description,
-      date: moment(data.timeStamp).format('DD.MM.YYYY'),
+      date: moment(data.timeStamp).format('DD/MM HH:mm:ss'),
     };
   }
 }

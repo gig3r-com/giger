@@ -68,7 +68,21 @@ export default class List {
       console.error('PROBLEM');
       return;
     }
-    addLines(getEncodedListCmdLines(system.encryptedCommands));
+    if (ServerConnectionService.isDecrypted) {
+      addLines(
+        getListLines(this.commands.filter((command) => command.onConnected)),
+      );
+    } else {
+      addLines(
+        getListLines(
+          this.commands.filter(
+            (command) =>
+              command.onConnected ||
+              !system.encryptedCommands?.includes(command.disableCode),
+          ),
+        ),
+      );
+    }
   }
 
   async listPrograms() {
@@ -118,6 +132,14 @@ export default class List {
       special: '',
       disableCode: '',
       description: 'Clears console',
+    },
+    {
+      title: 'exit',
+      onDisconnected: true,
+      onConnected: false,
+      special: '',
+      disableCode: '',
+      description: 'Exit terminal',
     },
     {
       title: 'logout',
@@ -186,12 +208,36 @@ export default class List {
     },
     {
       title: 'copydata [userId] [recordId]',
-      onDisconnected: true,
+      onDisconnected: false,
       onConnected: true,
       special: '',
       disableCode: 'copydata',
       description:
-        'Copy record data from user (from [userId]) to your account (int Private Records)',
+        'Copy record data from user (from [userId]) to your account (into Private Records)',
+    },
+    {
+      title: 'balance',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: 'balance',
+      description: 'Get balance records about account',
+    },
+    {
+      title: 'transfer',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: 'transfer',
+      description: 'Transfer founds',
+    },
+    {
+      title: 'readMsg [conversationId]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: 'readMsg',
+      description: 'Read conversation',
     },
   ];
 }

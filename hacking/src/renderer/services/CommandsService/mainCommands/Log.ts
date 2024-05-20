@@ -31,7 +31,6 @@ export default class End {
       const logs = await ApiService.getSubnetworksLogs(
         ServerConnectionService.connectedSubnetwork?.id,
       );
-      console.log(logs);
       addLines(getLogsMessage(logs));
       setInputDisabled(false);
     } catch (err) {

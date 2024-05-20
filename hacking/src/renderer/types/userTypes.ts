@@ -94,14 +94,13 @@ export type ConversationType = {
 export type FullConversationType = {
   id: string;
   isGigConversation: boolean;
-  participants: UserType[];
+  participants: string[];
   messages: MessageType[];
 };
 
 export type MessageType = {
-  id: string;
-  date: string,
+  date: string;
   sender: string;
   text: string;
-  status: 'SENT' | 'RECEIVED' | 'READ';
+  status: 'SENT' | 'RECEIVED' | 'READ' | 'ERROR' | 'AWAITING';
 };

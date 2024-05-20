@@ -31,8 +31,7 @@ export default class OverlayService {
     this.closeOverlayModal();
   }
 
-  iceModal() {
-    CommandsService.setInputDisabled(true);
-    this.setModal(99);
+  iceModal(message: string) {
+    this.setModal(99, message);
   }
 }

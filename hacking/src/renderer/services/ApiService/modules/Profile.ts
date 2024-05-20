@@ -63,12 +63,21 @@ export default class Profile {
     let accounts, conversations, gigs;
     try {
       accounts = await getAccounts(handle);
+    } catch (e) {
+      console.error(e);
+    }
+    try {
       conversations = await getConversations(handle);
+    } catch (e) {
+      console.error(e);
+    }
+    try {
       // const gigs = await getGigs(userId);
     } catch (e) {
       console.error(e);
     }
-    return mapProfile(profileData.data, accounts, conversations);
+
+    return mapProfile(profileData.data, accounts, conversations, gigs);
 
     async function getAccounts(userHandle: string): Promise<BankAccountType[]> {
       const accountsUrl = `${gigerApiUrl}/Account/byOwner?owner=${userHandle}`;
@@ -81,7 +90,7 @@ export default class Profile {
     ): Promise<ConversationType[]> {
       const conversationsUrl = `${gigerApiUrl}/Conversation/byParticipant?participant=${userHandle}`;
       const conversationsResponse = await axios.get(conversationsUrl);
-      return [mapConversation(conversationsResponse.data)];
+      return conversationsResponse?.data?.map(mapConversation);
     }
 
     async function getGigs(): Promise<any[]> {
@@ -115,5 +124,12 @@ export default class Profile {
       const url = `${gigerApiUrl}/User/private/byUsername?userName=${handle}`;
       return axios.get(url);
     }
+  }
+
+  async getUserProfileByHandle(handle: string): Promise<ProfileType> {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/User/private/byUsername?userName=${handle}`;
+    const profileResponse = await axios.get(url);
+    return profileResponse.data;
   }
 }

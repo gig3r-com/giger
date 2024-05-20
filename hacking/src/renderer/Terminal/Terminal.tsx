@@ -1,12 +1,9 @@
-import { FocusEventHandler, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import usePrefix from './hooks/usePrefix';
-import useCommandHandler from './hooks/useCommandHandler';
 import useKeyHandler from './hooks/useKeyHandler';
 import useLineStateHandler from './hooks/useLineStateHandler';
-import useSystemHandler from './hooks/useSystemHandler';
 import useAccessPointHandler from './hooks/useAccessPointHandler';
 import useLogin from './hooks/useLogin';
-import useDebugMode from './hooks/useDebugMode';
 import Loader from '../components/Loader';
 import {
   ApiService,
@@ -32,9 +29,6 @@ export default function Terminal() {
   const changeInput = (e: Event) => setInput(e.target.value);
 
   const changeDirrectInput = (e: Event) => setDirectInput(e.target.value);
-  const stayFocused = (e: FocusEventHandler<HTMLInputElement>) =>
-    e.target.focus();
-  const { toggleDebugMode } = useDebugMode();
   const {
     lines,
     setLines,
@@ -46,27 +40,6 @@ export default function Terminal() {
   } = useLineStateHandler({ prefixType });
   const { enterPassword, isLoggedIn, logout, username, setUsername, userData } =
     useLogin({ setInputDisabled, addLines, setPrefixType, removeLastLine });
-  const {
-    isConnected,
-    isDecrypted,
-    decryptSubnetwork,
-    disconnectFromSubnetwork,
-  } = useSystemHandler({ addLines, setPrefixType, setLines });
-  const { executeCommand } = useCommandHandler({
-    setLines,
-    addLines,
-    addErrors,
-    removeLastLine,
-    disconnectFromSubnetwork,
-    isConnected,
-    isDecrypted,
-    decryptSubnetwork,
-    setInputDisabled,
-    logout,
-    toggleDebugMode,
-    refreshPrefix,
-    isLoggedIn,
-  });
   const { handleKey } = useKeyHandler({
     username,
     isLoggedIn,
@@ -74,14 +47,12 @@ export default function Terminal() {
     enterPassword,
     addUserLine,
     setInput,
-    executeCommand,
     userLines,
     input,
     enableDirectInput,
     addLines,
   });
   const { prefix } = usePrefix({
-    isConnected,
     inputTimer,
     accessPoint,
     username,
@@ -89,8 +60,7 @@ export default function Terminal() {
     userData,
     forceRefresh,
   });
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  if (window.electron) useAccessPointHandler({ setAccessPoint });
+  useAccessPointHandler({ setAccessPoint });
 
   const renderedLines = useMemo(() => {
     return lines.map((line) => {
@@ -107,6 +77,7 @@ export default function Terminal() {
       setInputTimer,
       setLines,
       setInputDisabled,
+      lines,
     );
     CommandsService.init({
       addLines,
@@ -130,23 +101,32 @@ export default function Terminal() {
       ConfigService,
       ServerConnectionService,
     };
-  }, [addLines, removeLastLine]);
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.keyCode === 19 || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) {
+        return;
+      }
+      const inputRef = document.getElementById('terminal-input');
+      if (!inputRef) return;
+      inputRef.focus();
+    });
+    ConfigService.init();
+  }, []);
 
   const inputElement = enableDirectInput ? (
     <input
+      id="terminal-input"
       autoFocus
       type="text"
       value={directInput}
-      onBlur={stayFocused}
       onChange={changeDirrectInput}
       onKeyDown={LineStateService.handleDirectKey}
     />
   ) : (
     <input
+      id="terminal-input"
       autoFocus
       type={!isLoggedIn && username ? 'password' : 'text'}
       value={input}
-      onBlur={stayFocused}
       onChange={changeInput}
       onKeyDown={handleKey}
     />

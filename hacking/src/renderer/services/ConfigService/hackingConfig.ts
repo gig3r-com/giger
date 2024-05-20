@@ -24,7 +24,7 @@ module.exports = {
       type: 'encrypter',
       timeOnPerfectBreach: 3000,
       timeOnImperfectBreach: 1500,
-      encryptedCommands: ['transfer', 'copydata'],
+      encryptedCommands: [],
     },
     EVIL_TWIN: {
       name: 'EvilTwin',
@@ -49,8 +49,8 @@ module.exports = {
       effect:
         'Cleans terminal and every terminal data saved within last 3 hours.',
       targetModel: 'active',
-      stage1SuccessRate: 0, // > 5%
-      stage2SuccessRate: 0, // > 25%
+      stage1SuccessRate: 100, // > 5%
+      stage2SuccessRate: 100, // > 25%
       stage3SuccessRate: 0, // > 50%
       stage4SuccessRate: 0, // > 75%
       stage5SuccessRate: 0, // > 90%
@@ -84,9 +84,14 @@ module.exports = {
     Kicker: {
       name: 'Kicker',
       type: 'ice',
-      timeOnPerfectBreach: 2000,
-      timeOnImperfectBreach: 1000,
       effect: 'Kicks hacker off the subnetwork.',
+      targetModel: 'active',
+      stage1SuccessRate: 100, // > 5%
+      stage2SuccessRate: 25, // > 25%
+      stage3SuccessRate: 50, // > 50%
+      stage4SuccessRate: 75, // > 75%
+      stage5SuccessRate: 90, // > 90%
+      finalStageSuccessRate: 100, // = 100%
     },
     Blocker: {
       name: 'Blocker',
@@ -114,7 +119,7 @@ module.exports = {
       name: 'Worm',
       type: 'breacher',
       effect: {
-        ENCRYPT_GUARD: { isConnected: true, perfect: true, breachTime: 100 },
+        ENCRYPT_GUARD: { isConnected: true, perfect: true, breachTime: 50 },
         FIREWALL_X: { isConnected: true, perfect: false, breachTime: 100 },
         VIRTUAL_VAULT: { isConnected: false, perfect: false, breachTime: 100 },
       },

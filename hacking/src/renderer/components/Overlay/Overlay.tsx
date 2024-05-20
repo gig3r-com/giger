@@ -19,11 +19,11 @@ export default function Overlay() {
     }
   };
 
-  const setModal = (modalNumber: number) => {
+  const setModal = (modalNumber: number, message?: string) => {
     if (modalNumber === 0) {
       setModalInside(<Hacker1Modal testIsActive={false} />);
     } else if (modalNumber === 99) {
-      setModalInside(<ICEModal />);
+      setModalInside(<ICEModal message={message} />);
     }
   };
 

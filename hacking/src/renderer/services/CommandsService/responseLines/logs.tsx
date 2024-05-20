@@ -1,15 +1,20 @@
-export function getLogsMessage(logs): string[] {
+import { onlyTab } from './utils';
+
+export function getLogsMessage(logs: any[]): string[] {
   const lines = [
-    // `Subnetwork ${logs[0].subnetworkName} logs:`
-    `<table><tbody>`,
+    `Subnetwork <span class="secondary-color">${logs[0].subnetworkName}</span> logs:`,
   ];
+  let table = '<table class="log-table"><tbody>';
   logs.forEach((log) => {
-    lines.push(getLogTableLine(log));
+    table += getLogTableLine(log);
   });
-  lines.push(`</tbody></table>`);
+  table += `</tbody></table>`;
+  lines.push(table);
   return lines;
 }
 
 export function getLogTableLine(log) {
-  return `<tr><td>${log.type}</td><td class="accent-color-2">${log.time}</td><td>${log.sourceHackerName}</td></tr>`;
+  return `<tr><td>${log.type}</td><td class="accent-color">${
+    log.time
+  }</td><td>Source: ${onlyTab(log.sourceUserName)}</td></tr>`;
 }

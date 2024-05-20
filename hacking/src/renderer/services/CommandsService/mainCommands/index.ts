@@ -12,6 +12,9 @@ import CopyData from './CopyData';
 import Balance from './Balance';
 import Transfer from './Transfer';
 import Log from './Log';
+import Exit from './Exit';
+import ReadMsg from './ReadMsg';
+import SendMsg from './SendMsg';
 
 export {
   End,
@@ -28,4 +31,7 @@ export {
   Balance,
   Transfer,
   Log,
+  Exit,
+  ReadMsg,
+  SendMsg,
 };

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { BankAccountType } from '../../../types';
 
 type DataType = {
@@ -12,6 +13,7 @@ type DataType = {
 export default function mapAccount(data: DataType): BankAccountType {
   return {
     id: data.id,
+    owner: data.owner,
     ownerId: data.ownerId,
     type: data.type,
     balance: data.balance,
@@ -28,5 +30,6 @@ export function mapTransaction(data, accountNumber: number) {
     id: data.id,
     title: data.title,
     amount: isIncoming ? String(data.amount) : `-${data.amount}`,
+    date: moment(data.date).format('DD/MM HH:mm:ss'),
   };
 }

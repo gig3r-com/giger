@@ -1,7 +1,7 @@
 import axios from 'axios';
 import mapProfile from './mappers/profile';
 import mapExploits from './mappers/exploits';
-import { ProfileType, SubnetworkType, ProgramCodeInfoType } from '../../types';
+import { ProfileType, ProgramCodeInfoType, SubnetworkType } from '../../types';
 import mapSubnetwork from './mappers/subnetwork';
 import mapRecordToApi from './mappers/record';
 import { getLoginUserData, setLoginUserData } from '../../Terminal/utils/store';
@@ -9,8 +9,49 @@ import ProfileModule from './modules/Profile';
 import ScanModule from './modules/Scan';
 import AccountsModule from './modules/Accounts';
 import LogsModule from './modules/Log';
+import HackConfigModule from './modules/HackConfig';
+import ConversationsModule from './modules/Conversations';
+import LoginModule from './modules/Login';
 
 export default class ApiService {
+  constructor() {
+    window.config = {
+      // gigerApiUrl: 'http://localhost:9090/api',
+      // gigerUrl: 'http://localhost:9090',
+      // gigerApiUrl: 'http://192.168.50.100:9090/api',
+      // gigerUrl: 'http://192.168.50.100:9090',
+      gigerApiUrl: 'https://dev.gig3r.com/api',
+      gigerUrl: 'https://dev.gig3r.com',
+
+    };
+    window.electron.ipcRenderer.on('config-app', (data) => {
+      const config = {};
+      data.split('\n').forEach((line) => {
+        const [key, value] = line.split('=');
+        if (key && value) {
+          config[key.trim()] = value.trim();
+        }
+      });
+      if (config.API_URL) {
+        window.config = {
+          gigerApiUrl: `${config.API_URL}/api`,
+          gigerUrl: config.API_URL,
+        };
+      }
+    });
+  }
+
+  getUrls() {
+    return {
+      gigerApiUrl: window.config.gigerApiUrl,
+      gigerUrl: window.config.gigerUrl,
+    };
+  }
+
+  private isConfigLoaded: boolean = false;
+
+  private authToken = null;
+
   profileModule = new ProfileModule();
 
   scanModule = new ScanModule();
@@ -19,6 +60,38 @@ export default class ApiService {
 
   logsModule = new LogsModule();
 
+  hackConfigModule = new HackConfigModule();
+
+  conversationsModule = new ConversationsModule();
+
+  loginModule = new LoginModule();
+
+  /*
+   ************************************************************************************************
+   * LOGIN METHODS
+   ************************************************************************************************
+   */
+
+  login = this.loginModule.login.bind(this);
+
+  /*
+   ************************************************************************************************
+   * CONVERSATIONS METHODS
+   ************************************************************************************************
+   */
+
+  getConversationById = this.conversationsModule.getConversationById.bind(this);
+
+  sendMsg = this.conversationsModule.sendMsg.bind(this);
+
+  /*
+   ************************************************************************************************
+   * HACK CONFIG METHODS
+   ************************************************************************************************
+   */
+
+  getConfig = this.hackConfigModule.getConfig.bind(this);
+
   /*
    ************************************************************************************************
    * LOGS METHODS
@@ -26,6 +99,8 @@ export default class ApiService {
    */
 
   addLog = this.logsModule.addLog.bind(this);
+
+  addBreachLog = this.logsModule.addBreachLog.bind(this);
 
   getSubnetworksLogs = this.logsModule.getSubnetworksLogs.bind(this);
 
@@ -69,13 +144,6 @@ export default class ApiService {
   scanForUserIdByName = this.scanModule.scanForUserIdByName.bind(this);
 
   scanForUserIdByUsername = this.scanModule.scanForUserIdByUsername.bind(this);
-
-  getUrls() {
-    return {
-      gigerApiUrl: window.config.gigerApiUrl,
-      gigerUrl: window.config.gigerUrl,
-    };
-  }
 
   /*
    ************************************************************************************************
@@ -174,39 +242,6 @@ export default class ApiService {
     return axios({
       method: 'GET',
       url: `${gigerApiUrl}/Gig`,
-    }).then((response) => {
-      console.log(response);
-    });
-  }
-
-  /*
-   * Authentication
-   */
-  async disableAuth(): Promise<void> {
-    const { gigerApiUrl } = this.getUrls();
-    return axios({
-      method: 'GET',
-      url: `${gigerApiUrl}/Login/disableAuth`,
-    }).then((response) => {
-      console.log(response);
-    });
-  }
-
-  async login(username: string, password: string): Promise<void> {
-    const { gigerApiUrl } = this.getUrls();
-    return axios({
-      method: 'GET',
-      url: `${gigerApiUrl}/Login/hacker?userName=${username}&password=${password}`,
-    }).then((response) => {
-      console.log(response);
-    });
-  }
-
-  async logout(): Promise<void> {
-    const { gigerApiUrl } = this.getUrls();
-    return axios({
-      method: 'GET',
-      url: `${gigerApiUrl}/Login/logout`,
     }).then((response) => {
       console.log(response);
     });

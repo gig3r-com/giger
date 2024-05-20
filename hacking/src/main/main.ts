@@ -16,6 +16,7 @@ import Store from 'electron-store';
 import { resolveHtmlPath } from './util';
 
 const usb = require('usb');
+const fs = require('fs');
 
 class AppUpdater {
   constructor() {
@@ -136,6 +137,22 @@ const createWindow = async () => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
+  });
+  mainWindow.on('show', sendConfigData);
+
+  windows.push(mainWindow);
+};
+const sendConfigData = () => {
+  fs.readFile('config.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    windows.forEach((win) => {
+      if (win) {
+        win.webContents.send('config-app', data);
+      }
+    });
   });
 };
 

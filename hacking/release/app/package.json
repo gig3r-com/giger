@@ -1,12 +1,11 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "cic-terminal",
+  "version": "1.0.1",
+  "description": "A hacking app for Giger larp",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Hedin",
+    "email": "karolhinc244@gmail.com"
   },
   "main": "./dist/main/main.js",
   "scripts": {
@@ -15,6 +14,7 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
-    "usb": "^2.12.1"
+    "usb": "^2.12.1",
+    "fs": "^0.0.1-security"
   }
 }

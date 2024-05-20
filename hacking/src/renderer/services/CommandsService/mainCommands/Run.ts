@@ -2,6 +2,7 @@ import type CommandsServiceType from '../CommandsService';
 import { getConnectedSubnetworkData } from '../../../Terminal/utils/store';
 import * as EXPLOITS from '../../../Terminal/data/exploits';
 import { ExploitType } from '../../../Terminal/data/types';
+import { ApiService, ConfigService } from '../../index';
 import {
   getErrorMessage,
   programNotFound,
@@ -32,8 +33,9 @@ export default class Run {
       return;
     }
     try {
+      await ConfigService.checkHacking('run', parsedCommand[1]);
       setInputDisabled(true);
-      const exploit: ExploitType | undefined = this.getExploit(
+      const exploit: ExploitType | undefined = await ConfigService.getExploit(
         parsedCommand[0],
       );
       if (!exploit) {
@@ -64,7 +66,6 @@ export default class Run {
       fireInitError,
       parsedCommand,
       ServerConnectionService,
-      ApiService,
     } = this.Service;
     if (!addLines || !addErrors) {
       fireInitError();
@@ -94,7 +95,6 @@ export default class Run {
       fireInitError,
       parsedCommand,
       ServerConnectionService,
-      ApiService,
     } = this.Service;
     if (!addLines || !addErrors) {
       fireInitError();
@@ -122,11 +122,5 @@ export default class Run {
     if (isConnected && commandStatement === '.' && connectedSubnetwork)
       return connectedSubnetwork?.id;
     return commandStatement;
-  }
-
-  getExploit(programName: string) {
-    return Object.values(EXPLOITS).find(
-      (p) => p.name.toLowerCase() === programName,
-    );
   }
 }

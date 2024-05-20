@@ -10,6 +10,7 @@ import {
 } from '../responseLines/errors';
 import { EventType, ProfileType } from '../../../types';
 import { getRecordCopiedMessage } from '../responseLines/misc';
+import { ConfigService } from '../../index';
 
 export default class CopyData {
   private Service: CommandsServiceType;
@@ -32,6 +33,13 @@ export default class CopyData {
       return;
     }
 
+    const { isConnected } = ServerConnectionService;
+    if (!isConnected) {
+      addLines(notConnectedError);
+      setInputDisabled(false);
+      return;
+    }
+
     if (!ServerConnectionService.isDecrypted) {
       addLines([
         `<span class="secondary-color">Error: </span>Access Denied! Command is encrypted.`,
@@ -40,6 +48,7 @@ export default class CopyData {
       return;
     }
     try {
+      await ConfigService.checkHacking('copydata');
       setInputDisabled(true);
       const userId = parsedCommand[0];
       const eventId = parsedCommand[1];

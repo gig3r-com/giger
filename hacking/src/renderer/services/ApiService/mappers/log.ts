@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default function mapLog(data: any) {
   return {
     data: data.logData,
@@ -9,6 +11,6 @@ export default function mapLog(data: any) {
     subnetworkName: data.subnetworkName,
     targetUserId: data.targetUserId,
     targetUserName: data.targetUserName,
-    time: data.timestamp,
+    time: moment(data.timestamp).format('DD/MM HH:mm:ss'),
   };
 }

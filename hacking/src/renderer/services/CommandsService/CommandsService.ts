@@ -13,6 +13,9 @@ import {
   Balance,
   Transfer,
   Log,
+  Exit,
+  ReadMsg,
+  SendMsg,
 } from './mainCommands';
 import {
   getErrorMessage,
@@ -58,12 +61,16 @@ export default class CommandsService {
     run: new Run(this),
     logout: new Logout(this),
     doc: new Doc(this),
+    help: new Doc(this),
+    info: new Doc(this),
     install: new Install(this),
     copydata: new CopyData(this),
-    help: new Doc(this),
     balance: new Balance(this),
     transfer: new Transfer(this),
     log: new Log(this),
+    exit: new Exit(this),
+    readmsg: new ReadMsg(this),
+    // sendmsg: new SendMsg(this), todo: czekam na możliwość wysyłania wiadomości
   };
 
   public activeCommand: string = '';
@@ -138,8 +145,10 @@ export default class CommandsService {
 
   executeCommand(command: string) {
     [this.activeCommand, ...this.parsedCommand] = command
+      .trim()
       .toLowerCase()
-      .split(' ');
+      .split(' ')
+      .filter((s) => !!s);
 
     if (this.mainCommandsTable[this.activeCommand]) {
       this.mainCommandsTable[this.activeCommand].execute();

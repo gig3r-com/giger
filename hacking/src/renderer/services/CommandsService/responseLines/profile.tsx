@@ -58,11 +58,12 @@ export function getBaseProfileLines(data: ProfileType): string[] {
     )}`;
 
   // Conversations
-  // if (data.conversations.length)
-  //   tableContent = `${tableContent}${printConversationTablePart(
-  //     'Conversations',
-  //     data.conversations,
-  //   )}`;
+  console.log(data.conversations)
+  if (data.conversations.length)
+    tableContent = `${tableContent}${printConversationTablePart(
+      'Conversations',
+      data.conversations,
+    )}`;
 
   // Accounts
   if (data.accounts.length)
@@ -152,7 +153,7 @@ export function getBaseProfileLines(data: ProfileType): string[] {
 
 export function getEventProfileLines(event: EventType): string[] {
   const lines: string[] = [
-    `<span class="accent-color-2" ${canTabSelector}>${event.id}</span> <span class="secondary-color">${event.name}</span> <span class="accent-color">25.05.2077</span> `, // todo <span>${event.type}</span> <span>${event.status}</span>
+    `<span class="accent-color-2" ${canTabSelector}>${event.id}</span> <span class="secondary-color">${event.name}</span> <span class="accent-color">${event.date}</span> <span>${event.type}</span> <span>${event.status}</span>`,
   ];
 
   if (event.additionalData) {

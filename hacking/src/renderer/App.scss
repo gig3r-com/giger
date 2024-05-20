@@ -102,7 +102,7 @@ input:focus{
   }
 }
 
-table.list-table, table.profile-table, table.account-table {
+table.list-table, table.profile-table, table.account-table, table.log-table {
   td {
     padding: 0 10px;
   }
@@ -112,7 +112,7 @@ table.list-table, table.profile-table, table.account-table {
   margin: 0 20px;
 }
 
-table.list-table {
+table.list-table, table.log-table {
   margin: -20px 0 0 -10px;
 }
 
@@ -132,4 +132,8 @@ table.list-table {
   100% {
     content: '-';
   }
+}
+
+.margin-left {
+  margin-left: 10px;
 }

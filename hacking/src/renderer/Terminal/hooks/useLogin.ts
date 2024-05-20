@@ -23,8 +23,8 @@ export default function useLogin({
   function enterPassword(password: string): void {
     setInputDisabled(true);
     setUsername('');
-    ApiService.getActiveUserProfile(username, password)
-      .then(async (hackerData: any) => {
+    ApiService.login(username, password)
+      .then(async (hackerData) => {
         setLoginUserData(hackerData);
         setUserData(hackerData);
         setIsLoggedIn(true);
@@ -37,7 +37,8 @@ export default function useLogin({
           hackerName: hackerData.hackerName,
         });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err)
         addLines(loginFailed);
         setInputDisabled(false);
       });
@@ -55,5 +56,13 @@ export default function useLogin({
     }
   }, []);
 
-  return { enterPassword, isLoggedIn, logout, username, setUsername, userData };
+  function setLogin(value: string) {
+    if (value === 'exit') {
+      window.close();
+    } else {
+      setUsername(value);
+    }
+  }
+
+  return { enterPassword, isLoggedIn, logout, username, setUsername: setLogin, userData };
 }

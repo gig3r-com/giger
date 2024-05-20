@@ -6,7 +6,9 @@ import {
   decryptingSuccessLines,
   decryptingFailedLines,
 } from '../../Terminal/responseLines/runCommands';
+import { ApiService, OverlayService } from '../index';
 import { SubnetworkType, ProgramType } from '../../types';
+import {runCleaner, runKicker} from './utils/ice';
 
 export default class ServerConnectionService {
   private breachTimer: ReturnType<typeof setInterval> | undefined;
@@ -39,17 +41,16 @@ export default class ServerConnectionService {
 
   private timeInSubnetwork: number | undefined;
 
-  private ApiService: any;
-
   private setLines: Dispatch<SetStateAction<any[]>> | undefined;
 
   private setInputDisabled: Dispatch<SetStateAction<boolean>> | undefined;
 
   private MonitorService: any;
 
-  constructor(ConfigService: any, ApiService: any, MonitorService: any) {
+  private lines: string[] = [];
+
+  constructor(ConfigService: any, MonitorService: any) {
     this.ConfigService = ConfigService;
-    this.ApiService = ApiService;
     this.MonitorService = MonitorService;
   }
 
@@ -60,6 +61,7 @@ export default class ServerConnectionService {
     setInputTimer: Dispatch<SetStateAction<number | null>>,
     setLines: Dispatch<SetStateAction<any[]>>,
     setInputDisabled: Dispatch<SetStateAction<boolean>>,
+    lines: string[],
   ) {
     this.addLines = addLines;
     this.removeLastLine = removeLastLine;
@@ -68,6 +70,7 @@ export default class ServerConnectionService {
     this.setLines = setLines;
     this.setLines = setLines;
     this.setInputDisabled = setInputDisabled;
+    this.lines = lines;
   }
 
   initializeError() {
@@ -76,8 +79,8 @@ export default class ServerConnectionService {
   }
 
   // eslint-disable-next-line consistent-return
-  breach(exploitName: string, subnetwork: SubnetworkType) {
-    const exploit = this.ConfigService.getExploit(exploitName);
+  async breach(exploitName: string, subnetwork: SubnetworkType) {
+    const exploit = await this.ConfigService.getExploit(exploitName);
     if (!exploit) {
       return new Error('No such exploit');
     }
@@ -85,11 +88,7 @@ export default class ServerConnectionService {
     const breachEffect = exploit.effect[subnetwork.firewall];
     let currentTime = breachEffect.breachTime;
 
-    // LOG BREACH
-    console.log('LOG');
-    this.ApiService.addLog({ type: 'breach', breachEffect, subnetwork });
-
-    // END LOG
+    await ApiService.addBreachLog({ breachEffect, subnetwork });
 
     // eslint-disable-next-line consistent-return
     this.breachTimer = setInterval(() => {
@@ -112,6 +111,7 @@ export default class ServerConnectionService {
     }, 100);
   }
 
+  // eslint-disable-next-line consistent-return
   decrypt(exploitName: string, subnetwork: SubnetworkType) {
     const exploit = this.ConfigService.getExploit(exploitName);
     if (!exploit) {
@@ -170,13 +170,13 @@ export default class ServerConnectionService {
   }
 
   // eslint-disable-next-line consistent-return
-  setupConnectedSubnetwork(subnetwork: SubnetworkType, isPerfect: boolean) {
+  async setupConnectedSubnetwork(subnetwork: SubnetworkType, isPerfect: boolean) {
     if (!this.setPrefixType) return this.initializeError();
     this.setPrefixType(subnetwork.name);
 
     this.isConnected = true;
     this.connectedSubnetwork = subnetwork;
-    this.connectedSubnetworkSystem = this.ConfigService.getProgram(
+    this.connectedSubnetworkSystem = await this.ConfigService.getDefenceProgram(
       subnetwork.operatingSystem,
     );
     this.timeInSubnetwork =
@@ -185,8 +185,8 @@ export default class ServerConnectionService {
         : this.connectedSubnetworkSystem.timeOnImperfectBreach) || 0;
     this.connectionTimeLeft = this.timeInSubnetwork;
 
-    subnetwork.ice.forEach((iceName) => {
-      const ice = this.ConfigService.getProgram(iceName);
+    subnetwork.ice.forEach(async (iceName) => {
+      const ice = await this.ConfigService.getDefenceProgram(iceName);
       if (!ice) return;
       if (
         !isPerfect &&
@@ -252,14 +252,16 @@ export default class ServerConnectionService {
     if (!this.addLines) return this.initializeError();
     switch (ice.name) {
       case 'Ping': {
-        this.ApiService.sendPingMsg();
+        ApiService.sendPingMsg();
         this.addLines([`ICE: ${ice.name}`]);
         break;
       }
       case 'Cleaner': {
-        if (!this.setLines) return this.initializeError();
-        this.setLines([]);
-        this.addLines([`ICE: ${ice.name}`]);
+        runCleaner.bind(this)();
+        break;
+      }
+      case 'Kicker': {
+        runKicker.bind(this)();
         break;
       }
       case 'Boost': {
@@ -304,6 +306,11 @@ export default class ServerConnectionService {
     this.connectionTimeLeft = null;
     this.targetingICEs = [];
     this.MonitorService.clearICE();
+    if (this.cleanerInterval) {
+      this.removeLastLine();
+      clearInterval(this.cleanerInterval);
+      OverlayService.closeModal();
+    }
   }
 
   getTargetingNumber(): number {
