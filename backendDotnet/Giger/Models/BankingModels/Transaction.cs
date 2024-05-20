@@ -25,6 +25,8 @@ namespace Giger.Models.BankingModels
 
         public required DateTime Timestamp { get; set; }
 
+        public string OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
+
         public Transaction() { }
 
         [SetsRequiredMembers]

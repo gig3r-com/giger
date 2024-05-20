@@ -1,16 +1,27 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.GigModels
 {
     [JsonConverter(typeof(JsonStringEnumConverter<GigStatus>))]
     public enum GigStatus
     {
-        //[EnumMember(Value,
+        [Description("available")]
         AVAILABLE,
+
+        [Description("in progress")]
         IN_PROGRESS,
+
+        [Description("completed")]
         COMPLETED,
+        
+        [Description("pending confirmation")]
         PENDING_CONFIRMATION,
+        
+        [Description("disptue")]
         DISPUTE,
+        
+        [Description("expired")]
         EXPIRED
     }
 

@@ -268,6 +268,14 @@ namespace Giger.Controllers
             }
             gig.Status = GigStatus.PENDING_CONFIRMATION;
             await _gigService.UpdateAsync(gig);
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                await NotifyStatusChanged(gig, false);
+            }
+            else
+            {
+                await NotifyStatusChanged(gig, true);
+            }
             await NotifyStatusChanged(gig, true);
             return Ok();
         }
@@ -522,6 +530,16 @@ namespace Giger.Controllers
                 }
             }
 
+            string orderingParty;
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                orderingParty = gig.AuthorName;
+            }
+            else
+            {
+                orderingParty = _userService.GetAsync(gig.TakenById).Result?.Handle;
+            }
+
             Transaction reserve = new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -531,7 +549,8 @@ namespace Giger.Controllers
                 ToUser = "SYSTEM",
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, gig.Title),
-                Amount = gig.Payout
+                Amount = gig.Payout,
+                OrderingParty = orderingParty
             };
 
             await _accountController.CreateTransaction(reserve);
@@ -545,7 +564,8 @@ namespace Giger.Controllers
                 ToUser = Factions.social_net.ToString(),
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
-                Amount = gigFeeAmount
+                Amount = gigFeeAmount,
+                OrderingParty = orderingParty
             };
 
             await _accountController.CreateTransaction(socialTax);
@@ -563,6 +583,16 @@ namespace Giger.Controllers
                 }
             }
 
+            string orderingParty;
+            if (gig.Mode == GigModes.CLIENT)
+            {
+                orderingParty = gig.AuthorName;
+            }
+            else
+            {
+                orderingParty = _userService.GetAsync(gig.TakenById).Result?.Handle;
+            }
+
             Transaction reserve = new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -573,6 +603,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_REFUND_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout,
+                OrderingParty = orderingParty
             };
 
             await _accountController.CreateTransaction(reserve);
@@ -592,8 +623,10 @@ namespace Giger.Controllers
                 providerName = gig.AuthorName;
             }
 
+            string orderingParty;
             if (gig.Mode == GigModes.CLIENT)
             {
+                orderingParty = gig.AuthorName;
                 if (gig.IsAnonymizedAuthor)
                 {
                     clientName = Gig.ANONIMIZED;
@@ -601,6 +634,7 @@ namespace Giger.Controllers
             }
             else
             {
+                orderingParty = _userService.GetAsync(gig.TakenById).Result?.Handle;
                 if (gig.IsAnonymizedAuthor)
                 {
                     providerName = Gig.ANONIMIZED;
@@ -617,6 +651,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_PAYMENT_TITLE, gig.Title),
                 Amount = gig.Payout,
+                OrderingParty = orderingParty
             };
 
             await _accountController.CreateTransaction(trx);

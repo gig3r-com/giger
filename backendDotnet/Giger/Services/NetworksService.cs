@@ -27,7 +27,7 @@ namespace Giger.Services
             await _networksCollection.Find(network => network.Id == id).FirstOrDefaultAsync();
 
         public async Task<Network> GetNetworkByNameAsync(string name) =>
-            await _networksCollection.Find(network => network.Name == name).FirstOrDefaultAsync();
+            await _networksCollection.Find(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
         public async Task CreateNetworkAsync(Network newNetwork) =>
             await _networksCollection.InsertOneAsync(newNetwork);
@@ -61,7 +61,7 @@ namespace Giger.Services
             await _subnetworksCollection.Find(network => network.Id == id).FirstOrDefaultAsync();
 
         public async Task<Subnetwork> GetSubnetworkByFirstNameAsync(string name) =>
-            await _subnetworksCollection.Find(network => network.Name == name).FirstOrDefaultAsync();
+            await _subnetworksCollection.Find(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
         public async Task CreateSubnetworkAsync(Subnetwork newSubnetwork) =>
             await _subnetworksCollection.InsertOneAsync(newSubnetwork);
