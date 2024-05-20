@@ -20,7 +20,7 @@ export const Transaction: FC<{
             ? currentUser?.id
             : getCurrentUserFaction();
     const otherParty =
-        transaction.to === ownId ? transaction.from : transaction.to;
+        transaction.to === ownId ? transaction.fromUser : transaction.toUser;
     const image =
         transaction.to === ownId ? <OutgoingTransfer /> : <IncomingTransfer />;
 

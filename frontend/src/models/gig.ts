@@ -6,14 +6,15 @@ export interface IGigBase {
     payout: number;
     title: string;
     description: string;
+    descriptionDetailed: string;
     category: GigCategoryNames;
     subcategory: GigSubcategoryNames;
     reputationRequired: {
         level: GigRepuationLevels;
     };
     id: string;
-    providerAccountNumber: string | null; // account id
-    clientAccountNumber: string | null; // account id
+    providerAccountNumber?: string | null; // account id
+    clientAccountNumber?: string | null; // account id
     anonymizedAuthor?: boolean;
     mode: GigModes;
     authorName: string;

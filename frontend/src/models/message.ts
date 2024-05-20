@@ -15,7 +15,8 @@ export interface IWebsocketMessage {
 export interface IConversation {
     id: string;
     messages: IMessage[];
-    participants: string[]; // user ids
+    participants: string[]; // user handles
+    anonymizedUsers: string[]; // user handles
     /**
      * If this is set, only the participants in this list are allowed to send messages.
      * Used to send public information by game masters.

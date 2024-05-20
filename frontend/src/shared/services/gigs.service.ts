@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
 import {
     GigModes,
@@ -26,7 +25,7 @@ export function useGigsService() {
     const dispatch = useDispatch();
     const { api } = useApiService();
     const { accounts } = useBankingService();
-    const { currentUser, updateUserData } = useUserService();
+    const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
@@ -68,21 +67,8 @@ export function useGigsService() {
      */
     const addNewGig = async (gig: IDraftGig) => {
         const newGig = constructGig(gig);
-        await api
-            .url('Gig/create')
-            .query({ openingMessage: gig.message })
-            .post(newGig)
-            .res();
+        await api.url('Gig/create').post(newGig).res();
         dispatch(setGigs([...currentGigs, constructGig(gig)]));
-
-        if (gig.anonymizedAuthor) {
-            updateUserData(currentUser!.id, {
-                aliasMap: {
-                    ...currentUser!.aliasMap,
-                    [gig!.id]: uuidv4().substring(0, 8)
-                }
-            });
-        }
     };
 
     const updateGig = (updatedGig: IGig) => {

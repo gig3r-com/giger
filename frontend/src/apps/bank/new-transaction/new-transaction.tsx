@@ -14,7 +14,7 @@ export const NewTransaction: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const [amount, setAmount] = useState<number>(0);
-    const [trasferTitle, setTransferTitle] = useState<string>('');
+    const [transferTitle, setTransferTitle] = useState<string>('');
     const [selectedUser, setSelectedUser] = useState<IUserBase[] | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
         AccountType.PRIVATE
@@ -23,9 +23,9 @@ export const NewTransaction: FC = () => {
 
     const onTransfer = async () => {
         await sendTransfer(
-            selectedUser![0].id,
+            selectedUser![0].handle,
             amount,
-            trasferTitle,
+            transferTitle,
             selectedAccount
         );
         navigate('/bank');
@@ -50,7 +50,7 @@ export const NewTransaction: FC = () => {
             <input
                 type="text"
                 placeholder={intl.formatMessage({ id: 'TITLE' })}
-                value={trasferTitle}
+                value={transferTitle}
                 onChange={(event) => setTransferTitle(event.target.value)}
             />
             {hasBusinessAccount && (

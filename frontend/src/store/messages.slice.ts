@@ -67,6 +67,7 @@ export const conversationsSlice = createSlice({
             state,
             action: PayloadAction<Record<string, number>>
         ) => {
+            if (!action.payload) return;
             Object.entries(action.payload).forEach(([conversationId, hash]) => {
                 state.conversationHashes[conversationId].current = hash;
             });
