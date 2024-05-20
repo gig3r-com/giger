@@ -166,12 +166,15 @@ namespace Giger.Controllers
 			}
 
 			var user = await _userService.GetAsync(id);
-			if (user is null)
+			var auth = await _loginService.GetByUserNameAsync(user.Handle);
+			if (user is null || auth is null)
 			{
 				return NoContent();
 			}
 			user.HackerName = newName;
+			auth.HackerName = newName;
 			await _userService.UpdateAsync(user);
+			await _loginService.UpdateAsync(auth);
 			return Ok();
 		}
 

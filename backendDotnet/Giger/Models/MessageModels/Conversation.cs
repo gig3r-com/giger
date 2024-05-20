@@ -12,6 +12,8 @@ namespace Giger.Models.MessageModels
 
         public List<string> Participants { get; set; } = []; // UserNames
 
+        public List<string> AnonymizedUsers { get; set; } = []; // UserNames
+
         public required bool GigConversation { get; set; }
     }
 }

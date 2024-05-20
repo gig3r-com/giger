@@ -110,8 +110,10 @@ namespace Giger.Controllers
             {
                 Unauthorized();
             }
-
-            newAccount.Id = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(newAccount.Id))
+            {
+                newAccount.Id = Guid.NewGuid().ToString();
+            }
             await _accountService.CreateAsync(newAccount);
             return CreatedAtAction(nameof(CreatedAccount), new { id = newAccount.Id }, newAccount);
         }
@@ -212,13 +214,30 @@ namespace Giger.Controllers
         [HttpPost("transaction")]
         public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
         {
-            if (!IsAuthorized(newTransaction.From))
+            if (!IsAuthorized(newTransaction.FromUser))
             {
                 return Unauthorized();
             }
+            
+            if (string.IsNullOrEmpty(newTransaction.Id))
+            {
+                newTransaction.Id = Guid.NewGuid().ToString();
+                newTransaction.Timestamp = GigerDateTime.Now;
+            }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
+            if (giverAcc is null)
+            {
+                giverAcc = await _accountService.GetByAccountNameAsync(newTransaction.FromUser);
+                newTransaction.From = giverAcc?.AccountNumber ?? newTransaction.From;
+            }
+
             var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
+            if (receiverAcc is null)
+            {
+                receiverAcc = await _accountService.GetByAccountNameAsync(newTransaction.ToUser);
+                newTransaction.To = receiverAcc?.AccountNumber ?? newTransaction.To;
+            }
 
             if (giverAcc is null || receiverAcc is null)
             {
@@ -234,9 +253,6 @@ namespace Giger.Controllers
             {
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
-
-            newTransaction.Id = Guid.NewGuid().ToString();
-            newTransaction.Timestamp = GigerDateTime.Now;
 
             giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
