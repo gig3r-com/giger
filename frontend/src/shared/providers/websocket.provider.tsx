@@ -30,7 +30,8 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     const [lastMessage, setLastMessage] =
         useState<IConversationConsumablePayload | null>(null);
     const authToken = useSelector(selectAuthToken);
-    const [isConnected, setIsConnected] = useState(false);
+    //const [isConnected, setIsConnected] = useState(false);
+    const [reconnectInterval, setReconnectInterval] = useState<number>(1000);
     const baseUrl = `wss${window.origin.split('https')[1]}/`;
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
 
@@ -76,23 +77,28 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         }, 55000);
     };
 
-    const setupWebsocket = useCallback(() => {
-        if (!authToken || ws.current) return;
+    const setupWebsocket = useCallback(async () => {
+        const socketMissingOrClosed = !ws.current || ws.current.readyState === WebSocket.CLOSED;
+
+        if (!authToken || !socketMissingOrClosed) {
+            return;
+        }
+
         const socket = generateSocket('convo');
         let interval: number;
 
         socket.binaryType = 'arraybuffer';
 
         socket.onopen = () => {
-            setIsConnected(true);
+            //setIsConnected(true);
             interval = ping(socket);
             console.log('WebSocket connection opened');
         };
 
         socket.onclose = () => {
-            setIsConnected(false);
+            //setIsConnected(false);
             clearInterval(interval);
-            setupWebsocket();
+            // setupWebsocket();
             console.log('WebSocket disconnected');
         };
 
@@ -127,21 +133,30 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
                 if (ws.current) {
                     ws.current.close();
                 }
+                setReconnectInterval(1000);
             } else {
                 console.log('Page visible, reconnecting WebSocket');
                 if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
-                    getIntermediateData();
-                    setupWebsocket();
+                    setTimeout(() => {
+                        getIntermediateData();
+                        setupWebsocket();
+                    }, reconnectInterval);
+                    setReconnectInterval(reconnectInterval * 2);
                 }
             }
         });
     }, [setupWebsocket]);
 
     const sendMessage = (message: IConversationUpdatePayload) => {
-        if (ws.current && isConnected) {
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
             ws.current.send(JSON.stringify(message));
         } else {
             console.error('WebSocket is not connected');
+            setTimeout(async () => {
+                await setupWebsocket();
+                sendMessage(message);
+            }, reconnectInterval);
+            setReconnectInterval(reconnectInterval * 2);
         }
     };
 
