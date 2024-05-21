@@ -34,7 +34,7 @@ export const Chat: FC = () => {
                 b.messages[b.messages.length - 1]?.date
             ).getMilliseconds();
 
-            return aLastMessageTime - bLastMessageTime;
+            return bLastMessageTime - aLastMessageTime;
         });
     }, [conversations]);
 
@@ -44,25 +44,35 @@ export const Chat: FC = () => {
             : sortedConvos;
     }, [chatId, sortedConvos]);
 
-    const onNewMessage = useMemo(() => location.pathname === '/chat/new', [location]);
+    const onNewMessage = useMemo(
+        () => location.pathname === '/chat/new',
+        [location]
+    );
     const showNewMsgButton = useMemo(() => {
         return !chatId && !onNewMessage;
     }, [chatId, onNewMessage]);
 
-    const chatListClasses = useMemo(() => classNames({
-        'chat__list': true,
-        'chat__list--msg-open': chatId
-    }), [chatId])
+    const chatListClasses = useMemo(
+        () =>
+            classNames({
+                chat__list: true,
+                'chat__list--msg-open': chatId
+            }),
+        [chatId]
+    );
 
     useEffect(function fetchOnMount() {
-        currentUser && fetchUserConvos(currentUser.id);
+        currentUser && fetchUserConvos();
     }, []);
 
-    useEffect(function redirectOnConvoNotFound() {
-        if (chatId && !conversations.some((convo) => convo.id === chatId)) {
-            navigate('/chat');
-        }
-    }, [chatId, conversations, navigate]);
+    useEffect(
+        function redirectOnConvoNotFound() {
+            if (chatId && !conversations.some((convo) => convo.id === chatId)) {
+                navigate('/chat');
+            }
+        },
+        [chatId, conversations, navigate]
+    );
 
     return (
         <section className="chat">

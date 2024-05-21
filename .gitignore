@@ -8,4 +8,4 @@ backendDotnet/DatabaseSerializer/bin/*
 backendDotnet/Models/*
 docker-compose.override.yaml
 .env
-
+node_modules

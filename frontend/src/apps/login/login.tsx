@@ -95,6 +95,8 @@ export const Login: FC = () => {
                         <input
                             placeholder={intl.formatMessage({ id: 'USERNAME' })}
                             type="text"
+                            autoComplete="text"
+                            autoCapitalize="off"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
@@ -103,6 +105,8 @@ export const Login: FC = () => {
                         <input
                             placeholder={intl.formatMessage({ id: 'PASSWORD' })}
                             type="password"
+                            autoComplete="password"
+                            autoCapitalize="off"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyUp={handleKeyPress}

@@ -3,10 +3,12 @@ import { RootState } from '../../store/store';
 import {
     selectAccounts,
     addTransaction,
-    setAccount
+    setAccount,
+    setBusinessAccount
 } from '../../store/bank.slice';
 import {
     AccountType,
+    IBusinessAccount,
     IPrivateAccount,
     ITransaction
 } from '../../models/banking';
@@ -38,72 +40,70 @@ export function useBankingService() {
     const accounts = useSelector(selectAccounts);
     const fetchAccounts = async () => {
         if (!currentUser) return;
-        const privateAccount = (
-            await api
-                .query({ owner: currentUser?.handle })
-                .get(`Account/byOwner`)
-                .json<IPrivateAccount[]>()
-        )[0];
-        // const businessAccount = (await api
-        //     .query({ owner: currentUser?.faction })
-        //     .get(`Account/byOwner`)
-        //     .json<IBusinessAccount[]>())[0];
+        const [privateAccount, businessAccount] = await api
+            .query({ owner: currentUser?.handle })
+            .get(`Account/byOwner`)
+            .json<[IPrivateAccount, IBusinessAccount?]>();
         dispatch(setAccount(privateAccount));
-        //dispatch(setBusinessAccount(businessAccount));
+        businessAccount && dispatch(setBusinessAccount(businessAccount));
     };
     const hasCompanyAccount = !!accounts.business;
 
-    const sendTransfer = (
-        userId: string,
+    const getAccountByHandle = async (handle: string) => {
+        return await api
+            .query({ owner: handle })
+            .get(`Account/byOwner`)
+            .json<[IPrivateAccount, IBusinessAccount?]>();
+    };
+
+    const sendTransfer = async (
+        receiverHandle: string,
         amount: number,
         title: string,
         fromAccount: AccountType
-    ) =>
-        new Promise<void>((resolve) => {
-            const account =
-                accounts[
-                    fromAccount.toLocaleLowerCase() as 'private' | 'business'
-                ];
+    ) => {
+        const account =
+            accounts[fromAccount.toLocaleLowerCase() as 'private' | 'business'];
+        const receiverAccount = await getAccountByHandle(receiverHandle);
 
-            if (!account) {
-                console.error('Account not found');
-                return;
-            }
+        if (!account) {
+            console.error('Account not found');
+            return;
+        }
 
-            const transaction: ITransaction = {
-                from: account.id,
-                to: userId,
-                amount,
-                title,
-                id: v4(),
-                date: dayjs().add(100, 'years').toISOString(),
-                ...(fromAccount === AccountType.BUSINESS
-                    ? {
-                          orderingParty: currentUser?.id
-                      }
-                    : {})
-            };
+        const transaction: ITransaction = {
+            from: account.accountNumber,
+            to: receiverAccount[0].accountNumber,
+            fromUser: currentUser?.handle ?? '',
+            toUser: receiverHandle,
+            amount,
+            title,
+            id: v4(),
+            timestamp: dayjs().add(100, 'years').toISOString(),
+            orderingParty:
+                fromAccount === AccountType.BUSINESS
+                    ? currentUser?.handle ?? ''
+                    : null
+        };
 
-            api.url('Account/transaction')
-                .post(transaction)
-                .res(() => {
-                    dispatch(
-                        addTransaction({
-                            accountType: fromAccount,
-                            transaction
-                        })
-                    );
-                    resolve();
-                });
-        });
+        api.url('Account/transaction')
+            .post(transaction)
+            .res(() => {
+                dispatch(
+                    addTransaction({
+                        transaction
+                    })
+                );
+            });
+    };
 
-    const getAccountHolderName = (id: string): string => {
+    const getAccountHolderName = (handle: string): string => {
         const factionHolders = Object.values(Factions).map((faction) => ({
             id: faction,
             handle: faction
         }));
         const availableHolders: Holder[] = [...userList, ...factionHolders];
-        const holder = availableHolders.find((holder) => holder.id === id);
+        const holder = availableHolders.find((holder) => holder.handle === handle);
 
         return holder?.handle ?? intl.formatMessage({ id: 'UNKNOWN_USER' });
     };

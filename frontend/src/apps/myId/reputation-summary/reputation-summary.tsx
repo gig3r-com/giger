@@ -1,24 +1,25 @@
-import { useMemo } from 'react';
-import { GigCategoryNames } from '../../../models/gig';
+import { FC, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
 import GigReputation from '../../giger/gig-reputation/gig-reputation';
-import { useGigsService } from '../../../shared/services/gigs.service';
+import { GigCategoryNames } from '../../../models/gig';
+import { IReputationLevels } from '../../../models/user';
 
 import './reputation-summary.scss';
-import { FormattedMessage } from 'react-intl';
 
-export const ReputationSummary = () => {
+export const ReputationSummary: FC<{ reputation: IReputationLevels }> = ({
+    reputation
+}) => {
     const { currentUser } = useUserService();
-    const { getReputationLevel } = useGigsService();
     const reps = useMemo(
         () => Object.keys(currentUser?.gigReputation ?? {}),
         [currentUser]
     );
-    const getLevel = (category: GigCategoryNames) => {
-        const cashAmount = currentUser
-            ? currentUser.gigReputation[category]
-            : 0;
-        return getReputationLevel(cashAmount);
+
+    const getLevel = (categoryName: GigCategoryNames) => {
+        return ((reputation ?? currentUser?.gigReputation)?.[
+            categoryName as GigCategoryNames
+        ] ?? 0) as 0 | 1 | 2 | 3 | 4 | 5;
     };
 
     return (
@@ -30,7 +31,7 @@ export const ReputationSummary = () => {
                 {reps.map((category) => (
                     <li key={category} className="reputation-summary__entry">
                         <span className="reputation-summary__label">
-                            {category}
+                            <FormattedMessage id={category} />
                         </span>
                         <GigReputation
                             reputation={getLevel(category as GigCategoryNames)}

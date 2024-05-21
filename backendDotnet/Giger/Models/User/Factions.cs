@@ -6,6 +6,8 @@ namespace Giger.Models.User
     [JsonConverter(typeof(JsonStringEnumConverter<Factions>))]
     public enum Factions
     {
+        no_faction,
+
         [Description("Gunners")]
         gunners,
 

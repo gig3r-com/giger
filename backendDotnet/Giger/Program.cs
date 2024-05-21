@@ -45,7 +45,8 @@ if (app.Environment.IsDevelopment())
 
 var webSocketOptions = new WebSocketOptions() { KeepAliveInterval = TimeSpan.FromSeconds(120) };
 app.UseWebSockets(webSocketOptions);
-app.MapSockets("/ws", app.Services.GetService<WebSocketsMessageHandler>());
+app.MapSockets("/ws1337", app.Services.GetService<ConversationMessageHandler>());
+app.MapSockets("/ws2137", app.Services.GetService<NotificationsSocketHandler>());
 app.UseStaticFiles();
 app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();

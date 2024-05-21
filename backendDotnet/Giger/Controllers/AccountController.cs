@@ -4,17 +4,22 @@ using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Extensions;
 using Giger.Models.User;
+using Giger.Connections.Handlers;
+using System.Linq.Expressions;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService)
+    public class AccountController(UserService userService, LoginService loginService, AccountService accountService,
+        LogService logService, NetworksService networksService, NotificationsSocketHandler notificationsHandler)
         : AuthController(userService, loginService)
     {
         private readonly AccountService _accountService = accountService;
         private readonly LogService _logService = logService;
         private readonly NetworksService _networksService = networksService;
+
+        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
         #region Account
 
@@ -105,8 +110,10 @@ namespace Giger.Controllers
             {
                 Unauthorized();
             }
-
-            newAccount.Id = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(newAccount.Id))
+            {
+                newAccount.Id = Guid.NewGuid().ToString();
+            }
             await _accountService.CreateAsync(newAccount);
             return CreatedAtAction(nameof(CreatedAccount), new { id = newAccount.Id }, newAccount);
         }
@@ -127,6 +134,7 @@ namespace Giger.Controllers
 
             account = updatedAccount;
             await _accountService.UpdateAsync(account);
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -145,6 +153,7 @@ namespace Giger.Controllers
             }
             account.Balance += value;
             await _accountService.UpdateAsync(account);
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -162,7 +171,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance -= value;
-            await _accountService.UpdateAsync(account);
+            await _accountService.UpdateAsync(account); 
+            NotifyAccount(account);
             return NoContent();
         }
 
@@ -204,13 +214,30 @@ namespace Giger.Controllers
         [HttpPost("transaction")]
         public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
         {
-            if (!IsAuthorized(newTransaction.From))
+            if (!IsAuthorized(newTransaction.FromUser))
             {
                 return Unauthorized();
             }
+            
+            if (string.IsNullOrEmpty(newTransaction.Id))
+            {
+                newTransaction.Id = Guid.NewGuid().ToString();
+                newTransaction.Timestamp = GigerDateTime.Now;
+            }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
+            if (giverAcc is null)
+            {
+                giverAcc = await _accountService.GetByAccountNameAsync(newTransaction.FromUser);
+                newTransaction.From = giverAcc?.AccountNumber ?? newTransaction.From;
+            }
+
             var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
+            if (receiverAcc is null)
+            {
+                receiverAcc = await _accountService.GetByAccountNameAsync(newTransaction.ToUser);
+                newTransaction.To = receiverAcc?.AccountNumber ?? newTransaction.To;
+            }
 
             if (giverAcc is null || receiverAcc is null)
             {
@@ -227,9 +254,6 @@ namespace Giger.Controllers
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
-            newTransaction.Id = Guid.NewGuid().ToString();
-            newTransaction.Date = GigerDateTime.Now;
-
             giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
             await _accountService.UpdateAsync(giverAcc);
@@ -237,12 +261,60 @@ namespace Giger.Controllers
             receiverAcc.Transactions.Add(newTransaction);
             receiverAcc.Balance += newTransaction.Amount;
             await _accountService.UpdateAsync(receiverAcc);
-
+            NotifyTransaction(receiverAcc, newTransaction);
             LogTransaction(newTransaction, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
         #endregion
+
+        private async Task NotifyTransaction(Account account, Transaction transaction)
+        {
+            switch (account.Type)
+            {
+                case AccountType.PRIVATE:
+                {
+                    await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                    break;
+                }
+                case AccountType.BUSINESS:
+                {
+                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    {
+                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
+                        foreach (var user in allFactionUsers)
+                        {
+                            await _notificationsHandler.NotifyTransaction(user.Handle, account.Id, transaction.Id);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        private async Task NotifyAccount(Account account)
+        {
+            switch (account.Type)
+            {
+                case AccountType.PRIVATE:
+                {
+                    await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                    break;
+                }
+                case AccountType.BUSINESS:
+                {
+                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    {
+                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
+                        foreach (var user in allFactionUsers)
+                        {
+                            await _notificationsHandler.NotifyAccount(user.Handle, account.Id);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
         private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {

@@ -30,13 +30,26 @@ const buttonDefinitions: {
     isMine?: boolean;
     mode?: GigModes;
     moderation?: boolean;
+    reputationMatches?: boolean;
     hasCompanyAccount?: boolean;
     buttons: IButtonDefinition[];
 }[] = [
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
-        moderation: false,
+        reputationMatches: false,
+        buttons: [
+            {
+                label: 'INSUFFICIENT_REPUTATION',
+                color: 'primary',
+                disabled: true,
+                actionId: ActionId.ACCEPT
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
         hasCompanyAccount: false,
         buttons: [
             {
@@ -50,7 +63,6 @@ const buttonDefinitions: {
     {
         status: GigStatus.AVAILABLE,
         isMine: false,
-        moderation: false,
         hasCompanyAccount: true,
         buttons: [
             {
@@ -187,7 +199,8 @@ export const getButtons = (
     isMine: boolean,
     moderation: boolean,
     mode: GigModes,
-    hasCompanyAccount: boolean
+    hasCompanyAccount: boolean,
+    reputationMatches: boolean
 ): IButtonDefinition[] => {
     const buttonDefinition = buttonDefinitions.find((def) => {
         const statusMatching = def.status === status;
@@ -196,6 +209,10 @@ export const getButtons = (
         const mineMatching =
             def.isMine === undefined ? true : def.isMine === isMine;
         const modeMatching = def.mode === undefined ? true : def.mode === mode;
+        const reputationMatching =
+            def.reputationMatches === undefined
+                ? true
+                : def.reputationMatches === reputationMatches;
         const hasCompanyAccountMatching =
             def.hasCompanyAccount === undefined
                 ? true
@@ -206,7 +223,8 @@ export const getButtons = (
             moderationMatching &&
             mineMatching &&
             modeMatching &&
-            hasCompanyAccountMatching
+            hasCompanyAccountMatching &&
+            reputationMatching
         );
     })!.buttons;
 

@@ -148,7 +148,7 @@
     "COMPLAINT_DESCRIPTION": "Complaint description",
     "EXPIRED": "Expired",
     "SET_AS_EXPIRED": "Set as expired",
-    "NOT_ENOUGH_MONEY": "You don't have the funds required to cover the payout and Gig3r's comission",
+    "NOT_ENOUGH_MONEY": "You don't have the funds required to cover the payout and GIG3R's comission",
     "SELECT_ACCOUNT": "Select account",
     "MY_GIG": "(my gig)",
     "SELECT_USER": "Select user",
@@ -209,5 +209,16 @@
     "HUMAN": "Human",
     "AI": "AI",
     "ANDROID": "Android",
-    "NO_RECORDS": "No records"
+    "NO_RECORDS": "No records",
+    "NEW_MESSAGES_ABBREVIATION": "new msg",
+    "ENTERTAINMENT": "Entertainment",
+    "TOTAL_DESC": "Payout and GIG3R commission (20%):",
+    "FIXER": "Fixer",
+    "KILLER": "Killer",
+    "HACKER": "Hacker",
+    "HACKING": "Hacking",
+    "WELLBEING": "Wellbeing",
+    "INSUFFICIENT_REPUTATION": "Reputation too low",
+    "FAILED_TO_FETCH_MESSAGES": "Failed to fetch messages. Try again or contact support.",
+    "PRIVATE_DESC": "Detailed description shown upon accepting"
 }

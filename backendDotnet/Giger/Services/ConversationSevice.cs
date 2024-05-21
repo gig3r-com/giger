@@ -22,7 +22,10 @@ namespace Giger.Services
             await _conversationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
-            await _conversationsCollection.Find(x => x.Participants.Contains(participant)).ToListAsync();
+            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && !x.GigConversation).ToListAsync();
+
+        public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
+            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && x.GigConversation).ToListAsync();
 
         public async Task CreateAsync(Conversation newConversation) =>
             await _conversationsCollection.InsertOneAsync(newConversation);

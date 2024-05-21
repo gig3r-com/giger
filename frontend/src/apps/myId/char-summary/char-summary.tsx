@@ -188,6 +188,7 @@ export const CharSummary: FC<{
                     <AdminEditableField
                         type={FieldTypes.SELECT}
                         className="char-summary__entry"
+                        skipTranslation={true}
                         options={Object.values(Factions) as Factions[]}
                         value={user!.factionRankPublic}
                         onChange={async (val) =>
@@ -215,29 +216,33 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    <span className="char-summary__label">
-                        <MemoizedFormattedMessage id="WEALTH" />:
-                    </span>
-                    <AdminEditableField
-                        type={FieldTypes.SELECT}
-                        className="char-summary__entry"
-                        value={user!.wealthLevel}
-                        options={[
-                            WealthLevels.BROKE,
-                            WealthLevels.IMPOVERISHED,
-                            WealthLevels.STRUGGLING,
-                            WealthLevels.MODEST,
-                            WealthLevels.STABLE,
-                            WealthLevels.COMFORTABLE,
-                            WealthLevels.AFFLUENT,
-                            WealthLevels.ELITE
-                        ]}
-                        onChange={async (val) =>
-                            await updateUserData(user!.id, {
-                                wealthLevel: val as WealthLevels
-                            })
-                        }
-                    />
+                    {isPrivate && (
+                        <>
+                            <span className="char-summary__label">
+                                <MemoizedFormattedMessage id="WEALTH" />:
+                            </span>
+                            <AdminEditableField
+                                type={FieldTypes.SELECT}
+                                className="char-summary__entry"
+                                value={user!.wealthLevel}
+                                options={[
+                                    WealthLevels.BROKE,
+                                    WealthLevels.IMPOVERISHED,
+                                    WealthLevels.STRUGGLING,
+                                    WealthLevels.MODEST,
+                                    WealthLevels.STABLE,
+                                    WealthLevels.COMFORTABLE,
+                                    WealthLevels.AFFLUENT,
+                                    WealthLevels.ELITE
+                                ]}
+                                onChange={async (val) =>
+                                    await updateUserData(user!.id, {
+                                        wealthLevel: val as WealthLevels
+                                    })
+                                }
+                            />
+                        </>
+                    )}
 
                     {isPrivate && isGod && (
                         <>
@@ -365,7 +370,7 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    {isPrivate && <ReputationSummary />}
+                    {user && <ReputationSummary reputation={user?.gigReputation} />}
 
                     {isPrivate && (
                         <AdminEditableField

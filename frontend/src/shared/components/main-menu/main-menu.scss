@@ -85,4 +85,17 @@
         align-items: center;
         justify-content: center;
     }
+
+    &__new-indicator {
+        position: absolute;
+        height: 12px;
+        width: 12px;
+        background-color: $accent-color;
+        border-radius: 50%;
+        top: 10px;
+        right: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

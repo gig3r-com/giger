@@ -20,6 +20,7 @@ export interface IUserPublic extends IUserBase {
     hasPlatinumPass: boolean;
     factionRankPublic: Factions;
     highSecurity: boolean;
+    gigReputation: IReputationLevels;
 }
 
 export interface IUserPrivate extends IUserPublic {
@@ -41,10 +42,13 @@ export interface IUserPrivate extends IUserPublic {
     networkName: string;
     subnetworkId: string;
     subnetworkName: string;
-    gigReputation: IReputationLevels;
     insuredAmount: number;
     factionRankActual: string;
     networkAdminName: string;
+    /**
+     * to be removed.
+     */
+    reputationDescription: string;
 }
 
 /**

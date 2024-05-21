@@ -26,11 +26,15 @@ namespace Giger.Services
             await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
                     g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
 
-        public async Task<List<Gig>> GetAllOwnAsync(string takenBy) =>
-            await _gigsCollection.Find(g => g.TakenById == takenBy).ToListAsync();
+        public async Task<List<Gig>> GetAllOwnAsync(string userId) =>
+            await _gigsCollection.Find(g => g.TakenById == userId || g.AuthorId == userId).ToListAsync();
 
         public async Task<Gig?> GetAsync(string id) =>
             await _gigsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+        public async Task<long> GetLimitedUserGigsCountAsync(string takenBy) =>
+            await _gigsCollection.Find(x => x.TakenById == takenBy && x.Mode == GigModes.CLIENT &&
+                (x.Status == GigStatus.IN_PROGRESS || x.Status == GigStatus.DISPUTE)).CountDocumentsAsync();
 
         public async Task<Gig?> GetByFirstNameAsync(string title) =>
             await _gigsCollection.Find(x => x.Title == title).FirstOrDefaultAsync();

@@ -1,5 +1,6 @@
 ﻿using Giger.Models.Obscured;
 using Giger.Models.User;
+using Microsoft.Extensions.Primitives;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -11,7 +12,7 @@ namespace Giger.Models.GigModels
 
         public required string Title { get; set; }
 
-        public required string Description { get; set; }
+        public string? Description { get; set; }
 
         public string? ConversationId { get; set; }
 
@@ -50,18 +51,21 @@ namespace Giger.Models.GigModels
 
         public bool IsRevealedByClient { get; set; } = true;
 
+        public string? DescriptionDetailed { get; set; }
+
         public override void Obscure()
         {
             Payout = -1;
             Title = REDACTED;
             Description = REDACTED;
+            DescriptionDetailed = REDACTED;
             ConversationId = null;
             Category = GigCategoryNames.REDACTED;
             Subcategory = GigSubcategoryNames.REDACTED;
-            Status = GigStatus.COMPLETED;
-            AuthorId = REDACTED;
             AuthorName = REDACTED;
             ComplaintReason = ComplaintReason == null ? null : REDACTED;
         }
+
+        public const string ANONIMIZED = "AnoNyMUS";
     }
 }

@@ -16,10 +16,10 @@ namespace Giger.Services
         }
 
         public async Task<Auth?> GetByUserNameAsync(string userName) =>
-            await _authsCollection.Find(x => x.Username == userName).FirstOrDefaultAsync();
+            await _authsCollection.Find(x => x.Username.Equals(userName, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
         public async Task<Auth?> GetByHackerNameAsync(string hackerName) =>
-            await _authsCollection.Find(x => x.HackerName == hackerName).FirstOrDefaultAsync();
+            await _authsCollection.Find(x => x.HackerName.Equals(hackerName, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
 
         public async Task<Auth?> GetByAuthTokenAsync(string authToken) =>
             await _authsCollection.Find(x => x.AuthToken == authToken).FirstOrDefaultAsync();

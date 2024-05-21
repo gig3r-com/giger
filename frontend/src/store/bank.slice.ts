@@ -1,6 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
-    AccountType,
     IBusinessAccount,
     IPrivateAccount,
     ITransaction
@@ -32,17 +31,18 @@ export const bankSlice = createSlice({
         addTransaction: (
             state,
             action: PayloadAction<{
-                accountType: AccountType;
                 transaction: ITransaction;
             }>
         ) => {
-            if (action.payload.accountType === AccountType.BUSINESS) {
-                state.businessAccount!.transactions.push(
-                    action.payload.transaction
-                );
-            } else {
-                state.account!.transactions.push(action.payload.transaction);
-            }
+            if (!state.account || !state.businessAccount) return;
+            const account = [state.account, state.businessAccount].find(
+                (acc) =>
+                    acc.owner === action.payload.transaction.to ||
+                    acc.id === action.payload.transaction.from
+            );
+
+            if (!account) return;
+            account.transactions.push(action.payload.transaction);
         }
     }
 });
@@ -55,7 +55,7 @@ export const selectAccounts = createSelector(
     (bank) => {
         return {
             private: bank.account,
-            business: bank.businessAccount
+            ...(bank.businessAccount ? { business: bank.businessAccount } : {})
         };
     }
 );

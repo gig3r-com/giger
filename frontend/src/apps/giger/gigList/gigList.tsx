@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
+import dayjs from 'dayjs';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -45,7 +46,11 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
                 const aScore = aPriority ? -1 : statusesRank[a.status];
                 const bScore = bIsOwn ? -1 : statusesRank[b.status];
 
-                return aScore - bScore;
+                if (aScore !== bScore) {
+                    return aScore - bScore;
+                } else {
+                    return dayjs(b.createdAt).diff(a.createdAt);
+                }
             }),
         [filteredGigs, currentUser]
     );

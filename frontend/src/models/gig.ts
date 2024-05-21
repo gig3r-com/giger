@@ -1,4 +1,4 @@
-import { IObscurableInfo } from './general';
+import { AccountType } from "./banking";
 
 export interface IGigBase {
     createdAt: string; //ISO date string
@@ -6,14 +6,15 @@ export interface IGigBase {
     payout: number;
     title: string;
     description: string;
+    descriptionDetailed: string;
     category: GigCategoryNames;
     subcategory: GigSubcategoryNames;
-    reputationRequired?: {
+    reputationRequired: {
         level: GigRepuationLevels;
     };
     id: string;
-    providerAccountNumber: string | null; // account id
-    clientAccountNumber: string | null; // account id
+    providerAccountNumber?: string | null; // account id
+    clientAccountNumber?: string | null; // account id
     anonymizedAuthor?: boolean;
     mode: GigModes;
     authorName: string;
@@ -21,15 +22,18 @@ export interface IGigBase {
 
 export interface IDraftGig extends IGigBase {
     message: string;
+    fromAccount: AccountType;
 }
 
-export interface IGig extends IGigBase, IObscurableInfo {
+export interface IGig extends IGigBase {
     status: GigStatus;
     authorId: string;
     takenById?: string;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;
     conversationId: string;
+    isRevealed: boolean;
+    isRevealedByClient: boolean;
 }
 
 export type GigRepuationLevels = 0 | 1 | 2 | 3 | 4 | 5;
@@ -107,10 +111,10 @@ export const reputationLabels = new Map<GigRepuationLevels, string>([
 
 export const reputationBrackets = new Map<GigRepuationLevels, number>([
     [0, 0],
-    [1, 10000],
-    [2, 20000],
-    [3, 30000],
-    [4, 40000],
+    [1, 2000],
+    [2, 5000],
+    [3, 10000],
+    [4, 20000],
     [5, Infinity]
 ]);
 

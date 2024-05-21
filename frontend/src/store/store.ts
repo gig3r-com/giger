@@ -4,6 +4,7 @@ import conversationsReducer from './messages.slice';
 import usersReducer from './users.slice';
 import bankSlice from './bank.slice';
 import eventsSlice from './events.slice';
+import authSlice from './auth.slice';
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
         conversations: conversationsReducer,
         users: usersReducer,
         bank: bankSlice,
-        events: eventsSlice
+        events: eventsSlice,
+        auth: authSlice
     }
 });
 

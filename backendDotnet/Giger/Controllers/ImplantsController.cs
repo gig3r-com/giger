@@ -45,7 +45,7 @@ namespace Giger.Controllers
             targetUser.MedicalEvents = [.. targetUser.MedicalEvents, implantData];
             await _userService.UpdateAsync(targetUser);
 
-            return Ok($"An {implantData.Name} implant has been succesfully activated.");
+            return Ok(implantData.GetType().Name);
         }
 
         [HttpPost]

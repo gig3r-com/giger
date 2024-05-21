@@ -22,11 +22,10 @@ namespace Giger.Services
             await _usersCollection.Find(x => x.Id == userId).FirstOrDefaultAsync();
 
         public async Task<UserPrivate?> GetByUserNameAsync(string userHandle) =>
-            await _usersCollection.Find(x => x.Handle == userHandle).FirstOrDefaultAsync();
-
-        public async Task<UserPrivate?> GetByFirstNameAsync(string firstName, string surname) =>
-            await _usersCollection.Find(x => x.Name.Equals(firstName, StringComparison.OrdinalIgnoreCase)
-                  && x.Surname.Equals(surname, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+            await _usersCollection.Find(x => x.Handle.Equals(userHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+        
+        public async Task<List<UserPrivate>> GetAllFactionUser(Factions faction) =>
+            await _usersCollection.Find(x => x.Faction == faction).ToListAsync();
 
         public async Task CreateAsync(UserPrivate newUser) =>
             await _usersCollection.InsertOneAsync(newUser);

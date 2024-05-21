@@ -67,7 +67,7 @@ namespace Giger.Controllers
                 }
                 obscuredData.IsUsed = true;
                 await _obscuredDataService.UpdateAsync(obscuredData);
-                return Ok();
+                return Ok(matchingObscurableData.GetType().Name);
             }
             return NotFound("Wrong code");
         }

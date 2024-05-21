@@ -51,7 +51,7 @@ namespace Giger.Controllers
             }
 
             var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && user.Roles.Contains(Models.User.UserRoles.ADMIN))
+            if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
             {
                 if (userLoginData.AuthToken != null)
                 {
@@ -116,8 +116,12 @@ namespace Giger.Controllers
                 return "User not found.";
             }
 
-            userLoginData.AuthToken = null;
-            await _loginService.UpdateAsync(userLoginData);
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user != null && !user.Roles.Contains(Models.User.UserRoles.GOD))
+            {
+                userLoginData.AuthToken = null;
+                await _loginService.UpdateAsync(userLoginData);
+            }
             Response.StatusCode = StatusCodes.Status200OK;
             return "Logged out.";
         }

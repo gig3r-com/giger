@@ -13,20 +13,12 @@ namespace Giger.Controllers
         [HttpGet("get/all")]
         public async Task<ActionResult<List<HackConfig>>> GetAll()
         {
-            if (!IsGodUser())
-            {
-                return Unauthorized();
-            }
             return await _hackConfigService.GetAll();
         }
 
         [HttpGet("get/{id}")]
         public async Task<ActionResult<HackConfig>> GetByCode(string id)
         {
-            if (!IsGodUser())
-            {
-                return Unauthorized();
-            }
             return await _hackConfigService.GetById(id);
         }
 

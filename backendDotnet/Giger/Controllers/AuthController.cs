@@ -58,7 +58,11 @@ namespace Giger.Controllers
 
             if (senderUser != null)
             {
-                if (owner == senderUser.Id || owner == senderUser.Handle || owner == senderUser.HackerName)
+                if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
+                    owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (owner == senderUser.Faction.ToString())
                     return true;
 
                 if (senderUser.Roles.Contains(UserRoles.GOD))

@@ -39,7 +39,8 @@ namespace Giger.Models.User
         DISINTERESTED,
         DOUBTING,
         INTERESTED,
-        FANATIC
+        FANATIC,
+        NO_VIBE
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<WealthLevels>))]

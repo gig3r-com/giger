@@ -31,7 +31,9 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         useBankingService();
     const { currentUser } = useUserService();
     const { addNewGig, gigerCommission } = useGigsService();
-    const [fromAccount, setFromAccount] = useState<AccountType | ''>('');
+    const [fromAccount, setFromAccount] = useState<AccountType>(
+        AccountType.PRIVATE
+    );
     const [gigName, setGigName] = useState<string>('');
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
     const [publicDescription, setPublicDescription] = useState<string>('');
@@ -100,8 +102,18 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         return categoryData?.subcategories ?? [];
     }, [selectedCategory]);
 
+    const step = useMemo(() => {
+        return Math.pow(
+            10,
+            Math.floor(
+                Math.log(subcategoryData?.minPayout ?? 100) / Math.log(10)
+            )
+        );
+    }, [subcategoryData]);
+
     const gigReady = useMemo(() => {
-        return gigName !== '' &&
+        return (
+            gigName !== '' &&
             anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&
@@ -110,9 +122,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             selectedRepuation !== -1 &&
             selectedCategory !== '' &&
             selectedSubcategory !== '' &&
-            hasCompanyAccount
-            ? fromAccount !== ''
-            : true && mode !== '';
+            mode !== ''
+        );
     }, [
         gigName,
         anonymize,
@@ -122,8 +133,6 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         selectedRepuation,
         selectedCategory,
         selectedSubcategory,
-        hasCompanyAccount,
-        fromAccount,
         mode
     ]);
 
@@ -132,16 +141,18 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             ? ({
                   title: gigName!,
                   description: publicDescription!,
-                  message: privateMessage,
+                  descriptionDetailed: privateMessage,
                   payout: payout!,
                   anonymizedAuthor: anonymize === 'YES',
                   ...(hasCompanyAccount && {
                       fromAccount: fromAccount as AccountType
                   }),
-                  reputationRequired: {level: selectedRepuation as GigRepuationLevels},
+                  reputationRequired: {
+                      level: selectedRepuation as GigRepuationLevels
+                  },
                   subcategory: selectedSubcategory! as GigSubcategoryNames,
                   mode: mode as GigModes,
-                  authorName: anonymize ? 'Anonymous' : currentUser?.handle,
+                  authorName: currentUser?.handle,
                   category: selectedCategory! as GigCategoryNames,
                   id: uuidv4()
               } as IDraftGig)
@@ -223,24 +234,26 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     </option>
                 </select>
 
-                <select
-                    className="new-gig__input"
-                    value={fromAccount}
-                    onChange={(event) => {
-                        setFromAccount(event.target.value as AccountType);
-                        checkBalance();
-                    }}
-                >
-                    <option value={''} disabled hidden>
-                        <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
-                    </option>
-                    <option value={AccountType.PRIVATE}>
-                        <MemoizedFormattedMessage id="PRIVATE" />
-                    </option>
-                    <option value={AccountType.BUSINESS}>
-                        <MemoizedFormattedMessage id="BUSINESS" />
-                    </option>
-                </select>
+                {hasCompanyAccount && (
+                    <select
+                        className="new-gig__input"
+                        value={fromAccount}
+                        onChange={(event) => {
+                            setFromAccount(event.target.value as AccountType);
+                            checkBalance();
+                        }}
+                    >
+                        <option value={''} disabled hidden>
+                            <MemoizedFormattedMessage id="SELECT_ACCOUNT" />
+                        </option>
+                        <option value={AccountType.PRIVATE}>
+                            <MemoizedFormattedMessage id="PRIVATE" />
+                        </option>
+                        <option value={AccountType.BUSINESS}>
+                            <MemoizedFormattedMessage id="BUSINESS" />
+                        </option>
+                    </select>
+                )}
 
                 <select
                     className="new-gig__input"
@@ -314,7 +327,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
 
                 <textarea
                     className="new-gig__input"
-                    placeholder="Private message to the contractor"
+                    placeholder={intl.formatMessage({ id: 'PRIVATE_DESC' })}
                     value={privateMessage}
                     rows={3}
                     onChange={(event) => setPrivateMessage(event.target.value)}
@@ -325,13 +338,22 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     max={subcategoryData?.maxPayout ?? 50000}
                     value={payout}
                     className="new-gig__slider"
-                    step={100}
+                    step={step}
                     showValue={true}
                     showMax={true}
                     showMin={true}
                     label={intl.formatMessage({ id: 'PAYOUT' })}
                     onChange={(value) => onPayoutChange(value)}
                 />
+
+                <span className="new-gig__total">
+                    <span className="new-gig__total-desc">
+                        {intl.formatMessage({ id: 'TOTAL_DESC' })}
+                    </span>
+                    <span className="new-gig__total-value">
+                        {payout + payout * gigerCommission}{' '}
+                    </span>
+                </span>
 
                 {notEnoughMoneyWarning && (
                     <p className="new-gig__warning">

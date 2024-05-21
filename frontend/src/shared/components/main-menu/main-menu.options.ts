@@ -1,11 +1,18 @@
+export enum MainMenuNames {
+    GIGS = 'gigs',
+    BANK = 'bank',
+    CHAT = 'chat',
+    MY_ID = 'my.id'
+}
+
 export interface IMainMenuOption {
-    name: string;
+    name: MainMenuNames;
     link: string;
 }
 
 export const mainMenuOptions: IMainMenuOption[] = [
-    {name: 'gigs', link: '/giger'},
-    {name: 'bank', link: '/bank'},
-    {name: 'chat', link: '/chat'},
-    {name: 'my.id', link: '/myid'},
-]
+    { name: MainMenuNames.GIGS, link: '/giger' },
+    { name: MainMenuNames.BANK, link: '/bank' },
+    { name: MainMenuNames.CHAT, link: '/chat' },
+    { name: MainMenuNames.MY_ID, link: '/myid' }
+];

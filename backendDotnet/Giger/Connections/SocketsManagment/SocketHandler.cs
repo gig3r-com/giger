@@ -9,13 +9,18 @@ namespace Giger.Connections.SocketsManagment
 
         public SocketHandler(ConnectionsManager connections)
         {
-            Connections = connections;
+            Connections ??= connections;
         }
 
-        public virtual async Task OnConnected(WebSocket socket)
+        public virtual async Task OnConnected(WebSocket socket, HttpContext context)
         {
-            var socketID = Guid.NewGuid().ToString();
-            await Task.Run(() => { Connections.AddSocket(socketID, socket); });
+            context.Request.Query.TryGetValue("AuthToken", out var token);
+            if (string.IsNullOrEmpty(token))
+            {
+                await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "No token", CancellationToken.None);
+                return;
+            }
+            await Task.Run(() => { Connections.AddSocket(socket, token); });
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
@@ -33,11 +38,22 @@ namespace Giger.Connections.SocketsManagment
             await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public async Task SendMessageAsync(string socketId, string message)
+        public async Task SendMessageAsync(string username, string message)
         {
-            var socket = Connections.GetSocketById(socketId);
+            var socket = Connections.GetSocketByUser(username);
             if (socket != null)
                 await SendMessageAsync(socket, message);
+        }
+
+        public async Task SendMessageToParticipantsAsync(string message, IEnumerable<string> participants)
+        {
+            foreach (var socket in Connections.GetParticipants(participants))
+            {
+                if (socket.State == WebSocketState.Open)
+                {
+                    await SendMessageAsync(socket, message);
+                }
+            }
         }
 
         public async Task SendMessageToAllAsync(string message)
@@ -45,7 +61,9 @@ namespace Giger.Connections.SocketsManagment
             foreach (var pair in Connections.GetAllConnections())
             {
                 if (pair.Value.State == WebSocketState.Open)
+                {
                     await SendMessageAsync(pair.Value, message);
+                }
             }
         }
 

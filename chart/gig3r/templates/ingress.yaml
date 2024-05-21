@@ -13,6 +13,9 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
   name: gig3r-ingress
 spec:
   ingressClassName: nginx
@@ -21,6 +24,16 @@ spec:
     http:
       paths:
       - path: /((?:api|swagger)/.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "gig3r.backend.app" . }}
+            port:
+              number: 8080
+  - host: {{ include "gig3r.host" . }}
+    http:
+      paths:
+      - path: /((?:ws2137|ws1337).*)
         pathType: ImplementationSpecific
         backend:
           service:

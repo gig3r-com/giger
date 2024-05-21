@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { Renderable, Toast, ToastBar } from 'react-hot-toast';
+import { Renderable, Toast, ToastBar, toast as t } from 'react-hot-toast';
 
 import './toast.scss';
 
 export const ToastItem: FC<{ toast: Toast }> = ({ toast }) => {
     const toastElement = ( icon: Renderable, message: Renderable) => {
         return (
-            <div className='toast'>
+            <div className='toast' onClick={() => t.dismiss(toast.id)}>
                 {icon}
                 {message}
                 <div className='toast__corner toast__corner--top-left' />

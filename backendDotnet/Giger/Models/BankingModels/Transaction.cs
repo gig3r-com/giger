@@ -9,17 +9,23 @@ namespace Giger.Models.BankingModels
         [BsonElement("_id")]
         public required string Id { get; set; }
         
-        public required string From { get; set; }
+        public string? From { get; set; } // AccountNumber
 
-        public required string To { get; set; }
+        public string? FromUser { get; set; } // Handle / Anonymized
 
-        public required string Title { get; set; }
+        public string? To { get; set; } // AccountNumber
+
+        public string? ToUser { get; set; } // Handle / Anonymized
+
+        public string Title { get; set; }
 
         [BsonIgnore]
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
-        public required DateTime Date { get; set; }
+        public required DateTime Timestamp { get; set; }
+
+        public string? OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
 
         public Transaction() { }
 
@@ -31,7 +37,19 @@ namespace Giger.Models.BankingModels
             To = to;
             Title = title;
             Amount = amount;
-            Date = GigerDateTime.Now;
+            Timestamp = GigerDateTime.Now;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash *= 11 * Id.GetHashCode();
+            hash *= 13 * From.GetHashCode();
+            hash *= 17 * To.GetHashCode();
+            hash *= 19 * Title.GetHashCode();
+            hash *= 23 * Amount.GetHashCode();
+            hash *= 27 * Timestamp.GetHashCode();
+            return hash;
         }
     }
 }

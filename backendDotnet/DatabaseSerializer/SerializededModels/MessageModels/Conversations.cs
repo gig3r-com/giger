@@ -20,7 +20,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now,
                             Sender = "jsilver",
                             Text = "Hello, I am interested in your services.",
-                            Status = MessageStatus.SENT
                         },
                         new()
                         {
@@ -28,7 +27,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "Hello? Anyone here?",
-                            Status = MessageStatus.SENT
                         },
                         new()
                         {
@@ -36,7 +34,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(6),
                             Sender = "jsilver",
                             Text = "Hellooooooo?!",
-                            Status = MessageStatus.SENT
                         }
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -52,7 +49,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now,
                             Sender = "jsilver",
                             Text = "I will get you everything on Takayama corporation",
-                            Status = MessageStatus.READ
                         },
                         new()
                         {
@@ -60,7 +56,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "ACCEPTED",
-                            Status = MessageStatus.SENT
                         },
                         new()
                         {
@@ -68,7 +63,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "I will get back to you in a few hours",
-                            Status = MessageStatus.SENT
                         },
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -84,7 +78,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now,
                             Sender = "jsilver",
                             Text = "I will get you everything on Takayama corporation",
-                            Status = MessageStatus.READ
                         },
                         new()
                         {
@@ -92,7 +85,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "ACCEPTED",
-                            Status = MessageStatus.SENT
                         },
                         new()
                         {
@@ -100,7 +92,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "I will get back to you in a few hours",
-                            Status = MessageStatus.SENT
                         },
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -116,7 +107,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now,
                             Sender = "triddle",
                             Text = "Please get me all you can on Takayama corporation",
-                            Status = MessageStatus.READ
                         },
                         new()
                         {
@@ -124,7 +114,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "ACCEPTED",
-                            Status = MessageStatus.SENT
                         },
                         new()
                         {
@@ -132,7 +121,6 @@ namespace Giger.SerializededModels.MessageModels
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
                             Text = "I will get back to you in a few hours",
-                            Status = MessageStatus.SENT
                         },
                     ],
                     Participants = ["jsilver", "triddle"],

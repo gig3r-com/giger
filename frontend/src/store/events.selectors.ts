@@ -25,3 +25,23 @@ export const selectRelations = createSelector(
     (state: { events: IEventsState }) => state.events,
     (events) => events.relations
 );
+export const selectGoalsHash = createSelector(
+    (state: { events: IEventsState }) => state.events,
+    (events) => events.hashes.goalsHash
+);
+export const selectRelationsHash = createSelector(
+    (state: { events: IEventsState }) => state.events,
+    (events) => events.hashes.relationsHash
+);
+export const selectPrivateRecordsHash = createSelector(
+    (state: { events: IEventsState }) => state.events,
+    (events) => events.hashes.privateRecordsHash
+);
+export const selectMedicalEventsHash = createSelector(
+    (state: { events: IEventsState }) => state.events,
+    (events) => events.hashes.medicalEventsHash
+);
+export const selectCriminalEventsHash = createSelector(
+    (state: { events: IEventsState }) => state.events,
+    (events) => events.hashes.criminalEventsHash
+);

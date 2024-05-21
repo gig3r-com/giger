@@ -16,19 +16,20 @@ export const StartNewConvo: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const [anonymize, setAnonymize] = useState<'YES' | 'NO' | ''>('');
+    const { currentUser } = useUserService();
     const { createConvo } = useMessagesService();
     const { canAnonymizeChatHandle } = useUserService();
     const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
 
     const onConvoCreation = () => {
-        const id = createConvo(
-            selectedUsers.map((user) => user.id),
-            undefined,
-            undefined,
-            anonymize === 'YES'
-        );
-        setSelectedUsers([]);
-        navigate(`/chat/${id}`);
+        createConvo(
+            [...selectedUsers.map((user) => user.handle), currentUser!.handle],
+            undefined
+            //anonymize === 'YES'
+        ).then((id) => {
+            setSelectedUsers([]);
+            navigate(`/chat/${id}`);
+        });
     };
 
     return (
