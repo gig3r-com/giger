@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class GigerConfigController(UserService userService, LoginService loginService, GigerConfigService gigerConfigService) : AuthController(userService, loginService)
     {
         private readonly GigerConfigService _gigerConfigService = gigerConfigService;
