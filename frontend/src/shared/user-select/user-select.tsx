@@ -4,21 +4,22 @@ import { useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { IUserBase } from '../../models/user';
 import { useUserService } from '../services/user.service';
 
 import './user-select.scss';
+import { Factions } from '../../models/companies';
 
 export const UserSelect: FC<IUserSelectProps> = ({
     onSelection,
-    mode = 'single'
+    mode = 'single',
+    includeFactions
 }) => {
     const intl = useIntl();
     const users = useSelector((state: RootState) => state.users.users);
     const { currentUser } = useUserService();
     const usersWrapper = useRef<HTMLDivElement>(null);
     const [inputSelected, setInputSelected] = useState(false);
-    const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
+    const [selectedHandles, setSelectedHandles] = useState<string[]>([]);
     const [searchString, setSearchString] = useState('');
     const userSelectClasses = classNames({
         'user-select': true,
@@ -36,19 +37,25 @@ export const UserSelect: FC<IUserSelectProps> = ({
             .filter((user) => user.id !== currentUser?.id)
             .filter((user) =>
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
-            );
+            ).map(user => user.handle);
     }, [users, searchString]);
 
-    const handleSelection = (user: IUserBase) => {
+    const allHandles = useMemo(() => {
+        return [...filteredUsers, ...Object.values(Factions)];
+    }, [filteredUsers])
+
+    const handleSelection = (handle: string) => {
         if (mode === 'single') {
-            setSelectedUsers(selectedUsers.includes(user) ? [] : [user]);
+            setSelectedHandles(
+                selectedHandles.includes(handle) ? [] : [handle]
+            );
             return;
         }
 
-        if (selectedUsers.includes(user)) {
-            setSelectedUsers(selectedUsers.filter((u) => u !== user));
+        if (selectedHandles.includes(handle)) {
+            setSelectedHandles(selectedHandles.filter((u) => u !== handle));
         } else {
-            setSelectedUsers([...selectedUsers, user]);
+            setSelectedHandles([...selectedHandles, handle]);
         }
         adjustContainerSize();
     };
@@ -70,17 +77,17 @@ export const UserSelect: FC<IUserSelectProps> = ({
 
     useEffect(
         function emitSelectionChange() {
-            onSelection(selectedUsers);
+            onSelection(selectedHandles);
         },
-        [selectedUsers]
+        [selectedHandles]
     );
 
     return (
         <>
             <div className={userSelectClasses}>
-                {selectedUsers.map((user) => (
-                    <span key={user.id} className="user-select__user">
-                        {user.handle}
+                {selectedHandles.map((handle) => (
+                    <span key={handle} className="user-select__user">
+                        {handle}
                     </span>
                 ))}
                 <input
@@ -95,16 +102,16 @@ export const UserSelect: FC<IUserSelectProps> = ({
                 />
             </div>
             <div className="start-new-convo__users" ref={usersWrapper}>
-                {filteredUsers.map((user) => (
-                    <div key={user.id} className="start-new-convo__user">
-                        {user.handle}
+                {(includeFactions ? allHandles : filteredUsers).map((handle) => (
+                    <div key={handle} className="start-new-convo__user">
+                        {handle}
                         <input
-                            id={user.id + 'checkbox'}
+                            id={handle + 'checkbox'}
                             type="checkbox"
-                            onChange={() => handleSelection(user)}
-                            checked={selectedUsers.includes(user)}
+                            onChange={() => handleSelection(handle)}
+                            checked={selectedHandles.includes(handle)}
                         />
-                        <label htmlFor={user.id + 'checkbox'}></label>
+                        <label htmlFor={handle + 'checkbox'}></label>
                     </div>
                 ))}
             </div>

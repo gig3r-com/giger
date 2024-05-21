@@ -1,6 +1,5 @@
-import { IUserBase } from "../../models/user";
-
 export interface IUserSelectProps {
-    onSelection: (users: IUserBase[]) => void;
+    onSelection: (handles: string[]) => void;
     mode?: 'single' | 'multi';
+    includeFactions?: boolean;
 }

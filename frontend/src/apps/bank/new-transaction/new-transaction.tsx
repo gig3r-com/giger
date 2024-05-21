@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useIntl } from 'react-intl';
 import { UserSelect } from '../../../shared/user-select/user-select';
-import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useBankingService } from '../../../shared/services/banking.service';
 import { Controls } from '../../../shared/components/controls/controls';
@@ -15,15 +14,17 @@ export const NewTransaction: FC = () => {
     const navigate = useNavigate();
     const [amount, setAmount] = useState<number>(0);
     const [transferTitle, setTransferTitle] = useState<string>('');
-    const [selectedUser, setSelectedUser] = useState<IUserBase[] | null>(null);
+    const [selectedHandle, setSelectedHandle] = useState<string[] | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
         AccountType.PRIVATE
     );
     const { accounts, sendTransfer } = useBankingService();
 
     const onTransfer = async () => {
+        if (!selectedHandle || !selectedHandle.length) return;
+
         await sendTransfer(
-            selectedUser![0].handle,
+            selectedHandle[0],
             amount,
             transferTitle,
             selectedAccount
@@ -69,11 +70,12 @@ export const NewTransaction: FC = () => {
             )}
             <UserSelect
                 mode="single"
-                onSelection={(val) => setSelectedUser(val)}
+                onSelection={setSelectedHandle}
+                includeFactions={true}
             />
             <BigButton
                 onClick={() => onTransfer()}
-                disabled={!amount || !selectedUser}
+                disabled={!amount || !selectedHandle}
                 text={intl.formatMessage({ id: 'TRANSFER' })}
             />
         </div>

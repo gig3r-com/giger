@@ -27,13 +27,12 @@ import './gig.scss';
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
     const navigate = useNavigate();
     const intl = useIntl();
-    const { currentUser, getHandleForConvo, isModerator, isGod } =
-        useUserService();
+    const { currentUser, isModerator, isGod } = useUserService();
     const { handleButtonAction, canAcceptGig, isLocked } = useGigsService();
     const { buttonColor, gigClassname, gigSummaryClassName } = useGigHelpers();
     const { fetchConvo, fetchingConvo } = useMessagesService();
     const { generateAnimation } = useStandardizedAnimation();
-    const { hasCompanyAccount } = useBankingService();
+    const { hasCompanyAccount, accounts } = useBankingService();
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
@@ -112,8 +111,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     gig.id === selectedId ? 'gig__from--shown' : ''
                 }`}
             >
-                <FormattedMessage id={'FROM'} />:{' '}
-                {getHandleForConvo(gig.id, gig.authorId)}
+                <FormattedMessage id={'FROM'} />: {gig.authorName}
             </span>
             <div className={gigClassname(gig)}>
                 <AnimatePresence>
@@ -164,7 +162,9 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 isModerator,
                                 gig.mode,
                                 hasCompanyAccount,
-                                canAcceptGig(gig)
+                                canAcceptGig(gig),
+                                (accounts.private?.balance ?? 0) >= gig.payout,
+                                (accounts.business?.balance ?? 0) >= gig.payout
                             ).map((button) => (
                                 <BigButton
                                     key={button.label}

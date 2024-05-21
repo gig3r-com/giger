@@ -32,6 +32,8 @@ const buttonDefinitions: {
     moderation?: boolean;
     reputationMatches?: boolean;
     hasCompanyAccount?: boolean;
+    fundsMatch?: boolean;
+    companyFundsMatch?: boolean;
     buttons: IButtonDefinition[];
 }[] = [
     {
@@ -42,7 +44,33 @@ const buttonDefinitions: {
             {
                 label: 'INSUFFICIENT_REPUTATION',
                 color: 'primary',
-                disabled: true,
+                disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+
+        reputationMatches: false,
+        buttons: [
+            {
+                label: 'INSUFFICIENT_REPUTATION',
+                color: 'primary',
+                disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        hasCompanyAccount: false,
+        fundsMatch: true,
+        buttons: [
+            {
+                label: 'ACCEPT_GIG',
+                color: 'primary',
+                disabled: false,
                 actionId: ActionId.ACCEPT
             }
         ]
@@ -51,12 +79,13 @@ const buttonDefinitions: {
         status: GigStatus.AVAILABLE,
         isMine: false,
         hasCompanyAccount: false,
+        fundsMatch: false,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
-                label: 'ACCEPT_GIG',
+                label: 'INSUFFICIENT_FUNDS',
                 color: 'primary',
-                disabled: false,
-                actionId: ActionId.ACCEPT
+                disabled: true
             }
         ]
     },
@@ -64,12 +93,73 @@ const buttonDefinitions: {
         status: GigStatus.AVAILABLE,
         isMine: false,
         hasCompanyAccount: true,
+        fundsMatch: true,
+        companyFundsMatch: true,
         buttons: [
             {
                 label: 'ACCEPT_GIG',
                 color: 'primary',
                 disabled: false,
                 actionId: ActionId.ACCEPT
+            },
+            {
+                label: 'ACCEPT_AS_COMPANY',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT_AS_COMPANY
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        hasCompanyAccount: true,
+        fundsMatch: false,
+        companyFundsMatch: false,
+        buttons: [
+            {
+                label: 'INSUFFICIENT_FUNDS',
+                color: 'primary',
+                disabled: true
+            },
+            {
+                label: 'INSUFFICIENT_COMPANY_FUNDS',
+                color: 'primary',
+                disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        hasCompanyAccount: true,
+        fundsMatch: true,
+        companyFundsMatch: false,
+        buttons: [
+            {
+                label: 'ACCEPT_GIG',
+                color: 'primary',
+                disabled: false,
+                actionId: ActionId.ACCEPT
+            },
+            {
+                label: 'INSUFFICIENT_COMPANY_FUNDS',
+                color: 'primary',
+                disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.AVAILABLE,
+        isMine: false,
+        hasCompanyAccount: true,
+        fundsMatch: false,
+        companyFundsMatch: true,
+        buttons: [
+            {
+                label: 'INSUFFICIENT_FUNDS',
+                color: 'primary',
+                disabled: true
             },
             {
                 label: 'ACCEPT_AS_COMPANY',
@@ -200,7 +290,9 @@ export const getButtons = (
     moderation: boolean,
     mode: GigModes,
     hasCompanyAccount: boolean,
-    reputationMatches: boolean
+    reputationMatches: boolean,
+    hasEnoughtFunds: boolean,
+    companyHasEnoughtFunds: boolean
 ): IButtonDefinition[] => {
     const buttonDefinition = buttonDefinitions.find((def) => {
         const statusMatching = def.status === status;
@@ -217,6 +309,14 @@ export const getButtons = (
             def.hasCompanyAccount === undefined
                 ? true
                 : def.hasCompanyAccount === hasCompanyAccount;
+        const fundsMatching =
+            def.fundsMatch === undefined
+                ? true
+                : def.fundsMatch === hasEnoughtFunds;
+        const companyFundsMatching =
+            def.companyFundsMatch === undefined
+                ? true
+                : def.companyFundsMatch === companyHasEnoughtFunds;
 
         return (
             statusMatching &&
@@ -224,7 +324,9 @@ export const getButtons = (
             mineMatching &&
             modeMatching &&
             hasCompanyAccountMatching &&
-            reputationMatching
+            reputationMatching &&
+            fundsMatching &&
+            companyFundsMatching
         );
     })!.buttons;
 

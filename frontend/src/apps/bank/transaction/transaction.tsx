@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
+import { FormattedMessage } from 'react-intl';
 import { AccountType, ITransaction } from '../../../models/banking';
 import { useUserService } from '../../../shared/services/user.service';
-import { useBankingService } from '../../../shared/services/banking.service';
 import IncomingTransfer from '../../../assets/incoming.svg?react';
 import OutgoingTransfer from '../../../assets/outgoing.svg?react';
 
@@ -13,7 +13,6 @@ export const Transaction: FC<{
     accountType: AccountType;
 }> = ({ transaction, accountType }) => {
     const { currentUser, getCurrentUserFaction } = useUserService();
-    const { getAccountHolderName } = useBankingService();
     const sign = transaction.to === currentUser?.id ? '+' : '-';
     const ownId =
         accountType === AccountType.PRIVATE
@@ -28,12 +27,16 @@ export const Transaction: FC<{
         <motion.li className="transaction">
             <span className="transaction__direction">{image}</span>
             <div className="transaction__meta">
-                <span className="transaction__other-party">
-                    {getAccountHolderName(otherParty)}
-                </span>
+                <span className="transaction__other-party">{otherParty}</span>
                 <span className="transaction__title">
                     {transaction.title ?? 'No title'}
                 </span>
+                {transaction.orderingParty && (
+                    <span className="transaction__title">
+                        <FormattedMessage id="ORDERING_PARTY" />:{' '}
+                        {transaction.orderingParty}
+                    </span>
+                )}
                 <span className="transaction__date">
                     {new Date(transaction.timestamp).toLocaleDateString()}
                 </span>
