@@ -414,7 +414,7 @@ namespace Giger.Controllers
                 return Unauthorized();
             }
 
-            if (gig.Status != GigStatus.AVAILABLE || gig.Status != GigStatus.EXPIRED)
+            if (gig.Status != GigStatus.AVAILABLE && gig.Status != GigStatus.EXPIRED)
             {
                 return BadRequest("Gig is not available for removal");
             }
