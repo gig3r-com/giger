@@ -31,7 +31,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         useState<IConversationConsumablePayload | null>(null);
     const authToken = useSelector(selectAuthToken);
     const [isConnected, setIsConnected] = useState(false);
-    const baseUrl = `wss${window.origin.substring(4, window.origin.length)}/`;
+    const baseUrl = `wss${window.origin.split('https')[1]}/`;
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
 
     const generateSocket = useCallback(
@@ -48,6 +48,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
      * this function will fetch the hashes for comparison
      */
     const getIntermediateData = () => {
+        if (!localStorage.getItem('loggedInUser')) return;
         //this is terrible, there has to be a better way but there's no time now
         const loggedInUser = JSON.parse(
             localStorage.getItem('loggedInUser') ?? ''
