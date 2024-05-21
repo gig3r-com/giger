@@ -71,6 +71,20 @@ export const Vibe: FC = () => {
                     })
                 }
             />
+
+            <span className="vibe__label">
+                <MemoizedFormattedMessage id="VIBE_OPINIONS" />:
+            </span>
+            <AdminEditableField
+                type={FieldTypes.TEXTAREA}
+                className="vibe__entry vibe__opinions"
+                value={(currentUser as IUserPrivate).vibeOpinions}
+                onChange={async (val) =>
+                    await updateUserData(currentUser!.id, {
+                        vibeOpinions: val
+                    })
+                }
+            />
         </section>
     );
 };

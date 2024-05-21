@@ -28,6 +28,7 @@ export interface IDraftGig extends IGigBase {
 export interface IGig extends IGigBase {
     status: GigStatus;
     authorId: string;
+    authorName: string;
     takenById?: string;
     markedAsComplaintAt?: string; //ISO date string
     complaintReason?: string;

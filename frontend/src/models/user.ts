@@ -36,6 +36,7 @@ export interface IUserPrivate extends IUserPublic {
     combatSkill: SkillStat;
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
+    vibeOpinions: string;
     favoriteUserIds: string[];
     faction: Factions;
     revealCodes: string[];

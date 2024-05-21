@@ -17,4 +17,8 @@
         border-left: 4px solid $primary-color;
         padding-left: 0.5rem;
     }
+
+    &__opinions {
+        white-space: pre-wrap;
+    }
 }

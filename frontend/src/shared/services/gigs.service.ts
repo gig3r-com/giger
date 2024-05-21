@@ -8,7 +8,7 @@ import {
     IGig,
     reputationBrackets
 } from '../../models/gig';
-import { setFetchingGigs, setGigs } from '../../store/gigs.slice';
+import { removeGig, setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
 import { useNotificationsService } from './notifications.service';
 import { useUserService } from './user.service';
@@ -93,10 +93,13 @@ export function useGigsService() {
      * @param id gig id
      */
     const deleteGig = (id: string) => {
-        const updatedGigs = currentGigs.filter((gig) => gig.id !== id);
-        // ! API CALL REQUIRED
-        dispatch(setGigs(updatedGigs));
-        displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
+        api.delete(`Gig/${id}/remove`)
+            .res()
+            .catch(() => displayToast(intl.formatMessage({ id: 'ERROR_FAILED_TO_DELETE_GIG' })))
+            .then(() => {
+                dispatch(removeGig(id));
+                displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
+            });
     };
 
     /**
@@ -114,7 +117,9 @@ export function useGigsService() {
         };
 
         api.query({
-            accountNo: asCompany ? accounts.business : accounts.private
+            accountNo: asCompany
+                ? accounts.business?.accountNumber
+                : accounts.private?.accountNumber
         })
             .url(`Gig/${id}/accept/${currentUser?.id}`)
             .patch(updatedGig)

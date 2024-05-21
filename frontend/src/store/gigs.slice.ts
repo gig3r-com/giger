@@ -30,6 +30,9 @@ export const gigsSlice = createSlice({
             updatedGigs.push(action.payload);
             state.gigs = updatedGigs;
         },
+        removeGig: (state, action: PayloadAction<string>) => {
+            state.gigs = state.gigs.filter((gig) => gig.id !== action.payload);
+        },
         setCategories: (state, action: PayloadAction<GigCategoryNames[]>) => {
             state.selectedCategories = action.payload;
         },
@@ -54,6 +57,7 @@ export const {
     setGigs,
     addCategory,
     updateGig,
+    removeGig,
     removeCategory,
     setCategories,
     setMode,

@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AnimatePresence, motion } from 'framer-motion';
-import { IUserBase } from '../../../models/user';
 import { BigButton } from '../../../shared/components/big-button/big-button';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import { UserSelect } from '../../../shared/user-select/user-select';
@@ -19,15 +18,15 @@ export const StartNewConvo: FC = () => {
     const { currentUser } = useUserService();
     const { createConvo } = useMessagesService();
     const { canAnonymizeChatHandle } = useUserService();
-    const [selectedUsers, setSelectedUsers] = useState<IUserBase[]>([]);
+    const [selectedUserHandles, setSelectedUserHandles] = useState<string[]>([]);
 
     const onConvoCreation = () => {
         createConvo(
-            [...selectedUsers.map((user) => user.handle), currentUser!.handle],
-            undefined
-            //anonymize === 'YES'
+            [...selectedUserHandles, currentUser!.handle],
+            undefined,
+            anonymize === 'YES'
         ).then((id) => {
-            setSelectedUsers([]);
+            setSelectedUserHandles([]);
             navigate(`/chat/${id}`);
         });
     };
@@ -44,9 +43,7 @@ export const StartNewConvo: FC = () => {
                 <Controls key="controls" leftSideOption="back" />
                 <UserSelect
                     mode="multi"
-                    onSelection={(val) => {
-                        setSelectedUsers(val);
-                    }}
+                    onSelection={setSelectedUserHandles}
                 />
 
                 {canAnonymizeChatHandle() && (
@@ -73,7 +70,7 @@ export const StartNewConvo: FC = () => {
 
                 <BigButton
                     color="primary"
-                    disabled={selectedUsers.length === 0}
+                    disabled={selectedUserHandles.length === 0}
                     text={intl.formatMessage({ id: 'SEND_PRIVATE_MSG' })}
                     onClick={onConvoCreation}
                 />
