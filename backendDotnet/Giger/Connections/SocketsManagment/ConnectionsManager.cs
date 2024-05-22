@@ -46,7 +46,10 @@ namespace Giger.Connections.SocketsManagment
         {
             if (username != null && _connections.TryRemove(username, out var socket))
             {
-                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket connection closed", CancellationToken.None);
+                if (socket.State == WebSocketState.Open)
+                {
+                    await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket connection closed", CancellationToken.None);
+                }
             }
         }
 
