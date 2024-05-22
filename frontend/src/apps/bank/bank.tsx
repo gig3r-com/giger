@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBankingService } from '../../shared/services/banking.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
@@ -16,7 +16,7 @@ import './bank.scss';
 export const Bank: FC = () => {
     const location = useLocation();
     const intl = useIntl();
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const { accounts, fetchAccounts } = useBankingService();
     const [account, setAccount] = useState<IAccount | undefined>(undefined);
     const showCards = useMemo(
@@ -26,11 +26,11 @@ export const Bank: FC = () => {
 
     const balanceClasses = (type: AccountType) =>
         classNames({
-            [`bank__${type}-balance`]: true,
-            [`bank__${type}-balance--active`]: account?.type === type
+            [`bank__${type.toLocaleLowerCase()}-balance`]: true,
+            [`bank__${type.toLocaleLowerCase()}-balance--active`]: account?.type === type
         });
 
-    const transfer = () => navigate('/bank/new');
+    //const transfer = () => navigate('/bank/new');
 
     const cardAccounts = useMemo(() => {
         return Object.values(accounts).filter(
@@ -83,7 +83,8 @@ export const Bank: FC = () => {
                     <BigButton
                         text={intl.formatMessage({ id: 'TRANSFER' })}
                         color="primary"
-                        onClick={() => transfer()}
+                        //onClick={() => transfer()}
+                        onClick={() => {}}
                     />
 
                     <h4 className="bank__transfer-history-label">

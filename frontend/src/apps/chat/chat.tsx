@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import { useMessagesService } from '../../shared/services/messages.service';
 import { RootState } from '../../store/store';
 import { ConvoSnippet } from './convo-snippet/convo-snippet';
@@ -88,13 +88,13 @@ export const Chat: FC = () => {
                 </AnimatePresence>
             </div>
             {showNewMsgButton && (
-                <Link to="new">
+                // <Link to="new">
                     <BigButton
                         color="primary"
                         text={intl.formatMessage({ id: 'NEW_MESSAGE' })}
                         onClick={() => {}}
                     />
-                </Link>
+                // </Link>
             )}
             {onNewMessage && <StartNewConvo />}
         </section>

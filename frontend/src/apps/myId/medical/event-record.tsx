@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo } from 'react';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
 import { useUserService } from '../../../shared/services/user.service';
@@ -52,6 +52,12 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                                     <EventEntry entry={entry} type={type} />
                                 </li>
                             ))}
+                        {events.filter((event) => event.type === section.name)
+                            .length === 0 && (
+                            <span className="event-record__no-entry">
+                                <FormattedMessage id='NO_RECORDER_EVENTS' />
+                            </span>
+                        )}
                         {isGod && (
                             <li className="event-record__entry event-record__entry--new">
                                 <NewEntry

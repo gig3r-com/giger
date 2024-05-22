@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useUserService } from '../../../shared/services/user.service';
 import { selectUsers } from '../../../store/users.selectors';
-import { setRequiresGodUserSelection, setViewAsUser } from '../../../store/users.slice';
+import {
+    setRequiresGodUserSelection,
+    setViewAsUser
+} from '../../../store/users.slice';
 
 import './select-user.scss';
 
@@ -12,7 +15,8 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
 }) => {
     const dispatch = useDispatch();
     const ref = useRef<HTMLSelectElement>(null);
-    const { isGod, getUserById, saveLoginData } = useUserService();
+    const { isGod, getUserById, saveLoginData, fetchAllUsers } =
+        useUserService();
     const allUsers = useSelector(selectUsers);
     const [showSelection, setShowSelection] = useState(false);
 
@@ -34,6 +38,15 @@ export const SelectUser: FC<{ showSelectionAtStart?: boolean }> = ({
         return () =>
             document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    useEffect(
+        function ensureUsers() {
+            if (allUsers.length > 0) return;
+
+            fetchAllUsers();
+        },
+        []
+    );
 
     return (
         <>

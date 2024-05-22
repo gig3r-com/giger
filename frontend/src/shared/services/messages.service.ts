@@ -15,6 +15,7 @@ import { useUserService } from './user.service';
 import { useApiService } from './api.service';
 import { useNotificationsService } from './notifications.service';
 import {
+    selectConversations,
     selectGigConversations,
     selectUnreadMessages
 } from './messages.selectors';
@@ -35,6 +36,7 @@ export function useMessagesService() {
     const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const gigConversations = useSelector(selectGigConversations);
+    const conversations = useSelector(selectConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
 
     const createMessage: (text: string, senderHandle?: string) => IMessage = (
@@ -181,15 +183,23 @@ export function useMessagesService() {
             if (!lastMessage) {
                 return;
             }
-            lastMessage &&
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: false,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
+            const conversation = conversations.find(
+                (convo) => convo.id === lastMessage.conversationId
+            );
+
+            if (!conversation) {
+                fetchUserConvos();
+            } else {
+                lastMessage &&
+                    dispatch(
+                        updateConversation({
+                            convoId: lastMessage.conversationId,
+                            message: lastMessage.message,
+                            gigConvo: false,
+                            currentUserHandle: currentUser!.handle
+                        })
+                    );
+            }
         },
         [dispatch, lastMessage, currentUser]
     );

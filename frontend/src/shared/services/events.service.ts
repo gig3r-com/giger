@@ -11,7 +11,6 @@ import {
     IMeta,
     IPrivateRecord,
     IRelation,
-    MetaTypes,
     UserRecordTypes
 } from '../../models/user';
 import { v4 } from 'uuid';
@@ -151,10 +150,10 @@ export const useEventsService = () => {
             });
     };
 
-    const addMeta = (type: MetaTypes, description: string): void => {
+    const addMeta = (title: string, description: string): void => {
         const record: IMeta = {
             id: v4(),
-            type,
+            title,
             description,
             recordType: UserRecordTypes.META
         };
@@ -231,12 +230,12 @@ export const useEventsService = () => {
 
     const updateMeta = (
         metaId: string,
-        metaType: MetaTypes,
+        title: string,
         description: string
     ): void => {
         const meta = {
             ...metas.find((entry) => entry.id === metaId),
-            type: metaType,
+            title,
             description: description
         } as IMeta;
 
