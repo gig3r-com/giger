@@ -56,7 +56,7 @@ namespace Giger.Controllers
 
             var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
 
-            if (senderUser != null)
+            if (senderUser != null && owner != null)
             {
                 if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
                     owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))
