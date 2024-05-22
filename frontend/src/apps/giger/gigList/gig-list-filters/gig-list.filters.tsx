@@ -95,6 +95,7 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                                     select={selectCategory}
                                     category={category}
                                     delayMultiplier={catIndex}
+                                    isSelected={newSelectedCategories.has(category)}
                                 />
                             </AnimatePresence>
                         ))}

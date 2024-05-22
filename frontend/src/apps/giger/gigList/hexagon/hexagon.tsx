@@ -9,9 +9,10 @@ import './hexagon.scss';
 export const Hexagon: React.FC<IHexagonProps> = ({
     category,
     select,
-    delayMultiplier
+    delayMultiplier,
+    isSelected
 }) => {
-    const [selected, setSelected] = useState(false);
+    const [selected, setSelected] = useState(isSelected);
 
     const handleClick = () => {
         setSelected(!selected);
