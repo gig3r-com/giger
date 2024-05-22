@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FormattedMessage } from 'react-intl';
 import { AccountType, ITransaction } from '../../../models/banking';
-import { useUserService } from '../../../shared/services/user.service';
 import IncomingTransfer from '../../../assets/incoming.svg?react';
 import OutgoingTransfer from '../../../assets/outgoing.svg?react';
+import { useBankingService } from '../../../shared/services/banking.service';
 
 import './transaction.scss';
 
@@ -12,16 +12,23 @@ export const Transaction: FC<{
     transaction: ITransaction;
     accountType: AccountType;
 }> = ({ transaction, accountType }) => {
-    const { currentUser, getCurrentUserFaction } = useUserService();
-    const sign = transaction.to === currentUser?.id ? '+' : '-';
-    const ownId =
-        accountType === AccountType.PRIVATE
-            ? currentUser?.id
-            : getCurrentUserFaction();
+    const { accounts } = useBankingService();
+    const currentNumber = useMemo(() => {
+        return accountType === AccountType.PRIVATE
+            ? accounts.private?.accountNumber
+            : accounts.business?.accountNumber;
+    }, [accounts, accountType]);
+    const sign = transaction.to === currentNumber ? '+' : '-';
     const otherParty =
-        transaction.to === ownId ? transaction.fromUser : transaction.toUser;
+        transaction.to === currentNumber
+            ? transaction.fromUser
+            : transaction.toUser;
     const image =
-        transaction.to === ownId ? <OutgoingTransfer /> : <IncomingTransfer />;
+        transaction.to !== currentNumber ? (
+            <OutgoingTransfer />
+        ) : (
+            <IncomingTransfer />
+        );
 
     return (
         <motion.li className="transaction">
