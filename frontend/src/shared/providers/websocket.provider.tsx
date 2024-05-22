@@ -12,12 +12,12 @@ import {
     IConversationUpdatePayload
 } from '../../models/websockets';
 import { IWebsocketContext } from './websocket.model';
-import { useApiService } from '../services/api.service';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useApiService } from '../services/api.service';
+import { useSelector } from 'react-redux';
 import { selectAuthToken } from '../../store/auth.slice';
-import { IUserPrivate } from '../../models/user';
-import { setAllConversationHashes } from '../../store/messages.slice';
-import { IHashDataUpdatePayload } from '../../models/general';
+// import { IUserPrivate } from '../../models/user';
+// import { setAllConversationHashes } from '../../store/messages.slice';
+// import { IHashDataUpdatePayload } from '../../models/general';
 
 export const WebSocketContext = createContext<IWebsocketContext | null>(null);
 
@@ -25,8 +25,8 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     children
 }) => {
     const ws = useRef<WebSocket | null>(null);
-    const dispatch = useDispatch();
-    const { api } = useApiService();
+    // const dispatch = useDispatch();
+    // const { api } = useApiService();
     const [lastMessage, setLastMessage] =
         useState<IConversationConsumablePayload | null>(null);
     const authToken = useSelector(selectAuthToken);
@@ -48,26 +48,26 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
      * when the connection is suspended we miss out on all the messages that were sent during that time
      * this function will fetch the hashes for comparison
      */
-    const getIntermediateData = () => {
-        if (!localStorage.getItem('loggedInUser')) return;
-        //this is terrible, there has to be a better way but there's no time now
-        const loggedInUser = JSON.parse(
-            localStorage.getItem('loggedInUser') ?? ''
-        ) as IUserPrivate | null;
+    // const getIntermediateData = () => {
+    //     if (!localStorage.getItem('loggedInUser')) return;
+    //     //this is terrible, there has to be a better way but there's no time now
+    //     const loggedInUser = JSON.parse(
+    //         localStorage.getItem('loggedInUser') ?? ''
+    //     ) as IUserPrivate | null;
 
-        const id = loggedInUser?.id;
-        const handle = loggedInUser?.handle;
+    //     const id = loggedInUser?.id;
+    //     const handle = loggedInUser?.handle;
 
-        if (!id || !handle) return;
+    //     if (!id || !handle) return;
 
-        api.query({ userName: handle })
-            .get(`Hashes/update/${id}`)
-            .json<IHashDataUpdatePayload>()
-            .then((data) => {
-                console.log(data);
-                dispatch(setAllConversationHashes(data.conversationHashes));
-            });
-    };
+    //     api.query({ userName: handle })
+    //         .get(`Hashes/update/${id}`)
+    //         .json<IHashDataUpdatePayload>()
+    //         .then((data) => {
+    //             console.log(data);
+    //             dispatch(setAllConversationHashes(data.conversationHashes));
+    //         });
+    // };
 
     const ping = (socket: WebSocket) => {
         return window.setInterval(function () {
@@ -138,7 +138,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
                 console.log('Page visible, reconnecting WebSocket');
                 if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
                     setTimeout(() => {
-                        getIntermediateData();
+                        //getIntermediateData();
                         setupWebsocket();
                     }, reconnectInterval);
                     setReconnectInterval(reconnectInterval * 2);
