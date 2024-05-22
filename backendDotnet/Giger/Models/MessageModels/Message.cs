@@ -29,9 +29,9 @@ namespace Giger.Models.MessageModels
         public override int GetHashCode()
         {
             int hash = 3;
-            hash *= 5 * Date.GetHashCode();
-            hash *= 7 * Sender.GetHashCode();
-            hash *= 11 * Text.GetHashCode();
+            hash += 5 * Date.GetHashCode();
+            hash += 7 * Sender.GetHashCode();
+            hash += 11 * Text.GetHashCode();
             return hash;
         }
     }

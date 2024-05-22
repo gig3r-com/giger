@@ -21,17 +21,17 @@ namespace Giger.Models.MessageModels
             int hash = 27;
             foreach (var message in Messages)
             {
-                hash *= 31 * message.GetHashCode();
+                hash += 31 * message.GetHashCode();
             }
             foreach (var participant in Participants)
             {
-                hash *= 37 * participant.GetHashCode();
+                hash += 37 * participant.GetHashCode();
             }
             foreach (var anonymizedUser in AnonymizedUsers)
             {
-                hash *= 41 * anonymizedUser.GetHashCode();
+                hash += 41 * anonymizedUser.GetHashCode();
             }
-            hash *= 43 * GigConversation.GetHashCode();
+            hash += 43 * GigConversation.GetHashCode();
 
             return hash;
         }
