@@ -1,5 +1,5 @@
 import type CommandsServiceType from '../CommandsService';
-import { ApiService } from '../../index';
+import {ApiService, ConfigService} from '../../index';
 import { getErrorMessage, noUserNameError } from '../responseLines/errors';
 import { getNewNameLines } from '../responseLines/misc';
 
@@ -10,7 +10,7 @@ export default class Name {
     this.Service = CommandsService;
   }
 
-  execute() {
+  async execute() {
     const {
       setInputDisabled,
       fireInitError,
@@ -27,6 +27,7 @@ export default class Name {
       return;
     }
     try {
+      await ConfigService.checkHacking('name');
       setInputDisabled(true);
       ApiService.changeActiveUserHackingName(parsedCommand[0]).then(
         (newHackerName) => {

@@ -22,6 +22,7 @@ export default class ConfigService {
   private commandsCheck = {
     scan: this.checkScan,
     run: this.checkScan,
+    name: this.throwTestHackingError,
     transfer: this.throwTestHackingError,
     readmsg: this.throwTestHackingError,
     copydata: this.throwTestHackingError,
