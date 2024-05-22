@@ -44,7 +44,7 @@ namespace Giger.Connections.SocketsManagment
 
         public async Task RemoveConnectionAsync(string username)
         {
-            if (_connections.ContainsKey(username) && _connections.TryRemove(username, out var socket))
+            if (username != null && _connections.TryRemove(username, out var socket))
             {
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket connection closed", CancellationToken.None);
             }
