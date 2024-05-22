@@ -64,6 +64,7 @@ export const Contacts: FC = () => {
             </span>
             <div className="contacts__list-item-actions">
                 <span
+                    style={{ display: 'none'}}
                     className="contacts__list-item-action material-icons"
                     onClick={() => toggleUserAsFavorite(user.id)}
                 >

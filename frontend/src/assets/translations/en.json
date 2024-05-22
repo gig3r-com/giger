@@ -224,5 +224,7 @@
     "VIBE_OPINIONS": "Vibe opinions",
     "ERROR_FAILED_TO_DELETE_GIG": "Failed to delete. Try again or contact support.",
     "INSUFFICIENT_FUNDS": "Insufficient funds",
-    "INSUFFICIENT_COMPANY_FUNDS": "Insufficient company funds"
+    "INSUFFICIENT_COMPANY_FUNDS": "Insufficient company funds",
+    "NO_RECORDER_EVENTS": "No recorded events",
+    "ORDERING_PARTY": "Ordering party"
 }

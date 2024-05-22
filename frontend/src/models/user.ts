@@ -147,7 +147,7 @@ export interface IGoal extends IUserRecord, IObscurableInfo {
 }
 
 export interface IMeta extends IUserRecord {
-    type: MetaTypes;
+    title: string;
     description: string;
     isLink?: boolean;
     recordType: UserRecordTypes.META;

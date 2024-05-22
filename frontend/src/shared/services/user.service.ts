@@ -5,7 +5,8 @@ import {
     setRequiresGodUserSelection,
     setUser,
     setUsers,
-    updateCurrentUser
+    updateCurrentUser,
+    updateViewAsUser
 } from '../../store/users.slice';
 import {
     IUserBase,
@@ -104,7 +105,7 @@ export function useUserService() {
         api.url('User').put(updatedData);
 
         if (currentUser?.id === userId) {
-            dispatch(updateCurrentUser(userData));
+            dispatch(updateViewAsUser(userData));
         } else {
             dispatch(setUser({ ...userData }));
         }

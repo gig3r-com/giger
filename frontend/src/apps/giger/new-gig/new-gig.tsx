@@ -184,6 +184,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         addNewGig(newGig!);
         navigate('/giger');
     };
+    handleAddingNewGig
 
     return (
         <section className={wrapperClassnames}>
@@ -365,7 +366,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                     disabled={!gigReady}
                     color="primary"
                     text={intl.formatMessage({ id: 'ADD_GIG' })}
-                    onClick={handleAddingNewGig}
+                    //onClick={handleAddingNewGig}
+                    onClick={() => {}}
                 />
             </div>
         </section>
