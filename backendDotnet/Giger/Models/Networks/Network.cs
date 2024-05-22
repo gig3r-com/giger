@@ -9,6 +9,6 @@ namespace Giger.Models.Networks
         public required string Id { get; set; }
         public required string Name { get; set; }
         public string[] Subnetworks { get; set; } = [];
-        public required string AdminId { get; set; }
+        public string? AdminId { get; set; }
     }
 }

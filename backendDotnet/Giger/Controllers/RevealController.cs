@@ -37,15 +37,21 @@ namespace Giger.Controllers
             if (user is null)
                 return NotFound("User not found");
 
+            // if obscuredData.Username is null, then it is implant
+            if (string.IsNullOrEmpty(obscuredData.Username))
+            {
+                return await _implantsController.Install(user.Id, revealCode);
+            }
+
             var matchingObscurableData = GetObscurableInfoFromUserProfile(user, obscuredData.ObscurableId);
             if (matchingObscurableData is null)
             {
                 matchingObscurableData = await GetObscurableInfoGigs(user.Id, obscuredData.ObscurableId);
-            }
 
-            if (matchingObscurableData is null)
-            {
-                return await _implantsController.Install(user.Id, revealCode);
+                if (matchingObscurableData is null)
+                {
+                    return NotFound("Locked data did not find matching user record. Please contact AI Assistant.");
+                }
             }
 
             var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
