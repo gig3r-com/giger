@@ -111,7 +111,12 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     gig.id === selectedId ? 'gig__from--shown' : ''
                 }`}
             >
-                <FormattedMessage id={'FROM'} />: {gig.authorName}
+                <FormattedMessage id={'FROM'} />:{' '}
+                {gig.anonymizedAuthor ? (
+                    <FormattedMessage id="ANONYMOUS" />
+                ) : (
+                    gig.authorName
+                )}
             </span>
             <div className={gigClassname(gig)}>
                 <AnimatePresence>

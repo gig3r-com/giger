@@ -95,7 +95,11 @@ export function useGigsService() {
     const deleteGig = (id: string) => {
         api.delete(`Gig/${id}/remove`)
             .res()
-            .catch(() => displayToast(intl.formatMessage({ id: 'ERROR_FAILED_TO_DELETE_GIG' })))
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_DELETE_GIG' })
+                )
+            )
             .then(() => {
                 dispatch(removeGig(id));
                 displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
@@ -146,9 +150,7 @@ export function useGigsService() {
     };
 
     const canAcceptGig = (gig: IGig): boolean => {
-        const userReputation = getReputationLevel(
-            currentUser!.gigReputation[gig.category]
-        );
+        const userReputation = currentUser!.gigReputation[gig.category];
         const gigReputation = gig.reputationRequired.level;
 
         return userReputation >= gigReputation;
