@@ -202,8 +202,7 @@ const buttonDefinitions: {
             {
                 label: 'AWAITING_COMPLETION',
                 color: 'secondary',
-                disabled: true,
-                actionId: ActionId.MARK_AS_DONE_MINE
+                disabled: true
             }
         ]
     },
@@ -228,11 +227,31 @@ const buttonDefinitions: {
     {
         status: GigStatus.PENDING_CONFIRMATION,
         mode: GigModes.PROVIDER,
+        isMine: false,
         buttons: [
             {
                 label: 'AWAITING_ACCEPTANCE',
                 color: 'secondary',
                 disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.PENDING_CONFIRMATION,
+        mode: GigModes.PROVIDER,
+        isMine: true,
+        buttons: [
+            {
+                label: 'MARK_AS_DONE',
+                color: 'secondary',
+                disabled: false,
+                actionId: ActionId.MARK_AS_DONE_THEIRS
+            },
+            {
+                label: 'REPORT_A_PROBLEM',
+                color: 'accent',
+                disabled: false,
+                actionId: ActionId.REPORT_A_PROBLEM
             }
         ]
     },

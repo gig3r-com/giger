@@ -22,7 +22,9 @@ $text-color:                #fff;
 // ANIMATIONS
 $standard-timing-function:  cubic-bezier(0.87, 0, 0.13, 1);
 $ease-out:                  cubic-bezier(0.61, 1, 0.88, 1);
+$color-timing-function:     cubic-bezier(0, 0.55, 0.45, 1);
 $standard-duration:         0.3s;
+$color-transition-duration: 0.6s;
 $fast-duration:             0.2s;
 $slow-duration:             0.4s;
 
