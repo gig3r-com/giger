@@ -11,6 +11,7 @@ import {
     selectHasUnreadGigMessages,
     selectHasUnreadMessages
 } from '../../../store/messages.selectors';
+import { selectHasStatusUpdates } from '../../../store/gigs.selectors';
 
 import './main-menu.scss';
 
@@ -25,6 +26,7 @@ export const MainMenu = () => {
         });
     const hasUnreadMessages = useSelector(selectHasUnreadMessages);
     const hasUnreadGigMessages = useSelector(selectHasUnreadGigMessages);
+    const hasGigStatusChanges = useSelector(selectHasStatusUpdates);
 
     return (
         <header className="main-menu">
@@ -40,7 +42,8 @@ export const MainMenu = () => {
                                 )}
 
                             {option.name === MainMenuNames.GIGS &&
-                                hasUnreadGigMessages && (
+                                (hasUnreadGigMessages ||
+                                    hasGigStatusChanges) && (
                                     <span className="main-menu__new-indicator"></span>
                                 )}
                         </li>

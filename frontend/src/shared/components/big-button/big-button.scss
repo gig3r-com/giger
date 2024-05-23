@@ -9,7 +9,9 @@
     border-radius: 0;
     height: 60px;
     color: $text-color;
-    transition: $fast-duration $standard-timing-function background-color;
+    transition:
+        $color-transition-duration $color-timing-function background-color,
+        $color-transition-duration $color-timing-function color;
     outline: none;
 
     &__text {

@@ -19,6 +19,7 @@ import { ActionId } from '../../apps/giger/gig/button-definitions';
 import { useApiService } from './api.service';
 import { useBankingService } from './banking.service';
 import { AccountType } from '../../models/banking';
+import { selectStatusHashes } from '../../store/gigs.selectors';
 
 export function useGigsService() {
     const navigate = useNavigate();
@@ -27,6 +28,7 @@ export function useGigsService() {
     const { accounts } = useBankingService();
     const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
+    const gigStatusHashes = useSelector(selectStatusHashes);
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
@@ -221,8 +223,7 @@ export function useGigsService() {
         };
 
         api.url(`Gig/${gigId}/dispute`)
-            .query({ reason: complaint })
-            .patch()
+            .patch(complaint)
             .res()
             .then(() => {
                 updateGig(updatedGig);
@@ -391,6 +392,12 @@ export function useGigsService() {
         return userIsAuthor ? !gig.isRevealed : !gig.isRevealedByClient;
     };
 
+    const hasStatusUpdate = (gig: IGig) => {
+        return (
+            gigStatusHashes[gig.id].lastSeen !== gigStatusHashes[gig.id].current
+        );
+    };
+
     return {
         addNewGig,
         updateGig,
@@ -406,6 +413,7 @@ export function useGigsService() {
         userGigMode,
         filteredGigs,
         joinGigConvo,
-        isLocked
+        isLocked,
+        hasStatusUpdate
     };
 }

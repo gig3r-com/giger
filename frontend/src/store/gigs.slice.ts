@@ -1,19 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { GigCategoryNames, GigModes, IGig } from '../models/gig';
+import { IHashData } from '../models/general';
 
 export interface GigsState {
     gigs: IGig[];
     selectedCategories: GigCategoryNames[];
     selectedMode: 'all' | GigModes;
     fetchingGigs: boolean;
+    gigStatusHashes: Record<string, IHashData>;
 }
 
 const initialState: GigsState = {
     gigs: [],
     selectedCategories: [],
     selectedMode: 'all',
-    fetchingGigs: false
+    fetchingGigs: false,
+    gigStatusHashes: {}
 };
 
 export const gigsSlice = createSlice({
@@ -49,7 +52,25 @@ export const gigsSlice = createSlice({
         },
         setFetchingGigs: (state, action: PayloadAction<boolean>) => {
             state.fetchingGigs = action.payload;
+        },
+        setGigStatusHashes: (
+            state,
+            action: PayloadAction<Record<string, number>>
+        ) => {
+            Object.keys(action.payload).forEach((hash) => {
+                state.gigStatusHashes[hash] = {
+                    current: action.payload[hash],
+                    lastSeen: state.gigStatusHashes[hash]?.current ?? 0
+                };
+            });
+        },
+        setSeenStatusHash: (state, action: PayloadAction<{gigId: string}>) => {
+            state.gigStatusHashes[action.payload.gigId] = {
+                current: state.gigStatusHashes[action.payload.gigId]?.current ?? 0,
+                lastSeen: state.gigStatusHashes[action.payload.gigId]?.current ?? 0
+            };
         }
+
     }
 });
 
@@ -61,7 +82,8 @@ export const {
     removeCategory,
     setCategories,
     setMode,
-    setFetchingGigs
+    setFetchingGigs,
+    setSeenStatusHash
 } = gigsSlice.actions;
 
 export default gigsSlice.reducer;

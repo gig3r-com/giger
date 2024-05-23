@@ -41,6 +41,9 @@
         height: $summary-height;
         padding: 0.5rem;
         padding-left: 1rem;
+        transition:
+            $color-transition-duration $color-timing-function border-color,
+            $color-transition-duration $color-timing-function background-color;
         cursor: pointer;
         clip-path: polygon(
             12px 0,
@@ -51,6 +54,11 @@
             0 15px
         );
         flex-wrap: wrap;
+
+        &::before {
+            transition: $color-transition-duration $color-timing-function
+                background-color;
+        }
 
         &--available {
             border-color: $primary-color;
