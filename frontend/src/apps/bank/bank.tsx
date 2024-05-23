@@ -1,14 +1,15 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
+import dayjs from 'dayjs';
 import classNames from 'classnames';
-import { Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBankingService } from '../../shared/services/banking.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { Transaction } from './transaction/transaction';
 import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
-import { AccountType, IAccount } from '../../models/banking';
+import { AccountType, IAccount, ITransaction } from '../../models/banking';
 import { standardTimingFunction } from '../../shared/constants';
 
 import './bank.scss';
@@ -16,7 +17,7 @@ import './bank.scss';
 export const Bank: FC = () => {
     const location = useLocation();
     const intl = useIntl();
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
     const { accounts, fetchAccounts } = useBankingService();
     const [account, setAccount] = useState<IAccount | undefined>(undefined);
     const showCards = useMemo(
@@ -27,16 +28,23 @@ export const Bank: FC = () => {
     const balanceClasses = (type: AccountType) =>
         classNames({
             [`bank__${type.toLocaleLowerCase()}-balance`]: true,
-            [`bank__${type.toLocaleLowerCase()}-balance--active`]: account?.type === type
+            [`bank__${type.toLocaleLowerCase()}-balance--active`]:
+                account?.type === type
         });
 
-    //const transfer = () => navigate('/bank/new');
+    const transfer = () => navigate('/bank/new');
 
     const cardAccounts = useMemo(() => {
         return Object.values(accounts).filter(
             (acc) => acc !== undefined && acc !== null
         ) as IAccount[];
     }, [accounts]);
+
+    const sortedTransactions = (transactions: ITransaction[]) => {
+        return [...transactions].sort((a, b) =>
+            dayjs(b.timestamp).diff(a.timestamp)
+        );
+    };
 
     useEffect(function fetchAccountsOnMount() {
         fetchAccounts();
@@ -83,8 +91,7 @@ export const Bank: FC = () => {
                     <BigButton
                         text={intl.formatMessage({ id: 'TRANSFER' })}
                         color="primary"
-                        //onClick={() => transfer()}
-                        onClick={() => {}}
+                        onClick={() => transfer()}
                     />
 
                     <h4 className="bank__transfer-history-label">
@@ -100,13 +107,16 @@ export const Bank: FC = () => {
                                     duration: 3.2
                                 }}
                             >
-                                {account?.transactions.map((transaction) => (
-                                    <Transaction
-                                        key={transaction.id}
-                                        transaction={transaction}
-                                        accountType={account.type}
-                                    />
-                                ))}
+                                {account &&
+                                    sortedTransactions(
+                                        account.transactions
+                                    ).map((transaction) => (
+                                        <Transaction
+                                            key={transaction.id}
+                                            transaction={transaction}
+                                            accountType={account.type}
+                                        />
+                                    ))}
                             </motion.ol>
                         )}
                     </AnimatePresence>
