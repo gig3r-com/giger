@@ -323,7 +323,7 @@ namespace Giger.Controllers
         }
 
         [HttpPatch("{id}/dispute")]
-        public async Task<IActionResult> PatchDisputeGig(string id, string reason)
+        public async Task<IActionResult> PatchDisputeGig(string id, [FromBody] string reason)
         {
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
