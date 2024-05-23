@@ -18,6 +18,7 @@
 
         public const string ACCOUNT_INSUFFICIENT_FUNDS = "Insufficient funds.";
         public const string ACCOUNT_NOT_FOUND = "No such account found.";
+        public const string ACCOUNT_TRANSFER_LIMIT_EXCEEDED = "Transfer exceeds allowed limits for your wealth.";
 
         public const string USER_NOT_FOUND = "No such user found.";
         public const string UNKNOWN_SENDER_USER_NOT_FOUND = "Unknown sender user.";

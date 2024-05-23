@@ -21,6 +21,19 @@ namespace Giger.Controllers
 
         private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
+        //TODO put it into config
+        private readonly Dictionary<WealthLevels, decimal> _transferLimits = new()
+        {
+            { WealthLevels.BROKE, 200 },
+            { WealthLevels.IMPOVERISHED, 500 },
+            { WealthLevels.STRUGGLING, 1000 },
+            { WealthLevels.MODEST, 1000 },
+            { WealthLevels.STABLE, 1500 },
+            { WealthLevels.COMFORTABLE, 2000 },
+            { WealthLevels.AFFLUENT, 2500 },
+            { WealthLevels.ELITE, 5000 }
+        };
+
         #region Account
 
         [Obsolete]
@@ -212,7 +225,7 @@ namespace Giger.Controllers
         }
 
         [HttpPost("transaction")]
-        public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
+        public async Task<IActionResult> CreateTransaction(Transaction newTransaction, bool isGigTransfer = false)
         {
             if (!IsAuthorized(newTransaction.FromUser))
             {
@@ -222,6 +235,9 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(newTransaction.Id))
             {
                 newTransaction.Id = Guid.NewGuid().ToString();
+            }
+            if (newTransaction.Timestamp == null)
+            {
                 newTransaction.Timestamp = GigerDateTime.Now;
             }
 
@@ -252,6 +268,15 @@ namespace Giger.Controllers
             if (giverAcc.Balance < newTransaction.Amount)
             {
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
+            }
+
+            var user = await _userService.GetByUserNameAsync(giverAcc.Owner);
+            if (user != null)
+            {
+                if (newTransaction.Amount > _transferLimits[user.WealthLevel])
+                {
+                    return BadRequest(Messages.ACCOUNT_TRANSFER_LIMIT_EXCEEDED);
+                }
             }
 
             giverAcc.Transactions.Add(newTransaction);

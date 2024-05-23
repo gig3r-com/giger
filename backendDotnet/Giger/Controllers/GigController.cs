@@ -566,7 +566,7 @@ namespace Giger.Controllers
                 OrderingParty = orderingParty
             };
 
-            await _accountController.CreateTransaction(reserve);
+            await _accountController.CreateTransaction(reserve, true);
 
             Transaction socialTax = new()
             {
@@ -581,7 +581,7 @@ namespace Giger.Controllers
                 OrderingParty = orderingParty
             };
 
-            await _accountController.CreateTransaction(socialTax);
+            await _accountController.CreateTransaction(socialTax, true);
             return true;
         }
 
@@ -619,7 +619,7 @@ namespace Giger.Controllers
                 OrderingParty = orderingParty
             };
 
-            await _accountController.CreateTransaction(reserve);
+            await _accountController.CreateTransaction(reserve, true);
         }
 
         private async void CompleteTransaction(Gig gig)
@@ -667,7 +667,7 @@ namespace Giger.Controllers
                 OrderingParty = orderingParty
             };
 
-            await _accountController.CreateTransaction(trx);
+            await _accountController.CreateTransaction(trx, true);
         }
 
         private async void PayDisputeFeeToClerk(Gig gig, string clerkAccountNo)
@@ -685,7 +685,7 @@ namespace Giger.Controllers
                 Amount = gig.Payout * commissionPercent,
             };
 
-            await _accountController.CreateTransaction(trx);
+            await _accountController.CreateTransaction(trx, true);
         }
 
         private void ObscureGig(Gig gig, string requestSenderId)

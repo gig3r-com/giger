@@ -23,7 +23,7 @@ namespace Giger.Models.BankingModels
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
-        public required DateTime Timestamp { get; set; }
+        public DateTime? Timestamp { get; set; }
 
         public string? OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
 
