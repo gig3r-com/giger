@@ -229,6 +229,10 @@ namespace Giger.Controllers
                 return NotFound(Messages.ACCOUNT_NOT_FOUND);
             }
 
+            gig.TakenById = takenBy;
+            gig.AcceptedAt = GigerDateTime.Now;
+            gig.Status = GigStatus.IN_PROGRESS;
+
             if (gig.Mode == GigModes.CLIENT)
             {
                 gig.ProviderAccountNumber = accountNo;
@@ -241,10 +245,6 @@ namespace Giger.Controllers
                     return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
                 }
             }
-
-            gig.TakenById = takenBy;
-            gig.AcceptedAt = GigerDateTime.Now;
-            gig.Status = GigStatus.IN_PROGRESS;
 
             var conversation = await _conversationService.GetAsync(gig.ConversationId);
             if (conversation is null)
@@ -533,8 +533,14 @@ namespace Giger.Controllers
             {
                 return false;
             }
+            var takerHandle = _userService.GetAsync(gig.TakenById).Result?.Handle;
+            string clientName = gig.Mode == GigModes.CLIENT ? gig.AuthorName : takerHandle;
 
-            string clientName = gig.Mode == GigModes.CLIENT ? gig.AuthorName : _userService.GetAsync(gig.TakenById).Result?.Handle;
+            if (clientName == null)
+            {
+                return false;
+            }
+
             if (gig.Mode == GigModes.CLIENT)
             {
                 if (gig.IsAnonymizedAuthor)
@@ -550,7 +556,7 @@ namespace Giger.Controllers
             }
             else
             {
-                orderingParty = _userService.GetAsync(gig.TakenById).Result?.Handle;
+                orderingParty = takerHandle;
             }
 
             Transaction reserve = new()
@@ -558,7 +564,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 FromUser = clientName,
-                To = "SYSTEM",
+                To = "1000000000",
                 ToUser = "SYSTEM",
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, gig.Title),
@@ -573,7 +579,7 @@ namespace Giger.Controllers
                 Id = Guid.NewGuid().ToString(),
                 From = gig.ClientAccountNumber,
                 FromUser = clientName,
-                To = Factions.social_net.ToString(),
+                To = null,
                 ToUser = Factions.social_net.ToString(),
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
@@ -609,7 +615,7 @@ namespace Giger.Controllers
             Transaction reserve = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                From = "SYSTEM",
+                From = "10000000",
                 FromUser = "SYSTEM",
                 To = gig.ClientAccountNumber,
                 ToUser = clientName,
@@ -676,7 +682,7 @@ namespace Giger.Controllers
             Transaction trx = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                From = Factions.social_net.ToString(),
+                From = null,
                 FromUser = Factions.social_net.ToString(),
                 To = clerkAccountNo,
                 ToUser = _accountService.GetByAccountNumberAsync(clerkAccountNo).Result?.Owner,

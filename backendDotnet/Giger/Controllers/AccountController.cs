@@ -299,7 +299,10 @@ namespace Giger.Controllers
             {
                 case AccountType.PRIVATE:
                 {
-                    await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                    if (account.Owner != "SYSTEM")
+                    {
+                        await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                    }
                     break;
                 }
                 case AccountType.BUSINESS:
@@ -323,7 +326,10 @@ namespace Giger.Controllers
             {
                 case AccountType.PRIVATE:
                 {
-                    await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                    if (account.Owner != "SYSTEM")
+                    {
+                        await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                    }
                     break;
                 }
                 case AccountType.BUSINESS:
