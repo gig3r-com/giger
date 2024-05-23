@@ -3,7 +3,6 @@ import { v4 } from 'uuid';
 import {
     setCurrentUser,
     setRequiresGodUserSelection,
-    setUser,
     setUsers,
     updateCurrentUser,
     updateViewAsUser
@@ -33,6 +32,9 @@ export function useUserService() {
     const userList = useSelector((state: RootState) => state.users.users);
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);
+    const viewAsUser = useSelector(
+        (state: RootState) => state.users.viewAsUser
+    );
     const isGod = useSelector(selectIsGod);
     const isModerator = useSelector(selectIsModerator);
 
@@ -104,10 +106,10 @@ export function useUserService() {
 
         api.url('User').put(updatedData);
 
-        if (currentUser?.id === userId) {
-            dispatch(updateViewAsUser(userData));
+        if (currentUser?.id === userId && !viewAsUser) {
+            dispatch(updateCurrentUser(userData));
         } else {
-            dispatch(setUser({ ...userData }));
+            dispatch(updateViewAsUser(userData));
         }
     };
 

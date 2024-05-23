@@ -1,6 +1,10 @@
 @import '../../../variables.scss';
 
 .vibe {
+    max-height: calc(100dvh - 120px);
+    overflow: auto;
+    padding-bottom: 1rem;
+
     &__label {
         display: flex;
         flex-direction: column;
