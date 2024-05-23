@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
@@ -86,14 +86,21 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
             ?.subcategories.find((s) => s.type === selectedSubcategory);
     }, [selectedCategory, selectedSubcategory]);
 
-    const checkBalance = () => {
+    const checkBalance = useCallback(() => {
         const balance =
             fromAccount === AccountType.PRIVATE
                 ? currentPrivateBalance
                 : currentBusinessBalance;
         const hasEnoughMoney = payout + payout * gigerCommission <= balance;
-        setNotEnoughMoneyWarning(!hasEnoughMoney);
-    };
+        setNotEnoughMoneyWarning(!hasEnoughMoney && mode === GigModes.CLIENT);
+    }, [
+        currentBusinessBalance,
+        currentPrivateBalance,
+        fromAccount,
+        gigerCommission,
+        mode,
+        payout
+    ]);
 
     const getSubcategoryList = useMemo(() => {
         const categoryData = categories.find(
@@ -112,6 +119,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     }, [subcategoryData]);
 
     const gigReady = useMemo(() => {
+        checkBalance();
         return (
             gigName !== '' &&
             anonymize !== '' &&
@@ -133,7 +141,8 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         selectedRepuation,
         selectedCategory,
         selectedSubcategory,
-        mode
+        mode,
+        checkBalance
     ]);
 
     const newGig: IDraftGig | undefined = useMemo(() => {
@@ -184,7 +193,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         addNewGig(newGig!);
         navigate('/giger');
     };
-    handleAddingNewGig
+    handleAddingNewGig;
 
     return (
         <section className={wrapperClassnames}>
