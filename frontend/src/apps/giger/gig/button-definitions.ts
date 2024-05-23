@@ -93,8 +93,7 @@ const buttonDefinitions: {
         status: GigStatus.AVAILABLE,
         isMine: false,
         hasCompanyAccount: true,
-        fundsMatch: true,
-        companyFundsMatch: true,
+        mode: GigModes.CLIENT,
         buttons: [
             {
                 label: 'ACCEPT_GIG',
@@ -116,6 +115,7 @@ const buttonDefinitions: {
         hasCompanyAccount: true,
         fundsMatch: false,
         companyFundsMatch: false,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
                 label: 'INSUFFICIENT_FUNDS',
@@ -135,6 +135,7 @@ const buttonDefinitions: {
         hasCompanyAccount: true,
         fundsMatch: true,
         companyFundsMatch: false,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
                 label: 'ACCEPT_GIG',
@@ -155,6 +156,7 @@ const buttonDefinitions: {
         hasCompanyAccount: true,
         fundsMatch: false,
         companyFundsMatch: true,
+        mode: GigModes.PROVIDER,
         buttons: [
             {
                 label: 'INSUFFICIENT_FUNDS',
