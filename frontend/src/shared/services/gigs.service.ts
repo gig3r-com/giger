@@ -68,7 +68,7 @@ export function useGigsService() {
     const addNewGig = async (gig: IDraftGig) => {
         const newGig = constructGig(gig);
         await api.url('Gig/create').post(newGig).res();
-        dispatch(setGigs([...currentGigs, constructGig(gig)]));
+        await fetchGigs();
     };
 
     const updateGig = (updatedGig: IGig) => {

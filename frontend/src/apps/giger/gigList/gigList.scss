@@ -13,7 +13,7 @@
     &__list {
         padding: 0;
         height: calc(#{$standard-viewport-height} - #{$controlsHeight});
-        overflow: scroll;
+        overflow: auto;
         padding: 0 1rem;
         display: flex;
         flex-direction: column;
@@ -21,6 +21,7 @@
         box-sizing: border-box;
         margin-top: 0;
         margin-bottom: 0;
+        overflow-x: hidden;
     }
 
     &__payout {

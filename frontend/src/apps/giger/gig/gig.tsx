@@ -112,7 +112,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                 }`}
             >
                 <FormattedMessage id={'FROM'} />:{' '}
-                {gig.anonymizedAuthor ? (
+                {gig.isAnonymizedAuthor ? (
                     <FormattedMessage id="ANONYMOUS" />
                 ) : (
                     gig.authorName
@@ -230,7 +230,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                                 )}
                             </AnimatePresence>
 
-                            {gig.status !== GigStatus.AVAILABLE && (
+                            {shouldFetchConvo && (
                                 <NewMsg
                                     convoId={gig.id}
                                     onSend={() => {}}

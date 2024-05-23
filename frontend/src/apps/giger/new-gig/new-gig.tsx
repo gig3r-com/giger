@@ -152,7 +152,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   description: publicDescription!,
                   descriptionDetailed: privateMessage,
                   payout: payout!,
-                  anonymizedAuthor: anonymize === 'YES',
+                  isAnonymizedAuthor: anonymize === 'YES',
                   ...(hasCompanyAccount && {
                       fromAccount: fromAccount as AccountType
                   }),
@@ -182,7 +182,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         selectedCategory
     ]);
 
-    const handleAddingNewGig = () => {
+    const handleAddingNewGig = async () => {
         setGigName('');
         setAnonymize('');
         setPublicDescription('');
@@ -190,7 +190,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         setPayout(0);
         setSelectedReputation(-1);
         setSelectedCategory('');
-        addNewGig(newGig!);
+        await addNewGig(newGig!);
         navigate('/giger');
     };
 

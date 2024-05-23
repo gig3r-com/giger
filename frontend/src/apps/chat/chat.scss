@@ -8,7 +8,8 @@
 
     &__list {
         height: calc(#{$standard-viewport-height} - 115px);
-        overflow: scroll;
+        overflow: auto;
+        overflow-x: hidden;
         margin-bottom: 1rem;
         border-bottom: 1px solid white;
 
