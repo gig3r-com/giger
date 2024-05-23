@@ -15,7 +15,7 @@ export interface IGigBase {
     id: string;
     providerAccountNumber?: string | null; // account id
     clientAccountNumber?: string | null; // account id
-    anonymizedAuthor?: boolean;
+    isAnonymizedAuthor?: boolean;
     mode: GigModes;
     authorName: string;
 }

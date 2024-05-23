@@ -58,8 +58,8 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                         {events
                             .filter((event) => event.type === section.name)
                             .filter((event) => !event.isRevealed)
-                            .map(() => (
-                                <LockedEntry />
+                            .map(event => (
+                                <LockedEntry key={event.id}/>
                             ))}
                         {events.filter((event) => event.type === section.name)
                             .length === 0 && (

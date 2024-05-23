@@ -186,19 +186,35 @@ export function useMessagesService() {
             const conversation = conversations.find(
                 (convo) => convo.id === lastMessage.conversationId
             );
+            const gigConversation = gigConversations.find(
+                (convo) => convo.id === lastMessage.conversationId
+            );
 
-            if (!conversation) {
+            if (!conversation && !gigConversation) {
                 fetchUserConvos();
-            } else {
-                lastMessage &&
-                    dispatch(
-                        updateConversation({
-                            convoId: lastMessage.conversationId,
-                            message: lastMessage.message,
-                            gigConvo: false,
-                            currentUserHandle: currentUser!.handle
-                        })
-                    );
+                return;
+            }
+
+            if (conversation) {
+                dispatch(
+                    updateConversation({
+                        convoId: lastMessage.conversationId,
+                        message: lastMessage.message,
+                        gigConvo: false,
+                        currentUserHandle: currentUser!.handle
+                    })
+                );
+            }
+
+            if (gigConversation) {
+                dispatch(
+                    updateConversation({
+                        convoId: lastMessage.conversationId,
+                        message: lastMessage.message,
+                        gigConvo: true,
+                        currentUserHandle: currentUser!.handle
+                    })
+                );
             }
         },
         [dispatch, lastMessage, currentUser]
