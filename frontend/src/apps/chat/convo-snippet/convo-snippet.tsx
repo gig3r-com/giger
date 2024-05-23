@@ -1,13 +1,13 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
-//import { NewMsg } from '../../../shared/components/new-msg/new-msg';
+import { NewMsg } from '../../../shared/components/new-msg/new-msg';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useStandardizedAnimation } from '../../../shared/services/standardizedAnimation.service';
-//import { useUserService } from '../../../shared/services/user.service';
+import { useUserService } from '../../../shared/services/user.service';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 
@@ -20,7 +20,7 @@ export const ConvoSnippet: FC<{
     const { chatId } = useParams();
     const { generateAnimation } = useStandardizedAnimation();
     const { convoHasUnreadMessages } = useMessagesService();
-    //const { currentUser } = useUserService();
+    const { currentUser } = useUserService();
     const msgToDisplayAsSnippet = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({
@@ -34,13 +34,13 @@ export const ConvoSnippet: FC<{
         'convo-snippet__message': true,
         'convo-snippet__message--unread': convoHasUnreadMessages(convo.id)
     });
-    // const canSendMessages = useMemo(() => {
-    //     return (
-    //         currentUser &&
-    //         (convo.participantsAllowedToSendMsgs?.includes(currentUser?.id) ??
-    //             true)
-    //     );
-    // }, [currentUser, convo.participantsAllowedToSendMsgs]);
+    const canSendMessages = useMemo(() => {
+        return (
+            currentUser &&
+            (convo.participantsAllowedToSendMsgs?.includes(currentUser?.id) ??
+                true)
+        );
+    }, [currentUser, convo.participantsAllowedToSendMsgs]);
 
     return (
         <motion.article
@@ -92,9 +92,9 @@ export const ConvoSnippet: FC<{
                 {chatId === convo.id && (
                     <>
                         <Conversation key={convo.id + 'convo'} convo={convo} />
-                        {/* {canSendMessages && (
+                        {canSendMessages && (
                             <NewMsg key={convo.id + 'msg'} convoId={convo.id} />
-                        )} */}
+                        )}
                     </>
                 )}
             </AnimatePresence>

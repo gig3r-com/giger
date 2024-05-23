@@ -19,10 +19,20 @@
         font-weight: 100;
         margin: 1rem;
 
+        &:focus {
+            outline: none;
+            border: 1px solid $accent-color;
+        }
+
         span {
             position: relative;
             top: -2px;
             color: $primary-color;
+
+            &:focus {
+                outline: none;
+                color: $accent-color;
+            }
         }
     }
 
