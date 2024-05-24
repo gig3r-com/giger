@@ -14,6 +14,7 @@ import {
 import { selectHasStatusUpdates } from '../../../store/gigs.selectors';
 
 import './main-menu.scss';
+import { selectHasNewTransfers } from '../../../store/bank.selectors';
 
 export const MainMenu = () => {
     const location = useLocation();
@@ -27,6 +28,7 @@ export const MainMenu = () => {
     const hasUnreadMessages = useSelector(selectHasUnreadMessages);
     const hasUnreadGigMessages = useSelector(selectHasUnreadGigMessages);
     const hasGigStatusChanges = useSelector(selectHasStatusUpdates);
+    const hasNewTransfers = useSelector(selectHasNewTransfers);
 
     return (
         <header className="main-menu">
@@ -44,6 +46,11 @@ export const MainMenu = () => {
                             {option.name === MainMenuNames.GIGS &&
                                 (hasUnreadGigMessages ||
                                     hasGigStatusChanges) && (
+                                    <span className="main-menu__new-indicator"></span>
+                                )}
+
+                            {option.name === MainMenuNames.BANK &&
+                                hasNewTransfers && (
                                     <span className="main-menu__new-indicator"></span>
                                 )}
                         </li>

@@ -21,14 +21,14 @@ import {
     selectIsGod
 } from '../../store/users.selectors';
 import { useApiService } from './api.service';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useIntl } from 'react-intl';
 
 export function useUserService() {
     const intl = useIntl();
     const dispatch = useDispatch();
     const { api, loginCall } = useApiService();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const userList = useSelector((state: RootState) => state.users.users);
     const activeUsers = useSelector(selectActiveUsers);
     const currentUser = useSelector(selectCurrentUser);

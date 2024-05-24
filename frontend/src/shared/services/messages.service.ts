@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
@@ -8,14 +8,11 @@ import {
     setAllConversationHashes,
     setAllGigConversationHashes,
     setConversations,
-    setGigConversations,
-    updateConversation
-} from '../../store/messages.slice';
+    setGigConversations} from '../../store/messages.slice';
 import { useUserService } from './user.service';
 import { useApiService } from './api.service';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import {
-    selectConversations,
     selectGigConversations,
     selectUnreadMessages
 } from './messages.selectors';
@@ -30,13 +27,12 @@ export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
     const { api } = useApiService();
-    const { sendMessage, lastMessage } =
+    const { sendMessage } =
         useWebSocketContext() as IWebsocketContext;
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const gigConversations = useSelector(selectGigConversations);
-    const conversations = useSelector(selectConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
 
     const createMessage: (text: string, senderHandle?: string) => IMessage = (
@@ -145,7 +141,7 @@ export function useMessagesService() {
                 Sender: message.sender,
                 Text: message.text
             },
-            IsGigConversation: isGigConversation
+            IsGigConveration: isGigConversation
         });
     };
 
@@ -177,48 +173,6 @@ export function useMessagesService() {
             .patch()
             .res();
     };
-
-    useEffect(
-        function handleNewMessage() {
-            if (!lastMessage) {
-                return;
-            }
-            const conversation = conversations.find(
-                (convo) => convo.id === lastMessage.conversationId
-            );
-            const gigConversation = gigConversations.find(
-                (convo) => convo.id === lastMessage.conversationId
-            );
-
-            if (!conversation && !gigConversation) {
-                fetchUserConvos();
-                return;
-            }
-
-            if (conversation) {
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: false,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
-            }
-
-            if (gigConversation) {
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: true,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
-            }
-        },
-        [dispatch, lastMessage, currentUser]
-    );
 
     return {
         createMessage,

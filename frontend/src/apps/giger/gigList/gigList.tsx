@@ -1,17 +1,15 @@
 import { FC, useMemo } from 'react';
-import { useParams } from 'react-router';
 import dayjs from 'dayjs';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IGigListProps } from './gigList.model';
-import { Gig } from '../gig/gig';
 import { GigStatus } from '../../../models/gig';
-import { Controls } from '../../../shared/components/controls/controls';
 import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
 import { RootState } from '../../../store/store';
 import { useGigsService } from '../../../shared/services/gigs.service';
+import { GigHeader } from '../gig/gig-header/gig-header';
 
 import './gigList.scss';
 
@@ -21,7 +19,6 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
     const fetchingGigs = useSelector(
         (state: RootState) => state.gigs.fetchingGigs
     );
-    const { gigId } = useParams();
     const intl = useIntl();
 
     const sortedGigs = useMemo(
@@ -57,29 +54,28 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
 
     return (
         <section className="gig-list">
-            <Controls
-                leftSideOption={
-                    gigId
-                        ? 'back'
-                        : `${filteredGigs.length} ${
-                              filteredGigs.length > 1 ||
-                              filteredGigs.length === 0
-                                  ? intl.formatMessage({ id: 'GIG_PLURAL' })
-                                  : intl.formatMessage({ id: 'GIG_PLURAL' })
-                          }`
-                }
-                rightSideOption={gigId ? undefined : 'FILTERS'}
-                onRightSideClick={gigId ? undefined : toggleMenuState}
-            />
+            <span className="gig-list__top">
+                <span className="gig-list__count">{`${filteredGigs.length} ${
+                    filteredGigs.length > 1 || filteredGigs.length === 0
+                        ? intl.formatMessage({ id: 'GIG_PLURAL' })
+                        : intl.formatMessage({ id: 'GIG_SINGULAR' })
+                }`}</span>
+                <span
+                    className="gig-list__filter-button"
+                    onClick={toggleMenuState}
+                >
+                    <FormattedMessage id="FILTERS" />
+                </span>
+            </span>
             {filteredGigs.length === 0 && !fetchingGigs && <NoGigFound />}
             <motion.ul className="gig-list__list">
                 <AnimatePresence>
                     {sortedGigs.map((gig, i) => (
-                        <Gig
+                        <GigHeader
                             gig={gig}
-                            key={gig.id}
-                            selectedId={gigId}
                             delayMultiplier={i}
+                            key={gig.id}
+                            mode="list"
                         />
                     ))}
                 </AnimatePresence>

@@ -16,12 +16,26 @@ export interface IHashUpdatePayload {
     gigStatusHashes: Record<string, number>; //gigId: hash
 }
 
+export interface INotificationPayload {
+    AccountHash: number;
+    AccountId: string | null
+    ConversationHash: number
+    ConversationId: string | null;
+    GigConversationHash: number;
+    GigIdConversation: string | null;
+    GigIdStatus: string | null;
+    GigStatusHash: number;
+    TransactionHash: number;
+    TransactionId: string | null;
+    UpdateRequired: boolean;
+}
+
 /**
  * ! these two have to go, it's a dirty workaround for backend giving PascalCase instead of camelCase
  */
 export interface IConversationUpdatePayload {
     ConversationId: string;
-    IsGigConversation: boolean;
+    IsGigConveration: boolean;
     Message: IWebsocketMessage;
 }
 
@@ -31,10 +45,19 @@ export interface IConversationConsumablePayload {
     message: IMessage;
 }
 
+export interface INotificationConsumablePayload {
+    accountId: string;
+    transactionId: string;
+    gigIdConversation: string;
+    gigIdStatus: string;
+    conversationId: string;
+    updateRequired: boolean;
+}
+
 export interface ISocketMessage<T = IConversationUpdatePayload | ITransaction | IHashUpdatePayload> {
     type: SocketMessageType;
     payload: T;
-} 
+}
 
 export interface ISocketHashUpdate extends ISocketMessage<IHashUpdatePayload> {
     type: SocketMessageType.HASH_UPDATE;

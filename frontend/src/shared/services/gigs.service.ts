@@ -10,7 +10,7 @@ import {
 } from '../../models/gig';
 import { removeGig, setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -24,7 +24,7 @@ import { selectStatusHashes } from '../../store/gigs.selectors';
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { api } = useApiService();
+    const { api, logout } = useApiService();
     const { accounts } = useBankingService();
     const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
@@ -36,7 +36,7 @@ export function useGigsService() {
         (state: RootState) => state.gigs.selectedMode
     );
     const intl = useIntl();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => {
@@ -84,7 +84,8 @@ export function useGigsService() {
     const fetchGigs = async () => {
         dispatch(setFetchingGigs(true));
 
-        const gigs = await api.get('Gig/get/all').json<IGig[]>();
+        const gigs = await api.get('Gig/get/all').unauthorized(() => logout(currentUser!.handle)).json<IGig[]>();
+        if (gigs.length === 0) { logout(currentUser!.handle); }
         dispatch(setGigs(gigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
@@ -223,7 +224,8 @@ export function useGigsService() {
         };
 
         api.url(`Gig/${gigId}/dispute`)
-            .patch(complaint)
+            .body(JSON.stringify({ "text": complaint }))
+            .patch()
             .res()
             .then(() => {
                 updateGig(updatedGig);
@@ -287,6 +289,15 @@ export function useGigsService() {
             });
     };
 
+    const complete = (id: string) => {
+        const gig = currentGigs.find((gig) => gig.id === id);
+        const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
+
+        api.url(`Gig/${id}/complete`).patch().res().then(() => {
+            updateGig(updatedGig);
+        });
+    }
+
     const setGigStatus = async (id: string, status: GigStatus) => {
         await api.url(`Gig/${id}/status`).patch({ status }).res();
     };
@@ -325,6 +336,9 @@ export function useGigsService() {
                 break;
             case ActionId.MARK_AS_EXPIRED:
                 setAsExpired(id);
+                break;
+            case ActionId.COMPLETE:
+                complete(id)
                 break;
         }
     };
@@ -392,9 +406,9 @@ export function useGigsService() {
         return userIsAuthor ? !gig.isRevealed : !gig.isRevealedByClient;
     };
 
-    const hasStatusUpdate = (gig: IGig) => {
+    const hasStatusUpdate = (gigId: string) => {
         return (
-            gigStatusHashes[gig.id].lastSeen !== gigStatusHashes[gig.id].current
+            gigStatusHashes[gigId]?.lastSeen !== gigStatusHashes[gigId]?.current
         );
     };
 

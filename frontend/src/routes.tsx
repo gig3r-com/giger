@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Giger } from './apps/giger/giger';
-import { MainMenu } from './shared/components/main-menu/main-menu';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
@@ -9,11 +8,10 @@ import { ReportProblem } from './shared/components/report-problem/reportProblem'
 import { Login } from './apps/login/login';
 import { RootState } from './store/store';
 import { useEffect } from 'react';
-import { useNotificationsService } from './shared/services/notifications.service';
+import { useToastService } from './shared/services/toast.service';
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
 import { useVersionService } from './shared/services/version.service';
-import { GodMarker } from './shared/components/god-marker/god-marker';
 import { Contacts } from './apps/myId/contacts/contacts';
 import { Details } from './apps/myId/details/details';
 import { Vibe } from './apps/myId/vibe/vibe';
@@ -25,16 +23,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
-import { useBankingService } from './shared/services/banking.service';
-import { useUserService } from './shared/services/user.service';
+import { LoggedInRoot } from './shared/components/logged-in-root/logged-in-root';
 
 export const Router = () => {
     const intl = useIntl();
-    const { test } = useNotificationsService();
+    const { test } = useToastService();
     const { versionCheck } = useVersionService();
-    const { fetchAccounts } = useBankingService();
-    const { fetchAllUsers } = useUserService();
-
     useEffect(() => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
@@ -46,22 +40,12 @@ export const Router = () => {
             !!(state.users.currentUser && !state.users.requiresGodUserSelection)
     );
 
-    useEffect(
-        function fetchData() {
-            if (!isLoggedIn) return;
-            fetchAllUsers();
-            fetchAccounts();
-        },
-        [isLoggedIn]
-    );
-
     return (
         <AnimatePresence mode="wait">
             <BrowserRouter>
                 {isLoggedIn ? (
-                    <>
-                        <Routes>
-                            <Route path="/" element={<Giger />} />
+                    <Routes>
+                        <Route path="/" element={<LoggedInRoot />}>
                             <Route path="giger" element={<Giger />}>
                                 <Route path="new-gig" element={<Giger />} />
                                 <Route path=":gigId" element={<Giger />} />
@@ -170,10 +154,8 @@ export const Router = () => {
                                     />
                                 </Route>
                             </Route>
-                        </Routes>
-                        <MainMenu />
-                        <GodMarker />
-                    </>
+                        </Route>
+                    </Routes>
                 ) : (
                     <Routes>
                         <Route path="/" element={<Login />} />
