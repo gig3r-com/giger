@@ -31,7 +31,6 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            newLog.Id = Guid.NewGuid().ToString();
             newLog.Timestamp = GigerDateTime.Now;
             _logService.CreateAsync(newLog);
 
@@ -68,39 +67,15 @@ namespace Giger.Controllers
         [HttpPost("hack")]
         public async Task<IActionResult> PostHack(Log newLog)
         {
-            var senderUser = await _userService.GetAsync(newLog.SourceUserId);
-            if (senderUser is null)
-            {
-                return BadRequest();
-            }
+            var subNetwork = await _networksService.GetSubnetworkByIdAsync(newLog.SubnetworkId);
 
-            var senderSubnetwork = await _networksService.GetSubnetworkByIdAsync(senderUser.SubnetworkId);
-            if (senderSubnetwork is null)
-            {
-                return NotFound();
-            }
-
-            newLog.Id = Guid.NewGuid().ToString();
             newLog.Timestamp = GigerDateTime.Now;
-            senderSubnetwork.PastHacks = [.. senderSubnetwork.PastHacks, newLog.Id];
-            _networksService.UpdateSubnetworkAsync(senderSubnetwork);
-            _logService.CreateAsync(newLog);
-
-            if (newLog.TargetUserId is not null)
+            if (newLog.LogType == LogType.SUBNETWORK_SECURITY_BREACH)
             {
-                var targetUser = await _userService.GetAsync(newLog.TargetUserId);
-                if (targetUser is not null)
-                {
-                    var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
-                    if (targetSubnetwork.Id != senderSubnetwork.Id)
-                    {
-                        var copyLog = new Log(newLog, targetSubnetwork);
-                        targetSubnetwork.PastHacks = [.. targetSubnetwork.PastHacks, copyLog.Id];
-                        _networksService.UpdateSubnetworkAsync(targetSubnetwork);
-                        _logService.CreateAsync(copyLog);
-                    }
-                }
+                subNetwork.PastHacks = [.. subNetwork.PastHacks, newLog.Timestamp.ToString()];
             }
+            _networksService.UpdateSubnetworkAsync(subNetwork);
+            _logService.CreateAsync(newLog);
 
             return CreatedAtAction(nameof(PostHack), new { id = newLog.Id }, newLog);
         }
