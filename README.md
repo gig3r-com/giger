@@ -2,24 +2,29 @@
 
 Welcome to the Giger Web App! This application simulates a dystopian cyberpunk world where players can interact with various gigs and immerse themselves in the futuristic setting.
 
+Test branch, do not merge PR or env will be closed.
+
 ## Installation
 
 Before you start, make sure you have Node.js and npm (Node Package Manager) installed on your machine.
 
-# Clone the repository:
+# Clone the repository
+
 git clone <repository-url>
 Navigate to the project directory:
 
 cd giger
 
-## Install dependencies:
+## Install dependencies
+
 npm install
 Running the App
 To start the development server and run the application, follow these steps:
 
-## Run the development server:
+## Run the development server
+
 npm run dev
-Open your web browser and visit: http://localhost:5137
+Open your web browser and visit: <http://localhost:5137>
 You should now see the Giger Web App running in your browser.
 
 Features
@@ -32,9 +37,11 @@ React: JavaScript library for building user interfaces.
 TypeScript: Superset of JavaScript with static types.
 
 ## Contributing
+
 Contributions are welcome! Feel free to fork the repository and submit pull requests for any enhancements or bug fixes.
 
 ## License
+
 This project is licensed under the Creative Commons License.
 
 Created with ❤️ by GIG3R Larp Team and LarpVenture
@@ -55,4 +62,3 @@ docker-compose exec backend flask init backdoor
 ```
 
 App should be now available on localhost 8080. If you don't like the port, create file `.env` and add `PORT=your_desiderd_port`.
-
