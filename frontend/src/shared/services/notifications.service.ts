@@ -1,34 +1,67 @@
-import React from 'react';
-import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { useCallback } from 'react';
+import { updateConversation } from '../../store/messages.slice';
+import { IWebsocketContext } from '../providers/websocket.model';
+import { useWebSocketContext } from '../providers/websocket.provider';
+import { useMessagesService } from './messages.service';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectGigConversations,
+    selectConversations
+} from './messages.selectors';
+import { useUserService } from './user.service';
+import { IConversationConsumablePayload } from '../../models/websockets';
 
-/**
- * Service for handling toast messages.
- * Meant to be used in conjunction with websockets to notify the user about gig changes or bank transfers.
- * This connection will be added once backend is ready.
- */
 export const useNotificationsService = () => {
-    /**
-     * Fires a toast linking to a given address with a given message
-     * @param linkAddress the address to link to
-     * @param toastMsg the message to display
-     */
-    const displayToast = (toastMsg: string, linkAddress?: string) => {
-        toast(
-            linkAddress
-                ? React.createElement(Link, { to: linkAddress }, toastMsg)
-                : toastMsg,
-            { duration: 15000 }
-        );
-    };
+    const dispatch = useDispatch();
+    const { lastMessage } = useWebSocketContext() as IWebsocketContext;
+    const { fetchUserConvos } = useMessagesService();
+    const { currentUser } = useUserService();
+    const gigConversations = useSelector(selectGigConversations);
+    const conversations = useSelector(selectConversations);
 
-    /**
-     * clearly only for testing purposes only and should be removed once backend is ready
-     */
-    const test = () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any)['toast'] = displayToast;
-    };
+    const handleNewMessage = useCallback(
+        (lastMessage: IConversationConsumablePayload) => {
+            if (!lastMessage) {
+                return;
+            }
+            const conversation = conversations.find(
+                (convo) => convo.id === lastMessage.conversationId
+            );
+            const gigConversation = gigConversations.find(
+                (convo) => convo.id === lastMessage.conversationId
+            );
 
-    return { test, displayToast };
+            if (!conversation && !gigConversation) {
+                fetchUserConvos();
+                return;
+            }
+
+            if (conversation) {
+                dispatch(
+                    updateConversation({
+                        convoId: lastMessage.conversationId,
+                        message: lastMessage.message,
+                        gigConvo: false,
+                        currentUserHandle: currentUser!.handle
+                    })
+                );
+            }
+
+            if (gigConversation) {
+                dispatch(
+                    updateConversation({
+                        convoId: lastMessage.conversationId,
+                        message: lastMessage.message,
+                        gigConvo: true,
+                        currentUserHandle: currentUser!.handle
+                    })
+                );
+            }
+        },
+        [dispatch, lastMessage, currentUser]
+    );
+
+    return {
+        handleNewMessage
+    };
 };

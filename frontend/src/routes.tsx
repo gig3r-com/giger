@@ -9,7 +9,7 @@ import { ReportProblem } from './shared/components/report-problem/reportProblem'
 import { Login } from './apps/login/login';
 import { RootState } from './store/store';
 import { useEffect } from 'react';
-import { useNotificationsService } from './shared/services/notifications.service';
+import { useToastService } from './shared/services/toast.service';
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
 import { useVersionService } from './shared/services/version.service';
@@ -27,19 +27,28 @@ import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
 import { useBankingService } from './shared/services/banking.service';
 import { useUserService } from './shared/services/user.service';
+import { useNotificationsService } from './shared/services/notifications.service';
+import { IWebsocketContext } from './shared/providers/websocket.model';
+import { useWebSocketContext } from './shared/providers/websocket.provider';
 
 export const Router = () => {
     const intl = useIntl();
-    const { test } = useNotificationsService();
+    const { lastMessage } = useWebSocketContext() as IWebsocketContext;
+    const { test } = useToastService();
     const { versionCheck } = useVersionService();
     const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
+    const { handleNewMessage } = useNotificationsService();
 
     useEffect(() => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();
         test();
     }, []);
+
+    useEffect(() => {
+        lastMessage && handleNewMessage(lastMessage);
+    }, [lastMessage]);
 
     const isLoggedIn = useSelector(
         (state: RootState) =>

@@ -16,17 +16,17 @@ export const Giger: FC = () => {
     const { gigId } = useParams();
     const navigate = useNavigate();
     const [fetchingGigs, setFetchingGigs] = useState(true);
-    const { fetchGigs, gigsVisibleToTheUser, filteredGigs } = useGigsService();
+    const { fetchGigs, gigsVisibleToTheUser } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
 
     useEffect(function mountSetup() {
-        if (filteredGigs.length === 0) {
-            fetchGigs().then(() => setFetchingGigs(false));
-        } else {
+        setFetchingGigs(true);
+        fetchGigs().then(() => {
             setFetchingGigs(false);
-        }
+            setFetchingGigs(false);
+        });
     }, []);
 
     const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);

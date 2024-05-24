@@ -25,6 +25,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     children
 }) => {
     const ws = useRef<WebSocket | null>(null);
+    const notificationWs = useRef<WebSocket | null>(null);
     const dispatch = useDispatch();
     const { api } = useApiService();
     const [lastMessage, setLastMessage] =
@@ -35,9 +36,9 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
 
     const generateSocket = useCallback(
-        (mode: 'hash' | 'convo') => {
+        (mode: 'notifications' | 'convo') => {
             return new WebSocket(
-                `${endpointBase}/ws${mode === 'convo' ? '1337' : '2337'}?AuthToken=${authToken}`
+                `${endpointBase}/ws${mode === 'convo' ? '1337' : '2137'}?AuthToken=${authToken}`
             );
         },
         [authToken, endpointBase]
@@ -76,49 +77,78 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         }, 55000);
     };
 
-    const setupWebsocket = useCallback(async () => {
-        const socketMissingOrClosed = !ws.current || ws.current.readyState === WebSocket.CLOSED;
+    const setupWebsocket = useCallback(
+        async (mode: 'convo' | 'notifications') => {
+            const socketRef = mode === 'convo' ? ws : notificationWs;
+            const socketMissingOrClosed =
+                !socketRef.current ||
+                socketRef.current.readyState === WebSocket.CLOSED;
 
-        if (!authToken || !socketMissingOrClosed) {
-            return;
-        }
+            if (!authToken || !socketMissingOrClosed) {
+                return;
+            }
 
-        const socket = generateSocket('convo');
-        let interval: number;
+            const socket = generateSocket(mode);
+            let interval: number;
 
-        socket.binaryType = 'arraybuffer';
+            socket.binaryType = 'arraybuffer';
 
-        socket.onopen = () => {
-            interval = ping(socket);
-        };
+            socket.onopen = () => {
+                interval = ping(socket);
+            };
 
-        socket.onclose = () => {
-            clearInterval(interval);
-            // setupWebsocket();
-        };
+            socket.onclose = () => {
+                clearInterval(interval);
+                // setupWebsocket();
+            };
 
-        socket.onerror = (error) => {
-            console.error('WebSocket error', error);
-        };
+            socket.onerror = (error) => {
+                console.error('WebSocket error', error);
+            };
 
-        socket.onmessage = (event) => {
-            const message = JSON.parse(
-                event.data
-            ) as IConversationUpdatePayload;
-            setLastMessage({
-                conversationId: message.ConversationId,
-                isGigConversation: !!message.IsGigConversation,
-                message: {
-                    id: message.Message.Id,
-                    date: message.Message.Date,
-                    sender: message.Message.Sender,
-                    text: message.Message.Text
+            socket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                if (mode === 'convo') {
+                    handleConvoMessage(message as IConversationUpdatePayload);
+                    return;
                 }
-            });
-        };
+                if (mode === 'notifications') {
+                    //setLastMessage(message as IConversationConsumablePayload);
+                    console.log('notifications', message);
+                    return;
+                }
+            };
 
-        ws.current = socket;
-    }, [authToken, generateSocket]);
+            socketRef.current = socket;
+        },
+        [authToken, generateSocket]
+    );
+
+    const handleConvoMessage = (message: IConversationUpdatePayload) => {
+        setLastMessage({
+            conversationId: message.ConversationId,
+            isGigConversation: !!message.IsGigConveration,
+            message: {
+                id: message.Message.Id,
+                date: message.Message.Date,
+                sender: message.Message.Sender,
+                text: message.Message.Text
+            }
+        });
+    };
+
+    const sendMessage = (message: IConversationUpdatePayload) => {
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+            ws.current.send(JSON.stringify(message));
+        } else {
+            console.error('Convo WebSocket is not connected');
+            setTimeout(async () => {
+                await setupWebsocket('convo');
+                sendMessage(message);
+            }, reconnectInterval);
+            setReconnectInterval(reconnectInterval * 2);
+        }
+    };
 
     const handleVisibilityChange = useCallback(() => {
         document.addEventListener('visibilitychange', function () {
@@ -127,13 +157,25 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
                 if (ws.current) {
                     ws.current.close();
                 }
+                if (notificationWs.current) {
+                    notificationWs.current.close();
+                }
                 setReconnectInterval(1000);
             } else {
                 console.log('Page visible, reconnecting WebSocket');
                 if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
                     setTimeout(() => {
                         getIntermediateData();
-                        setupWebsocket();
+                        setupWebsocket('convo');
+                    }, reconnectInterval);
+                    setReconnectInterval(reconnectInterval * 2);
+                }
+                if (
+                    !notificationWs.current ||
+                    notificationWs.current.readyState === WebSocket.CLOSED
+                ) {
+                    setTimeout(() => {
+                        setupWebsocket('notifications');
                     }, reconnectInterval);
                     setReconnectInterval(reconnectInterval * 2);
                 }
@@ -141,21 +183,9 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         });
     }, [setupWebsocket]);
 
-    const sendMessage = (message: IConversationUpdatePayload) => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            ws.current.send(JSON.stringify(message));
-        } else {
-            console.error('WebSocket is not connected');
-            setTimeout(async () => {
-                await setupWebsocket();
-                sendMessage(message);
-            }, reconnectInterval);
-            setReconnectInterval(reconnectInterval * 2);
-        }
-    };
-
     useEffect(function setup() {
-        setupWebsocket();
+        setupWebsocket('convo');
+        setupWebsocket('notifications');
         handleVisibilityChange();
     }, []);
 

@@ -15,7 +15,7 @@ import {
 } from '../../models/user';
 import { v4 } from 'uuid';
 import { useApiService } from './api.service';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useIntl } from 'react-intl';
 import {
     addEvent,
@@ -36,7 +36,7 @@ export const useEventsService = () => {
     const intl = useIntl();
     const dispatch = useDispatch();
     const { api } = useApiService();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const { currentUser } = useUserService();
     const relations = useSelector(selectRelations);
     const metas = useSelector(selectMeta);

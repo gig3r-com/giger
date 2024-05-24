@@ -10,7 +10,7 @@ import {
 } from '../../models/gig';
 import { removeGig, setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -36,7 +36,7 @@ export function useGigsService() {
         (state: RootState) => state.gigs.selectedMode
     );
     const intl = useIntl();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => {
@@ -223,7 +223,8 @@ export function useGigsService() {
         };
 
         api.url(`Gig/${gigId}/dispute`)
-            .patch(complaint)
+            .body(JSON.stringify({ "text": complaint }))
+            .patch()
             .res()
             .then(() => {
                 updateGig(updatedGig);

@@ -186,6 +186,7 @@ const buttonDefinitions: {
     {
         status: GigStatus.IN_PROGRESS,
         mode: GigModes.PROVIDER,
+        isMine: false,
         buttons: [
             {
                 label: 'MARK_AS_DONE',
@@ -198,6 +199,19 @@ const buttonDefinitions: {
     {
         status: GigStatus.IN_PROGRESS,
         mode: GigModes.CLIENT,
+        isMine: false,
+        buttons: [
+            {
+                label: 'AWAITING_COMPLETION',
+                color: 'secondary',
+                disabled: true
+            }
+        ]
+    },
+    {
+        status: GigStatus.IN_PROGRESS,
+        mode: GigModes.PROVIDER,
+        isMine: true,
         buttons: [
             {
                 label: 'AWAITING_COMPLETION',
