@@ -9,6 +9,10 @@ export const selectUnreadMessages = createSelector(
     (state: RootState) => state.conversations.unreadMessages,
     (unreadMessages) => unreadMessages
 );
+export const selectUnreadGigMessages = createSelector(
+    (state: RootState) => state.conversations.unreadGigMessages,
+    (unreadGigMessages) => unreadGigMessages
+);
 export const selectGigConversations = createSelector(
     (state: RootState) => state.conversations.gigConversations,
     (gigConversations) => gigConversations

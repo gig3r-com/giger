@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import classNames from 'classnames';
 import { RootState } from '../../../../store/store';
+import { useMessagesService } from '../../../../shared/services/messages.service';
 
 import './gig-header.scss';
 
@@ -31,6 +32,7 @@ export const GigHeader: FC<{
         useGigHelpers();
     const { generateAnimation } = useStandardizedAnimation();
     const { hasStatusUpdate } = useGigsService();
+    const { gigConvoHasUnreadMessages } = useMessagesService();
     const selectedId = useSelector(
         (state: RootState) => state.gigs.selectedGigId
     );
@@ -85,8 +87,13 @@ export const GigHeader: FC<{
                             </span>
                             <span className="gig-header__updates">
                                 {hasStatusUpdate(gig.id) && (
-                                    <span className="gig-header__status-update">
+                                    <span className="gig-header__status-update gig-header__update">
                                         <FormattedMessage id="NEW_STATUS" />
+                                    </span>
+                                )}
+                                {gigConvoHasUnreadMessages(gig.id) && (
+                                    <span className="gig-header__msg-update gig-header__update">
+                                        <FormattedMessage id="NEW_MESSAGES_ABBREVIATION" />
                                     </span>
                                 )}
                             </span>

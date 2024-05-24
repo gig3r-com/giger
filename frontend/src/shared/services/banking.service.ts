@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import {
     selectAccounts,
-    addTransaction,
     setAccount,
     setBusinessAccount
 } from '../../store/bank.slice';
@@ -91,11 +90,7 @@ export function useBankingService() {
         api.url('Account/transaction')
             .post(transaction)
             .res(() => {
-                dispatch(
-                    addTransaction({
-                        transaction
-                    })
-                );
+                fetchAccounts();
             });
     };
 

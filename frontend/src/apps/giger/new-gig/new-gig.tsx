@@ -121,7 +121,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
     const gigReady = useMemo(() => {
         checkBalance();
         return (
-            gigName !== '' &&
+            gigName.trim() !== '' &&
             anonymize !== '' &&
             publicDescription !== '' &&
             privateMessage !== '' &&

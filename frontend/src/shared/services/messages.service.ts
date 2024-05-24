@@ -8,12 +8,14 @@ import {
     setAllConversationHashes,
     setAllGigConversationHashes,
     setConversations,
-    setGigConversations} from '../../store/messages.slice';
+    setGigConversations
+} from '../../store/messages.slice';
 import { useUserService } from './user.service';
 import { useApiService } from './api.service';
 import { useToastService } from './toast.service';
 import {
     selectGigConversations,
+    selectUnreadGigMessages,
     selectUnreadMessages
 } from './messages.selectors';
 import dayjs from 'dayjs';
@@ -34,6 +36,7 @@ export function useMessagesService() {
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const gigConversations = useSelector(selectGigConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
+    const unreadGigMessages = useSelector(selectUnreadGigMessages)
 
     const createMessage: (text: string, senderHandle?: string) => IMessage = (
         text,
@@ -52,29 +55,29 @@ export function useMessagesService() {
         id?: string,
         anonymize?: boolean
     ) => Promise<string> = (participants, id, anonymize) =>
-        new Promise((resolve, reject) => {
-            const convoId = id ?? uuidv4();
-            const convo: IConversation = {
-                id: convoId,
-                anonymizedUsers: anonymize ? [currentUser!.handle] : [],
-                gigConversation: false,
-                participants,
-                messages: [...createInitialMessages(participants)]
-            };
+            new Promise((resolve, reject) => {
+                const convoId = id ?? uuidv4();
+                const convo: IConversation = {
+                    id: convoId,
+                    anonymizedUsers: anonymize ? [currentUser!.handle] : [],
+                    gigConversation: false,
+                    participants,
+                    messages: [...createInitialMessages(participants)]
+                };
 
-            api.url('Conversation')
-                .post(convo)
-                .json<IConversation>()
-                .catch(() => reject())
-                .then((conversation) => {
-                    if (!conversation) {
-                        reject();
-                        return;
-                    }
-                    dispatch(addConversation(conversation));
-                    resolve(conversation.id);
-                });
-        });
+                api.url('Conversation')
+                    .post(convo)
+                    .json<IConversation>()
+                    .catch(() => reject())
+                    .then((conversation) => {
+                        if (!conversation) {
+                            reject();
+                            return;
+                        }
+                        dispatch(addConversation(conversation));
+                        resolve(conversation.id);
+                    });
+            });
 
     const getGigConvo = async (gigId: string): Promise<IConversation> => {
         return await api
@@ -156,6 +159,10 @@ export function useMessagesService() {
         return unreadMessages[convoId]?.length > 0;
     };
 
+    const gigConvoHasUnreadMessages = (convoId: string): boolean => {
+        return unreadGigMessages[convoId]?.length > 0;
+    }
+
     const updateConversationHashes = (
         hashes: Record<string, number>,
         gigConversationHashes: boolean
@@ -185,6 +192,7 @@ export function useMessagesService() {
         getGigConvo,
         isMessageUnread,
         convoHasUnreadMessages,
+        gigConvoHasUnreadMessages,
         updateConversationHashes
     };
 }

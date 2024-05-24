@@ -9,7 +9,11 @@ import { UserRoles } from '../../../models/user';
 
 import './new-msg.scss';
 
-export const NewMsg: FC<INewMsgProps> = ({ convoId, onSend, userIsParticipant }) => {
+export const NewMsg: FC<INewMsgProps> = ({
+    convoId,
+    onSend,
+    userIsParticipant
+}) => {
     const intl = useIntl();
     const { gigId } = useParams();
     const { currentUser } = useUserService();
@@ -27,7 +31,7 @@ export const NewMsg: FC<INewMsgProps> = ({ convoId, onSend, userIsParticipant })
         }
 
         setNewMessage('');
-        send(newMessage, convoId);
+        send(newMessage, convoId, isGigConvo);
         onSend && onSend();
     };
 
@@ -43,7 +47,11 @@ export const NewMsg: FC<INewMsgProps> = ({ convoId, onSend, userIsParticipant })
                 })}
                 className="new-msg__message"
             />
-            <button className="new-msg__send-message" onClick={sendMessage}>
+            <button
+                className="new-msg__send-message"
+                onClick={sendMessage}
+                disabled={newMessage.trim() !== ''}
+            >
                 <span>+</span>
             </button>
         </motion.div>

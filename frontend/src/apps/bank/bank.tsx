@@ -11,6 +11,7 @@ import { Cards } from './cards/cards';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { AccountType, IAccount, ITransaction } from '../../models/banking';
 import { standardTimingFunction } from '../../shared/constants';
+import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 
 import './bank.scss';
 
@@ -19,6 +20,7 @@ export const Bank: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const { accounts, fetchAccounts } = useBankingService();
+    const [loading, setLoading] = useState(false);
     const [account, setAccount] = useState<IAccount | undefined>(undefined);
     const showCards = useMemo(
         () => accounts.private || accounts.business,
@@ -47,7 +49,8 @@ export const Bank: FC = () => {
     };
 
     useEffect(function fetchAccountsOnMount() {
-        fetchAccounts();
+        setLoading(true);
+        fetchAccounts().then(() => setLoading(false));
     }, []);
 
     useEffect(
@@ -120,6 +123,10 @@ export const Bank: FC = () => {
                             </motion.ol>
                         )}
                     </AnimatePresence>
+
+                    {loading && (
+                        <LoadingBar isLoading={loading} text="LOADING" />
+                    )}
                 </article>
             )}
             <Outlet />
