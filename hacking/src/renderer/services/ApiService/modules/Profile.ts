@@ -56,11 +56,14 @@ export default class Profile {
     });
   }
 
-  async getUserProfile(userId: string): Promise<ProfileType> {
+  async getUserProfile(id: string): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();
-    const profileData = await getProfileData(userId);
+    const profileData = await getProfileData(id);
     const handle: string = String(profileData.data.handle);
-    let accounts, conversations, gigs;
+    const userId: string = String(profileData.data.id);
+    let accounts;
+    let conversations;
+    let gigs;
     try {
       accounts = await getAccounts(handle);
     } catch (e) {
@@ -72,7 +75,7 @@ export default class Profile {
       console.error(e);
     }
     try {
-      // const gigs = await getGigs(userId);
+      gigs = await getGigs();
     } catch (e) {
       console.error(e);
     }
@@ -90,17 +93,16 @@ export default class Profile {
     ): Promise<ConversationType[]> {
       const conversationsUrl = `${gigerApiUrl}/Conversation/byParticipant?participant=${userHandle}`;
       const conversationsResponse = await axios.get(conversationsUrl);
-      return conversationsResponse?.data?.map(mapConversation);
+      return conversationsResponse?.data
+        ?.filter((c: any) => !c.gigConversation)
+        .map(mapConversation);
     }
 
     async function getGigs(): Promise<any[]> {
-      const gigsUrl = `${gigerApiUrl}/Gig/get/all`;
+      const gigsUrl = `${gigerApiUrl}/Gig/hack/${userId}/getAll`;
       const gigsResponse = await axios.get(gigsUrl);
-      return [
-        mapGig(
-          gigsResponse.data?.filter((gig: any) => gig.authorId === userId),
-        ),
-      ];
+      // const filteredGigs = filterGigs(gigsResponse.data);
+      return gigsResponse.data.map(mapGig);
     }
 
     async function getProfileData(id: string) {

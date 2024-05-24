@@ -40,6 +40,10 @@ export default function useLogin({
       .catch((err) => {
         console.log(err)
         addLines(loginFailed);
+        console.log(err?.response?.data)
+        if (err?.response?.data && typeof err?.response?.data === 'string') {
+          addLines([err?.response?.data]);
+        }
         setInputDisabled(false);
       });
   }

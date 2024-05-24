@@ -8,7 +8,8 @@ export default class Exit {
   }
 
   execute() {
-    const { ServerConnectionService } = this.Service;
+    const { ServerConnectionService, mainCommandsTable } = this.Service;
+    mainCommandsTable.logout.execute();
     ServerConnectionService.disconnect();
     window.close();
   }

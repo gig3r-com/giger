@@ -87,7 +87,6 @@ export type BankAccountType = {
 
 export type ConversationType = {
   id: string;
-  isGigConversation: boolean;
   participants: string[];
 };
 

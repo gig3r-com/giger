@@ -15,6 +15,7 @@ export default async function initialization({
   await wait([`Cyberdeck Integration Chip Terminal Initialization`], 100);
 
   addLines(['']);
+  /*
   await waitWithPercentTimer(`Initializing core modules...`, 5000);
   await wait(
     [
@@ -151,7 +152,7 @@ export default async function initialization({
     `Type <span class="secondary-color">list cmd</span> to read documentation`,
   ]);
   addLines(['']);
-
+*/
   setInputDisabled(false);
 
   function wait(lines: string[], time: number, callback?: any): Promise<void> {

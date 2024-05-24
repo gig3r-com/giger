@@ -19,24 +19,28 @@ export function getBaseProfileLines(data: ProfileType): string[] {
       `${tabField('name', data.name)}, ${tabField('surname', data.surname)}`,
     );
   } else {
-    lines.push(
-      `${tabField('surname', data.surname)}`,
-    );
+    lines.push(`${tabField('surname', data.surname)}`);
   }
 
   if (data.networkId) {
     lines.push(
-      `${tabField('network', data.networkName)} ${tabField('id', data.networkId)}`,
+      `${tabField('network', data.networkName)} ${tabField(
+        'id',
+        data.networkId,
+      )}`,
     );
   }
 
   if (data.subnetworkId) {
     lines.push(
-      `${tabField('subnetwork', data.subnetworkName)} ${tabField('id', data.subnetworkId)}`,
+      `${tabField('subnetwork', data.subnetworkName)} ${tabField(
+        'id',
+        data.subnetworkId,
+      )}`,
     );
   }
   lines.push(
-    `${field('type', data.typeActual)}, ${field('wealth', data.wealthLevel,)}`,
+    `${field('type', data.typeActual)}, ${field('wealth', data.wealthLevel)}`,
   );
 
   // Events
@@ -58,7 +62,6 @@ export function getBaseProfileLines(data: ProfileType): string[] {
     )}`;
 
   // Conversations
-  console.log(data.conversations)
   if (data.conversations.length)
     tableContent = `${tableContent}${printConversationTablePart(
       'Conversations',
@@ -73,8 +76,20 @@ export function getBaseProfileLines(data: ProfileType): string[] {
     )}`;
 
   // Gigs
-  if (data.gigs.length)
-    tableContent = `${tableContent}${printRecordTablePart('Gigs', data.gigs)}`;
+  if (data.gigs.length) {
+    const createdGigs = data.gigs.filter((g) => g.authorId === data.id);
+    const takenGigs = data.gigs.filter((g) => g.takenById === data.id);
+    if (createdGigs.length)
+      tableContent = `${tableContent}${printGigTablePart(
+        'Authored gigs',
+        createdGigs,
+      )}`;
+    if (createdGigs.length)
+      tableContent = `${tableContent}${printGigTablePart(
+        'Taken gigs',
+        takenGigs,
+      )}`;
+  }
 
   if (tableContent)
     lines.push(`<table class="profile-table">${tableContent}</table>`);
@@ -115,6 +130,21 @@ export function getBaseProfileLines(data: ProfileType): string[] {
       .join('')}`;
   }
 
+  function printGigTablePart(title: string, gigs: any[]): string {
+    return `<tr class="secondary-color table-title"><td colspan="5">${title}</td></tr> ${gigs
+      .map(
+        (gig) =>
+          `<tr>
+        <td>${withTab(gig.id)}</td>
+        <td>${gig.title}</td>
+        <td><span>${gig.status}</span></td>
+        <td>${gig.category}</td>
+        <td>${gig.subcategory}</td>
+        </tr>`,
+      )
+      .join('')}`;
+  }
+
   function printAccountTablePart(
     title: string,
     children: BankAccountType[],
@@ -124,7 +154,7 @@ export function getBaseProfileLines(data: ProfileType): string[] {
         (event) =>
           `<tr>
         <td>${event.type}: ${withTab(event.accountNumber)}</td>
-        <td>Ballance: <span class="secondary-color">${event.balance}</span></td>
+        <td>Balance: <span class="secondary-color">${event.balance}</span></td>
         <td></td>
         <td></td>
         <td></td>

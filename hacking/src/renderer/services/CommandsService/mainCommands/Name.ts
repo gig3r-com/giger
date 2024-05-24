@@ -1,6 +1,6 @@
 import type CommandsServiceType from '../CommandsService';
-import {ApiService, ConfigService} from '../../index';
-import { getErrorMessage, noUserNameError } from '../responseLines/errors';
+import {ApiService, ConfigService, ServerConnectionService} from '../../index';
+import { getErrorMessage } from '../responseLines/errors';
 import { getNewNameLines } from '../responseLines/misc';
 
 export default class Name {
@@ -17,25 +17,29 @@ export default class Name {
       addLines,
       parsedCommand,
       refreshPrefix,
+      getDirectLine,
     } = this.Service;
     if (!setInputDisabled || !addLines || !refreshPrefix) {
       fireInitError();
       return;
     }
-    if (!parsedCommand[0]) {
-      addLines(noUserNameError);
+    if (ServerConnectionService.isConnected) {
+      addLines(`<span class="secondary-color">Error: </span> You cant change your CIC Terminal name while connected to subntetwork`);
+      return;
+    }
+    let name = parsedCommand[0];
+    if (!name) {
+      name = await getDirectLine(`Enter your new hacker name:`);
       return;
     }
     try {
       await ConfigService.checkHacking('name');
       setInputDisabled(true);
-      ApiService.changeActiveUserHackingName(parsedCommand[0]).then(
-        (newHackerName) => {
-          setInputDisabled(false);
-          addLines(getNewNameLines(newHackerName.hackerName));
-          refreshPrefix();
-        },
-      );
+      ApiService.changeActiveUserHackingName(name).then((newHackerName) => {
+        setInputDisabled(false);
+        addLines(getNewNameLines(newHackerName.hackerName));
+        refreshPrefix();
+      });
     } catch (err) {
       setInputDisabled(false);
       addLines(getErrorMessage(err));

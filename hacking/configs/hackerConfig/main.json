@@ -1,0 +1,8 @@
+{
+  "resetTimeInS": 300,
+  "defencePrograms": 1,
+  "exploits": 1,
+  "testConfig": 1,
+  "isHackingEnabled": false,
+  "isTestHackingEnabled": true
+}

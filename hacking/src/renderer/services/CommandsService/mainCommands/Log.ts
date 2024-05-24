@@ -1,8 +1,9 @@
 import type CommandsServiceType from '../CommandsService';
 import { getErrorMessage, notConnectedError } from '../responseLines/errors';
 import { getLogsMessage } from '../responseLines/logs';
+import {ConfigService, ServerConnectionService} from "../../index";
 
-export default class End {
+export default class Log {
   private Service: CommandsServiceType;
 
   constructor(CommandsService: CommandsServiceType) {
@@ -27,6 +28,8 @@ export default class End {
     }
 
     try {
+      await ConfigService.checkHacking('log');
+      ServerConnectionService.checkCommand('log');
       setInputDisabled(true);
       const logs = await ApiService.getSubnetworksLogs(
         ServerConnectionService.connectedSubnetwork?.id,

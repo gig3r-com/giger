@@ -68,20 +68,14 @@ export default class List {
       console.error('PROBLEM');
       return;
     }
+    const connectedCommands = this.commands.filter(
+      (command) => command.onConnected,
+    );
     if (ServerConnectionService.isDecrypted) {
-      addLines(
-        getListLines(this.commands.filter((command) => command.onConnected)),
-      );
-    } else {
-      addLines(
-        getListLines(
-          this.commands.filter(
-            (command) =>
-              command.onConnected ||
-              !system.encryptedCommands?.includes(command.disableCode),
-          ),
-        ),
-      );
+      addLines(getListLines(connectedCommands));
+    } else if (ServerConnectionService.isConnected) {
+      console.log(system.encryptedCommands);
+      addLines(getListLines(connectedCommands, system.encryptedCommands));
     }
   }
 
@@ -216,7 +210,7 @@ export default class List {
         'Copy record data from user (from [userId]) to your account (into Private Records)',
     },
     {
-      title: 'balance',
+      title: 'balance [accountNr]',
       onDisconnected: true,
       onConnected: true,
       special: '',
@@ -224,7 +218,8 @@ export default class List {
       description: 'Get balance records about account',
     },
     {
-      title: 'transfer',
+      title:
+        'transfer [sender_accountNr] [receiver_accountNr] [amount] [title]',
       onDisconnected: true,
       onConnected: true,
       special: '',
@@ -238,6 +233,14 @@ export default class List {
       special: '',
       disableCode: 'readMsg',
       description: 'Read conversation',
+    },
+    {
+      title: 'sendMsg [sender_username] [receiver_username] [text]',
+      onDisconnected: true,
+      onConnected: true,
+      special: '',
+      disableCode: 'sendMsg',
+      description: 'Send message',
     },
   ];
 }

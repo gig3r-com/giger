@@ -16,6 +16,7 @@ import {
   Exit,
   ReadMsg,
   SendMsg,
+  Gig,
 } from './mainCommands';
 import {
   getErrorMessage,
@@ -51,7 +52,7 @@ export type CommandsTableType = {
 };
 
 export default class CommandsService {
-  private mainCommandsTable: MainCommandsTableType = {
+  public mainCommandsTable: MainCommandsTableType = {
     clear: new Clear(this),
     end: new End(this),
     list: new List(this),
@@ -70,7 +71,8 @@ export default class CommandsService {
     log: new Log(this),
     exit: new Exit(this),
     readmsg: new ReadMsg(this),
-    // sendmsg: new SendMsg(this), todo: czekam na możliwość wysyłania wiadomości
+    sendmsg: new SendMsg(this),
+    gig: new Gig(this),
   };
 
   public activeCommand: string = '';
@@ -242,6 +244,7 @@ export default class CommandsService {
     callback: (() => Promise<void>) | null,
     removeInitialMessage: boolean = false,
     processLength: number = 3000,
+    errorMessage: string[],
   ): Promise<null> {
     if (!this.addLines || !this.setInputDisabled || !this.removeLastLine) {
       this.fireInitError();
@@ -251,26 +254,27 @@ export default class CommandsService {
     return new Promise((resolve) => {
       // @ts-ignore
       this.setInputDisabled(true);
-      setTimeout(() => {
+      setTimeout(async () => {
         if (callback) {
-          callback().then(() => {
+          try {
+            await callback();
+          } catch (e) {
             // @ts-ignore
             this.setInputDisabled(false);
             // @ts-ignore
             if (removeInitialMessage) this.removeLastLine();
             // @ts-ignore
-            this.addLines(endMessage);
-            resolve(null);
-          });
-        } else {
-          // @ts-ignore
-          this.setInputDisabled(false);
-          // @ts-ignore
-          if (removeInitialMessage) this.removeLastLine();
-          // @ts-ignore
-          this.addLines(endMessage);
-          resolve(null);
+            this.addLines(errorMessage);
+            return;
+          }
         }
+        // @ts-ignore
+        this.setInputDisabled(false);
+        // @ts-ignore
+        if (removeInitialMessage) this.removeLastLine();
+        // @ts-ignore
+        this.addLines(endMessage);
+        resolve(null);
       }, processLength);
     });
   }

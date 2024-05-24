@@ -7,8 +7,8 @@ import {
   decryptingFailedLines,
 } from '../../Terminal/responseLines/runCommands';
 import { ApiService, OverlayService } from '../index';
-import { SubnetworkType, ProgramType } from '../../types';
-import {runCleaner, runKicker} from './utils/ice';
+import { SubnetworkType, ProgramType, ExploitType } from '../../types';
+import { runCleaner, runKicker } from './utils/ice';
 
 export default class ServerConnectionService {
   private breachTimer: ReturnType<typeof setInterval> | undefined;
@@ -79,23 +79,18 @@ export default class ServerConnectionService {
   }
 
   // eslint-disable-next-line consistent-return
-  async breach(exploitName: string, subnetwork: SubnetworkType) {
-    const exploit = await this.ConfigService.getExploit(exploitName);
-    if (!exploit) {
-      return new Error('No such exploit');
-    }
-
+  async breach(exploit: ExploitType, subnetwork: SubnetworkType) {
     const breachEffect = exploit.effect[subnetwork.firewall];
-    let currentTime = breachEffect.breachTime;
+    let currentTime = exploit.timeToRun;
 
     await ApiService.addBreachLog({ breachEffect, subnetwork });
 
     // eslint-disable-next-line consistent-return
-    this.breachTimer = setInterval(() => {
+    this.breachTimer = setInterval(async () => {
       this.setInputDisabled(true);
       if (!this.removeLastLine || !this.addLines) return this.initializeError();
-      if (currentTime !== breachEffect.breachTime) this.removeLastLine();
-      this.addLines([makeLoaderLine(currentTime, breachEffect.breachTime)]);
+      if (currentTime !== exploit.timeToRun) this.removeLastLine();
+      this.addLines([makeLoaderLine(currentTime, exploit.timeToRun)]);
       currentTime -= 1;
       if (currentTime <= 0) {
         this.removeLastLine();
@@ -103,7 +98,7 @@ export default class ServerConnectionService {
           this.addLines(connectingFailedLines);
         } else {
           this.addLines(connectingSuccessLines);
-          this.connect(subnetwork, breachEffect.perfect);
+          this.connect(subnetwork, exploit.timeToRun);
         }
         this.setInputDisabled(false);
         clearInterval(this.breachTimer);
@@ -112,18 +107,14 @@ export default class ServerConnectionService {
   }
 
   // eslint-disable-next-line consistent-return
-  decrypt(exploitName: string, subnetwork: SubnetworkType) {
-    const exploit = this.ConfigService.getExploit(exploitName);
-    if (!exploit) {
-      return new Error('No such exploit');
-    }
-
+  async decrypt(exploit: ExploitType, subnetwork: SubnetworkType) {
     const decryptionEffect = {
-      decryptionTime: 100,
+      decryptionTime: exploit.timeToRun,
       willDecryptionWork: true,
-      perfect: true,
+      perfect: !exploit.effect[subnetwork.operatingSystem].activateICE,
     };
     let currentTime = decryptionEffect.decryptionTime;
+    await ApiService.addDecryptLog({ decryptionEffect });
 
     this.decryptTimer = setInterval(() => {
       this.setInputDisabled(true);
@@ -148,12 +139,35 @@ export default class ServerConnectionService {
     }, 100);
   }
 
+  async disable(exploit: ExploitType) {
+    this.addLines([`Running ${exploit.name} disabler...`]);
+    await this.wait.bind(this)(exploit.timeToRun);
+    const iceBlocked = [];
+    exploit?.disables?.forEach((iceName) => {
+      this.targetingICEs = this.targetingICEs.filter(({ ice }) => {
+        if (ice.name === iceName) {
+          iceBlocked.push(ice.name);
+          return false;
+        }
+        return true;
+      });
+    });
+    this.removeLastLine();
+    if (iceBlocked.length) {
+      this.addLines([`Exploits ${iceBlocked.join(', ')} blocked`]);
+    } else if (iceBlocked.length === 1) {
+      this.addLines([`Exploit ${iceBlocked[0]} blocked`]);
+    } else {
+      this.addLines([`${exploit.name} Couldn't found ICE available to block`]);
+    }
+  }
+
   // eslint-disable-next-line consistent-return
   connect(subnetwork: SubnetworkType, isPerfect: boolean) {
     this.setupConnectedSubnetwork(subnetwork, isPerfect);
 
     // eslint-disable-next-line consistent-return
-    this.connectionTimer = setInterval(() => {
+    this.connectionTimer = setInterval(async () => {
       if (!this.setInputTimer) return this.initializeError();
       this.connectionTimeLeft -= 1;
 
@@ -170,7 +184,10 @@ export default class ServerConnectionService {
   }
 
   // eslint-disable-next-line consistent-return
-  async setupConnectedSubnetwork(subnetwork: SubnetworkType, isPerfect: boolean) {
+  async setupConnectedSubnetwork(
+    subnetwork: SubnetworkType,
+    isPerfect: boolean,
+  ) {
     if (!this.setPrefixType) return this.initializeError();
     this.setPrefixType(subnetwork.name);
 
@@ -235,21 +252,22 @@ export default class ServerConnectionService {
   }
 
   checkTargets(): void {
-    this.targetingICEs.forEach(({ target, ice }) => {
+    this.targetingICEs.forEach(async ({ target, ice }) => {
       const percent = this.getPercent(
         this.connectionTimeLeft - target,
         this.timeInSubnetwork - target,
       );
       this.MonitorService.setICEValue(ice.name, percent);
       if (this.connectionTimeLeft <= target) {
-        this.activateICE(ice);
+        await this.activateICE(ice);
       }
     });
   }
 
   // eslint-disable-next-line consistent-return
-  activateICE(ice: ProgramType) {
+  async activateICE(ice: ProgramType) {
     if (!this.addLines) return this.initializeError();
+    await ApiService.addICELog({ ice });
     switch (ice.name) {
       case 'Ping': {
         ApiService.sendPingMsg();
@@ -319,5 +337,24 @@ export default class ServerConnectionService {
 
   getPercent(value1, value2): number {
     return (1 - value1 / value2) * 100;
+  }
+
+  async wait(time: number) {
+    this.setInputDisabled(true);
+    await new Promise((resolve) => setTimeout(resolve, time)).then(() => {
+      this.setInputDisabled(false);
+    });
+  }
+
+  checkCommand(command: string) {
+    if (
+      this.isConnected &&
+      !this.isDecrypted &&
+      this.connectedSubnetworkSystem?.encryptedCommands?.includes(command)
+    ) {
+      throw new Error(
+        `<span class="secondary-color">Error:</span> Command is encrypted.`,
+      );
+    }
   }
 }

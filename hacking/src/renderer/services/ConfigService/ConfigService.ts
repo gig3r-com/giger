@@ -13,20 +13,23 @@ export default class ConfigService {
     testConfig: number;
   } = {};
 
-  private exploits: {} = {};
+  public exploits: {} = {};
 
-  private defencePrograms: {} = {};
+  public defencePrograms: {} = {};
 
   private testConfig: {} = {};
 
   private commandsCheck = {
     scan: this.checkScan,
     run: this.checkScan,
-    name: this.throwTestHackingError,
-    transfer: this.throwTestHackingError,
-    readmsg: this.throwTestHackingError,
-    copydata: this.throwTestHackingError,
-    sendmsg: this.throwTestHackingError,
+    name: this.baseCheck,
+    readmsg: this.checkReadMsg,
+    balance: this.checkBalance,
+    transfer: this.baseCheck,
+    copydata: this.baseCheck,
+    sendmsg: this.baseCheck,
+    log: this.baseCheck,
+    gig: this.checkGigs,
   };
 
   constructor(ApiService: ApiServiceType) {
@@ -42,7 +45,9 @@ export default class ConfigService {
     subCommand?: string | string[],
   ): Promise<void> {
     await this.loadMain();
-    if (this.main.isTestHackingEnabled && this.commandsCheck[mainCommand]) {
+    if (this.main.isHackingEnabled) {
+      return;
+    } else if (this.main.isTestHackingEnabled && this.commandsCheck[mainCommand]) {
       this.commandsCheck[mainCommand].bind(this)(subCommand);
     } else if (!this.main.isHackingEnabled) {
       throw new Error(
@@ -55,6 +60,14 @@ export default class ConfigService {
     throw new Error(
       `<span class="secondary-color">Error: </span>This command is outside the parameters of a test hacking`,
     );
+  }
+
+  baseCheck() {
+    if (!this.main.isHackingEnabled) {
+      throw new Error(
+        `<span class="secondary-color">Error: </span>Hacking right now is disabled! If this error shows during the game contact you Assistant AI`,
+      );
+    }
   }
 
   async loadMain() {
@@ -78,13 +91,13 @@ export default class ConfigService {
       const newMain = JSON.parse(configResponse.config);
       const newConfig = { main: newMain };
       if (newMain.defencePrograms !== this.main.defencePrograms) {
-        newConfig.defencePrograms = await this.loadDefencePrograms();
+        newConfig.main.defencePrograms = await this.loadDefencePrograms();
       }
       if (newMain.exploits !== this.main.exploits) {
-        newConfig.exploits = await this.loadExploits();
+        newConfig.main.exploits = await this.loadExploits();
       }
       if (newMain.testConfig !== this.main.testConfig) {
-        newConfig.testConfig = await this.loadTestConfig();
+        newConfig.main.testConfig = await this.loadTestConfig();
       }
       this.main = newMain;
       this.mainTimestamp = Date.now();
@@ -114,9 +127,11 @@ export default class ConfigService {
 
   async getExploit(exploitName: string): ExploitType | null {
     await this.loadMain();
-    const exploit = this.exploits[exploitName.toUpperCase()];
-    if (!exploit) return null;
-    return exploit;
+    const exploit = Object.values(this.exploits).filter(
+      (e) => e.name.toLowerCase() === exploitName.toLowerCase(),
+    );
+    if (!exploit.length) return null;
+    return exploit[0];
   }
 
   async getDefenceProgram(programName: string): ProgramType | null {
@@ -127,6 +142,9 @@ export default class ConfigService {
   }
 
   checkScan(subCommand: string) {
+    if (!subCommand) {
+      return;
+    }
     if (subCommand.trim() === '.') {
       return;
     }
@@ -134,7 +152,43 @@ export default class ConfigService {
       (testScan: string) =>
         testScan.toLowerCase() === subCommand.toLowerCase().trim(),
     );
-    if (!filtered.length) {
+    if (!filtered?.length) {
+      this.throwTestHackingError();
+    }
+  }
+
+  checkBalance(subCommand: string) {
+    if (subCommand.trim() === '.' || !subCommand) {
+      return;
+    }
+    const filtered = this.testConfig?.availableAccounts?.filter(
+      (testScan: string) =>
+        testScan.toLowerCase() === subCommand.toLowerCase().trim(),
+    );
+    if (!filtered?.length) {
+      this.throwTestHackingError();
+    }
+  }
+
+  checkReadMsg(subCommand: string) {
+    if (subCommand.trim() === '.') {
+      return;
+    }
+    const filtered = this.testConfig?.availableConversations?.filter(
+      (testScan: string) =>
+        testScan.toLowerCase() === subCommand.toLowerCase().trim(),
+    );
+    if (!filtered?.length) {
+      this.throwTestHackingError();
+    }
+  }
+
+  checkGigs(subCommand: string) {
+    const filtered = this.testConfig?.availableGigs?.filter(
+      (testScan: string) =>
+        testScan.toLowerCase() === subCommand.toLowerCase().trim(),
+    );
+    if (!filtered?.length) {
       this.throwTestHackingError();
     }
   }

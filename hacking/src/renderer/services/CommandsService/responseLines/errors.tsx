@@ -76,6 +76,7 @@ export const noAccountFound: string[] = [
 ];
 
 export function getErrorMessage(error: any): string[] {
+  console.log('error', error);
   let errorMsgKey;
   if (typeof error === 'string') {
     errorMsgKey = error;
@@ -98,6 +99,7 @@ export function getErrorMessage(error: any): string[] {
     ],
   };
 
+  console.log(errorKeyMap[errorMsgKey], errorMsgKey)
   if (errorKeyMap[errorMsgKey]) {
     return errorKeyMap[errorMsgKey];
   }

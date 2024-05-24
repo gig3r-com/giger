@@ -88,21 +88,19 @@ export default function Terminal() {
       refreshPrefix,
       removeLastLine,
     });
-    LineStateService.init({
-      addLines,
-      directInput,
-      setDirectInput,
-      enableDirectInput,
-      setEnableDirectInput,
-      handleKey,
-    });
     window.config.services = {
       ApiService,
       ConfigService,
       ServerConnectionService,
     };
     window.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.keyCode === 19 || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) {
+      if (
+        event.keyCode === 19 ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.metaKey ||
+        event.shiftKey
+      ) {
         return;
       }
       const inputRef = document.getElementById('terminal-input');
@@ -111,6 +109,17 @@ export default function Terminal() {
     });
     ConfigService.init();
   }, []);
+
+  useEffect(() => {
+    LineStateService.init({
+      addLines,
+      directInput,
+      setDirectInput,
+      enableDirectInput,
+      setEnableDirectInput,
+      handleKey,
+    });
+  }, [directInput, enableDirectInput]);
 
   const inputElement = enableDirectInput ? (
     <input

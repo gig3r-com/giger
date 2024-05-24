@@ -1,8 +1,12 @@
 import type CommandsServiceType from '../CommandsService';
-import { getConnectedSubnetworkData } from '../../../Terminal/utils/store';
-import * as EXPLOITS from '../../../Terminal/data/exploits';
-import { ExploitType } from '../../../Terminal/data/types';
-import { ApiService, ConfigService } from '../../index';
+import { ExploitType } from '../../../types';
+import {
+  ApiService,
+  ConfigService,
+  ServerConnectionService,
+  MonitorService,
+  CommandsService,
+} from '../../index';
 import {
   getErrorMessage,
   programNotFound,
@@ -26,101 +30,116 @@ export default class Run {
       addLines,
       fireInitError,
       parsedCommand,
-      MonitorService,
+      getDirectLine,
     } = this.Service;
     if (!setInputDisabled || !addLines) {
       fireInitError();
       return;
     }
+    let program = parsedCommand[0];
+    let subnetworkId = parsedCommand[1];
+    let subnetwork;
+    if (!program) {
+      program = await getDirectLine(`Enter program's name:`);
+    }
     try {
-      await ConfigService.checkHacking('run', parsedCommand[1]);
+      await ConfigService.checkHacking('run', subnetworkId);
       setInputDisabled(true);
-      const exploit: ExploitType | undefined = await ConfigService.getExploit(
-        parsedCommand[0],
-      );
+      const exploit: ExploitType | undefined =
+        await ConfigService.getExploit(program);
       if (!exploit) {
         addLines(programNotFound);
         setInputDisabled(false);
         return;
       }
 
-      if (exploit.type === 'breacher') await this.runBreacher(exploit);
-      if (exploit.type === 'decrypter') await this.runDecrypter(exploit);
-      if (exploit.type === 'monitor') MonitorService.enableMonitor();
-
+      if (exploit.type === 'breacher') {
+        await runBreacher(exploit);
+      }
+      if (exploit.type === 'decrypter') {
+        await runDecrypter(exploit);
+      }
+      if (exploit.type === 'disabler') {
+        await runDisabler(exploit);
+      }
+      if (exploit.type === 'scanner') {
+        await runScanner();
+      }
+      if (exploit.type === 'other') {
+        await runOther(exploit);
+      }
       setInputDisabled(false);
     } catch (err) {
       setInputDisabled(false);
       addLines(getErrorMessage(err));
     }
-  }
 
-  runMonitor() {
-    console.log('MONITOR ON');
-  }
+    async function checkSubnetwork() {
+      if (!subnetworkId) {
+        subnetworkId = await getDirectLine(`Enter subnetwork's id:`);
+      }
+      subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+      if (!subnetwork) {
+        addLines(subnetworkNotFound);
+      }
+    }
 
-  async runBreacher(exploit: ExploitType) {
-    const {
-      addErrors,
-      addLines,
-      fireInitError,
-      parsedCommand,
-      ServerConnectionService,
-    } = this.Service;
-    if (!addLines || !addErrors) {
-      fireInitError();
-      return;
+    async function checkConnectetion() {
+      if (ServerConnectionService.isConnected) {
+        subnetworkId = ServerConnectionService.connectedSubnetwork?.id;
+      } else if (!ServerConnectionService.isConnected) {
+        addLines([
+          `<span class="secondary-color">Cannot</span> run this program, you are not connected to any subnetwork`,
+        ]);
+      }
+      await checkSubnetwork();
     }
-    const subnetworkId = this.getSubnetworkId(
-      ServerConnectionService.isConnected,
-      parsedCommand[1],
-    );
-    const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
-    if (!subnetwork) {
-      addErrors(subnetworkNotFound);
-      return;
-    }
-    if (ServerConnectionService.isConnected)
-      throw new Error(
-        'Cannot connect while still connected to a subnetwork. Use END command to disconnect.',
-      );
-    addLines(connectingLines(subnetwork.name));
-    ServerConnectionService.breach(exploit.name, subnetwork);
-  }
 
-  async runDecrypter(exploit: ExploitType) {
-    const {
-      addErrors,
-      addLines,
-      fireInitError,
-      parsedCommand,
-      ServerConnectionService,
-    } = this.Service;
-    if (!addLines || !addErrors) {
-      fireInitError();
-      return;
+    async function runBreacher(exploit: ExploitType) {
+      await checkSubnetwork();
+      if (ServerConnectionService.isConnected) {
+        throw new Error(
+          'Cannot connect while still connected to a subnetwork. Use END command to disconnect.',
+        );
+      }
+      addLines(connectingLines(subnetwork.name));
+      await ServerConnectionService.breach(exploit, subnetwork);
     }
-    const subnetworkId = this.getSubnetworkId(
-      ServerConnectionService.isConnected,
-      parsedCommand[1],
-    );
-    const subnetwork = await ApiService.getSubnetworkById(subnetworkId);
-    if (!subnetwork) {
-      addErrors(subnetworkNotFound);
-      return;
-    }
-    if (!ServerConnectionService.isConnected)
-      throw new Error(
-        'Cannot decrypt while still not  connected to any subnetwork.',
-      );
-    addLines(decryptingLines(subnetwork.name));
-    ServerConnectionService.decrypt(exploit.name, subnetwork);
-  }
 
-  getSubnetworkId(isConnected: boolean, commandStatement: string) {
-    const connectedSubnetwork = getConnectedSubnetworkData();
-    if (isConnected && commandStatement === '.' && connectedSubnetwork)
-      return connectedSubnetwork?.id;
-    return commandStatement;
+    async function runDecrypter(exploit: ExploitType) {
+      await checkConnectetion();
+      addLines(decryptingLines(subnetwork.name));
+      await ServerConnectionService.decrypt(exploit, subnetwork);
+    }
+
+    async function runDisabler(exploit: ExploitType) {
+      await checkConnectetion();
+      await ServerConnectionService.disable(exploit);
+    }
+
+    async function runScanner() {
+      CommandsService.parsedCommand.shift();
+      await CommandsService.mainCommandsTable.scan.execute();
+    }
+
+    async function runOther(exploit: ExploitType) {
+      if (exploit.name === 'Monitor') {
+        if (MonitorService.monitorEnabled) {
+          MonitorService.disableMonitor();
+          addLines([`<span class="secondary-color">Monitor</span> disabled`]);
+        } else {
+          MonitorService.enableMonitor();
+          addLines([`<span class="secondary-color">Monitor</span> enabled`]);
+        }
+      } else if (exploit.name === 'MindFlayer') {
+        // Run MindFlayer
+        console.log('Not Implemented Yet', exploit);
+      } else if (exploit.name === 'BlueScreen') {
+        // Run BlueScreen
+        console.log('Not Implemented Yet', exploit);
+      } else if (exploit.name === 'GigerGate') {
+        await CommandsService.mainCommandsTable.gig.execute;
+      }
+    }
   }
 }

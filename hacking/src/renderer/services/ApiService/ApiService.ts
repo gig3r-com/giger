@@ -12,6 +12,7 @@ import LogsModule from './modules/Log';
 import HackConfigModule from './modules/HackConfig';
 import ConversationsModule from './modules/Conversations';
 import LoginModule from './modules/Login';
+import GigsModule from './modules/Gigs';
 
 export default class ApiService {
   constructor() {
@@ -22,7 +23,6 @@ export default class ApiService {
       // gigerUrl: 'http://192.168.50.100:9090',
       gigerApiUrl: 'https://dev.gig3r.com/api',
       gigerUrl: 'https://dev.gig3r.com',
-
     };
     window.electron.ipcRenderer.on('config-app', (data) => {
       const config = {};
@@ -66,6 +66,8 @@ export default class ApiService {
 
   loginModule = new LoginModule();
 
+  gigsModule = new GigsModule();
+
   /*
    ************************************************************************************************
    * LOGIN METHODS
@@ -76,6 +78,16 @@ export default class ApiService {
 
   /*
    ************************************************************************************************
+   * GIG METHODS
+   ************************************************************************************************
+   */
+
+  getGigById = this.gigsModule.getGigById.bind(this);
+
+  getGigConversationById = this.gigsModule.getGigConversationById.bind(this);
+
+  /*
+   ************************************************************************************************
    * CONVERSATIONS METHODS
    ************************************************************************************************
    */
@@ -83,6 +95,10 @@ export default class ApiService {
   getConversationById = this.conversationsModule.getConversationById.bind(this);
 
   sendMsg = this.conversationsModule.sendMsg.bind(this);
+
+  createConversation = this.conversationsModule.createConversation.bind(this);
+
+  sendMsgFromTerminal = this.conversationsModule.sendMsgFromTerminal.bind(this);
 
   /*
    ************************************************************************************************
@@ -101,6 +117,12 @@ export default class ApiService {
   addLog = this.logsModule.addLog.bind(this);
 
   addBreachLog = this.logsModule.addBreachLog.bind(this);
+
+  addDecryptLog = this.logsModule.addDecryptLog.bind(this);
+
+  addHackLog = this.logsModule.addHackLog.bind(this);
+
+  addICELog = this.logsModule.addICELog.bind(this);
 
   getSubnetworksLogs = this.logsModule.getSubnetworksLogs.bind(this);
 
@@ -276,5 +298,15 @@ export default class ApiService {
       console.log(response);
       return response.data;
     });
+  }
+
+  createRandomString(length) {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 }

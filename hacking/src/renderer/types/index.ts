@@ -33,13 +33,15 @@ export type SubnetworkType = {
 
 export type ExploitType = {
   name: string;
-  type: 'breacher' | 'decrypter';
-  effect: BreachEffectType;
+  type: 'breacher' | 'decrypter' | 'disabler' | 'scanner' | 'other';
+  timeToRun?: number;
+  effect?: BreachEffectType;
+  disables?: string[];
 };
 
 export type ProgramType = {
   name: string;
-  type: 'encrypter' | 'firewall';
+  type: 'encrypter' | 'firewall' | 'ice';
 
   // Encrypter
   timeOnPerfectBreach?: number;
@@ -62,7 +64,6 @@ export type ProgramType = {
 export type BreachEffectType = {
   isConnected: boolean;
   perfect: boolean;
-  breachTime: number;
 };
 
 export type ProgramCodeInfoType = {

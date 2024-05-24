@@ -12,7 +12,7 @@ export function getFullConversationLines(
     )}`,
   );
   lines.push(
-    `<span>Participants:</span> ${conversation.participants
+    `<span class="secondary-color">Participants:</span> ${conversation.participants
       .map((p) => onlyTab(p))
       .join(', ')}`,
   );

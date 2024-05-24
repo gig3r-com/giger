@@ -15,6 +15,9 @@ export default class Accounts {
   async sendTransaction(
     transactionData: SendTransactionType,
   ): Promise<BankAccountType> {
+    transactionData.amount = Number(transactionData.amount);
+    transactionData.id = crypto.randomUUID();
+    transactionData.null;
     const { gigerApiUrl } = this.getUrls();
     const accountsUrl = `${gigerApiUrl}/Account/transaction`;
     return axios.post(accountsUrl, transactionData);

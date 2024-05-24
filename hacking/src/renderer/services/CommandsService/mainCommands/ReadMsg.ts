@@ -1,7 +1,7 @@
 import type CommandsServiceType from '../CommandsService';
 import { getErrorMessage, notConnectedError } from '../responseLines/errors';
 import { getFullConversationLines } from '../responseLines/conversations';
-import {ApiService, ConfigService} from '../../index';
+import {ApiService, ConfigService, ServerConnectionService} from '../../index';
 
 export default class End {
   private Service: CommandsServiceType;
@@ -11,26 +11,23 @@ export default class End {
   }
 
   async execute() {
-    const {
-      addLines,
-      fireInitError,
-      ServerConnectionService,
-      parsedCommand,
-      setInputDisabled,
-    } = this.Service;
+    const { addLines, fireInitError, parsedCommand, setInputDisabled } =
+      this.Service;
     if (!addLines) {
       fireInitError();
       return;
     }
-    // if (!ServerConnectionService.isConnected) {
-    //   addLines(notConnectedError);
-    //   return;
-    // }
     try {
-      await ConfigService.checkHacking('readmsg');
+      const subcommand = parsedCommand.join(' ');
+      await ConfigService.checkHacking('readmsg', subcommand);
+      ServerConnectionService.checkCommand('readmsg');
       setInputDisabled(true);
-      const conversation = await ApiService.getConversationById(parsedCommand[0]);
+      const conversation = await ApiService.getConversationById(
+        parsedCommand[0],
+      );
+      addLines(['']);
       addLines(getFullConversationLines(conversation));
+      addLines(['']);
       setInputDisabled(false);
     } catch (err) {
       setInputDisabled(false);

@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { ProfileType, EventType } from '../../../types';
 import mapUser from './user';
+import { startingPrograms } from './exploits';
 
 const CYBERDECK_IMPLANT_NAME = 'Cyberdeck Integration Chip';
 export const HACKING_TYPE = 'hacking';
@@ -27,9 +28,14 @@ export default function mapProfile(
   const criminal =
     data.criminalEvents?.filter((event) => event.isRevealed === true) || [];
 
+  // todo DO USUNIĘCIa PRZED GRĄ!
+  const exploits = startingPrograms[data.handle]
+    ? startingPrograms[data.handle]
+    : data.exploits;
+
   return {
     ...mapUser(data),
-    exploits: data.exploits,
+    exploits,
     mindHack: data.mindHack,
     hackerName: data.hackerName ? data.hackerName : data.handle,
 

@@ -2,6 +2,7 @@ import axios from 'axios';
 import mapProfile from '../mappers/profile';
 import { ProfileType } from '../../../types';
 
+// axios.defaults.headers.common.AuthToken = '13218559-3109-4d27-898e-fd9a2661bcdc';
 export default class Login {
   async login(username: string, password: string): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();

@@ -15,6 +15,7 @@ import Log from './Log';
 import Exit from './Exit';
 import ReadMsg from './ReadMsg';
 import SendMsg from './SendMsg';
+import Gig from './Gig';
 
 export {
   End,
@@ -34,4 +35,5 @@ export {
   Exit,
   ReadMsg,
   SendMsg,
+  Gig,
 };

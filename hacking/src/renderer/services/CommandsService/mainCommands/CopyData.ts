@@ -10,7 +10,7 @@ import {
 } from '../responseLines/errors';
 import { EventType, ProfileType } from '../../../types';
 import { getRecordCopiedMessage } from '../responseLines/misc';
-import { ConfigService } from '../../index';
+import {ConfigService, ServerConnectionService} from '../../index';
 
 export default class CopyData {
   private Service: CommandsServiceType;
@@ -49,6 +49,7 @@ export default class CopyData {
     }
     try {
       await ConfigService.checkHacking('copydata');
+      ServerConnectionService.checkCommand('copydata');
       setInputDisabled(true);
       const userId = parsedCommand[0];
       const eventId = parsedCommand[1];
