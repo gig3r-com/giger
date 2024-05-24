@@ -30,6 +30,8 @@ export const MainMenu = () => {
     const hasGigStatusChanges = useSelector(selectHasStatusUpdates);
     const hasNewTransfers = useSelector(selectHasNewTransfers);
 
+    const indicatior = <span className="main-menu__new-indicator"></span>;
+
     return (
         <header className="main-menu">
             <ul>
@@ -39,20 +41,16 @@ export const MainMenu = () => {
                             <Link to={option.link}>{option.name}</Link>
 
                             {option.name === MainMenuNames.CHAT &&
-                                hasUnreadMessages && (
-                                    <span className="main-menu__new-indicator"></span>
-                                )}
+                                hasUnreadMessages &&
+                                indicatior}
 
                             {option.name === MainMenuNames.GIGS &&
-                                (hasUnreadGigMessages ||
-                                    hasGigStatusChanges) && (
-                                    <span className="main-menu__new-indicator"></span>
-                                )}
+                                (hasUnreadGigMessages || hasGigStatusChanges) &&
+                                indicatior}
 
                             {option.name === MainMenuNames.BANK &&
-                                hasNewTransfers && (
-                                    <span className="main-menu__new-indicator"></span>
-                                )}
+                                hasNewTransfers &&
+                                indicatior}
                         </li>
                     </Fragment>
                 ))}

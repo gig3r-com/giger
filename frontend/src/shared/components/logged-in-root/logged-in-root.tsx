@@ -9,12 +9,14 @@ import { useNotificationsService } from '../../services/notifications.service';
 import { useUserService } from '../../services/user.service';
 import { GodMarker } from '../god-marker/god-marker';
 import { MainMenu } from '../main-menu/main-menu';
+import { useMessagesService } from '../../services/messages.service';
 
 export const LoggedInRoot: FC = () => {
     const { lastMessage, lastNotificationUpdate } =
         useWebSocketContext() as IWebsocketContext;
     const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
+    const { fetchUserConvos } = useMessagesService();
     const { handleNewMessage, handleNewNotification } =
         useNotificationsService();
     useEffect(() => {
@@ -30,14 +32,12 @@ export const LoggedInRoot: FC = () => {
             !!(state.users.currentUser && !state.users.requiresGodUserSelection)
     );
 
-    useEffect(
-        function fetchData() {
-            if (!isLoggedIn) return;
-            fetchAllUsers();
-            fetchAccounts();
-        },
-        [isLoggedIn]
-    );
+    useEffect(function fetchData() {
+        if (!isLoggedIn) return;
+        fetchAllUsers();
+        fetchAccounts();
+        fetchUserConvos();
+    }, []);
     return (
         <div className="logged-in-user">
             <Outlet />

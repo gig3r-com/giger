@@ -19,6 +19,7 @@ import { selectAuthToken } from '../../store/auth.slice';
 import { IUserPrivate } from '../../models/user';
 import { setAllConversationHashes } from '../../store/messages.slice';
 import { IHashDataUpdatePayload } from '../../models/general';
+import { selectCurrentUser } from '../../store/users.selectors';
 
 export const WebSocketContext = createContext<IWebsocketContext | null>(null);
 
@@ -34,6 +35,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     const [lastMessage, setLastMessage] =
         useState<IConversationConsumablePayload | null>(null);
     const authToken = useSelector(selectAuthToken);
+    const currentUser = useSelector(selectCurrentUser);
     const [reconnectInterval, setReconnectInterval] = useState<number>(1000);
     const baseUrl = `wss${window.origin.split('https')[1]}/`;
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
@@ -189,14 +191,23 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
         });
     }, [setupWebsocket]);
 
-    useEffect(function setup() {
-        setupWebsocket('convo');
-        setupWebsocket('notifications');
-        handleVisibilityChange();
-    }, []);
+    useEffect(
+        function setup() {
+            if (currentUser && !ws.current && !notificationWs.current) {
+                setTimeout(() => {
+                    setupWebsocket('convo');
+                    setupWebsocket('notifications');
+                    handleVisibilityChange();
+                }, 1500);
+            }
+        },
+        [currentUser]
+    );
 
     return (
-        <WebSocketContext.Provider value={{ sendMessage, lastMessage, lastNotificationUpdate }}>
+        <WebSocketContext.Provider
+            value={{ sendMessage, lastMessage, lastNotificationUpdate }}
+        >
             {children}
         </WebSocketContext.Provider>
     );
