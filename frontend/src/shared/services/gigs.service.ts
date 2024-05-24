@@ -211,7 +211,7 @@ export function useGigsService() {
      * @param id gig id
      */
     const reportAProblem = (id: string) => {
-        navigate(`report-problem/${id}`);
+        navigate(`${id}/report-problem`);
     };
 
     const sendComplaint = (gigId: string, complaint: string) => {
@@ -224,12 +224,13 @@ export function useGigsService() {
         };
 
         api.url(`Gig/${gigId}/dispute`)
+            .headers({ 'Content-Type': 'application/json' })
             .body(JSON.stringify({ "text": complaint }))
             .patch()
             .res()
             .then(() => {
                 updateGig(updatedGig);
-                navigate(`../${gigId}`);
+                navigate(`../giger/${gigId}`);
             });
     };
 
