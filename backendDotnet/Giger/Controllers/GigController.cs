@@ -279,6 +279,12 @@ namespace Giger.Controllers
             {
                 return BadRequest("Gig is not taken");
             }
+
+            if (!(IsAuthorized(gig.TakenById) || IsAuthorized(gig.AuthorId)))
+            {
+                return Unauthorized();
+            }
+
             gig.Status = GigStatus.PENDING_CONFIRMATION;
             await _gigService.UpdateAsync(gig);
             if (gig.Mode == GigModes.CLIENT)
@@ -307,7 +313,7 @@ namespace Giger.Controllers
                 return BadRequest("Gig is not taken");
             }
 
-            if (!IsAuthorized(gig.TakenById))
+            if (!(IsAuthorized(gig.TakenById) || IsAuthorized(gig.AuthorId)))
             {
                 return Unauthorized();
             }
