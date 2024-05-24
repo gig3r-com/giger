@@ -46,10 +46,13 @@ export default class ConfigService {
   ): Promise<void> {
     await this.loadMain();
     if (this.main.isHackingEnabled) {
+      console.log('test')
       return;
     } else if (this.main.isTestHackingEnabled && this.commandsCheck[mainCommand]) {
+      console.log('test2')
       this.commandsCheck[mainCommand].bind(this)(subCommand);
     } else if (!this.main.isHackingEnabled) {
+      console.log('test3')
       throw new Error(
         `<span class="secondary-color">Error: </span>Hacking right now is disabled! If this error shows during the game contact you Assistant AI`,
       );
@@ -63,6 +66,9 @@ export default class ConfigService {
   }
 
   baseCheck() {
+    if (this.main.isTestHackingEnabled) {
+      return;
+    }
     if (!this.main.isHackingEnabled) {
       throw new Error(
         `<span class="secondary-color">Error: </span>Hacking right now is disabled! If this error shows during the game contact you Assistant AI`,
@@ -148,6 +154,7 @@ export default class ConfigService {
     if (subCommand.trim() === '.') {
       return;
     }
+    console.log(subCommand, this.testConfig?.availableScans)
     const filtered = this.testConfig?.availableScans?.filter(
       (testScan: string) =>
         testScan.toLowerCase() === subCommand.toLowerCase().trim(),

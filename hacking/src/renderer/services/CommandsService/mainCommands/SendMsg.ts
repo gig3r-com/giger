@@ -64,6 +64,13 @@ export default class SendMsg {
       addLines(getErrorMessage(err));
     }
 
+    async function wait(time: number) {
+      setInputDisabled(true);
+      await new Promise((resolve) => setTimeout(resolve, time)).then(() => {
+        setInputDisabled(false);
+      });
+    }
+
     async function checkData(
       sender: ProfileType | null,
       receiver: ProfileType | null,

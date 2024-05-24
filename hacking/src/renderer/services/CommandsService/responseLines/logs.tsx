@@ -18,6 +18,7 @@ export function getLogTableLine(log) {
   const { type, time, sourceUserName, targetUserName, data, sourceUserId } =
     log;
   if (type === 'SUBNETWORK_HACKED') return getHackLogTableLine(log);
+  if (type === 'FIRED_ICE') return getHackLogTableLine(log);
   if (type === 'SUBNETWORK_SECURITY_BREACH')
     return getSecurityBreachLogTableLine(log);
 
