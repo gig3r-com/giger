@@ -17,11 +17,16 @@ export interface IHashUpdatePayload {
 }
 
 export interface INotificationPayload {
-    AccountId: string;
-    TransactionId: string;
-    GigIdConversation: string;
-    GigIdStatus: string;
-    ConversationId: string;
+    AccountHash: number;
+    AccountId: string | null
+    ConversationHash: number
+    ConversationId: string | null;
+    GigConversationHash: number;
+    GigIdConversation: string | null;
+    GigIdStatus: string | null;
+    GigStatusHash: number;
+    TransactionHash: number;
+    TransactionId: string | null;
     UpdateRequired: boolean;
 }
 
@@ -52,7 +57,7 @@ export interface INotificationConsumablePayload {
 export interface ISocketMessage<T = IConversationUpdatePayload | ITransaction | IHashUpdatePayload> {
     type: SocketMessageType;
     payload: T;
-} 
+}
 
 export interface ISocketHashUpdate extends ISocketMessage<IHashUpdatePayload> {
     type: SocketMessageType.HASH_UPDATE;

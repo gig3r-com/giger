@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
@@ -7,6 +7,9 @@ import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
 import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
+import { selectSelectedGig } from '../../store/gigs.selectors';
+import { Gig } from './gig/gig';
 
 import './giger.scss';
 
@@ -15,6 +18,7 @@ export const Giger: FC = () => {
     const location = useLocation();
     const { gigId } = useParams();
     const navigate = useNavigate();
+    const selectedGig = useSelector(selectSelectedGig);
     const [fetchingGigs, setFetchingGigs] = useState(true);
     const { fetchGigs, gigsVisibleToTheUser } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
@@ -74,7 +78,11 @@ export const Giger: FC = () => {
                     <AnimatePresence>
                         <NewGig active={menuState === 'newGig'} />
                     </AnimatePresence>
-                    <Outlet />
+                    <AnimatePresence>
+                        {selectedGig && (
+                            <Gig gig={selectedGig} selectedId={gigId} delayMultiplier={0.2} />
+                        )}
+                    </AnimatePresence>
                 </>
             )}
         </article>

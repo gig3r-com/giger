@@ -4,15 +4,18 @@ import {
     IPrivateAccount,
     ITransaction
 } from '../models/banking';
+import { IHashData } from '../models/general';
 
 export interface BankState {
     account: IPrivateAccount | null;
     businessAccount: IBusinessAccount | null;
+    transferHashes: Record<string, IHashData>;
 }
 
 const initialState: BankState = {
     account: null,
-    businessAccount: null
+    businessAccount: null,
+    transferHashes: {}
 };
 
 export const bankSlice = createSlice({
@@ -43,11 +46,40 @@ export const bankSlice = createSlice({
 
             if (!account) return;
             account.transactions.push(action.payload.transaction);
+        },
+        setTransferHashes: (
+            state,
+            action: PayloadAction<Record<string, number>>
+        ) => {
+            Object.keys(action.payload).forEach((id) => {
+                state.transferHashes[id] = {
+                    current: action.payload[id],
+                    lastSeen: state.transferHashes[id].current ?? 0
+                };
+            })
+        },
+        setNewCurrentTransferHash: (
+            state,
+            action: PayloadAction<{ id: string; hash: number }>
+        ) => {
+            state.transferHashes[action.payload.id] = {
+                current: action.payload.hash,
+                lastSeen: state.transferHashes[action.payload.id]?.current ?? 0
+            };
+
+        },
+        setSeenTransferHash: (
+            state,
+            action: PayloadAction<{ id: string }>
+        ) => {
+            if (state.transferHashes[action.payload.id]) {
+                state.transferHashes[action.payload.id].lastSeen = state.transferHashes[action.payload.id].current;
+            }
         }
     }
 });
 
-export const { setAccount, setBusinessAccount, addTransaction } =
+export const { setAccount, setBusinessAccount, addTransaction, setTransferHashes, setSeenTransferHash, setNewCurrentTransferHash } =
     bankSlice.actions;
 
 export const selectAccounts = createSelector(

@@ -9,13 +9,19 @@ import {
     selectConversations
 } from './messages.selectors';
 import { useUserService } from './user.service';
-import { IConversationConsumablePayload } from '../../models/websockets';
+import { IConversationConsumablePayload, INotificationPayload } from '../../models/websockets';
+import { setNewCurrentTransferHash } from '../../store/bank.slice';
+import { setNewStatusHash } from '../../store/gigs.slice';
+import { useGigsService } from './gigs.service';
+import { useBankingService } from './banking.service';
 
 export const useNotificationsService = () => {
     const dispatch = useDispatch();
     const { lastMessage } = useWebSocketContext() as IWebsocketContext;
     const { fetchUserConvos } = useMessagesService();
     const { currentUser } = useUserService();
+    const { fetchGigs } = useGigsService();
+    const { fetchAccounts } = useBankingService();
     const gigConversations = useSelector(selectGigConversations);
     const conversations = useSelector(selectConversations);
 
@@ -61,7 +67,26 @@ export const useNotificationsService = () => {
         [dispatch, lastMessage, currentUser]
     );
 
+    const handleNewNotification = useCallback(
+        (update: INotificationPayload) => {
+            if (!update) {
+                return;
+            }
+
+            if (update.TransactionHash && update.TransactionId) {
+                dispatch(setNewCurrentTransferHash({ id: update.TransactionId, hash: update.TransactionHash }));
+                fetchAccounts();
+            }
+
+            if (update.GigIdStatus && update.GigStatusHash) {
+                dispatch(setNewStatusHash({ gigId: update.GigIdStatus, hash: update.GigStatusHash }));
+                fetchGigs();
+            }
+        },
+        [dispatch]
+    )
+
     return {
-        handleNewMessage
+        handleNewMessage, handleNewNotification
     };
 };

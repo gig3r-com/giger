@@ -9,7 +9,8 @@ import {
 } from 'react';
 import {
     IConversationConsumablePayload,
-    IConversationUpdatePayload
+    IConversationUpdatePayload,
+    INotificationPayload
 } from '../../models/websockets';
 import { IWebsocketContext } from './websocket.model';
 import { useApiService } from '../services/api.service';
@@ -28,6 +29,8 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     const notificationWs = useRef<WebSocket | null>(null);
     const dispatch = useDispatch();
     const { api } = useApiService();
+    const [lastNotificationUpdate, setLastNotificationUpdate] =
+        useState<INotificationPayload | null>(null);
     const [lastMessage, setLastMessage] =
         useState<IConversationConsumablePayload | null>(null);
     const authToken = useSelector(selectAuthToken);
@@ -113,8 +116,11 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
                     return;
                 }
                 if (mode === 'notifications') {
-                    //setLastMessage(message as IConversationConsumablePayload);
-                    console.log('notifications', message);
+                    setLastNotificationUpdate(message as INotificationPayload);
+                    console.log(
+                        'notifications',
+                        message as INotificationPayload
+                    );
                     return;
                 }
             };
@@ -190,7 +196,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     }, []);
 
     return (
-        <WebSocketContext.Provider value={{ sendMessage, lastMessage }}>
+        <WebSocketContext.Provider value={{ sendMessage, lastMessage, lastNotificationUpdate }}>
             {children}
         </WebSocketContext.Provider>
     );

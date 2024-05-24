@@ -3,20 +3,22 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { GigCategoryNames, GigModes, IGig } from '../models/gig';
 import { IHashData } from '../models/general';
 
-export interface GigsState {
+export interface IGigsState {
     gigs: IGig[];
     selectedCategories: GigCategoryNames[];
     selectedMode: 'all' | GigModes;
+    selectedGigId: string;
     fetchingGigs: boolean;
     gigStatusHashes: Record<string, IHashData>;
 }
 
-const initialState: GigsState = {
+const initialState: IGigsState = {
     gigs: [],
     selectedCategories: [],
     selectedMode: 'all',
+    selectedGigId: '',
     fetchingGigs: false,
-    gigStatusHashes: {}
+    gigStatusHashes: {},
 };
 
 export const gigsSlice = createSlice({
@@ -64,13 +66,21 @@ export const gigsSlice = createSlice({
                 };
             });
         },
-        setSeenStatusHash: (state, action: PayloadAction<{gigId: string}>) => {
+        setSeenStatusHash: (state, action: PayloadAction<{ gigId: string }>) => {
             state.gigStatusHashes[action.payload.gigId] = {
                 current: state.gigStatusHashes[action.payload.gigId]?.current ?? 0,
                 lastSeen: state.gigStatusHashes[action.payload.gigId]?.current ?? 0
             };
+        },
+        setNewStatusHash: (state, action: PayloadAction<{ gigId: string, hash: number }>) => {
+            state.gigStatusHashes[action.payload.gigId] = {
+                current: action.payload.hash,
+                lastSeen: state.gigStatusHashes[action.payload.gigId]?.current ?? 0
+            };
+        },
+        setSelectedGig: (state, action: PayloadAction<{ gigId: string }>) => {
+            state.selectedGigId = action.payload.gigId;
         }
-
     }
 });
 
@@ -83,7 +93,10 @@ export const {
     setCategories,
     setMode,
     setFetchingGigs,
-    setSeenStatusHash
+    setSeenStatusHash,
+    setNewStatusHash,
+    setGigStatusHashes,
+    setSelectedGig
 } = gigsSlice.actions;
 
 export default gigsSlice.reducer;

@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import { Factions } from '../../models/companies';
 import { useApiService } from './api.service';
 import { useIntl } from 'react-intl';
+import { selectTransferHashes } from '../../store/bank.selectors';
 
 type Holder = {
     id: string;
@@ -33,6 +34,7 @@ export function useBankingService() {
     const currentBusinessBalance = useSelector(
         (state: RootState) => state.bank.businessAccount?.balance ?? 0
     );
+    const transferHashes = useSelector(selectTransferHashes);
     const userList = useSelector((state: RootState) => state.users.users);
     const currentUser = useSelector(
         (state: RootState) => state.users.currentUser
@@ -108,6 +110,10 @@ export function useBankingService() {
         return holder?.handle ?? intl.formatMessage({ id: 'UNKNOWN_USER' });
     };
 
+    const isNewTransaction = (transactionId: string) => {
+        return transferHashes[transactionId]?.current !== transferHashes[transactionId]?.lastSeen;
+    }
+
     return {
         accounts,
         hasCompanyAccount,
@@ -115,6 +121,7 @@ export function useBankingService() {
         sendTransfer,
         getAccountHolderName,
         currentPrivateBalance,
-        currentBusinessBalance
+        currentBusinessBalance,
+        isNewTransaction
     };
 }

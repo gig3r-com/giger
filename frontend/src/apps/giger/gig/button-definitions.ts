@@ -22,7 +22,8 @@ export enum ActionId {
     REPORT_A_PROBLEM = 'REPORT_A_PROBLEM',
     MARK_AS_BULLSHIT = 'MARK_AS_BULLSHIT',
     MARK_AS_VALID = 'MARK_AS_VALID',
-    MARK_AS_EXPIRED = 'MARK_AS_EXPIRED'
+    MARK_AS_EXPIRED = 'MARK_AS_EXPIRED',
+    COMPLETE = 'COMPLETE'
 }
 
 const buttonDefinitions: {
@@ -225,10 +226,10 @@ const buttonDefinitions: {
         mode: GigModes.CLIENT,
         buttons: [
             {
-                label: 'MARK_AS_DONE',
+                label: 'COMPLETE',
                 color: 'secondary',
                 disabled: false,
-                actionId: ActionId.MARK_AS_DONE_MINE
+                actionId: ActionId.COMPLETE
             },
             {
                 label: 'REPORT_A_PROBLEM',
@@ -256,10 +257,10 @@ const buttonDefinitions: {
         isMine: true,
         buttons: [
             {
-                label: 'MARK_AS_DONE',
+                label: 'COMPLETE',
                 color: 'secondary',
                 disabled: false,
-                actionId: ActionId.MARK_AS_DONE_THEIRS
+                actionId: ActionId.COMPLETE
             },
             {
                 label: 'REPORT_A_PROBLEM',
