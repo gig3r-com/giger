@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { updateConversation } from '../../store/messages.slice';
+import { setUnreadMessage, updateConversation } from '../../store/messages.slice';
 import { IWebsocketContext } from '../providers/websocket.model';
 import { useWebSocketContext } from '../providers/websocket.provider';
 import { useMessagesService } from './messages.service';
@@ -39,6 +39,7 @@ export const useNotificationsService = () => {
 
             if (!conversation && !gigConversation) {
                 fetchUserConvos();
+                dispatch(setUnreadMessage({ convoId: lastMessage.conversationId, messageId: lastMessage.message.id }))
                 return;
             }
 
