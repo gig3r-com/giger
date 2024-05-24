@@ -511,13 +511,14 @@ namespace Giger.Controllers
             {
                 authorOriginalName = _userService.GetAsync(gig.AuthorId).Result?.Handle;
             }
-            await _notificationsHandler.NotifyGigConversation(authorOriginalName, gig.ConversationId);
+            var conversation = await _conversationService.GetAsync(gig.ConversationId);
+            await _notificationsHandler.NotifyGigConversation(authorOriginalName, conversation);
 
-            _conversationService.GetAsync(gig.ConversationId).Result?.Participants.ForEach(async participant =>
+            conversation.Participants.ForEach(async participant =>
             {
                 if (participant != gig.AuthorName)
                 {
-                    await _notificationsHandler.NotifyGigConversation(participant, gig.ConversationId);
+                    await _notificationsHandler.NotifyGigConversation(participant, conversation);
                 }
             });
         }
@@ -527,15 +528,15 @@ namespace Giger.Controllers
             var authorOriginalName = gig.AuthorName;
             if (gig.IsAnonymizedAuthor)
             {
-                await _notificationsHandler.NotifyGigStatus(_userService.GetAsync(gig.AuthorId).Result?.Handle, gig.Id);
+                await _notificationsHandler.NotifyGigStatus(_userService.GetAsync(gig.AuthorId).Result?.Handle, gig);
             }
             else
             {
-                await _notificationsHandler.NotifyGigStatus(authorOriginalName, gig.Id);
+                await _notificationsHandler.NotifyGigStatus(authorOriginalName, gig);
             }
             if (notifyTaker && !string.IsNullOrEmpty(gig.TakenById))
             {
-                await _notificationsHandler.NotifyGigStatus(gig.TakenById, gig.Id);
+                await _notificationsHandler.NotifyGigStatus(gig.TakenById, gig);
             }
         }
 
