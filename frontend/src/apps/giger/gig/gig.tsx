@@ -31,12 +31,11 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
         'gig__wrapper--no-margin': selectedId !== undefined
     });
 
-    useEffect(
-        function setAsSeen() {
+    useEffect(function setAsSeen() {
+        return () => {
             dispatch(setSeenStatusHash({ gigId: gig.id }));
-        },
-        [gig, dispatch]
-    );
+        };
+    }, []);
 
     return (
         <motion.article className={wrapperClasses}>

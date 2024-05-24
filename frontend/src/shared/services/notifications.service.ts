@@ -18,7 +18,7 @@ import { useBankingService } from './banking.service';
 export const useNotificationsService = () => {
     const dispatch = useDispatch();
     const { lastMessage } = useWebSocketContext() as IWebsocketContext;
-    const { fetchUserConvos } = useMessagesService();
+    const { fetchUserConvos, getGigConvo } = useMessagesService();
     const { currentUser } = useUserService();
     const { fetchGigs } = useGigsService();
     const { fetchAccounts } = useBankingService();
@@ -35,7 +35,7 @@ export const useNotificationsService = () => {
             );
             const gigConversation = gigConversations.find(
                 (convo) => convo.id === lastMessage.conversationId
-            );
+            ) || lastMessage.isGigConversation;
 
             if (!conversation && !gigConversation) {
                 fetchUserConvos();
@@ -55,14 +55,17 @@ export const useNotificationsService = () => {
             }
 
             if (gigConversation) {
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: true,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
+                getGigConvo(lastMessage.conversationId).then(() => {
+                    dispatch(setUnreadMessage({ convoId: lastMessage.conversationId, messageId: lastMessage.message.id }))
+                })
+                // dispatch(
+                //     updateConversation({
+                //         convoId: lastMessage.conversationId,
+                //         message: lastMessage.message,
+                //         gigConvo: true,
+                //         currentUserHandle: currentUser!.handle
+                //     })
+                // );
             }
         },
         [dispatch, lastMessage, currentUser]
