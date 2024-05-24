@@ -301,7 +301,7 @@ namespace Giger.Controllers
                 {
                     if (account.Owner != "SYSTEM")
                     {
-                        await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                        await _notificationsHandler.NotifyTransaction(account.Owner, account, transaction);
                     }
                     break;
                 }
@@ -312,7 +312,7 @@ namespace Giger.Controllers
                         var allFactionUsers = await _userService.GetAllFactionUser(faction);
                         foreach (var user in allFactionUsers)
                         {
-                            await _notificationsHandler.NotifyTransaction(user.Handle, account.Id, transaction.Id);
+                            await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
                         }
                     }
                     break;
@@ -328,7 +328,7 @@ namespace Giger.Controllers
                 {
                     if (account.Owner != "SYSTEM")
                     {
-                        await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                        await _notificationsHandler.NotifyAccount(account.Owner, account);
                     }
                     break;
                 }
@@ -339,7 +339,7 @@ namespace Giger.Controllers
                         var allFactionUsers = await _userService.GetAllFactionUser(faction);
                         foreach (var user in allFactionUsers)
                         {
-                            await _notificationsHandler.NotifyAccount(user.Handle, account.Id);
+                            await _notificationsHandler.NotifyAccount(user.Handle, account);
                         }
                     }
                     break;
