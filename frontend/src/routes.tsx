@@ -4,7 +4,6 @@ import { Giger } from './apps/giger/giger';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
-import { ReportProblem } from './shared/components/report-problem/reportProblem';
 import { Login } from './apps/login/login';
 import { RootState } from './store/store';
 import { useEffect } from 'react';
@@ -48,12 +47,11 @@ export const Router = () => {
                         <Route path="/" element={<LoggedInRoot />}>
                             <Route path="giger" element={<Giger />}>
                                 <Route path="new-gig" element={<Giger />} />
-                                <Route path=":gigId" element={<Giger />} />
-                                <Route
-                                    path="report-problem"
-                                    element={<ReportProblem />}
-                                >
-                                    <Route path=":gigId" element={<Giger />} />
+                                <Route path=":gigId" element={<Giger />}>
+                                    <Route
+                                        path="report-problem"
+                                        element={<Giger />}
+                                    />
                                 </Route>
                             </Route>
                             <Route path="chat" element={<Chat />}>

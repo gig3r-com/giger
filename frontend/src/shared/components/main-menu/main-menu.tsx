@@ -5,18 +5,20 @@ import {
     mainMenuOptions
 } from './main-menu.options';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Fragment } from 'react/jsx-runtime';
 import {
     selectHasUnreadGigMessages,
     selectHasUnreadMessages
 } from '../../../store/messages.selectors';
+import { selectHasNewTransfers } from '../../../store/bank.selectors';
 import { selectHasStatusUpdates } from '../../../store/gigs.selectors';
 
 import './main-menu.scss';
-import { selectHasNewTransfers } from '../../../store/bank.selectors';
+import { setSelectedGig } from '../../../store/gigs.slice';
 
 export const MainMenu = () => {
+    const dispatch = useDispatch();
     const location = useLocation();
     const classes = (option: IMainMenuOption) =>
         classNames({
@@ -37,7 +39,7 @@ export const MainMenu = () => {
             <ul>
                 {mainMenuOptions.map((option) => (
                     <Fragment key={option.name + option.link}>
-                        <li className={classes(option)}>
+                        <li className={classes(option)} onClick={() => dispatch(setSelectedGig({gigId: ''}))}>
                             <Link to={option.link}>{option.name}</Link>
 
                             {option.name === MainMenuNames.CHAT &&

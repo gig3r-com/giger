@@ -12,10 +12,13 @@ import { GigBody } from './gig-body/gig-body';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useDispatch } from 'react-redux';
 import { setSeenStatusHash, setSelectedGig } from '../../../store/gigs.slice';
+import { ReportProblem } from '../../../shared/components/report-problem/reportProblem';
+import { useLocation } from 'react-router';
 
 import './gig.scss';
 
 export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
+    const location = useLocation();
     const dispatch = useDispatch();
     const { currentUser } = useUserService();
     const { isLocked } = useGigsService();
@@ -36,6 +39,19 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
             dispatch(setSeenStatusHash({ gigId: gig.id }));
         };
     }, []);
+
+    useEffect(() => {
+        const currentPath = location.pathname;
+        const handleNavigationAway = () => {
+            dispatch(setSelectedGig({ gigId: '' }));
+        };
+
+        return () => {
+            if (!currentPath.includes(gig.id)) {
+                handleNavigationAway();
+            }
+        };
+    }, [dispatch, gig.id, location]);
 
     return (
         <motion.article className={wrapperClasses}>
@@ -70,6 +86,7 @@ export const Gig: FC<IGigProps> = ({ gig, selectedId, delayMultiplier }) => {
                     )}
                 </AnimatePresence>
             </div>
+            {location.pathname.includes('report-problem') && <ReportProblem />}
         </motion.article>
     );
 };
