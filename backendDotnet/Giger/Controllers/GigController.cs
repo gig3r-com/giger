@@ -322,8 +322,10 @@ namespace Giger.Controllers
             return Ok();
         }
 
+        public record DisputeReason(string text);
+
         [HttpPatch("{id}/dispute")]
-        public async Task<IActionResult> PatchDisputeGig(string id, [FromBody] string reason)
+        public async Task<IActionResult> PatchDisputeGig(string id, DisputeReason reason)
         {
             var gig = await _gigService.GetAsync(id);
             if (gig is null)
@@ -335,15 +337,14 @@ namespace Giger.Controllers
             {
                 return BadRequest("Gig is not taken");
             }
-
-            if (!IsAuthorized(gig.TakenById))
+            if (!(IsAuthorized(gig.TakenById) || IsAuthorized(gig.AuthorId)))
             {
                 return Unauthorized();
             }
 
             gig.Status = GigStatus.DISPUTE;
             gig.MarkedAsComplaintAt = GigerDateTime.Now;
-            gig.ComplaintReason = reason;
+            gig.ComplaintReason = reason.text;
 
             await _gigService.UpdateAsync(gig);
             await NotifyStatusChanged(gig, true);
@@ -409,14 +410,34 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-            if (!IsAuthorized(gig.AuthorId)) /// or isGodUser??
+            if (!IsGodUser())
             {
                 return Unauthorized();
             }
 
-            if (gig.Status != GigStatus.AVAILABLE && gig.Status != GigStatus.EXPIRED)
+            await _gigService.RemoveAsync(id);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/expire")]
+        public async Task<IActionResult> Expire(string id)
+        {
+            var gig = await _gigService.GetAsync(id);
+            if (gig is null)
             {
-                return BadRequest("Gig is not available for removal");
+                return NotFound();
+            }
+            if (!IsAuthorized(gig.AuthorId))
+            {
+                return Unauthorized();
+            }
+
+            if (gig.Status != GigStatus.AVAILABLE)
+            {
+                if (!IsRole(UserRoles.GOD))
+                {
+                    return BadRequest("Gig is not available for removal");
+                }
             }
 
             if (gig.Mode == GigModes.CLIENT)
@@ -424,8 +445,8 @@ namespace Giger.Controllers
                 ReturnFunds(gig);
             }
 
-            await _gigService.RemoveAsync(id);
-            return NoContent();
+            await _gigService.UpdateAsync(gig);
+            return Ok();
         }
 
         // Used only by GameMaster
