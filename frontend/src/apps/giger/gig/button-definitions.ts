@@ -238,6 +238,19 @@ const buttonDefinitions: {
         {
             status: GigStatus.PENDING_CONFIRMATION,
             mode: GigModes.CLIENT,
+            isMine: false,
+            buttons: [
+                {
+                    label: 'AWAITING_ACCEPTANCE',
+                    color: 'secondary',
+                    disabled: true
+                }
+            ]
+        },
+        {
+            status: GigStatus.PENDING_CONFIRMATION,
+            mode: GigModes.CLIENT,
+            isMine: true,
             buttons: [
                 {
                     label: 'COMPLETE',
