@@ -319,8 +319,8 @@ namespace Giger.Controllers
             }
 
             gig.Status = GigStatus.COMPLETED;
-            ReturnFunds(gig);
-            CompleteTransaction(gig);
+            await ReturnFunds(gig);
+            await CompleteTransaction(gig);
             await UpdateGigReputation(gig, true);
 
             await _gigService.UpdateAsync(gig);
@@ -377,17 +377,17 @@ namespace Giger.Controllers
             }
 
             gig.Status = GigStatus.COMPLETED;
-            ReturnFunds(gig);
+            await ReturnFunds(gig);
             if (!isClientRight)
             {
-                CompleteTransaction(gig);
+                await CompleteTransaction(gig);
                 await UpdateGigReputation(gig, true);
             }
             else
             {
                 await UpdateGigReputation(gig, false);
             }
-            PayDisputeFeeToClerk(gig, clerkAccountNo);
+            await PayDisputeFeeToClerk(gig, clerkAccountNo);
 
             await _gigService.UpdateAsync(gig);
             await NotifyStatusChanged(gig, true);
@@ -448,7 +448,7 @@ namespace Giger.Controllers
 
             if (gig.Mode == GigModes.CLIENT)
             {
-                ReturnFunds(gig);
+                await ReturnFunds(gig);
             }
 
             await _gigService.UpdateAsync(gig);
