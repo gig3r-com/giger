@@ -30,6 +30,7 @@ export default class ConfigService {
     sendmsg: this.baseCheck,
     log: this.baseCheck,
     gig: this.checkGigs,
+    connect: this.baseCheck,
   };
 
   constructor(ApiService: ApiServiceType) {
@@ -66,6 +67,7 @@ export default class ConfigService {
   }
 
   baseCheck() {
+    return;
     if (this.main.isTestHackingEnabled) {
       return;
     }

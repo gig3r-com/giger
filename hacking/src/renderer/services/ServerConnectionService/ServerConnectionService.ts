@@ -49,6 +49,8 @@ export default class ServerConnectionService {
 
   private lines: string[] = [];
 
+  public accessPoint = null;
+
   constructor(ConfigService: any, MonitorService: any) {
     this.ConfigService = ConfigService;
     this.MonitorService = MonitorService;
@@ -67,7 +69,6 @@ export default class ServerConnectionService {
     this.removeLastLine = removeLastLine;
     this.setPrefixType = setPrefixType;
     this.setInputTimer = setInputTimer;
-    this.setLines = setLines;
     this.setLines = setLines;
     this.setInputDisabled = setInputDisabled;
     this.lines = lines;

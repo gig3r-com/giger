@@ -78,8 +78,14 @@ export default class Run {
       if (!subnetworkId) {
         subnetworkId = await getDirectLine(`Enter subnetwork's id:`);
       }
-      subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+      try {
+        subnetwork = await ApiService.getSubnetworkById(subnetworkId);
+      } catch (e) {}
       if (!subnetwork) {
+        try {
+          subnetwork = await ApiService.getSubnetworkByName(subnetworkId);
+        } catch (e) {}
+      } else if (!subnetwork) {
         addLines(subnetworkNotFound);
       }
     }

@@ -223,6 +223,19 @@ export default class ApiService {
     });
   }
 
+  getSubnetworkByName(subnetworkName: string): Promise<SubnetworkType | any> {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/Networks/subnetwork/all`;
+    return axios.get(url).then((response) => {
+      const foundSubnetwork = response.data.find(
+        (subnetwork: any) =>
+          subnetwork.name.toLowerCase() === subnetworkName.toLowerCase(),
+      );
+      if (foundSubnetwork) return mapSubnetwork(foundSubnetwork);
+      throw new Error(`Subnetwork with id ${subnetworkName} not found`);
+    });
+  }
+
   /*
    ************************************************************************************************
    * Profile

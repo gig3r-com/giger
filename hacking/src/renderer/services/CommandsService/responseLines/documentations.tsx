@@ -517,7 +517,7 @@ export const KILLER: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Killer`,
   `Type: <span class="secondary-color">ICE</span>`,
-  'Defensive program, when it targets hacker its counter-hacks his terminal and starts cleaning terminal.',
+  'Defensive program, when it targets hacker its counter-hacks his terminal and starts  terminal.',
   '',
 ];
 /*
