@@ -40,6 +40,7 @@ namespace Giger.Models.User
 
         public required Factions Faction { get; set; }
 
+        [BsonRepresentation(BsonType.Int32)]
         public int InsuredAmount { get; set; }
 
         public Dictionary<string, decimal> GigReputation { get; set; } = [];
