@@ -26,6 +26,7 @@ export const NewMsg: FC<INewMsgProps> = ({
     );
 
     const sendMessage = () => {
+        if (newMessage.trim() === '') return;
         if (isGigConvo && isModerator && !userIsParticipant) {
             addModeratorToConvo(convoId);
         }
