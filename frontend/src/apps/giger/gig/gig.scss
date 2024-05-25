@@ -44,16 +44,19 @@
             $color-transition-duration $color-timing-function border-color,
             $color-transition-duration $color-timing-function background-color;
         cursor: pointer;
-        clip-path: polygon(12px 0,
-                100% 0,
-                100% calc(100% - 19px),
-                calc(100% - 19px) 100%,
-                0 100%,
-                0 15px);
+        clip-path: polygon(
+            12px 0,
+            100% 0,
+            100% calc(100% - 19px),
+            calc(100% - 19px) 100%,
+            0 100%,
+            0 15px
+        );
         flex-wrap: wrap;
 
         &::before {
-            transition: $color-transition-duration $color-timing-function background-color;
+            transition: $color-transition-duration $color-timing-function
+                background-color;
         }
 
         &--available {
@@ -94,8 +97,12 @@
             background-color: $secondary-color;
         }
 
-        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):before,
-        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):after {
+        &--mine:not(.gig__summary--completed):not(
+                .gig__summary--expired
+            ):before,
+        &--mine:not(.gig__summary--completed):not(
+                .gig__summary--expired
+            ):after {
             background-color: $accent-color !important;
         }
 
@@ -156,7 +163,7 @@
         top: -1px;
     }
 
-    .big-button+.big-button {
+    .big-button + .big-button {
         margin-top: 1rem;
     }
 
@@ -168,6 +175,7 @@
 
     &__details {
         overflow: auto;
+        max-height: calc(100% - 100px);
     }
 
     &__from {

@@ -180,7 +180,7 @@ const buttonDefinitions: {
                     label: 'DELETE_GIG',
                     color: 'primary',
                     disabled: false,
-                    actionId: ActionId.DELETE
+                    actionId: ActionId.MARK_AS_EXPIRED
                 }
             ]
         },
