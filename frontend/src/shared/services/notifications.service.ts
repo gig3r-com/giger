@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { setUnreadMessage, updateConversation } from '../../store/messages.slice';
+import {
+    setConversation,
+    setUnreadMessage,
+    updateConversation
+} from '../../store/messages.slice';
 import { IWebsocketContext } from '../providers/websocket.model';
 import { useWebSocketContext } from '../providers/websocket.provider';
 import { useMessagesService } from './messages.service';
@@ -9,7 +13,10 @@ import {
     selectConversations
 } from './messages.selectors';
 import { useUserService } from './user.service';
-import { IConversationConsumablePayload, INotificationPayload } from '../../models/websockets';
+import {
+    IConversationConsumablePayload,
+    INotificationPayload
+} from '../../models/websockets';
 import { setNewCurrentTransferHash } from '../../store/bank.slice';
 import { setNewStatusHash } from '../../store/gigs.slice';
 import { useGigsService } from './gigs.service';
@@ -33,13 +40,22 @@ export const useNotificationsService = () => {
             const conversation = conversations.find(
                 (convo) => convo.id === lastMessage.conversationId
             );
-            const gigConversation = gigConversations.find(
-                (convo) => convo.id === lastMessage.conversationId
-            ) || lastMessage.isGigConversation;
+            const gigConversation =
+                gigConversations.find(
+                    (convo) => convo.id === lastMessage.conversationId
+                ) || lastMessage.isGigConversation;
 
             if (!conversation && !gigConversation) {
                 fetchUserConvos();
-                dispatch(setUnreadMessage({ convoId: lastMessage.conversationId, messageId: lastMessage.message.id }))
+                dispatch(
+                    setUnreadMessage({
+                        convoId: lastMessage.conversationId,
+                        messageId: lastMessage.message.id,
+                        isMine:
+                            lastMessage.message.sender === currentUser?.handle,
+                        gigConvo: false
+                    })
+                );
                 return;
             }
 
@@ -55,17 +71,19 @@ export const useNotificationsService = () => {
             }
 
             if (gigConversation) {
-                getGigConvo(lastMessage.conversationId).then(() => {
-                    dispatch(setUnreadMessage({ convoId: lastMessage.conversationId, messageId: lastMessage.message.id }))
-                })
-                // dispatch(
-                //     updateConversation({
-                //         convoId: lastMessage.conversationId,
-                //         message: lastMessage.message,
-                //         gigConvo: true,
-                //         currentUserHandle: currentUser!.handle
-                //     })
-                // );
+                getGigConvo(lastMessage.conversationId).then((convo) => {
+                    dispatch(setConversation(convo));
+                    dispatch(
+                        setUnreadMessage({
+                            convoId: lastMessage.conversationId,
+                            messageId: lastMessage.message.id,
+                            isMine:
+                                lastMessage.message.sender ===
+                                currentUser?.handle,
+                            gigConvo: true
+                        })
+                    );
+                });
             }
         },
         [dispatch, lastMessage, currentUser]
@@ -78,19 +96,30 @@ export const useNotificationsService = () => {
             }
 
             if (update.TransactionHash && update.TransactionId) {
-                dispatch(setNewCurrentTransferHash({ id: update.TransactionId, hash: update.TransactionHash }));
+                dispatch(
+                    setNewCurrentTransferHash({
+                        id: update.TransactionId,
+                        hash: update.TransactionHash
+                    })
+                );
                 fetchAccounts();
             }
 
             if (update.GigIdStatus && update.GigStatusHash) {
-                dispatch(setNewStatusHash({ gigId: update.GigIdStatus, hash: update.GigStatusHash }));
+                dispatch(
+                    setNewStatusHash({
+                        gigId: update.GigIdStatus,
+                        hash: update.GigStatusHash
+                    })
+                );
                 fetchGigs();
             }
         },
         [dispatch]
-    )
+    );
 
     return {
-        handleNewMessage, handleNewNotification
+        handleNewMessage,
+        handleNewNotification
     };
 };

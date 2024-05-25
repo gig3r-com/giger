@@ -39,7 +39,6 @@ export interface IUserPrivate extends IUserPublic {
     vibeOpinions: string;
     favoriteUserIds: string[];
     faction: Factions;
-    revealCodes: string[];
     networkName: string;
     subnetworkId: string;
     subnetworkName: string;

@@ -28,8 +28,3 @@ export const selectActiveUsers = createSelector(
     (state: { users: IUsersState }) => state.users.users,
     (users) => users.filter((user) => user.active)
 );
-
-export const selectRevealCodes = createSelector(
-    selectCurrentUser,
-    (currentUser) => currentUser?.revealCodes
-);

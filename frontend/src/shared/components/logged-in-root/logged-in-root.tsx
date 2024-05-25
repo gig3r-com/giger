@@ -10,6 +10,7 @@ import { useUserService } from '../../services/user.service';
 import { GodMarker } from '../god-marker/god-marker';
 import { MainMenu } from '../main-menu/main-menu';
 import { useMessagesService } from '../../services/messages.service';
+import { useMyIdService } from '../../services/myid.service';
 
 export const LoggedInRoot: FC = () => {
     const { lastMessage, lastNotificationUpdate } =
@@ -17,6 +18,7 @@ export const LoggedInRoot: FC = () => {
     const { fetchAccounts } = useBankingService();
     const { fetchAllUsers } = useUserService();
     const { fetchUserConvos } = useMessagesService();
+    const { fetchRecordHashes } = useMyIdService();
     const { handleNewMessage, handleNewNotification } =
         useNotificationsService();
     useEffect(() => {
@@ -37,6 +39,7 @@ export const LoggedInRoot: FC = () => {
         fetchAllUsers();
         fetchAccounts();
         fetchUserConvos();
+        fetchRecordHashes();
     }, []);
     return (
         <div className="logged-in-user">

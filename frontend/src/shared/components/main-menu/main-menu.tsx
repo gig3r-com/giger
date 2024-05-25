@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { Fragment } from 'react/jsx-runtime';
 import {
-    selectHasUnreadGigMessages,
+    selectHasGigUnreadMessages,
     selectHasUnreadMessages
 } from '../../../store/messages.selectors';
 import { selectHasNewTransfers } from '../../../store/bank.selectors';
@@ -16,10 +16,12 @@ import { selectHasStatusUpdates } from '../../../store/gigs.selectors';
 
 import './main-menu.scss';
 import { setSelectedGig } from '../../../store/gigs.slice';
+import { useMyIdService } from '../../services/myid.service';
 
 export const MainMenu = () => {
     const dispatch = useDispatch();
     const location = useLocation();
+    const { hasNewEntries } = useMyIdService();
     const classes = (option: IMainMenuOption) =>
         classNames({
             'main-menu__option': true,
@@ -28,7 +30,7 @@ export const MainMenu = () => {
                 .some((entry) => `/${entry}` === option.link)
         });
     const hasUnreadMessages = useSelector(selectHasUnreadMessages);
-    const hasUnreadGigMessages = useSelector(selectHasUnreadGigMessages);
+    const hasUnreadGigMessages = useSelector(selectHasGigUnreadMessages);
     const hasGigStatusChanges = useSelector(selectHasStatusUpdates);
     const hasNewTransfers = useSelector(selectHasNewTransfers);
 
@@ -39,7 +41,12 @@ export const MainMenu = () => {
             <ul>
                 {mainMenuOptions.map((option) => (
                     <Fragment key={option.name + option.link}>
-                        <li className={classes(option)} onClick={() => dispatch(setSelectedGig({gigId: ''}))}>
+                        <li
+                            className={classes(option)}
+                            onClick={() =>
+                                dispatch(setSelectedGig({ gigId: '' }))
+                            }
+                        >
                             <Link to={option.link}>{option.name}</Link>
 
                             {option.name === MainMenuNames.CHAT &&
@@ -52,6 +59,10 @@ export const MainMenu = () => {
 
                             {option.name === MainMenuNames.BANK &&
                                 hasNewTransfers &&
+                                indicatior}
+
+                            {option.name === MainMenuNames.MY_ID &&
+                                hasNewEntries() &&
                                 indicatior}
                         </li>
                     </Fragment>

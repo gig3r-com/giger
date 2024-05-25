@@ -186,7 +186,7 @@ const buttonDefinitions: {
         },
         {
             status: GigStatus.IN_PROGRESS,
-            mode: GigModes.PROVIDER,
+            mode: GigModes.CLIENT,
             isMine: false,
             buttons: [
                 {
@@ -200,13 +200,24 @@ const buttonDefinitions: {
         {
             status: GigStatus.IN_PROGRESS,
             mode: GigModes.CLIENT,
+            isMine: true,
+            buttons: [
+                {
+                    label: 'AWAITING_COMPLETION',
+                    color: 'secondary',
+                    disabled: true
+                }
+            ]
+        },
+        {
+            status: GigStatus.IN_PROGRESS,
+            mode: GigModes.PROVIDER,
             isMine: false,
             buttons: [
                 {
-                    label: 'MARK_AS_DONE',
+                    label: 'AWAITING_COMPLETION',
                     color: 'secondary',
-                    disabled: false,
-                    actionId: ActionId.MARK_AS_DONE_THEIRS
+                    disabled: true,
                 }
             ]
         },
@@ -220,18 +231,6 @@ const buttonDefinitions: {
                     color: 'secondary',
                     disabled: false,
                     actionId: ActionId.MARK_AS_DONE_MINE
-                }
-            ]
-        },
-        {
-            status: GigStatus.IN_PROGRESS,
-            mode: GigModes.CLIENT,
-            isMine: true,
-            buttons: [
-                {
-                    label: 'AWAITING_COMPLETION',
-                    color: 'secondary',
-                    disabled: true
                 }
             ]
         },
