@@ -6,5 +6,5 @@ export function getDisconectMessage(subnetworkName: string): string[] {
 }
 
 export function getRecordCopiedMessage(recordTitle: string): string[] {
-  return [`Record ${recordTitle} has been copied to your profile.`];
+  return [`Record <span class="secondary-color">${recordTitle}</span> has been copied to your profile.`];
 }

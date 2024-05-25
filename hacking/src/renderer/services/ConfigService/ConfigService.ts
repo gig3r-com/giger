@@ -46,6 +46,7 @@ export default class ConfigService {
     subCommand?: string | string[],
   ): Promise<void> {
     await this.loadMain();
+    return;
     if (this.main.isHackingEnabled) {
       console.log('test')
       return;

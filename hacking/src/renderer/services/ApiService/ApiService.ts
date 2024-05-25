@@ -246,12 +246,7 @@ export default class ApiService {
     const { gigerApiUrl } = this.getUrls();
     const loginUserData = getLoginUserData();
     const url = `${gigerApiUrl}/User/${loginUserData.id}/privateRecords`;
-    return axios
-      .patch(url, mapRecordToApi(record, loginUserData.id))
-      .then((response) => {
-        console.log({ response });
-        return mapProfile(response.data);
-      });
+    return axios.patch(url, record);
   }
 
   addExploitToProfile(exploitName: string) {
@@ -321,5 +316,41 @@ export default class ApiService {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+  }
+
+  async getMasterMinds(userId) {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/User/${userId}/mindHack/enabledUsers`;
+    const response = await axios.get(url);
+    console.log(response);
+    return response.data;
+  }
+
+  async getProfileByHandle(handle) {
+    const { data } = await this.scanForUserIdByUsername(handle);
+    return this.getUserProfile(data.id);
+  }
+
+  async addMasterMind(userHandle, masterHandle) {
+    const { gigerApiUrl } = this.getUrls();
+    const subjectProfile = await this.getProfileByHandle(userHandle);
+    const userId = subjectProfile.id;
+    if (!subjectProfile) {
+      throw new Error(
+        `<span class="secondary-color">Error:</span> Can't find subject data`,
+      );
+    }
+    if (subjectProfile.mindHack === 'BANNED') {
+      throw new Error(
+        `<span class="secondary-color">Error:</span> Cant mindhack this subject`,
+      );
+    }
+    const data = await this.getMasterMinds(userId);
+    data.push(masterHandle);
+    const url = `${gigerApiUrl}/User/${userId}/mindHack/enabledUsers`;
+    const url2 = `${gigerApiUrl}/User/${userId}/mindHack`;
+    const response = await axios.put(url, data);
+    await axios.patch(url2, 'ENABLED');
+    return response.data;
   }
 }

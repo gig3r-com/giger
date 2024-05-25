@@ -137,8 +137,9 @@ export default class Run {
           MonitorService.enableMonitor();
           addLines([`<span class="secondary-color">Monitor</span> enabled`]);
         }
-      } else if (exploit.name === 'MindFlayer') {
+      } else if (exploit.name === 'MindFLayer') {
         // Run MindFlayer
+        await runMindFlayer();
         console.log('Not Implemented Yet', exploit);
       } else if (exploit.name === 'BlueScreen') {
         // Run BlueScreen
@@ -146,6 +147,22 @@ export default class Run {
       } else if (exploit.name === 'GigerGate') {
         await CommandsService.mainCommandsTable.gig.execute;
       }
+    }
+
+    async function runMindFlayer() {
+      setInputDisabled(false);
+      let userHandle = parsedCommand[1];
+      let masterHandle = parsedCommand[2];
+      if (!userHandle) {
+        userHandle = await getDirectLine('Enter subjects handle:');
+      }
+      if (!masterHandle) {
+        masterHandle = await getDirectLine('Enter master handle:');
+      }
+      await ApiService.addMasterMind(userHandle, masterHandle);
+      addLines([
+        `Mind exploit of ${userHandle} was enabled for ${masterHandle}`,
+      ]);
     }
   }
 }
