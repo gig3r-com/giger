@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { updateCurrentUser } from '../../store/users.slice';
 import { RootState } from '../../store/store';
 import { MyIdUncoverableSections } from '../../apps/myId/myid.model';
 import {
@@ -11,7 +10,11 @@ import {
 } from '../../store/events.selectors';
 import { useApiService } from './api.service';
 import { useMemo } from 'react';
-import { RecordHashTypes, setAllHashes, setSeenHash } from '../../store/events.slice';
+import {
+    RecordHashTypes,
+    setAllHashes,
+    setSeenHash
+} from '../../store/events.slice';
 
 export function useMyIdService() {
     const dispatch = useDispatch();
@@ -27,25 +30,20 @@ export function useMyIdService() {
 
     const enterRevealCode = (code: string): Promise<'success' | 'wrongCode'> =>
         new Promise((resolve) => {
-            const currentRevealCodes = currentUser?.revealCodes ?? [];
-
             api.url('Reveal/code')
                 .query({ revealCode: code })
                 .patch()
                 .res()
                 .then(() => {
-                    dispatch(
-                        updateCurrentUser({
-                            revealCodes: [...currentRevealCodes, code]
-                        })
-                    );
+                    fetchRecordHashes();
                     resolve('success');
                 })
                 .catch(() => resolve('wrongCode'));
         });
 
-    const fetchHashes = () => {
+    const fetchRecordHashes = () => {
         api.url('User/simple/hashes/byId')
+            .query({ id: currentUser!.id })
             .get()
             .json<Record<string, number>>()
             .then((hashes) => {
@@ -56,24 +54,56 @@ export function useMyIdService() {
     const setLastSeenHash = (sectionType: RecordHashTypes) => {
         switch (sectionType) {
             case RecordHashTypes.MEDICAL:
-                dispatch(setSeenHash({type: sectionType, hash: medicalEventsHash.current}));
+                dispatch(
+                    setSeenHash({
+                        type: sectionType,
+                        hash: medicalEventsHash.current
+                    })
+                );
                 break;
             case RecordHashTypes.CRIMINAL:
-                dispatch(setSeenHash({type: sectionType, hash: criminalEventsHash.current}));
+                dispatch(
+                    setSeenHash({
+                        type: sectionType,
+                        hash: criminalEventsHash.current
+                    })
+                );
                 break;
             case RecordHashTypes.RELATION:
-                dispatch(setSeenHash({type: sectionType, hash: relationsHash.current}));
+                dispatch(
+                    setSeenHash({
+                        type: sectionType,
+                        hash: relationsHash.current
+                    })
+                );
                 break;
             case RecordHashTypes.PRIVATE_RECORD:
-                dispatch(setSeenHash({type: sectionType, hash: privateRecordsHash.current}));
+                dispatch(
+                    setSeenHash({
+                        type: sectionType,
+                        hash: privateRecordsHash.current
+                    })
+                );
                 break;
             case RecordHashTypes.GOAL:
-                dispatch(setSeenHash({type: sectionType, hash: goalsHash.current}));
+                dispatch(
+                    setSeenHash({ type: sectionType, hash: goalsHash.current })
+                );
                 break;
         }
     };
 
-    const hasNewEntries = (sectionType: MyIdUncoverableSections): boolean => {
+    const hasNewEntries = (sectionType?: MyIdUncoverableSections): boolean => {
+        if (!sectionType) {
+            return (
+                hasNewMedicalEvents ||
+                hasNewCriminalEvents ||
+                hasNewRelations ||
+                hasNewPrivateRecords ||
+                hasNewGoals
+            );
+        }
+
         switch (sectionType) {
             case MyIdUncoverableSections.MEDICAL:
                 return hasNewMedicalEvents;
@@ -113,7 +143,7 @@ export function useMyIdService() {
     return {
         enterRevealCode,
         hasNewEntries,
-        fetchHashes,
+        fetchRecordHashes,
         setLastSeenHash
     };
 }

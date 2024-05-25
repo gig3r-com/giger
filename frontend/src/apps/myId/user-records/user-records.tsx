@@ -37,6 +37,8 @@ export function UserRecords(props: IUserRecordsProps) {
 
     useEffect(function fetchData() {
         fetchRecords(mode);
+        const hashType = modeMap.get(mode)?.hashProperty;
+        hashType && setLastSeenHash(hashType);
     }, []);
 
     useEffect(function setSeenHash() {

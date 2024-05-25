@@ -50,7 +50,7 @@ export const NewMsg: FC<INewMsgProps> = ({
             <button
                 className="new-msg__send-message"
                 onClick={sendMessage}
-                disabled={newMessage.trim() !== ''}
+                disabled={newMessage.trim() === ''}
             >
                 <span>+</span>
             </button>

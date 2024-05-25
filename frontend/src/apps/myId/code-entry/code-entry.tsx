@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, KeyboardEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useMyIdService } from '../../../shared/services/myid.service';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -14,10 +14,17 @@ export const CodeEntry: FC = () => {
     >(null);
     const { enterRevealCode } = useMyIdService();
     const onEntry = async () => {
+        if (loading || code.trim() === '') return;
         setLoading(true);
-        setMessageToShow(await enterRevealCode(code));
+        setMessageToShow(await enterRevealCode(code.trim()));
         setCode('');
         setLoading(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            onEntry();
+        }
     };
 
     return (
@@ -29,6 +36,7 @@ export const CodeEntry: FC = () => {
                 type="text"
                 value={code}
                 onChange={(event) => setCode(event.target.value)}
+                onKeyDown={(event) => handleKeyDown(event)}
                 className="code-entry__input"
             />
 
@@ -51,7 +59,7 @@ export const CodeEntry: FC = () => {
             )}
 
             <BigButton
-                disabled={code === ''}
+                disabled={code.trim() === ''}
                 onClick={() => onEntry()}
                 text={intl.formatMessage({ id: 'ENTER' })}
             />
