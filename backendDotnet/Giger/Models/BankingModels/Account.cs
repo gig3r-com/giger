@@ -19,6 +19,7 @@ namespace Giger.Models.BankingModels
         [BsonRepresentation(BsonType.String)]
         public required AccountType Type { get; set; }
 
+        [BsonRepresentation(BsonType.Decimal128)]
         public required decimal Balance { get; set; }
         
         public required string AccountNumber { get; set; }
