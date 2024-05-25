@@ -27,7 +27,7 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
             }),
                 50;
         });
-    }, [lastMessage]);
+    }, [convo, lastMessage]);
 
     useEffect(
         function setAsRead() {
@@ -44,7 +44,7 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
                 })
             );
         },
-        [chatId, convo.id, dispatch, gigId, lastMessage]
+        [chatId, convo, dispatch, gigId, lastMessage]
     );
 
     return (

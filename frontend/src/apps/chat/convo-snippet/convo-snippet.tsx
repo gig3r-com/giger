@@ -12,6 +12,7 @@ import { useMessagesService } from '../../../shared/services/messages.service';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 
 import './convo-snippet.scss';
+import dayjs from 'dayjs';
 
 export const ConvoSnippet: FC<{
     convo: IConversation;
@@ -42,6 +43,33 @@ export const ConvoSnippet: FC<{
         );
     }, [currentUser, convo.participantsAllowedToSendMsgs]);
 
+    const otherParty = () => {
+        const others = convo.participants.filter(
+            (participant) => participant !== currentUser?.handle
+        );
+
+        if (others.length === 1) {
+            return others[0];
+        } else {
+            return `[${others[0]}, ${others[1]}${others.length > 2 ? ', ...' : ''}]`;
+        }
+    };
+
+    const timeSince = () => {
+        const date = dayjs(msgToDisplayAsSnippet.date);
+        const now = dayjs().add(100, 'years');
+        const diff = now.diff(date, 'day');
+
+        if (diff === 0) {
+            return date.format('HH:mm:ss');
+        } 
+        if (diff < 3) {
+            return `${now.diff(date, 'hours')} hours ago`;
+        }
+
+        return `${now.diff(date, 'days')} days ago`;
+    };
+
     return (
         <motion.article
             {...generateAnimation('horExpand', {
@@ -65,13 +93,11 @@ export const ConvoSnippet: FC<{
                             <Link to={`/chat/${convo.id}`}>
                                 <section className="convo-snippet__meta">
                                     <span className="convo-snippet__sender">
-                                        @{msgToDisplayAsSnippet.sender}
+                                        @{otherParty()}
                                     </span>
                                     {' > '}
                                     <span className="convo-snippet__date">
-                                        {new Date(
-                                            msgToDisplayAsSnippet.date
-                                        ).toLocaleTimeString()}
+                                        {timeSince()}
                                     </span>
                                     {' > '}
                                     <span className="convo-snippet__status">

@@ -98,7 +98,7 @@ namespace Giger.Controllers
         [HttpGet("simple/hashes/byUsername")]
         public async Task<ActionResult<RecordsHashes>> GetHashesByUsername(string username)
         {
-            var user = await _userService.GetAsync(username);
+            var user = await _userService.GetByUserNameAsync(username);
             if (user is null)
             {
                 return NotFound();

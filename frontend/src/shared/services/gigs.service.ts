@@ -10,7 +10,7 @@ import {
 } from '../../models/gig';
 import { removeGig, setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -24,7 +24,7 @@ import { selectStatusHashes } from '../../store/gigs.selectors';
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { api } = useApiService();
+    const { api, logout } = useApiService();
     const { accounts } = useBankingService();
     const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
@@ -36,7 +36,7 @@ export function useGigsService() {
         (state: RootState) => state.gigs.selectedMode
     );
     const intl = useIntl();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => {
@@ -84,7 +84,13 @@ export function useGigsService() {
     const fetchGigs = async () => {
         dispatch(setFetchingGigs(true));
 
-        const gigs = await api.get('Gig/get/all').json<IGig[]>();
+        const gigs = await api
+            .get('Gig/get/all')
+            .unauthorized(() => logout(currentUser!.handle))
+            .json<IGig[]>();
+        if (gigs.length === 0) {
+            logout(currentUser!.handle);
+        }
         dispatch(setGigs(gigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
@@ -94,7 +100,7 @@ export function useGigsService() {
      * Only allowed for the user who posted the gig and only when the gig is available.
      * @param id gig id
      */
-    const deleteGig = (id: string) => {
+    const deleteGig = async (id: string) => {
         api.delete(`Gig/${id}/remove`)
             .res()
             .catch(() =>
@@ -113,7 +119,7 @@ export function useGigsService() {
      * @param id
      * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
      */
-    const acceptGig = (id: string, asCompany: boolean) => {
+    const acceptGig = async (id: string, asCompany: boolean) => {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = {
             ...gig!,
@@ -122,11 +128,12 @@ export function useGigsService() {
             ...(asCompany && { takenByCompany: currentUser?.faction })
         };
 
-        api.query({
-            accountNo: asCompany
-                ? accounts.business?.accountNumber
-                : accounts.private?.accountNumber
-        })
+        await api
+            .query({
+                accountNo: asCompany
+                    ? accounts.business?.accountNumber
+                    : accounts.private?.accountNumber
+            })
             .url(`Gig/${id}/accept/${currentUser?.id}`)
             .patch(updatedGig)
             .res()
@@ -136,7 +143,7 @@ export function useGigsService() {
                 )
             )
             .then(() => {
-                updateGig(updatedGig);
+                fetchGigs();
             });
     };
 
@@ -163,11 +170,9 @@ export function useGigsService() {
      * Only available for the user who posted the gig, after the other party has marked it as done.
      * @param id gig id
      */
-    const markAsDoneMine = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
-
-        api.url(`Gig/${id}/complete`)
+    const markAsDoneMine = async (id: string) => {
+        await api
+            .url(`Gig/${id}/complete`)
             .patch()
             .res()
             .catch(() =>
@@ -176,7 +181,7 @@ export function useGigsService() {
                 )
             )
             .then(() => {
-                updateGig(updatedGig);
+                fetchGigs();
             });
     };
 
@@ -185,14 +190,9 @@ export function useGigsService() {
      * Only available when the gig is in progress
      * @param id gig id
      */
-    const markAsDoneTheirs = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = {
-            ...gig!,
-            status: GigStatus.PENDING_CONFIRMATION
-        };
-
-        api.url(`Gig/${id}/pending`)
+    const markAsDoneTheirs = async (id: string) => {
+        await api
+            .url(`Gig/${id}/pending`)
             .patch()
             .res()
             .catch(() =>
@@ -201,7 +201,7 @@ export function useGigsService() {
                 )
             )
             .then(() => {
-                updateGig(updatedGig);
+                fetchGigs();
             });
     };
 
@@ -210,24 +210,19 @@ export function useGigsService() {
      * @param id gig id
      */
     const reportAProblem = (id: string) => {
-        navigate(`report-problem/${id}`);
+        navigate(`${id}/report-problem`);
     };
 
-    const sendComplaint = (gigId: string, complaint: string) => {
-        const gig = currentGigs.find((gig) => gig.id === gigId);
-        const updatedGig: IGig = {
-            ...gig!,
-            complaintReason: complaint,
-            markedAsComplaintAt: dayjs().add(100, 'years').toISOString(),
-            status: GigStatus.DISPUTE
-        };
-
-        api.url(`Gig/${gigId}/dispute`)
-            .patch(complaint)
+    const sendComplaint = async (gigId: string, complaint: string) => {
+        await api
+            .url(`Gig/${gigId}/dispute`)
+            .headers({ 'Content-Type': 'application/json' })
+            .body(JSON.stringify({ text: complaint }))
+            .patch()
             .res()
             .then(() => {
-                updateGig(updatedGig);
-                navigate(`../${gigId}`);
+                fetchGigs();
+                navigate(`../giger/${gigId}`);
             });
     };
 
@@ -236,17 +231,13 @@ export function useGigsService() {
      * Only available for admins.
      * @param id gig id
      */
-    const markAsBullshit = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
-
-        api.url(`Gig/${id}/resolve`)
+    const markAsBullshit = async (id: string) => {
+        await api
+            .url(`Gig/${id}/resolve`)
             .query({ clerkAccountNo: currentUser?.id, isClientRight: false })
             .patch()
             .res()
-            .then(() => {
-                updateGig(updatedGig);
-            });
+            .then(() => fetchGigs());
     };
 
     /**
@@ -254,17 +245,13 @@ export function useGigsService() {
      * The admin is rewarded with 15% of the gig's payout.
      * @param id gig id
      */
-    const markAsValid = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
-
-        api.url(`Gig/${id}/resolve`)
+    const markAsValid = async (id: string) => {
+        await api
+            .url(`Gig/${id}/resolve`)
             .query({ clerkAccountNo: currentUser?.id, isClientRight: true })
             .patch()
             .res()
-            .then(() => {
-                updateGig(updatedGig);
-            });
+            .then(() => fetchGigs());
     };
 
     /**
@@ -272,23 +259,27 @@ export function useGigsService() {
      * Money is refunded.
      * @param id gig id
      */
-    const setAsExpired = (id: string) => {
-        const gig = currentGigs.find((gig) => gig.id === id);
-        const updatedGig: IGig = { ...gig!, status: GigStatus.EXPIRED };
-
-        setGigStatus(id, GigStatus.EXPIRED)
+    const setAsExpired = async (id: string) => {
+        await api
+            .url(`Gig/${id}/expire`)
+            .patch()
+            .res()
             .catch(() =>
                 displayToast(
                     intl.formatMessage({ id: 'ERROR_FAILED_TO_UPDATE_GIG' })
                 )
             )
-            .then(() => {
-                updateGig(updatedGig);
-            });
+            .then(() => fetchGigs());
     };
 
-    const setGigStatus = async (id: string, status: GigStatus) => {
-        await api.url(`Gig/${id}/status`).patch({ status }).res();
+    const complete = async (id: string) => {
+        await api
+            .url(`Gig/${id}/complete`)
+            .patch()
+            .res()
+            .then(() => {
+                fetchGigs();
+            });
     };
 
     const joinGigConvo = (id: string) => {
@@ -297,35 +288,38 @@ export function useGigsService() {
             .patch();
     };
 
-    const handleButtonAction = (id: string, actionId?: ActionId) => {
+    const handleButtonAction = async (id: string, actionId?: ActionId) => {
         switch (actionId) {
             case ActionId.MARK_AS_DONE_MINE:
-                markAsDoneMine(id);
-                break;
+                await markAsDoneMine(id);
+                return;
             case ActionId.MARK_AS_DONE_THEIRS:
-                markAsDoneTheirs(id);
-                break;
+                await markAsDoneTheirs(id);
+                return;
             case ActionId.REPORT_A_PROBLEM:
                 reportAProblem(id);
-                break;
+                return;
             case ActionId.MARK_AS_BULLSHIT:
-                markAsBullshit(id);
-                break;
+                await markAsBullshit(id);
+                return;
             case ActionId.MARK_AS_VALID:
-                markAsValid(id);
-                break;
+                await markAsValid(id);
+                return;
             case ActionId.DELETE:
-                deleteGig(id);
-                break;
+                await deleteGig(id);
+                return;
             case ActionId.ACCEPT:
-                acceptGig(id, false);
-                break;
+                await acceptGig(id, false);
+                return;
             case ActionId.ACCEPT_AS_COMPANY:
-                acceptGig(id, true);
+                await acceptGig(id, true);
                 break;
             case ActionId.MARK_AS_EXPIRED:
-                setAsExpired(id);
-                break;
+                await setAsExpired(id);
+                return;
+            case ActionId.COMPLETE:
+                await complete(id);
+                return;
         }
     };
 
@@ -392,9 +386,9 @@ export function useGigsService() {
         return userIsAuthor ? !gig.isRevealed : !gig.isRevealedByClient;
     };
 
-    const hasStatusUpdate = (gig: IGig) => {
+    const hasStatusUpdate = (gigId: string) => {
         return (
-            gigStatusHashes[gig.id].lastSeen !== gigStatusHashes[gig.id].current
+            gigStatusHashes[gigId]?.lastSeen !== gigStatusHashes[gigId]?.current
         );
     };
 

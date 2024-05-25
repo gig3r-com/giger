@@ -11,7 +11,6 @@
     padding: 0 1rem;
 
     &__list {
-        padding: 0;
         height: calc(#{$standard-viewport-height} - #{$controlsHeight});
         overflow: auto;
         padding: 0 1rem;
@@ -20,6 +19,7 @@
         width: 100%;
         box-sizing: border-box;
         margin-top: 0;
+        list-style: none;
         margin-bottom: 0;
         overflow-x: hidden;
     }
@@ -38,9 +38,14 @@
         color: $muted-text;
     }
 
-    .controls {
-        padding-top: 1rem;
-        padding-left: 1rem;
-        padding-right: 0;
+    &__top {
+        font-family: 'Saira', sans-serif;
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        box-sizing: border-box;
     }
 }

@@ -238,15 +238,30 @@ export const eventsSlice = createSlice({
                 }
             }
         },
-        setSeenHash: (state, action: PayloadAction<{ type: RecordHashTypes; hash: number }>) => {
+        setSeenHash: (
+            state,
+            action: PayloadAction<{ type: RecordHashTypes; hash: number }>
+        ) => {
             state.hashes[action.payload.type].lastSeen = action.payload.hash;
         },
-        setCurrentHash: (state, action: PayloadAction<{ type: RecordHashTypes; hash: number }>) => {
+        setCurrentHash: (
+            state,
+            action: PayloadAction<{ type: RecordHashTypes; hash: number }>
+        ) => {
             state.hashes[action.payload.type].current = action.payload.hash;
         },
-        setAllHashes: (state, action: PayloadAction<Record<RecordHashTypes, number>>) => {
+        setAllHashes: (
+            state,
+            action: PayloadAction<Record<RecordHashTypes, number>>
+        ) => {
             Object.entries(action.payload).forEach(([hashType, hash]) => {
+                const lastSeen =
+                    state.hashes[hashType as RecordHashTypes].lastSeen;
                 state.hashes[hashType as RecordHashTypes].current = hash;
+
+                if (lastSeen === 0) {
+                    state.hashes[hashType as RecordHashTypes].lastSeen = hash;
+                }
             });
         }
     }

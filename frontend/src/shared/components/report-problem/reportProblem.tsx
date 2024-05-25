@@ -20,7 +20,7 @@ export const ReportProblem: FC = () => {
     const [complaint, setComplaint] = useState<string>('');
 
     const onNavigateBack = () => {
-        navigate(`../${gigId}`);
+        navigate(`../giger/${gigId}`);
     };
 
     return (

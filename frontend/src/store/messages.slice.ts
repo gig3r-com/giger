@@ -105,15 +105,32 @@ export const conversationsSlice = createSlice({
                 convo.messages.push(action.payload.message);
 
                 if (isCurrentUsersMessage) return;
-                state[
-                    action.payload.gigConvo
-                        ? 'unreadGigMessages'
-                        : 'unreadMessages'
-                ][convo.id] = [
-                    ...(state.unreadMessages[convo.id] ?? []),
+                const convoAccessor = action.payload.gigConvo
+                    ? 'unreadGigMessages'
+                    : 'unreadMessages';
+                state[convoAccessor][convo.id] = [
+                    ...(state[convoAccessor][convo.id] ?? []),
                     action.payload.message.id
                 ];
             }
+        },
+        setUnreadMessage: (
+            state,
+            action: PayloadAction<{
+                convoId: string;
+                messageId: string;
+                isMine: boolean;
+                gigConvo: boolean;
+            }>
+        ) => {
+            if (action.payload.isMine) return;
+            const accessor = action.payload.gigConvo
+                ? 'unreadGigMessages'
+                : 'unreadMessages';
+            state[accessor][action.payload.convoId] = [
+                ...(state[accessor][action.payload.convoId] ?? []),
+                action.payload.messageId
+            ];
         },
         setMessagesAsRead: (
             state,
@@ -136,7 +153,8 @@ export const {
     setSeenGigConversationHash,
     updateConversation,
     setMessagesAsRead,
-    addConversation
+    addConversation,
+    setUnreadMessage
 } = conversationsSlice.actions;
 
 export default conversationsSlice.reducer;
