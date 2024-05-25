@@ -323,33 +323,6 @@ export function useGigsService() {
         }
     };
 
-    const gigsVisibleToTheUser = useMemo(
-        () =>
-            currentGigs.filter((gig) => {
-                const expiredButMine =
-                    gig.status === GigStatus.EXPIRED &&
-                    gig.authorId === currentUser?.id;
-                const userIsSideInGig = [gig.authorId, gig.takenById].includes(
-                    currentUser?.id
-                );
-
-                if (gig.status === GigStatus.AVAILABLE) {
-                    return true;
-                }
-
-                if (expiredButMine) {
-                    return true;
-                }
-
-                if (userIsSideInGig) {
-                    return true;
-                }
-
-                return false;
-            }),
-        [currentGigs, currentUser]
-    );
-
     /**
      * determines whether the user is a provider or a client in the gig
      * @param gig - gig to check
@@ -371,7 +344,7 @@ export function useGigsService() {
     );
 
     const filteredGigs = useMemo(() => {
-        return gigsVisibleToTheUser.filter((gig) => {
+        return currentGigs.filter((gig) => {
             const categoryMatching =
                 selectedCategories.includes(gig.category) ||
                 selectedCategories.length === 0;
@@ -379,7 +352,7 @@ export function useGigsService() {
                 selectedMode === userGigMode(gig) || selectedMode === 'all';
             return categoryMatching && modeMatching;
         });
-    }, [gigsVisibleToTheUser, selectedCategories, selectedMode, userGigMode]);
+    }, [selectedCategories, selectedMode, userGigMode]);
 
     const isLocked = (gig: IGig) => {
         const userIsAuthor = gig.authorId === currentUser?.id;
@@ -402,12 +375,12 @@ export function useGigsService() {
         getReputationLevel,
         handleButtonAction,
         gigerCommission,
-        gigsVisibleToTheUser,
         sendComplaint,
         userGigMode,
         filteredGigs,
         joinGigConvo,
         isLocked,
-        hasStatusUpdate
+        hasStatusUpdate,
+        currentGigs
     };
 }
