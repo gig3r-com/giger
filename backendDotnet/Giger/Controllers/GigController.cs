@@ -450,7 +450,7 @@ namespace Giger.Controllers
             {
                 await ReturnFunds(gig);
             }
-
+            gig.Status = GigStatus.EXPIRED;
             await _gigService.UpdateAsync(gig);
             return Ok();
         }
