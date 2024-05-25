@@ -52,6 +52,7 @@ namespace Giger.Models.User
             SubnetworkName = user.SubnetworkName;
             NetworkAdminName = user.NetworkAdminName;
 
+            InsuredAmount = user.InsuredAmount;
             CyberwareLevel = user.CyberwareLevel;
             TypeActual = user.TypeActual;
             Assets = user.Assets;
