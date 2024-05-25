@@ -40,6 +40,20 @@ namespace Giger.Models.BankingModels
             Timestamp = GigerDateTime.Now;
         }
 
+        [SetsRequiredMembers]
+        public Transaction(Transaction transaction)
+        {
+            Id = transaction.Id;
+            From = transaction.From;
+            FromUser = transaction.FromUser;
+            To = transaction.To;
+            ToUser = transaction.ToUser;
+            Title = transaction.Title;
+            Amount = transaction.Amount;
+            Timestamp = transaction.Timestamp;
+            OrderingParty = transaction.OrderingParty;
+        }
+
         public override int GetHashCode()
         {
             int hash = 17;

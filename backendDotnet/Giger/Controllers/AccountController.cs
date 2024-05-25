@@ -287,11 +287,12 @@ namespace Giger.Controllers
             giverAcc.Balance -= newTransaction.Amount;
             await _accountService.UpdateAsync(giverAcc);
 
-            receiverAcc.Transactions.Add(newTransaction);
-            receiverAcc.Balance += newTransaction.Amount;
+            var clone = new Transaction(newTransaction);
+            receiverAcc.Transactions.Add(clone);
+            receiverAcc.Balance += clone.Amount;
             await _accountService.UpdateAsync(receiverAcc);
-            NotifyTransaction(receiverAcc, newTransaction);
-            LogTransaction(newTransaction, giverAcc, receiverAcc);
+            NotifyTransaction(receiverAcc, clone);
+            LogTransaction(clone, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
