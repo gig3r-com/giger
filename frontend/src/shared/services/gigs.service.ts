@@ -100,7 +100,7 @@ export function useGigsService() {
      * Only allowed for the user who posted the gig and only when the gig is available.
      * @param id gig id
      */
-    const deleteGig = (id: string) => {
+    const deleteGig = async (id: string) => {
         api.delete(`Gig/${id}/remove`)
             .res()
             .catch(() =>
@@ -119,7 +119,7 @@ export function useGigsService() {
      * @param id
      * @param asCompany - determines whether or not the user is accepting the gig as a company. in such case, payment originates or is routed to users' company account.
      */
-    const acceptGig = (id: string, asCompany: boolean) => {
+    const acceptGig = async (id: string, asCompany: boolean) => {
         const gig = currentGigs.find((gig) => gig.id === id);
         const updatedGig: IGig = {
             ...gig!,
@@ -128,11 +128,12 @@ export function useGigsService() {
             ...(asCompany && { takenByCompany: currentUser?.faction })
         };
 
-        api.query({
-            accountNo: asCompany
-                ? accounts.business?.accountNumber
-                : accounts.private?.accountNumber
-        })
+        await api
+            .query({
+                accountNo: asCompany
+                    ? accounts.business?.accountNumber
+                    : accounts.private?.accountNumber
+            })
             .url(`Gig/${id}/accept/${currentUser?.id}`)
             .patch(updatedGig)
             .res()
@@ -169,8 +170,9 @@ export function useGigsService() {
      * Only available for the user who posted the gig, after the other party has marked it as done.
      * @param id gig id
      */
-    const markAsDoneMine = (id: string) => {
-        api.url(`Gig/${id}/complete`)
+    const markAsDoneMine = async (id: string) => {
+        await api
+            .url(`Gig/${id}/complete`)
             .patch()
             .res()
             .catch(() =>
@@ -188,8 +190,9 @@ export function useGigsService() {
      * Only available when the gig is in progress
      * @param id gig id
      */
-    const markAsDoneTheirs = (id: string) => {
-        api.url(`Gig/${id}/pending`)
+    const markAsDoneTheirs = async (id: string) => {
+        await api
+            .url(`Gig/${id}/pending`)
             .patch()
             .res()
             .catch(() =>
@@ -210,8 +213,9 @@ export function useGigsService() {
         navigate(`${id}/report-problem`);
     };
 
-    const sendComplaint = (gigId: string, complaint: string) => {
-        api.url(`Gig/${gigId}/dispute`)
+    const sendComplaint = async (gigId: string, complaint: string) => {
+        await api
+            .url(`Gig/${gigId}/dispute`)
             .headers({ 'Content-Type': 'application/json' })
             .body(JSON.stringify({ text: complaint }))
             .patch()
@@ -227,8 +231,9 @@ export function useGigsService() {
      * Only available for admins.
      * @param id gig id
      */
-    const markAsBullshit = (id: string) => {
-        api.url(`Gig/${id}/resolve`)
+    const markAsBullshit = async (id: string) => {
+        await api
+            .url(`Gig/${id}/resolve`)
             .query({ clerkAccountNo: currentUser?.id, isClientRight: false })
             .patch()
             .res()
@@ -240,8 +245,9 @@ export function useGigsService() {
      * The admin is rewarded with 15% of the gig's payout.
      * @param id gig id
      */
-    const markAsValid = (id: string) => {
-        api.url(`Gig/${id}/resolve`)
+    const markAsValid = async (id: string) => {
+        await api
+            .url(`Gig/${id}/resolve`)
             .query({ clerkAccountNo: currentUser?.id, isClientRight: true })
             .patch()
             .res()
@@ -253,8 +259,9 @@ export function useGigsService() {
      * Money is refunded.
      * @param id gig id
      */
-    const setAsExpired = (id: string) => {
-        api.url(`Gig/${id}/expire`)
+    const setAsExpired = async (id: string) => {
+        await api
+            .url(`Gig/${id}/expire`)
             .patch()
             .res()
             .catch(() =>
@@ -265,8 +272,9 @@ export function useGigsService() {
             .then(() => fetchGigs());
     };
 
-    const complete = (id: string) => {
-        api.url(`Gig/${id}/complete`)
+    const complete = async (id: string) => {
+        await api
+            .url(`Gig/${id}/complete`)
             .patch()
             .res()
             .then(() => {
@@ -280,38 +288,38 @@ export function useGigsService() {
             .patch();
     };
 
-    const handleButtonAction = (id: string, actionId?: ActionId) => {
+    const handleButtonAction = async (id: string, actionId?: ActionId) => {
         switch (actionId) {
             case ActionId.MARK_AS_DONE_MINE:
-                markAsDoneMine(id);
-                break;
+                await markAsDoneMine(id);
+                return;
             case ActionId.MARK_AS_DONE_THEIRS:
-                markAsDoneTheirs(id);
-                break;
+                await markAsDoneTheirs(id);
+                return;
             case ActionId.REPORT_A_PROBLEM:
                 reportAProblem(id);
-                break;
+                return;
             case ActionId.MARK_AS_BULLSHIT:
-                markAsBullshit(id);
-                break;
+                await markAsBullshit(id);
+                return;
             case ActionId.MARK_AS_VALID:
-                markAsValid(id);
-                break;
+                await markAsValid(id);
+                return;
             case ActionId.DELETE:
-                deleteGig(id);
-                break;
+                await deleteGig(id);
+                return;
             case ActionId.ACCEPT:
-                acceptGig(id, false);
-                break;
+                await acceptGig(id, false);
+                return;
             case ActionId.ACCEPT_AS_COMPANY:
-                acceptGig(id, true);
+                await acceptGig(id, true);
                 break;
             case ActionId.MARK_AS_EXPIRED:
-                setAsExpired(id);
-                break;
+                await setAsExpired(id);
+                return;
             case ActionId.COMPLETE:
-                complete(id);
-                break;
+                await complete(id);
+                return;
         }
     };
 

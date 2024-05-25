@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { GigStatus, IGig } from '../../../../models/gig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -28,6 +28,7 @@ export const GigBody: FC<{ gig: IGig; isMine: boolean }> = ({
     const { buttonColor } = useGigHelpers();
     const { generateAnimation } = useStandardizedAnimation();
     const { hasCompanyAccount, accounts } = useBankingService();
+    const [lockButtons, setLockButtons] = useState(false);
     const convos = useSelector(
         (state: RootState) => state.conversations.gigConversations
     );
@@ -64,6 +65,12 @@ export const GigBody: FC<{ gig: IGig; isMine: boolean }> = ({
         );
     }, [gig]);
 
+    const handleBigButtonClick = async (actionId?: ActionId) => {
+        setLockButtons(true);
+        await handleButtonAction(gig.id, actionId);
+        setLockButtons(false);
+    };
+
     useEffect(
         function fetch() {
             if (shouldFetchConvo) {
@@ -93,11 +100,9 @@ export const GigBody: FC<{ gig: IGig; isMine: boolean }> = ({
                     text={intl.formatMessage({
                         id: button.label
                     })}
-                    disabled={button.disabled}
+                    disabled={button.disabled || lockButtons}
                     color={buttonColor(gig.status, isMine)}
-                    onClick={() => {
-                        handleButtonAction(gig.id, button.actionId);
-                    }}
+                    onClick={() => handleBigButtonClick(button.actionId)}
                 />
             ))}
 
