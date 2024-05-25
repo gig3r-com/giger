@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { GigList } from './gigList/gigList';
 import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
@@ -20,7 +20,7 @@ export const Giger: FC = () => {
     const navigate = useNavigate();
     const selectedGig = useSelector(selectSelectedGig);
     const [fetchingGigs, setFetchingGigs] = useState(true);
-    const { fetchGigs, gigsVisibleToTheUser } = useGigsService();
+    const { fetchGigs, currentGigs } = useGigsService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
@@ -33,19 +33,17 @@ export const Giger: FC = () => {
         });
     }, []);
 
-    const gigs = useMemo(() => gigsVisibleToTheUser, [gigsVisibleToTheUser]);
-
     const toggleMenuState = () => {
         setMenuState(menuState === 'filters' ? 'list' : 'filters');
     };
 
     useEffect(
         function redirectOnGigNotFound() {
-            if (gigId && !gigs.some((gig) => gig.id === gigId)) {
+            if (gigId && !currentGigs.some((gig) => gig.id === gigId)) {
                 navigate('/giger');
             }
         },
-        [gigId, gigs, navigate]
+        [gigId, currentGigs, navigate]
     );
 
     useEffect(
@@ -80,7 +78,11 @@ export const Giger: FC = () => {
                     </AnimatePresence>
                     <AnimatePresence>
                         {selectedGig && (
-                            <Gig gig={selectedGig} selectedId={gigId} delayMultiplier={0.2} />
+                            <Gig
+                                gig={selectedGig}
+                                selectedId={gigId}
+                                delayMultiplier={0.2}
+                            />
                         )}
                     </AnimatePresence>
                 </>
