@@ -47,6 +47,7 @@ namespace Giger.Models.GigModels
 
         public DateTime? AcceptedAt { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public required GigModes Mode { get; set; }
 
         public bool IsRevealedByClient { get; set; } = true;
