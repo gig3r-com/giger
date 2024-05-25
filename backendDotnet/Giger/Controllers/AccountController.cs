@@ -283,14 +283,21 @@ namespace Giger.Controllers
                 }
             }
 
-            giverAcc.Transactions.Add(newTransaction);
-            giverAcc.Balance -= newTransaction.Amount;
-            await _accountService.UpdateAsync(giverAcc);
+            //if (isGigTransfer)
+            //{
+                
+            //}
 
             var clone = new Transaction(newTransaction);
             receiverAcc.Transactions.Add(clone);
             receiverAcc.Balance += clone.Amount;
             await _accountService.UpdateAsync(receiverAcc);
+
+            giverAcc.Transactions.Add(newTransaction);
+            giverAcc.Balance -= newTransaction.Amount;
+            await _accountService.UpdateAsync(giverAcc);
+
+            
             NotifyTransaction(receiverAcc, clone);
             LogTransaction(clone, giverAcc, receiverAcc);
 
