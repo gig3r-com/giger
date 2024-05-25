@@ -52,7 +52,6 @@ const buttonDefinitions: {
         {
             status: GigStatus.AVAILABLE,
             isMine: false,
-
             reputationMatches: false,
             buttons: [
                 {
@@ -95,6 +94,26 @@ const buttonDefinitions: {
             isMine: false,
             hasCompanyAccount: true,
             mode: GigModes.CLIENT,
+            buttons: [
+                {
+                    label: 'ACCEPT_GIG',
+                    color: 'primary',
+                    disabled: false,
+                    actionId: ActionId.ACCEPT
+                },
+                {
+                    label: 'ACCEPT_AS_COMPANY',
+                    color: 'primary',
+                    disabled: false,
+                    actionId: ActionId.ACCEPT_AS_COMPANY
+                }
+            ]
+        },
+        {
+            status: GigStatus.AVAILABLE,
+            isMine: false,
+            hasCompanyAccount: true,
+            mode: GigModes.PROVIDER,
             buttons: [
                 {
                     label: 'ACCEPT_GIG',
