@@ -220,5 +220,15 @@
     "WELLBEING": "Wellbeing",
     "INSUFFICIENT_REPUTATION": "Reputation too low",
     "FAILED_TO_FETCH_MESSAGES": "Failed to fetch messages. Try again or contact support.",
-    "PRIVATE_DESC": "Detailed description shown upon accepting"
+    "PRIVATE_DESC": "Detailed description shown upon accepting",
+    "VIBE_OPINIONS": "Vibe opinions",
+    "ERROR_FAILED_TO_DELETE_GIG": "Failed to delete. Try again or contact support.",
+    "INSUFFICIENT_FUNDS": "Insufficient funds",
+    "INSUFFICIENT_COMPANY_FUNDS": "Insufficient company funds",
+    "NO_RECORDER_EVENTS": "No recorded events",
+    "ORDERING_PARTY": "Ordering party",
+    "ANONYMOUS": "Anonymous",
+    "COMPLETE": "Complete",
+    "NEW_STATUS": "New status",
+    "NEW": "New"
 }

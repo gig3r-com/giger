@@ -11,35 +11,35 @@ namespace Giger.Models.Hashes
             int relationsHashCode = 3;
             foreach (var relation in user.Relations)
             {
-                relationsHashCode ^= relation.GetHashCode();
+                relationsHashCode += relation.GetHashCode();
             }
             RelationsHash = relationsHashCode;
 
             int goalsHashCode = 5;
             foreach (var goal in user.Goals)
             {
-                goalsHashCode ^= goal.GetHashCode();
+                goalsHashCode += goal.GetHashCode();
             }
             GoalsHash = goalsHashCode;
 
             int criminalEventsHashCode = 13;
             foreach (var criminalEvent in user.CriminalEvents)
             {
-                criminalEventsHashCode ^= criminalEvent.GetHashCode();
+                criminalEventsHashCode += criminalEvent.GetHashCode();
             }
             CriminalEventsHash = criminalEventsHashCode;
 
             int privateRecordsHashCode = 17;
             foreach (var privateRecords in user.PrivateRecords)
             {
-                privateRecordsHashCode ^= privateRecords.GetHashCode();
+                privateRecordsHashCode += privateRecords.GetHashCode();
             }
             PrivateRecordsHash = privateRecordsHashCode;
 
             int medicalEventsHashCode = 23;
             foreach (var medicalEvent in user.MedicalEvents)
             {
-                medicalEventsHashCode ^= medicalEvent.GetHashCode();
+                medicalEventsHashCode += medicalEvent.GetHashCode();
             }
             MedicalEventsHash = medicalEventsHashCode;
         }

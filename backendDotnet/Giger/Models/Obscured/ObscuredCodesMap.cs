@@ -12,7 +12,7 @@ namespace Giger.Models.Obscured
 
         public required string ExpectedRevealCode { get; set; }
 
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         public bool IsUsed { get; set; } = false;
     }

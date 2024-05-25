@@ -12,7 +12,6 @@
     min-height: $summary-height;
     max-height: calc(#{$standard-viewport-height} - 70px);
     overflow: hidden;
-    position: relative;
 
     &--selected {
         height: $standard-viewport-height;
@@ -41,52 +40,62 @@
         height: $summary-height;
         padding: 0.5rem;
         padding-left: 1rem;
+        transition:
+            $color-transition-duration $color-timing-function border-color,
+            $color-transition-duration $color-timing-function background-color;
         cursor: pointer;
-        clip-path: polygon(
-            12px 0,
-            100% 0,
-            100% calc(100% - 19px),
-            calc(100% - 19px) 100%,
-            0 100%,
-            0 15px
-        );
+        clip-path: polygon(12px 0,
+                100% 0,
+                100% calc(100% - 19px),
+                calc(100% - 19px) 100%,
+                0 100%,
+                0 15px);
         flex-wrap: wrap;
+
+        &::before {
+            transition: $color-transition-duration $color-timing-function background-color;
+        }
 
         &--available {
             border-color: $primary-color;
         }
+
         &--in-progress {
             border-color: $secondary-color;
         }
+
         &--mine:not(.gig__summary--completed):not(.gig__summary--expired) {
             border-color: $accent-color !important;
         }
+
         &--pending {
             border-color: $secondary-color;
         }
+
         &--dispute {
             border-color: $accent-color-2;
         }
+
         &--completed {
             border-color: $muted-accent;
         }
+
         &--expired {
             border-color: $muted-accent;
         }
+
         &--available:before,
         &--available:after {
             background-color: $primary-color;
         }
+
         &--in-progress:before,
         &--in-progress:after {
             background-color: $secondary-color;
         }
-        &--mine:not(.gig__summary--completed):not(
-                .gig__summary--expired
-            ):before,
-        &--mine:not(.gig__summary--completed):not(
-                .gig__summary--expired
-            ):after {
+
+        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):before,
+        &--mine:not(.gig__summary--completed):not(.gig__summary--expired):after {
             background-color: $accent-color !important;
         }
 
@@ -136,70 +145,9 @@
         font-weight: 400;
     }
 
-    &__title {
-        margin: 0 0 3px;
-        font-size: 22px;
-        font-weight: 400;
-        font-stretch: semi-condensed;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        color: #fff;
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-
-        &:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 6px;
-            height: 100px;
-            background: $primary-color;
-        }
-    }
-
     &__conversation {
         max-height: calc(100dvh - 430px);
         overflow: auto;
-    }
-
-    &--in-progress &__title {
-        &:before {
-            background: $secondary-color;
-        }
-    }
-
-    &--completed &__title {
-        &:before {
-            background: $muted-accent;
-        }
-    }
-
-    &--mine:not(.gig--completed):not(.gig--expired) &__title {
-        &:before {
-            background: $accent-color !important;
-        }
-    }
-
-    &--pending &__title {
-        &::before {
-            background: $secondary-color;
-        }
-    }
-
-    &--dispute &__title {
-        &::before {
-            background: $accent-color-2;
-        }
-    }
-
-    &--expired &__title {
-        &::before {
-            background: $muted-accent;
-        }
     }
 
     .big-button {
@@ -208,22 +156,17 @@
         top: -1px;
     }
 
-    .big-button + .big-button {
+    .big-button+.big-button {
         margin-top: 1rem;
     }
 
     .new-msg {
-        position: absolute;
-        bottom: 0;
+        position: relative;
         width: 100%;
         height: $new-msg-wrapper-height;
     }
 
     &__details {
-        max-height: calc(
-            calc(#{$standard-viewport-height} - #{$summary-height}) - #{$new-msg-wrapper-height} -
-                79px
-        );
         overflow: auto;
     }
 
@@ -242,9 +185,15 @@
 
     &__wrapper {
         list-style: none;
-        padding: 0;
         margin-bottom: 1rem;
         transition: margin-bottom $standard-duration $standard-timing-function;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: $app-background;
+        padding: 1rem;
+        box-sizing: border-box;
 
         &--small-margin {
             margin-bottom: 0.3rem;
@@ -252,62 +201,6 @@
 
         &--no-margin {
             margin-bottom: 0;
-        }
-    }
-
-    &__status {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        height: 0;
-        overflow: hidden;
-        transition: height $standard-duration $standard-timing-function;
-
-        &--shown {
-            height: 24px;
-        }
-
-        &::before {
-            content: '';
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            display: block;
-        }
-
-        &--primary {
-            color: $primary-color;
-        }
-        &--primary::before {
-            background-color: $primary-color;
-        }
-
-        &--secondary {
-            color: $secondary-color;
-        }
-        &--secondary::before {
-            background-color: $secondary-color;
-        }
-
-        &--accent {
-            color: $accent-color;
-        }
-        &--accent::before {
-            background-color: $accent-color;
-        }
-
-        &--accent2 {
-            color: $accent-color-2;
-        }
-        &--accent2::before {
-            background-color: $accent-color-2;
-        }
-
-        &--muted-accent {
-            color: $muted-accent;
-        }
-        &--muted-accent::before {
-            background-color: $muted-accent;
         }
     }
 

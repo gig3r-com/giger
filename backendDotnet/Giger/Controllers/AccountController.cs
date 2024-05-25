@@ -21,6 +21,19 @@ namespace Giger.Controllers
 
         private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
+        //TODO put it into config
+        private readonly Dictionary<WealthLevels, decimal> _transferLimits = new()
+        {
+            { WealthLevels.BROKE, 200 },
+            { WealthLevels.IMPOVERISHED, 500 },
+            { WealthLevels.STRUGGLING, 1000 },
+            { WealthLevels.MODEST, 1000 },
+            { WealthLevels.STABLE, 1500 },
+            { WealthLevels.COMFORTABLE, 2000 },
+            { WealthLevels.AFFLUENT, 2500 },
+            { WealthLevels.ELITE, 5000 }
+        };
+
         #region Account
 
         [Obsolete]
@@ -212,7 +225,7 @@ namespace Giger.Controllers
         }
 
         [HttpPost("transaction")]
-        public async Task<IActionResult> CreateTransaction(Transaction newTransaction)
+        public async Task<IActionResult> CreateTransaction(Transaction newTransaction, bool isGigTransfer = false)
         {
             if (!IsAuthorized(newTransaction.FromUser))
             {
@@ -222,6 +235,9 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(newTransaction.Id))
             {
                 newTransaction.Id = Guid.NewGuid().ToString();
+            }
+            if (newTransaction.Timestamp == null)
+            {
                 newTransaction.Timestamp = GigerDateTime.Now;
             }
 
@@ -254,15 +270,36 @@ namespace Giger.Controllers
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
+            // limits for gig transfers are not checked
+            if (!isGigTransfer)
+            {
+                var user = await _userService.GetByUserNameAsync(giverAcc.Owner);
+                if (user != null)
+                {
+                    if (newTransaction.Amount > _transferLimits[user.WealthLevel])
+                    {
+                        return BadRequest(Messages.ACCOUNT_TRANSFER_LIMIT_EXCEEDED);
+                    }
+                }
+            }
+
+            //if (isGigTransfer)
+            //{
+                
+            //}
+
+            var clone = new Transaction(newTransaction);
+            receiverAcc.Transactions.Add(clone);
+            receiverAcc.Balance += clone.Amount;
+            await _accountService.UpdateAsync(receiverAcc);
+
             giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
             await _accountService.UpdateAsync(giverAcc);
 
-            receiverAcc.Transactions.Add(newTransaction);
-            receiverAcc.Balance += newTransaction.Amount;
-            await _accountService.UpdateAsync(receiverAcc);
-            NotifyTransaction(receiverAcc, newTransaction);
-            LogTransaction(newTransaction, giverAcc, receiverAcc);
+            
+            NotifyTransaction(receiverAcc, clone);
+            LogTransaction(clone, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
@@ -274,7 +311,10 @@ namespace Giger.Controllers
             {
                 case AccountType.PRIVATE:
                 {
-                    await _notificationsHandler.NotifyTransaction(account.Owner, account.Id, transaction.Id);
+                    if (account.Owner != "SYSTEM")
+                    {
+                        await _notificationsHandler.NotifyTransaction(account.Owner, account, transaction);
+                    }
                     break;
                 }
                 case AccountType.BUSINESS:
@@ -284,7 +324,7 @@ namespace Giger.Controllers
                         var allFactionUsers = await _userService.GetAllFactionUser(faction);
                         foreach (var user in allFactionUsers)
                         {
-                            await _notificationsHandler.NotifyTransaction(user.Handle, account.Id, transaction.Id);
+                            await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
                         }
                     }
                     break;
@@ -298,7 +338,10 @@ namespace Giger.Controllers
             {
                 case AccountType.PRIVATE:
                 {
-                    await _notificationsHandler.NotifyAccount(account.Owner, account.Id);
+                    if (account.Owner != "SYSTEM")
+                    {
+                        await _notificationsHandler.NotifyAccount(account.Owner, account);
+                    }
                     break;
                 }
                 case AccountType.BUSINESS:
@@ -308,7 +351,7 @@ namespace Giger.Controllers
                         var allFactionUsers = await _userService.GetAllFactionUser(faction);
                         foreach (var user in allFactionUsers)
                         {
-                            await _notificationsHandler.NotifyAccount(user.Handle, account.Id);
+                            await _notificationsHandler.NotifyAccount(user.Handle, account);
                         }
                     }
                     break;

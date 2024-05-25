@@ -28,7 +28,7 @@ export function useApiService() {
             mode: 'cors'
         })
             .headers({ AuthToken: authToken as string })
-            .get(`User/private/byUsername?userName=${username}`)
+            .get(`User/simple/byUsername?userName=${username}`)
             .json<IUserPrivate>();
     };
 

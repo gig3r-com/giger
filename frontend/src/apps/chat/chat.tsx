@@ -13,6 +13,7 @@ import { BigButton } from '../../shared/components/big-button/big-button';
 import { useUserService } from '../../shared/services/user.service';
 
 import './chat.scss';
+import dayjs from 'dayjs';
 
 export const Chat: FC = () => {
     const intl = useIntl();
@@ -27,14 +28,9 @@ export const Chat: FC = () => {
 
     const sortedConvos = useMemo(() => {
         return [...conversations].sort((a, b) => {
-            const aLastMessageTime = new Date(
-                a.messages[a.messages.length - 1]?.date
-            ).getMilliseconds();
-            const bLastMessageTime = new Date(
-                b.messages[b.messages.length - 1]?.date
-            ).getMilliseconds();
-
-            return bLastMessageTime - aLastMessageTime;
+            return dayjs(b.messages[b.messages.length - 1]?.date).diff(
+                dayjs(a.messages[a.messages.length - 1]?.date)
+            );
         });
     }, [conversations]);
 

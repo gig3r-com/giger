@@ -73,7 +73,7 @@ export const Contacts: FC = () => {
                 </span>
                 <span
                     className="contacts__list-item-action material-icons"
-                    onClick={() => fetchUserData(user.id)}
+                    onClick={() => navigate(`${user?.id}`)}
                 >
                     chevron_right
                 </span>

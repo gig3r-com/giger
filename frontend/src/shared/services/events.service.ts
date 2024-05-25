@@ -11,12 +11,11 @@ import {
     IMeta,
     IPrivateRecord,
     IRelation,
-    MetaTypes,
     UserRecordTypes
 } from '../../models/user';
 import { v4 } from 'uuid';
 import { useApiService } from './api.service';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useIntl } from 'react-intl';
 import {
     addEvent,
@@ -37,7 +36,7 @@ export const useEventsService = () => {
     const intl = useIntl();
     const dispatch = useDispatch();
     const { api } = useApiService();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const { currentUser } = useUserService();
     const relations = useSelector(selectRelations);
     const metas = useSelector(selectMeta);
@@ -151,10 +150,10 @@ export const useEventsService = () => {
             });
     };
 
-    const addMeta = (type: MetaTypes, description: string): void => {
+    const addMeta = (title: string, description: string): void => {
         const record: IMeta = {
             id: v4(),
-            type,
+            title,
             description,
             recordType: UserRecordTypes.META
         };
@@ -231,12 +230,12 @@ export const useEventsService = () => {
 
     const updateMeta = (
         metaId: string,
-        metaType: MetaTypes,
+        title: string,
         description: string
     ): void => {
         const meta = {
             ...metas.find((entry) => entry.id === metaId),
-            type: metaType,
+            title,
             description: description
         } as IMeta;
 

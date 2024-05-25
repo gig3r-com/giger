@@ -23,8 +23,9 @@
 }
 
 .my-id-navigation {
-    height: $standard-viewport-height;
-    
+    height: calc(#{$standard-viewport-height} - 74px);
+    overflow: auto;
+    padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;

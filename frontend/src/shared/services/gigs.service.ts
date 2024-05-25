@@ -8,9 +8,9 @@ import {
     IGig,
     reputationBrackets
 } from '../../models/gig';
-import { setFetchingGigs, setGigs } from '../../store/gigs.slice';
+import { removeGig, setFetchingGigs, setGigs } from '../../store/gigs.slice';
 import { RootState } from '../../store/store';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import { useUserService } from './user.service';
 import dayjs from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -19,14 +19,16 @@ import { ActionId } from '../../apps/giger/gig/button-definitions';
 import { useApiService } from './api.service';
 import { useBankingService } from './banking.service';
 import { AccountType } from '../../models/banking';
+import { selectStatusHashes } from '../../store/gigs.selectors';
 
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { api } = useApiService();
+    const { api, logout } = useApiService();
     const { accounts } = useBankingService();
     const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
+    const gigStatusHashes = useSelector(selectStatusHashes);
     const selectedCategories = useSelector(
         (state: RootState) => state.gigs.selectedCategories
     );
@@ -34,7 +36,7 @@ export function useGigsService() {
         (state: RootState) => state.gigs.selectedMode
     );
     const intl = useIntl();
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const gigerCommission = 0.2;
 
     const constructGig: (draftGig: IDraftGig) => IGig = (draftGig) => {
@@ -68,7 +70,7 @@ export function useGigsService() {
     const addNewGig = async (gig: IDraftGig) => {
         const newGig = constructGig(gig);
         await api.url('Gig/create').post(newGig).res();
-        dispatch(setGigs([...currentGigs, constructGig(gig)]));
+        await fetchGigs();
     };
 
     const updateGig = (updatedGig: IGig) => {
@@ -82,7 +84,8 @@ export function useGigsService() {
     const fetchGigs = async () => {
         dispatch(setFetchingGigs(true));
 
-        const gigs = await api.get('Gig/get/all').json<IGig[]>();
+        const gigs = await api.get('Gig/get/all').unauthorized(() => logout(currentUser!.handle)).json<IGig[]>();
+        if (gigs.length === 0) { logout(currentUser!.handle); }
         dispatch(setGigs(gigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
@@ -93,10 +96,17 @@ export function useGigsService() {
      * @param id gig id
      */
     const deleteGig = (id: string) => {
-        const updatedGigs = currentGigs.filter((gig) => gig.id !== id);
-        // ! API CALL REQUIRED
-        dispatch(setGigs(updatedGigs));
-        displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
+        api.delete(`Gig/${id}/remove`)
+            .res()
+            .catch(() =>
+                displayToast(
+                    intl.formatMessage({ id: 'ERROR_FAILED_TO_DELETE_GIG' })
+                )
+            )
+            .then(() => {
+                dispatch(removeGig(id));
+                displayToast(intl.formatMessage({ id: 'GIG_DELETED' }));
+            });
     };
 
     /**
@@ -114,7 +124,9 @@ export function useGigsService() {
         };
 
         api.query({
-            accountNo: asCompany ? accounts.business : accounts.private
+            accountNo: asCompany
+                ? accounts.business?.accountNumber
+                : accounts.private?.accountNumber
         })
             .url(`Gig/${id}/accept/${currentUser?.id}`)
             .patch(updatedGig)
@@ -141,9 +153,7 @@ export function useGigsService() {
     };
 
     const canAcceptGig = (gig: IGig): boolean => {
-        const userReputation = getReputationLevel(
-            currentUser!.gigReputation[gig.category]
-        );
+        const userReputation = currentUser!.gigReputation[gig.category];
         const gigReputation = gig.reputationRequired.level;
 
         return userReputation >= gigReputation;
@@ -201,7 +211,7 @@ export function useGigsService() {
      * @param id gig id
      */
     const reportAProblem = (id: string) => {
-        navigate(`report-problem/${id}`);
+        navigate(`${id}/report-problem`);
     };
 
     const sendComplaint = (gigId: string, complaint: string) => {
@@ -214,12 +224,13 @@ export function useGigsService() {
         };
 
         api.url(`Gig/${gigId}/dispute`)
-            .query({ reason: complaint })
+            .headers({ 'Content-Type': 'application/json' })
+            .body(JSON.stringify({ "text": complaint }))
             .patch()
             .res()
             .then(() => {
                 updateGig(updatedGig);
-                navigate(`../${gigId}`);
+                navigate(`../giger/${gigId}`);
             });
     };
 
@@ -279,6 +290,15 @@ export function useGigsService() {
             });
     };
 
+    const complete = (id: string) => {
+        const gig = currentGigs.find((gig) => gig.id === id);
+        const updatedGig: IGig = { ...gig!, status: GigStatus.COMPLETED };
+
+        api.url(`Gig/${id}/complete`).patch().res().then(() => {
+            updateGig(updatedGig);
+        });
+    }
+
     const setGigStatus = async (id: string, status: GigStatus) => {
         await api.url(`Gig/${id}/status`).patch({ status }).res();
     };
@@ -317,6 +337,9 @@ export function useGigsService() {
                 break;
             case ActionId.MARK_AS_EXPIRED:
                 setAsExpired(id);
+                break;
+            case ActionId.COMPLETE:
+                complete(id)
                 break;
         }
     };
@@ -384,6 +407,12 @@ export function useGigsService() {
         return userIsAuthor ? !gig.isRevealed : !gig.isRevealedByClient;
     };
 
+    const hasStatusUpdate = (gigId: string) => {
+        return (
+            gigStatusHashes[gigId]?.lastSeen !== gigStatusHashes[gigId]?.current
+        );
+    };
+
     return {
         addNewGig,
         updateGig,
@@ -399,6 +428,7 @@ export function useGigsService() {
         userGigMode,
         filteredGigs,
         joinGigConvo,
-        isLocked
+        isLocked,
+        hasStatusUpdate
     };
 }

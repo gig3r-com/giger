@@ -20,7 +20,7 @@
 
     &__data {
         max-height: calc(#{$standard-viewport-height} - 185px);
-        overflow: scroll;
+        overflow: auto;
     }
 
     &__basic-data {

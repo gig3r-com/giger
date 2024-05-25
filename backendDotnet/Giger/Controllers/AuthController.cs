@@ -46,6 +46,11 @@ namespace Giger.Controllers
             if (!AuthEnabled)
                 return true;
 #endif
+            // if Request is null, then it redirect from other controller which has authorised action
+            if (Request == null)
+            {
+                return true;
+            }
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
                 return false;
@@ -56,7 +61,7 @@ namespace Giger.Controllers
 
             var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
 
-            if (senderUser != null)
+            if (senderUser != null && owner != null)
             {
                 if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
                     owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))

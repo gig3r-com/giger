@@ -14,13 +14,18 @@ namespace Giger.Controllers
         private ConversationService _conversationService = conversationService;
 
         [HttpGet("update/{id}")]
-        public async Task<ActionResult<UpdateHashes>> Get(string userName)
+        public async Task<ActionResult<UpdateHashes>> Get(string id)
         {
-            if (!IsAuthorized(userName))
+            if (!IsAuthorized(id))
             {
                 return Unauthorized();
             }
-            var user = await _userService.GetByUserNameAsync(userName);
+            var user = await _userService.GetAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var userName = user.Handle;
             var account = await _accountService.GetByAccountNameAsync(userName);
             var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
             var conversations = await _conversationService.GetAllWithParticipantAsync(userName);

@@ -1,6 +1,10 @@
 @import '../../../variables.scss';
 
 .vibe {
+    max-height: calc(100dvh - 120px);
+    overflow: auto;
+    padding-bottom: 1rem;
+
     &__label {
         display: flex;
         flex-direction: column;
@@ -16,5 +20,9 @@
         margin-bottom: 1rem;
         border-left: 4px solid $primary-color;
         padding-left: 0.5rem;
+    }
+
+    &__opinions {
+        white-space: pre-wrap;
     }
 }

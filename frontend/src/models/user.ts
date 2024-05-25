@@ -36,6 +36,7 @@ export interface IUserPrivate extends IUserPublic {
     combatSkill: SkillStat;
     vibeFunction: string;
     vibeEngagement: VibeEngagement;
+    vibeOpinions: string;
     favoriteUserIds: string[];
     faction: Factions;
     revealCodes: string[];
@@ -146,7 +147,7 @@ export interface IGoal extends IUserRecord, IObscurableInfo {
 }
 
 export interface IMeta extends IUserRecord {
-    type: MetaTypes;
+    title: string;
     description: string;
     isLink?: boolean;
     recordType: UserRecordTypes.META;

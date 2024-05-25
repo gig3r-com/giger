@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { IntlProvider } from 'react-intl';
 import { store } from './store/store.ts';
@@ -12,7 +11,7 @@ import 'material-icons/iconfont/material-icons.css';
 import './styles/general.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+    <>
         <Provider store={store}>
             <IntlProvider messages={messages} locale="en" defaultLocale="en">
                 <WebSocketProvider>
@@ -20,5 +19,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 </WebSocketProvider>
             </IntlProvider>
         </Provider>
-    </React.StrictMode>
+    </>
 );

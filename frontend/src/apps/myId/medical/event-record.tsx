@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo } from 'react';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
 import { useUserService } from '../../../shared/services/user.service';
@@ -10,6 +10,7 @@ import { EventEntry } from './entry/event-entry';
 import { useEventRecordService } from './event-record.service';
 
 import './event-record.scss';
+import { LockedEntry } from '../../../shared/components/locked-entry/locked-entry';
 
 /**
  * A component that displays the event history of the user.
@@ -41,6 +42,7 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                     <ol className="event-record__list">
                         {events
                             .filter((event) => event.type === section.name)
+                            .filter((event) => event.isRevealed)
                             .sort((a, b) =>
                                 dayjs(b.timeStamp).diff(a.timeStamp)
                             )
@@ -52,6 +54,19 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                                     <EventEntry entry={entry} type={type} />
                                 </li>
                             ))}
+
+                        {events
+                            .filter((event) => event.type === section.name)
+                            .filter((event) => !event.isRevealed)
+                            .map(event => (
+                                <LockedEntry key={event.id}/>
+                            ))}
+                        {events.filter((event) => event.type === section.name)
+                            .length === 0 && (
+                            <span className="event-record__no-entry">
+                                <FormattedMessage id="NO_RECORDER_EVENTS" />
+                            </span>
+                        )}
                         {isGod && (
                             <li className="event-record__entry event-record__entry--new">
                                 <NewEntry
