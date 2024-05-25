@@ -97,7 +97,7 @@ namespace Giger.Controllers
             _conversationSocketHandler.SendMessageAsync(conversation.Participants, conversation.Id, newMessage);
             foreach (var participant in conversation.Participants)
             {
-                _notificationsHandler.NotifyConversationId(participant, conversation.Id);
+                _notificationsHandler.NotifyConversationId(participant, conversation);
             }
             return Ok();
         }
@@ -121,7 +121,7 @@ namespace Giger.Controllers
             {
                 foreach (var participant in conversation.Participants)
                 {
-                    _notificationsHandler.NotifyConversationId(participant, conversation.Id);
+                    _notificationsHandler.NotifyConversationId(participant, conversation);
                 }
                 conversation.Participants.Add(userName);
                 await _conversationService.UpdateAsync(conversation);

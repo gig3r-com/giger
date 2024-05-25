@@ -51,9 +51,7 @@
     }
 
     &__body {
-        height: calc(
-            #{$standard-viewport-height} - #{$controlsAndButtonHeight}
-        );
+        height: calc(#{$standard-viewport-height} - #{$controlsAndButtonHeight});
     }
 
     &__cancel {
@@ -65,5 +63,9 @@
         bottom: 1rem;
         width: calc(100% - 2rem);
         left: 1rem;
+    }
+
+    .controls {
+        margin-top: 0.5rem;
     }
 }

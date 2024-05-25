@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useIntl } from 'react-intl';
@@ -8,15 +8,14 @@ import {
     setAllConversationHashes,
     setAllGigConversationHashes,
     setConversations,
-    setGigConversations,
-    updateConversation
+    setGigConversations
 } from '../../store/messages.slice';
 import { useUserService } from './user.service';
 import { useApiService } from './api.service';
-import { useNotificationsService } from './notifications.service';
+import { useToastService } from './toast.service';
 import {
-    selectConversations,
     selectGigConversations,
+    selectUnreadGigMessages,
     selectUnreadMessages
 } from './messages.selectors';
 import dayjs from 'dayjs';
@@ -30,14 +29,14 @@ export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
     const { api } = useApiService();
-    const { sendMessage, lastMessage } =
+    const { sendMessage } =
         useWebSocketContext() as IWebsocketContext;
-    const { displayToast } = useNotificationsService();
+    const { displayToast } = useToastService();
     const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const gigConversations = useSelector(selectGigConversations);
-    const conversations = useSelector(selectConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
+    const unreadGigMessages = useSelector(selectUnreadGigMessages)
 
     const createMessage: (text: string, senderHandle?: string) => IMessage = (
         text,
@@ -56,29 +55,29 @@ export function useMessagesService() {
         id?: string,
         anonymize?: boolean
     ) => Promise<string> = (participants, id, anonymize) =>
-        new Promise((resolve, reject) => {
-            const convoId = id ?? uuidv4();
-            const convo: IConversation = {
-                id: convoId,
-                anonymizedUsers: anonymize ? [currentUser!.handle] : [],
-                gigConversation: false,
-                participants,
-                messages: [...createInitialMessages(participants)]
-            };
+            new Promise((resolve, reject) => {
+                const convoId = id ?? uuidv4();
+                const convo: IConversation = {
+                    id: convoId,
+                    anonymizedUsers: anonymize ? [currentUser!.handle] : [],
+                    gigConversation: false,
+                    participants,
+                    messages: [...createInitialMessages(participants)]
+                };
 
-            api.url('Conversation')
-                .post(convo)
-                .json<IConversation>()
-                .catch(() => reject())
-                .then((conversation) => {
-                    if (!conversation) {
-                        reject();
-                        return;
-                    }
-                    dispatch(addConversation(conversation));
-                    resolve(conversation.id);
-                });
-        });
+                api.url('Conversation')
+                    .post(convo)
+                    .json<IConversation>()
+                    .catch(() => reject())
+                    .then((conversation) => {
+                        if (!conversation) {
+                            reject();
+                            return;
+                        }
+                        dispatch(addConversation(conversation));
+                        resolve(conversation.id);
+                    });
+            });
 
     const getGigConvo = async (gigId: string): Promise<IConversation> => {
         return await api
@@ -145,7 +144,7 @@ export function useMessagesService() {
                 Sender: message.sender,
                 Text: message.text
             },
-            IsGigConversation: isGigConversation
+            IsGigConveration: isGigConversation
         });
     };
 
@@ -159,6 +158,10 @@ export function useMessagesService() {
     const convoHasUnreadMessages = (convoId: string): boolean => {
         return unreadMessages[convoId]?.length > 0;
     };
+
+    const gigConvoHasUnreadMessages = (convoId: string): boolean => {
+        return unreadGigMessages[convoId]?.length > 0;
+    }
 
     const updateConversationHashes = (
         hashes: Record<string, number>,
@@ -178,48 +181,6 @@ export function useMessagesService() {
             .res();
     };
 
-    useEffect(
-        function handleNewMessage() {
-            if (!lastMessage) {
-                return;
-            }
-            const conversation = conversations.find(
-                (convo) => convo.id === lastMessage.conversationId
-            );
-            const gigConversation = gigConversations.find(
-                (convo) => convo.id === lastMessage.conversationId
-            );
-
-            if (!conversation && !gigConversation) {
-                fetchUserConvos();
-                return;
-            }
-
-            if (conversation) {
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: false,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
-            }
-
-            if (gigConversation) {
-                dispatch(
-                    updateConversation({
-                        convoId: lastMessage.conversationId,
-                        message: lastMessage.message,
-                        gigConvo: true,
-                        currentUserHandle: currentUser!.handle
-                    })
-                );
-            }
-        },
-        [dispatch, lastMessage, currentUser]
-    );
-
     return {
         createMessage,
         addModeratorToConvo,
@@ -231,6 +192,7 @@ export function useMessagesService() {
         getGigConvo,
         isMessageUnread,
         convoHasUnreadMessages,
+        gigConvoHasUnreadMessages,
         updateConversationHashes
     };
 }

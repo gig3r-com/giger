@@ -5,17 +5,20 @@ import {
     mainMenuOptions
 } from './main-menu.options';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Fragment } from 'react/jsx-runtime';
 import {
     selectHasUnreadGigMessages,
     selectHasUnreadMessages
 } from '../../../store/messages.selectors';
+import { selectHasNewTransfers } from '../../../store/bank.selectors';
 import { selectHasStatusUpdates } from '../../../store/gigs.selectors';
 
 import './main-menu.scss';
+import { setSelectedGig } from '../../../store/gigs.slice';
 
 export const MainMenu = () => {
+    const dispatch = useDispatch();
     const location = useLocation();
     const classes = (option: IMainMenuOption) =>
         classNames({
@@ -27,25 +30,29 @@ export const MainMenu = () => {
     const hasUnreadMessages = useSelector(selectHasUnreadMessages);
     const hasUnreadGigMessages = useSelector(selectHasUnreadGigMessages);
     const hasGigStatusChanges = useSelector(selectHasStatusUpdates);
+    const hasNewTransfers = useSelector(selectHasNewTransfers);
+
+    const indicatior = <span className="main-menu__new-indicator"></span>;
 
     return (
         <header className="main-menu">
             <ul>
                 {mainMenuOptions.map((option) => (
                     <Fragment key={option.name + option.link}>
-                        <li className={classes(option)}>
+                        <li className={classes(option)} onClick={() => dispatch(setSelectedGig({gigId: ''}))}>
                             <Link to={option.link}>{option.name}</Link>
 
                             {option.name === MainMenuNames.CHAT &&
-                                hasUnreadMessages && (
-                                    <span className="main-menu__new-indicator"></span>
-                                )}
+                                hasUnreadMessages &&
+                                indicatior}
 
                             {option.name === MainMenuNames.GIGS &&
-                                (hasUnreadGigMessages ||
-                                    hasGigStatusChanges) && (
-                                    <span className="main-menu__new-indicator"></span>
-                                )}
+                                (hasUnreadGigMessages || hasGigStatusChanges) &&
+                                indicatior}
+
+                            {option.name === MainMenuNames.BANK &&
+                                hasNewTransfers &&
+                                indicatior}
                         </li>
                     </Fragment>
                 ))}

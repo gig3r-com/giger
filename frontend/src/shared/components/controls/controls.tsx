@@ -29,6 +29,14 @@ export const Controls: FC<IControlsProps> = ({
         navigate(newPath);
     }, [location.pathname, navigate]);
 
+    const onLeftSideClickHandler = useCallback(() => {
+        onLeftSideClick && onLeftSideClick();
+
+        if (navigateBack) {
+            goBack();
+        }
+    }, []);
+
     return (
         <header className="controls">
             {leftSideOption !== 'back' && (
@@ -44,11 +52,7 @@ export const Controls: FC<IControlsProps> = ({
                 <motion.span
                     {...anim}
                     className="controls__back controls__left-side"
-                    onClick={
-                        navigateBack
-                            ? () => goBack()
-                            : () => onLeftSideClick && onLeftSideClick()
-                    }
+                    onClick={onLeftSideClickHandler}
                 >
                     <ChevronLeft />
                     <MemoizedFormattedMessage id="BACK" />

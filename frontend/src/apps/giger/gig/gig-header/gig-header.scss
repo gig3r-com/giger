@@ -1,0 +1,148 @@
+@import '../../../../variables.scss';
+
+.gig-header {
+    margin-bottom: 1rem;
+
+    &--status-shown {
+        margin-bottom: 0.5rem
+    }
+
+    &--full {
+        margin-bottom: 0;
+    }
+
+    &__title {
+        margin: 0 0 3px;
+        font-size: 22px;
+        font-weight: 400;
+        font-stretch: semi-condensed;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #fff;
+        width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100px;
+            background: $primary-color;
+        }
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 0;
+        overflow: hidden;
+        transition: height $standard-duration $standard-timing-function;
+
+        &--shown {
+            height: 24px;
+        }
+
+        &::before {
+            content: '';
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        &--primary {
+            color: $primary-color;
+        }
+
+        &--primary::before {
+            background-color: $primary-color;
+        }
+
+        &--secondary {
+            color: $secondary-color;
+        }
+
+        &--secondary::before {
+            background-color: $secondary-color;
+        }
+
+        &--accent {
+            color: $accent-color;
+        }
+
+        &--accent::before {
+            background-color: $accent-color;
+        }
+
+        &--accent2 {
+            color: $accent-color-2;
+        }
+
+        &--accent2::before {
+            background-color: $accent-color-2;
+        }
+
+        &--muted-accent {
+            color: $muted-accent;
+        }
+
+        &--muted-accent::before {
+            background-color: $muted-accent;
+        }
+    }
+
+    &--in-progress &__title {
+        &:before {
+            background: $secondary-color;
+        }
+    }
+
+    &--mine:not(.gig-header--completed):not(.gig-header--expired) &__title {
+        &:before {
+            background: $accent-color !important;
+        }
+    }
+
+    &--completed &__title {
+        &:before {
+            background: $muted-accent;
+        }
+    }
+
+    &--pending &__title {
+        &::before {
+            background: $secondary-color;
+        }
+    }
+
+    &--dispute &__title {
+        &::before {
+            background: $accent-color-2;
+        }
+    }
+
+    &--expired &__title {
+        &::before {
+            background: $muted-accent;
+        }
+    }
+
+    &__updates {
+        display: flex;
+    }
+
+    &__update {
+        border: 1px solid $accent-color;
+        font-family: 'Saira', sans-serif;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: $accent-color;
+        padding: 0 0.25rem;
+    }
+}

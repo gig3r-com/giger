@@ -67,9 +67,23 @@ export function useGigHelpers() {
             'gig__summary--mine': gig.authorId === currentUser?.id
         });
 
+    const gigStatusClassName = (gig: IGig, className: string) =>
+        classNames({
+            [className]: true,
+            [className + '--completed']: gig.status === GigStatus.COMPLETED,
+            [className + '--in-progress']: gig.status === GigStatus.IN_PROGRESS,
+            [className + '--available']: gig.status === GigStatus.AVAILABLE,
+            [className + '--dispute']: gig.status === GigStatus.DISPUTE,
+            [className + '--pending']: gig.status === GigStatus.PENDING_CONFIRMATION,
+            [className + '--expired']: gig.status === GigStatus.EXPIRED,
+            [className + '--mine']: gig.authorId === currentUser?.id
+        })
+
+
     return {
         buttonColor,
         gigClassname,
-        gigSummaryClassName
+        gigSummaryClassName,
+        gigStatusClassName
     };
 }
