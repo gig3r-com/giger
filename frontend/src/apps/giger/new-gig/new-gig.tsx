@@ -153,9 +153,7 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                   descriptionDetailed: privateMessage,
                   payout: payout!,
                   isAnonymizedAuthor: anonymize === 'YES',
-                  ...(hasCompanyAccount && {
-                      fromAccount: fromAccount as AccountType
-                  }),
+                  fromAccount: fromAccount as AccountType,
                   reputationRequired: {
                       level: selectedRepuation as GigRepuationLevels
                   },
@@ -173,7 +171,6 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
         privateMessage,
         payout,
         anonymize,
-        hasCompanyAccount,
         fromAccount,
         selectedRepuation,
         selectedSubcategory,
