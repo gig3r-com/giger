@@ -13,22 +13,26 @@ export const NewTransaction: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const [amount, setAmount] = useState<number>(0);
+    const [lockButton, setLockButton] = useState<boolean>(false);
     const [transferTitle, setTransferTitle] = useState<string>('');
     const [selectedHandle, setSelectedHandle] = useState<string[] | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
         AccountType.PRIVATE
     );
-    const { accounts, sendTransfer } = useBankingService();
+    const { accounts, sendTransfer, fetchAccounts } = useBankingService();
 
     const onTransfer = async () => {
         if (!selectedHandle || !selectedHandle.length) return;
 
+        setLockButton(true);
         await sendTransfer(
             selectedHandle[0],
             amount,
             transferTitle,
             selectedAccount
         );
+        fetchAccounts();
+        setLockButton(false);
         navigate('/bank');
     };
 
@@ -75,7 +79,7 @@ export const NewTransaction: FC = () => {
             />
             <BigButton
                 onClick={() => onTransfer()}
-                disabled={!amount || !selectedHandle}
+                disabled={!amount || !selectedHandle || lockButton}
                 text={intl.formatMessage({ id: 'TRANSFER' })}
             />
         </div>

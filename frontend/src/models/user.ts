@@ -1,4 +1,5 @@
 import { Factions } from './companies';
+import { ICriminalEvent, IMedEvent } from './events';
 import { IObscurableInfo } from './general';
 import { GigCategoryNames } from './gig';
 
@@ -49,6 +50,15 @@ export interface IUserPrivate extends IUserPublic {
      * to be removed.
      */
     reputationDescription: string;
+}
+
+export interface IUserFull extends IUserPrivate {
+    relations: IRelation[];
+    goals: IGoal[];
+    meta: IMeta[];
+    privateRecords: IPrivateRecord[];
+    medicalEvents: IMedEvent[];
+    criminalEvents: ICriminalEvent[]
 }
 
 /**
