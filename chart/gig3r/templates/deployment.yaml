@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: {{ include "gig3r.frontend.app" . }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: {{ include "gig3r.frontend.app" . }}
@@ -30,7 +30,7 @@ kind: Deployment
 metadata:
   name: {{ include "gig3r.backend.app" . }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: {{ include "gig3r.backend.app" . }}
