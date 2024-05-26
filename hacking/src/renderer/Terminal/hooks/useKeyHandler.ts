@@ -1,4 +1,4 @@
-import {CommandsService, OverlayService} from '../../services';
+import {ApiService, CommandsService, OverlayService, ServerConnectionService} from '../../services';
 
 export const canTabSelector = 'data-can-tab';
 const selectedTabClass = 'selected-color';
@@ -129,12 +129,18 @@ export default function useKeyHandler({
     }
   };
 
-  const f9 = (event: KeyboardEvent) => {
+  const f9 = async (event: KeyboardEvent) => {
     addLines([``]);
     addLines([`Ping v.3.12 ICE targeting successfully!`]);
-    addLines([`We have found you <span class="secondary-color">hackerman</span>!`]);
-    OverlayService.iceModal('Warning: ICE deployed');
+    // addLines([`We have found you <span class="secondary-color">hackerman</span>!`]);
+    // OverlayService.iceModal('Warning: ICE deployed');
     console.log('test');
+    const subnet = await ApiService.getSubnetworkById('0fa73ad8-1b59-4c54-8fe2-55c473f36fc0');
+    console.log('test2');
+    ServerConnectionService.setupConnectedSubnetwork(subnet);
+    console.log('test3');
+    await ApiService.sendPingMsg();
+    console.log('test4');
   };
 
   const keyMap: { [key: number]: (event: KeyboardEvent) => void } = {
@@ -143,7 +149,7 @@ export default function useKeyHandler({
     32: space,
     38: upArrow,
     67: c,
-    120: f9,
+    // 120: f9,
   };
 
   const handleKey = (event: KeyboardEvent) => {

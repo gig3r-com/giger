@@ -26,6 +26,7 @@ export default class Scan {
     const { gigerApiUrl } = this.getUrls();
     const url = `${gigerApiUrl}/Networks/network/?id=${networkId}`;
     return axios.get(url).then((response) => {
+      console.log({response})
       if (response.data) return { type: 'network', data: response.data };
       throw new Error(`Network with id ${networkId} not found`);
     });

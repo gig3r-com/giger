@@ -53,10 +53,17 @@ export default class SendMsg {
       const sender = await ApiService.getUserProfile(messageData.from);
       const receiver = await ApiService.getUserProfile(messageData.to);
       await checkData(sender, receiver);
-      await ApiService.sendMsgFromTerminal(sender, receiver, messageData);
       addLines(['Sending message...']);
       await wait(5000);
       removeLastLine();
+      await ApiService.sendMsgFromTerminal(sender, receiver, messageData);
+      await ApiService.addHackLog({
+        targetUserId: sender.id,
+        targetUserName: sender.handle,
+        subnetworkId: sender.subnetworkId,
+        subnetworkName: sender.subnetworkName,
+        additionalData: `Message send from ${sender.handle} to ${receiver.handle}`,
+      });
       addLines(['Message sent']);
       setInputDisabled(false);
     } catch (err) {

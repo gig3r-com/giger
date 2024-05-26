@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import { FullConversationType, ProfileType } from '../../../types';
 import { mapFullConversation } from '../mappers/conversation';
 
@@ -15,7 +16,7 @@ export default class Conversations {
     const url = `${gigerApiUrl}/Conversation/${id}/message`;
     const data = {
       id: crypto.randomUUID(),
-      date: new Date(),
+      date: moment().add(100, 'y').toISOString(),
       sender: messageData.from,
       text: messageData.text,
     };

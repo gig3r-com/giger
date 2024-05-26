@@ -24,8 +24,10 @@ export default class ApiService {
       // gigerUrl: 'http://192.168.50.100:9090',
       // gigerApiUrl: 'https://dev.gig3r.com/api',
       // gigerUrl: 'https://dev.gig3r.com',
-      gigerApiUrl: 'https://app.gig3r.com/api',
-      gigerUrl: 'https://app.gig3r.com',
+      // gigerApiUrl: 'https://app.gig3r.com/api',
+      // gigerUrl: 'https://app.gig3r.com',
+      gigerApiUrl: 'http://app.localdomain/api',
+      gigerUrl: 'http://app.localdomain',
     };
     window.electron.ipcRenderer.on('config-app', (data) => {
       const config = {};
@@ -221,6 +223,7 @@ export default class ApiService {
         (subnetwork: any) =>
           subnetwork.id.toLowerCase() === subnetworkId.toLowerCase(),
       );
+      console.log(foundSubnetwork)
       if (foundSubnetwork) return mapSubnetwork(foundSubnetwork);
       throw new Error(`Subnetwork with id ${subnetworkId} not found`);
     });
@@ -304,12 +307,22 @@ export default class ApiService {
   async sendPingMsg(): Promise<void> {
     const subnetwork = ServerConnectionService.connectedSubnetwork;
     const { data } = await this.scanForNetworkById(subnetwork?.networkId);
-    const sender = await this.getProfileByHandle('cic_terminal');
+    const sender = await this.getUserProfile('ad77a91f-51b7-4107-a970-ad8541842a95');
     const receiver = await this.getProfileByHandle(data.adminId);
     const messageData = {
       from: sender.handle,
-      to: sender.handle,
-      text: 'PING',
+      to: receiver.handle,
+      text: `ICE Deployed: PING. ${getLoginUserData().handle} is hacking ${subnetwork.name} right now.`,
+    };
+    this.sendMsgFromTerminal(sender, receiver, messageData);
+  }
+  async sendKillMsg(): Promise<void> {
+    const sender = await this.getUserProfile('ad77a91f-51b7-4107-a970-ad8541842a95');
+    const receiver = getLoginUserData();
+    const messageData = {
+      from: sender.handle,
+      to: receiver.handle,
+      text: `You feel an excruciating pain at your CIC location, like searing hot knives twisting deeper. Your body begins to shut down, numbness creeping in as if life is slipping away. Everything starts to fade, and you can't hold on any longer. You need immediate medical assistance.`,
     };
     this.sendMsgFromTerminal(sender, receiver, messageData);
   }

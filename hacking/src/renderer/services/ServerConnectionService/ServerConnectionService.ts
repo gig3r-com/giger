@@ -274,9 +274,19 @@ export default class ServerConnectionService {
       case 'Ping_v1':
       case 'Ping_v2':
       case 'Ping_v3': {
-        await ApiService.sendPingMsg();
+        await ApiService.sendPingMsg(ice);
         this.addLines([`ICE: ${ice.name}`]);
         break;
+      }
+      case 'Killer': {
+        await ApiService.sendKillMsg();
+        this.addLines([
+          ``,
+          ``,
+          `You feel an excruciating pain at your CIC location, like searing hot knives twisting deeper. Your body begins to shut down, numbness creeping in as if life is slipping away. Everything starts to fade, and you can't hold on any longer. You need immediate medical assistance.`,
+          ``,
+          ``
+        ]);
       }
       case 'Cleaner': {
         runCleaner.bind(this)();
@@ -296,6 +306,10 @@ export default class ServerConnectionService {
         this.speedConnection(ice.boostValue);
         this.addLines([`ICE: ${ice.name}`]);
         break;
+      }
+      case 'Blocker': {
+      }
+      case 'Locker': {
       }
       default: {
         this.addLines([`ICE: ${ice.name}`]);
