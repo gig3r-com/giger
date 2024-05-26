@@ -22,6 +22,8 @@ services:
 
   backend:
     image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
+    deploy:
+      replicas: 3
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile
@@ -30,8 +32,6 @@ services:
     restart: unless-stopped
     expose:
       - 8080
-    ports:
-      - 9090:8080
     volumes:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
     environment:
@@ -65,7 +65,7 @@ services:
     image: mongo-express
     restart: unless-stopped
     ports:
-      - 8081:8081
+      - ${EXPRESS_PORT:-8081}:8081
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
       ME_CONFIG_MONGODB_AUTH_DATABASE: ${GIGER_DATABASE:-admin}

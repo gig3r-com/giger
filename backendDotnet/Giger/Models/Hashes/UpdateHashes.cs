@@ -9,8 +9,8 @@ namespace Giger.Models.Hashes
         public UpdateHashes(Account privateAccount, Account businessAccount,
             List<Conversation> userConversations, List<Conversation> gigConversationHashes, List<Gig> gigStatusHashes)
         {
-            PrivateAccountTransactionsHashes = CalculateTransactionsHashes(privateAccount.Transactions);
-            BusinessAccountTransactionsHashes = CalculateTransactionsHashes(businessAccount.Transactions);
+            PrivateAccountTransactionsHashes = CalculateTransactionsHashes(privateAccount?.Transactions);
+            BusinessAccountTransactionsHashes = CalculateTransactionsHashes(businessAccount?.Transactions);
             CoversationHashes = CalculateConversationHashes(userConversations);
             GigConversationHashes = CalculateConversationHashes(gigConversationHashes);
             GigStatusHashes = CalculateGigStatuses(gigStatusHashes);
@@ -26,9 +26,12 @@ namespace Giger.Models.Hashes
         private Dictionary<string, int> CalculateTransactionsHashes(List<Transaction> transactions)
         {
             Dictionary<string, int> hashes = [];
-            foreach (var transaction in transactions)
+            if (transactions != null) 
             {
-                hashes.Add(transaction.Id, transaction.GetHashCode());
+                foreach (var transaction in transactions)
+                {
+                    hashes.Add(transaction.Id, transaction.GetHashCode());
+                }
             }
             return hashes;
         }

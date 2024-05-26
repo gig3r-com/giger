@@ -37,7 +37,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     const authToken = useSelector(selectAuthToken);
     const currentUser = useSelector(selectCurrentUser);
     const [reconnectInterval, setReconnectInterval] = useState<number>(1000);
-    const baseUrl = `wss${window.origin.split('https')[1]}/`;
+    const baseUrl = `ws${window.origin.split('http')[1]}`;
     const endpointBase = import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? baseUrl;
 
     const generateSocket = useCallback(

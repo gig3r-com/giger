@@ -38,6 +38,7 @@ namespace Giger.Models.User
 
         public string[] FavoriteUserIds { get; set; } = [];
 
+        [BsonRepresentation(BsonType.String)]
         public required Factions Faction { get; set; }
 
         [BsonRepresentation(BsonType.Int32)]
