@@ -105,10 +105,9 @@ export const conversationsSlice = createSlice({
                 convo.messages.push(action.payload.message);
 
                 if (isCurrentUsersMessage) return;
-                const convoAccessor =
-                    action.payload.gigConvo
-                        ? 'unreadGigMessages'
-                        : 'unreadMessages'
+                const convoAccessor = action.payload.gigConvo
+                    ? 'unreadGigMessages'
+                    : 'unreadMessages';
                 state[convoAccessor][convo.id] = [
                     ...(state[convoAccessor][convo.id] ?? []),
                     action.payload.message.id
@@ -117,10 +116,19 @@ export const conversationsSlice = createSlice({
         },
         setUnreadMessage: (
             state,
-            action: PayloadAction<{ convoId: string; messageId: string }>
+            action: PayloadAction<{
+                convoId: string;
+                messageId: string;
+                isMine: boolean;
+                gigConvo: boolean;
+            }>
         ) => {
-            state.unreadMessages[action.payload.convoId] = [
-                ...(state.unreadMessages[action.payload.convoId] ?? []),
+            if (action.payload.isMine) return;
+            const accessor = action.payload.gigConvo
+                ? 'unreadGigMessages'
+                : 'unreadMessages';
+            state[accessor][action.payload.convoId] = [
+                ...(state[accessor][action.payload.convoId] ?? []),
                 action.payload.messageId
             ];
         },

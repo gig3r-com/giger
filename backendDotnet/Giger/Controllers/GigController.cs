@@ -319,8 +319,8 @@ namespace Giger.Controllers
             }
 
             gig.Status = GigStatus.COMPLETED;
-            ReturnFunds(gig);
-            CompleteTransaction(gig);
+            await ReturnFunds(gig);
+            await CompleteTransaction(gig);
             await UpdateGigReputation(gig, true);
 
             await _gigService.UpdateAsync(gig);
@@ -377,17 +377,17 @@ namespace Giger.Controllers
             }
 
             gig.Status = GigStatus.COMPLETED;
-            ReturnFunds(gig);
+            await ReturnFunds(gig);
             if (!isClientRight)
             {
-                CompleteTransaction(gig);
+                await CompleteTransaction(gig);
                 await UpdateGigReputation(gig, true);
             }
             else
             {
                 await UpdateGigReputation(gig, false);
             }
-            PayDisputeFeeToClerk(gig, clerkAccountNo);
+            await PayDisputeFeeToClerk(gig, clerkAccountNo);
 
             await _gigService.UpdateAsync(gig);
             await NotifyStatusChanged(gig, true);
@@ -448,9 +448,9 @@ namespace Giger.Controllers
 
             if (gig.Mode == GigModes.CLIENT)
             {
-                ReturnFunds(gig);
+                await ReturnFunds(gig);
             }
-
+            gig.Status = GigStatus.EXPIRED;
             await _gigService.UpdateAsync(gig);
             return Ok();
         }
@@ -619,7 +619,7 @@ namespace Giger.Controllers
             return true;
         }
 
-        private async void ReturnFunds(Gig gig)
+        private async Task ReturnFunds(Gig gig)
         {
             string clientName = gig.Mode == GigModes.CLIENT ? gig.AuthorName : _userService.GetAsync(gig.TakenById).Result?.Handle;
             if (gig.Mode == GigModes.CLIENT)
@@ -656,7 +656,7 @@ namespace Giger.Controllers
             await _accountController.CreateTransaction(reserve, true);
         }
 
-        private async void CompleteTransaction(Gig gig)
+        private async Task CompleteTransaction(Gig gig)
         {
             string clientName, providerName;
             if (gig.Mode == GigModes.CLIENT)
@@ -704,7 +704,7 @@ namespace Giger.Controllers
             await _accountController.CreateTransaction(trx, true);
         }
 
-        private async void PayDisputeFeeToClerk(Gig gig, string clerkAccountNo)
+        private async Task PayDisputeFeeToClerk(Gig gig, string clerkAccountNo)
         {
             var commissionPercent = _gigerConfigService.Get().Result.ModeratorCommissionPercentage/100m;
             Transaction trx = new()

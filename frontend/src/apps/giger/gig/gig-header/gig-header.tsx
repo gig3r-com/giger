@@ -75,7 +75,7 @@ export const GigHeader: FC<{
                     onClick={onClickHandler}
                     key={gig.id}
                     {...generateAnimation('horExpand', {
-                        delay: delayMultiplier * 0.06
+                        delay: delayMultiplier * 0.03
                     })}
                 >
                     {!isLocked(gig) ? (
