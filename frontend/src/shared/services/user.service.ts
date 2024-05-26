@@ -9,6 +9,7 @@ import {
 } from '../../store/users.slice';
 import {
     IUserBase,
+    IUserFull,
     IUserPrivate,
     IUserPublic,
     UserRoles
@@ -98,7 +99,7 @@ export function useUserService() {
         userId: string,
         userData: Partial<IUserPrivate>
     ) => {
-        const updatedData: Partial<IUserPrivate> = {
+        const updatedData: Partial<IUserFull> = {
             ...currentUser,
             reputationDescription: '',
             ...userData
@@ -181,10 +182,17 @@ export function useUserService() {
             throw new Error('User not found');
         }
 
-        const userdata = await api
-            .get(`User/simple/byId?id=${currentUser.id}`)
-            .json<IUserPrivate>();
-        dispatch(updateCurrentUser(userdata));
+        if (isGod) {
+            const userdata = await api
+                .get(`User/private/byId?id=${currentUser.id}`)
+                .json<IUserFull>();
+            dispatch(updateCurrentUser(userdata));
+        } else {
+            const userdata = await api
+                .get(`User/simple/byId?id=${currentUser.id}`)
+                .json<IUserPrivate>();
+            dispatch(updateCurrentUser(userdata));
+        }
     };
 
     const getBasicUserDataById = (userId: string): IUserBase | undefined => {

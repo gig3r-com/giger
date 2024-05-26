@@ -318,7 +318,8 @@ export const CharSummary: FC<{
                     {isPrivate && (
                         <>
                             <span className="char-summary__label">
-                                <MemoizedFormattedMessage id="NETWORK_ADMIN_NAME" />:
+                                <MemoizedFormattedMessage id="NETWORK_ADMIN_NAME" />
+                                :
                             </span>
                             <AdminEditableField
                                 type={FieldTypes.TEXT}
@@ -370,7 +371,9 @@ export const CharSummary: FC<{
                         </>
                     )}
 
-                    {user && <ReputationSummary reputation={user?.gigReputation} />}
+                    {user && (
+                        <ReputationSummary reputation={user?.gigReputation} />
+                    )}
 
                     {isPrivate && (
                         <AdminEditableField
