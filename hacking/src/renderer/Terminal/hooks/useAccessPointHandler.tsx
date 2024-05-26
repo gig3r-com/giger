@@ -1,43 +1,45 @@
 import { useEffect } from 'react';
-import {ServerConnectionService} from "../../services";
+import { ConfigService, ServerConnectionService } from '../../services';
 
 type Device = {
   productId: number;
 };
-const accessPointConfig = [
-  {
-    accessPoint: {
-      name: 'CombatZoneAC',
-      type: 'red',
-      place: 'combat zone',
-      number: 0,
-    },
-    device: {
-      manufacturerName: 'USB',
-      productId: 11303,
-      productName: 'USB Keyboard',
-      vendorId: 6700,
-    },
-  },
-];
+// const accessPointConfig = [
+//   {
+//     accessPoint: {
+//       name: 'CombatZoneAC',
+//       type: 'red',
+//       place: 'combat zone',
+//       number: 0,
+//     },
+//     device: {
+//       manufacturerName: 'USB',
+//       productId: 11303,
+//       productName: 'USB Keyboard',
+//       vendorId: 6700,
+//     },
+//   },
+// ];
 
 const checkDevices = (deviceToCheck) => {
-  const accessPoints = accessPointConfig;
+  const accessPoints = ConfigService.getAC();
   return accessPoints.filter((accessPoint) => {
     const { device } = accessPoint;
-    return device.manufacturerName === deviceToCheck.manufacturerName &&
+    return (
+      device.manufacturerName === deviceToCheck.manufacturerName &&
       device.productName === deviceToCheck.productName &&
       device.vendorId === deviceToCheck.vendorId &&
-      device.productId === deviceToCheck.productId;
+      device.productId === deviceToCheck.productId
+    );
   });
-}
+};
 // @ts-ignore
 export default function useAccessPointHandler({ setAccessPoint }) {
   useEffect(() => {
     window.electron.ipcRenderer.on('devices', (devicesString: string) => {
       const devices = JSON.parse(devicesString);
       if (devices && devices.length) {
-        console.log(devices)
+        console.log(devices);
         const foundDevices = [];
         devices.forEach((device: Device) => {
           const selectedDevice = checkDevices(device);
@@ -51,6 +53,10 @@ export default function useAccessPointHandler({ setAccessPoint }) {
         }
         setAccessPoint(foundDevices[0].accessPoint?.name);
         ServerConnectionService.accessPoint = foundDevices[0].accessPoint;
+      } else {
+        ServerConnectionService.disconnect();
+        setAccessPoint(null);
+        ServerConnectionService.accessPoint = null;
       }
     });
   }, []);

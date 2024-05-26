@@ -37,7 +37,7 @@ export default class Scan {
   ): Promise<{ type: string; data: SubnetworkType }> {
     return this.getSubnetworkById(subnetworkId).then((subnetwork) => ({
       type: 'subnetwork',
-      data: getSavedSubnetworkData(subnetwork, scannerVersion),
+      data: subnetwork,
     }));
   }
 

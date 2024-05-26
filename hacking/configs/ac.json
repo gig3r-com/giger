@@ -1,0 +1,115 @@
+{
+  "resetTimeInS": 500,
+  "defencePrograms": 1,
+  "exploits": 1,
+  "testConfig": 1,
+  "isHackingEnabled": false,
+  "isTestHackingEnabled": true,
+  "ac": [
+    {
+      "accessPoint": {
+        "name": "Motel-AP",
+        "type": "green",
+        "place": "motel",
+        "number": 1
+      },
+      "device": {
+        "manufacturerName": "USB",
+        "productId": 11303,
+        "productName": "USB Keyboard",
+        "vendorId": 6700
+      }
+    }, {
+      "accessPoint": {
+        "name": "L3-Maint-AP",
+        "type": "green",
+        "place": "combat zone",
+        "number": 2
+      },
+      "device": {
+        "manufacturerName": "Logitech",
+        "productId": 49271,
+        "productName": "USB Optical Mouse",
+        "vendorId": 1133
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "SynthPulse-AP",
+        "type": "green",
+        "place": "SynthPulse",
+        "number": 3
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": null,
+        "productName": "",
+        "vendorId": null
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "L0-Maint-AP",
+        "type": "red",
+        "place": "",
+        "number": 4
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": null,
+        "productName": "",
+        "vendorId": null
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "DropoffService-AP",
+        "type": "red",
+        "place": "",
+        "number": 5
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": null,
+        "productName": "",
+        "vendorId": null
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "OMG-AP",
+        "type": "red",
+        "place": "",
+        "number": 6
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": null,
+        "productName": "",
+        "vendorId": null
+      }
+    }
+  ],
+  "networksByAC": {
+    "adec3014-3dd5-45b2-af78-10477773c9b0": {
+      "name": "Neonode",
+      "ac": "red"
+    },
+    "92d5f39a-adae-4f79-9189-ee3e81c4d3b7": {
+      "name": "Synapse",
+      "ac": "red"
+    },
+    "180e86c7-ef32-4f9c-89b4-3dfa797b6308": {
+      "name": "Technet",
+      "ac": "green"
+    },
+    "e90b2475-320c-4790-b7e4-7a7669b2af19": {
+      "name": "OpenNet",
+      "ac": "green"
+    },
+    "bf3c1c2c-7d6d-497b-92ea-27686980e5e6": {
+      "name": "directorsnetwork",
+      "ac": "blue"
+    }
+  }
+}

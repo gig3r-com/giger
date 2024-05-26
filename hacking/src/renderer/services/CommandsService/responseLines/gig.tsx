@@ -3,9 +3,11 @@ import { onlyTab } from './utils';
 export function getFullGigLines(gig, isGigerGate: boolean): string[] {
   const lines = [
     ``,
-    `${onlyTab(gig.id)} <span class="secondary-color">${gig.title}</span> ${
-      gig.status
-    } ${gig.category} ${gig.subcategory}`,
+    `${onlyTab(gig.id)} <span class="secondary-color">${gig.title}</span>`,
+    `Status: ${gig.status}`,
+    `Category: ${gig.category}`,
+    `Subcategory:${gig.subcategory}`,
+    `Payout:${gig.payout}`,
   ];
 
   if (gig.isAnonymizedAuthor && isGigerGate) {

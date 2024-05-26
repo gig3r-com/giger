@@ -13,6 +13,7 @@ import HackConfigModule from './modules/HackConfig';
 import ConversationsModule from './modules/Conversations';
 import LoginModule from './modules/Login';
 import GigsModule from './modules/Gigs';
+import {ServerConnectionService} from "../index";
 
 export default class ApiService {
   constructor() {
@@ -21,8 +22,10 @@ export default class ApiService {
       // gigerUrl: 'http://localhost:9090',
       // gigerApiUrl: 'http://192.168.50.100:9090/api',
       // gigerUrl: 'http://192.168.50.100:9090',
-      gigerApiUrl: 'https://dev.gig3r.com/api',
-      gigerUrl: 'https://dev.gig3r.com',
+      // gigerApiUrl: 'https://dev.gig3r.com/api',
+      // gigerUrl: 'https://dev.gig3r.com',
+      gigerApiUrl: 'https://app.gig3r.com/api',
+      gigerUrl: 'https://app.gig3r.com',
     };
     window.electron.ipcRenderer.on('config-app', (data) => {
       const config = {};
@@ -256,10 +259,28 @@ export default class ApiService {
       ...loginUserData,
       exploits: [...loginUserData.exploits, exploitName],
     };
-    const url = `${gigerApiUrl}/User/${loginUserData.id}/exploits`;
-    return axios.patch(url, newLoginUserData.exploits).then(() => {
+    const url = `${gigerApiUrl}/User/${loginUserData.id}/exploits?newExploit=${exploitName}`;
+    return axios.patch(url).then(() => {
       setLoginUserData(newLoginUserData);
     });
+  }
+
+  addFirewallToSubnetwork(subnetworkId: string, firewall: string) {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/Networks/subnetwork/firewall?subnetworkId=${subnetworkId}&firewall=${firewall}`;
+    return axios.patch(url);
+  }
+
+  addSystemToSubnetwork(subnetworkId: string, os: string) {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/Networks/subnetwork/os?subnetworkId=${subnetworkId}&os=${os}`;
+    return axios.patch(url);
+  }
+
+  addICEToSubnetwork(subnetworkId: string, ice: string) {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/Networks/subnetwork/ice?subnetworkId=${subnetworkId}&ice=${ice}`;
+    return axios.put(url);
   }
 
   getCrawler() {}
@@ -281,20 +302,32 @@ export default class ApiService {
    * ICE Methods
    */
   async sendPingMsg(): Promise<void> {
-    console.log('PING!');
+    const subnetwork = ServerConnectionService.connectedSubnetwork;
+    const { data } = await this.scanForNetworkById(subnetwork?.networkId);
+    const sender = await this.getProfileByHandle('cic_terminal');
+    const receiver = await this.getProfileByHandle(data.adminId);
+    const messageData = {
+      from: sender.handle,
+      to: sender.handle,
+      text: 'PING',
+    };
+    this.sendMsgFromTerminal(sender, receiver, messageData);
   }
 
   /*
    * Program Codes
    */
   async getProgramCodeInfo(programCode: string): Promise<ProgramCodeInfoType> {
-    return { isUsed: false };
     const { gigerApiUrl } = this.getUrls();
-    const url = `${gigerApiUrl}/ProgramCodes/get/isUsed?programCode=${programCode}`;
-    return axios.get(url).then((response) => {
-      console.log(response);
-      return response.data;
+    const url = `${gigerApiUrl}/ProgramCodes/get/all`;
+    const programsResponse = await axios.get(url);
+    const filtered = programsResponse.data?.filter(pr => {
+      return pr.programCode.toLowerCase() === programCode;
     });
+    if (!filtered.length) {
+      throw new Error('Program not found');
+    }
+    return filtered[0];
   }
 
   async useProgramCode(

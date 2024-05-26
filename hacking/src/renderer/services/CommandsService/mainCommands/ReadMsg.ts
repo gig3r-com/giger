@@ -1,7 +1,11 @@
 import type CommandsServiceType from '../CommandsService';
 import { getErrorMessage, notConnectedError } from '../responseLines/errors';
 import { getFullConversationLines } from '../responseLines/conversations';
-import {ApiService, ConfigService, ServerConnectionService} from '../../index';
+import {
+  ApiService,
+  ConfigService,
+  ServerConnectionService,
+} from '../../index';
 
 export default class End {
   private Service: CommandsServiceType;
@@ -11,8 +15,13 @@ export default class End {
   }
 
   async execute() {
-    const { addLines, fireInitError, parsedCommand, setInputDisabled } =
-      this.Service;
+    const {
+      addLines,
+      fireInitError,
+      parsedCommand,
+      parsedCommandRaw,
+      setInputDisabled,
+    } = this.Service;
     if (!addLines) {
       fireInitError();
       return;
@@ -23,7 +32,7 @@ export default class End {
       ServerConnectionService.checkCommand('readmsg');
       setInputDisabled(true);
       const conversation = await ApiService.getConversationById(
-        parsedCommand[0],
+        parsedCommandRaw[1],
       );
       addLines(['']);
       addLines(getFullConversationLines(conversation));

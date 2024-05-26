@@ -78,16 +78,18 @@ export default class Run {
       if (!subnetworkId) {
         subnetworkId = await getDirectLine(`Enter subnetwork's id:`);
       }
-      try {
-        subnetwork = await ApiService.getSubnetworkById(subnetworkId);
-      } catch (e) {}
-      if (!subnetwork) {
-        try {
-          subnetwork = await ApiService.getSubnetworkByName(subnetworkId);
-        } catch (e) {}
-      } else if (!subnetwork) {
-        addLines(subnetworkNotFound);
-      }
+
+      await Promise.any([
+        ApiService.getSubnetworkById(subnetworkId),
+        ApiService.getSubnetworkByName(subnetworkId),
+      ])
+        .then((response) => {
+          subnetwork = response;
+        })
+        .catch((err) => {
+          console.log({ err });
+          addLines(subnetworkNotFound);
+        });
     }
 
     async function checkConnectetion() {
@@ -109,6 +111,31 @@ export default class Run {
         );
       }
       addLines(connectingLines(subnetwork.name));
+      if (subnetwork.accessPoint !== 'none') {
+        const ac = ServerConnectionService.accessPoint;
+        const network = ConfigService.getNetworks()[subnetwork.networkId];
+        if (!ac || ac?.type !== network?.ac) {
+          let where;
+          switch (network?.ac) {
+            case 'red': {
+              where = `type RED access point in <span class="secondary-color">SynthPulse-AP</span>, <span class="secondary-color">OMG-AP</span>, <span class="secondary-color">DropoffService-AP</span>`;
+              break;
+            }
+            case 'green': {
+              where = `type GREEN access point in <span class="secondary-color">Motel-AP</span>, <span class="secondary-color">L0-Maint-AP</span>, <span class="secondary-color">L3-Maint-AP</span>`;
+              break;
+            }
+            case 'blue':
+            default: {
+              where = `type BLUE access point witch are not available in Sector V`;
+              break;
+            }
+          }
+          throw new Error(
+            `<span>Error:</span> You are not connected to required access point. You need to connect to ${where}.`,
+          );
+        }
+      }
       await ServerConnectionService.breach(exploit, subnetwork);
     }
 

@@ -166,12 +166,24 @@ export function getBaseProfileLines(data: ProfileType): string[] {
     title: string,
     children: ConversationType[],
   ): string {
+    const getParticipants = (conv) => {
+      let participants = '';
+      if (conv.participants) {
+        if (participants.length > 6) {
+          participants = conv.participants.slice(0, 5).join(', ');
+          participants += ` and ${conv.participants.length - 5} more`;
+        } else {
+          participants = conv.participants.join(', ');
+        }
+      }
+      return participants;
+    }
     return `<tr class="secondary-color table-title"><td colspan="5">${title}</td></tr> ${children
       .map(
         (event) =>
           `<tr>
         <td>${withTab(event.id)}</td>
-        <td>${event.participants ? event.participants.join(', ') : ''}</td>
+        <td>${getParticipants(event)}</td>
         <td></td>
         <td></td>
         <td></td>

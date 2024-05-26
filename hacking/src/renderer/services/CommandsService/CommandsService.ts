@@ -67,7 +67,7 @@ export default class CommandsService {
     install: new Install(this),
     copydata: new CopyData(this),
     balance: new Balance(this),
-    transfer: new Transfer(this),
+    // transfer: new Transfer(this),
     log: new Log(this),
     exit: new Exit(this),
     readmsg: new ReadMsg(this),
@@ -84,6 +84,8 @@ export default class CommandsService {
   public setLines: ((lines: string[]) => void) | undefined;
 
   public parsedCommand: string[] = [];
+
+  public parsedCommandRaw: string[] = [];
 
   public ConfigService: ConfigServiceType;
 
@@ -146,6 +148,10 @@ export default class CommandsService {
   }
 
   executeCommand(command: string) {
+    this.parsedCommandRaw = command
+      .trim()
+      .split(' ')
+      .filter((s) => !!s);
     [this.activeCommand, ...this.parsedCommand] = command
       .trim()
       .toLowerCase()

@@ -269,9 +269,12 @@ export default class ServerConnectionService {
   async activateICE(ice: ProgramType) {
     if (!this.addLines) return this.initializeError();
     await ApiService.addICELog({ ice });
+    console.log(ice.name);
     switch (ice.name) {
-      case 'Ping': {
-        ApiService.sendPingMsg();
+      case 'Ping_v1':
+      case 'Ping_v2':
+      case 'Ping_v3': {
+        await ApiService.sendPingMsg();
         this.addLines([`ICE: ${ice.name}`]);
         break;
       }

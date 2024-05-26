@@ -15,6 +15,10 @@ export default class ConfigService {
 
   public exploits: {} = {};
 
+  public ac: [] = [];
+
+  public networks: {} = {};
+
   public defencePrograms: {} = {};
 
   private testConfig: {} = {};
@@ -48,13 +52,14 @@ export default class ConfigService {
     await this.loadMain();
     return;
     if (this.main.isHackingEnabled) {
-      console.log('test')
+      console.log('test');
       return;
-    } else if (this.main.isTestHackingEnabled && this.commandsCheck[mainCommand]) {
-      console.log('test2')
+    }
+    if (this.main.isTestHackingEnabled && this.commandsCheck[mainCommand]) {
+      console.log('test2');
       this.commandsCheck[mainCommand].bind(this)(subCommand);
     } else if (!this.main.isHackingEnabled) {
-      console.log('test3')
+      console.log('test3');
       throw new Error(
         `<span class="secondary-color">Error: </span>Hacking right now is disabled! If this error shows during the game contact you Assistant AI`,
       );
@@ -98,7 +103,9 @@ export default class ConfigService {
     try {
       const configResponse = await this.ApiService.getConfig('main');
       const newMain = JSON.parse(configResponse.config);
-      const newConfig = { main: newMain };
+      const newConfig = { main: newMain, ac: newMain.ac };
+      this.ac = newMain.ac;
+      this.networks = newMain.networksByAC;
       if (newMain.defencePrograms !== this.main.defencePrograms) {
         newConfig.main.defencePrograms = await this.loadDefencePrograms();
       }
@@ -157,7 +164,7 @@ export default class ConfigService {
     if (subCommand.trim() === '.') {
       return;
     }
-    console.log(subCommand, this.testConfig?.availableScans)
+    console.log(subCommand, this.testConfig?.availableScans);
     const filtered = this.testConfig?.availableScans?.filter(
       (testScan: string) =>
         testScan.toLowerCase() === subCommand.toLowerCase().trim(),
@@ -206,5 +213,18 @@ export default class ConfigService {
   async getExploits() {
     await this.loadMain();
     return this.exploits;
+  }
+
+  async getDefencePrograms() {
+    await this.loadMain();
+    return this.defencePrograms;
+  }
+
+  getAC() {
+    return this.ac;
+  }
+
+  getNetworks() {
+    return this.networks;
   }
 }

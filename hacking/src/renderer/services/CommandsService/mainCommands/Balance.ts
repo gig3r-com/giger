@@ -30,9 +30,11 @@ export default class Balance {
       ServerConnectionService.checkCommand('balance');
       let accountNumber = parsedCommand[0];
       if (!accountNumber) {
+        setInputDisabled(false);
         accountNumber = await getDirectLine(
           'You need to provide account number to check balance:',
         );
+        setInputDisabled(true);
       }
       await ConfigService.checkHacking('balance', accountNumber);
 

@@ -97,12 +97,14 @@ export const SCAN: string[] = [
   '<span class="example-color">              ^ <--dot as a placeholder for a subnetwok you are connected to</span>',
   '',
 ];
+// to install, case-sensetive
 export const INSTALL: string[] = [
   '',
   `<span class="secondary-color">Documentation</span> INSTALL`,
   `Full command path: <span class="secondary-color">install [programKey] [options]</span>`,
   'Command installs (or checks if an installation is possible) program to your CIC Terminal. To check type <span class="secondary-color">-check</span> as an option (see example below). Every program key is single use only.',
   'When installing program you will be prompted to enter YES as a confirmation you want to install that program.',
+  `As a NetOps you install defensive programs in the same way, but you will be asked to provide a subnetwork's id on witch you wish to install program (you can use <span class="secondary-color">scan</span> command find it.`,
   '',
   `<span class="example-color">Example: <span class="secondary-color">install ZXCVB-3SCNR-4458-4POI9</span>`,
   '<span class="example-color">                 ^^^^^^^^^^^^^^^^^^^^^^ <--program key you want to install</span>',

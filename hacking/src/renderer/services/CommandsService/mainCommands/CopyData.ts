@@ -176,7 +176,7 @@ export default class CopyData {
         isRevealed: true,
         description: gig,
         recordType: 'PRIVATE_RECORD',
-        title: `Gig record copy: ${}`,
+        title: `Gig record copy: `,
       };
     }
 

@@ -1,8 +1,19 @@
-import { types } from 'sass';
+import moment from 'moment';
 import type CommandsServiceType from '../CommandsService';
 import { getErrorMessage } from '../responseLines/errors';
 import { ApiService, ConfigService, ServerConnectionService } from '../..';
 import { getLoginUserData } from '../../../Terminal/utils/store';
+
+const transferLimits = {
+  broke: 200,
+  impoverished: 500,
+  struggling: 1000,
+  modest: 1000,
+  stable: 1500,
+  comfortable: 2000,
+  affluent: 2500,
+  elite: 5000,
+};
 
 export default class Transfer {
   private Service: CommandsServiceType;
@@ -37,7 +48,7 @@ export default class Transfer {
 
     try {
       await ConfigService.checkHacking('transfer');
-      ServerConnectionService.checkCommand('transfer');
+      // ServerConnectionService.checkCommand('transfer');
 
       if (!transactionData.from) {
         transactionData.from = await getDirectLine(
@@ -75,9 +86,11 @@ export default class Transfer {
         );
       }
       await checkAccounts(fromAccount, toAccount, isBusinessAccount);
+      await checkLimits();
       const callback = sendTransaction.bind(this);
-      startTransaction(callback);
+      await startTransaction(callback);
     } catch (err) {
+      console.log({ err2: err })
       setInputDisabled(false);
       addLines(getErrorMessage(err));
     }
@@ -94,16 +107,60 @@ export default class Transfer {
     }
 
     async function sendTransaction() {
-      try {
+      // try {
         await ApiService.sendTransaction(transactionData);
         if (!hackerIsOwner) {
           await ApiService.addHackLog({
             targetUserId: fromAccount.ownerId,
             targetUserName: fromAccount.owner,
           });
+        } else {
+          const rest = localStorage.getItem('transfer-limits') | {};
+          localStorage.setItem(
+            'transfer-limits',
+            JSON.stringify({
+              ...rest,
+              [fromAccount.accountNumber]: moment().toISOString(),
+            }),
+          );
         }
-      } catch (err) {
-        throw new Error(err);
+      // } catch (err) {
+      //   const error = err?.response?.data;
+      //   console.log({error})
+      //   if (error) {
+      //     console.log(error)
+      //     addLines([err?.response?.data]);
+      //   }
+      //   throw new Error(err?.response?.data);
+      // }
+    }
+
+    async function checkLimits() {
+      const timeLimits = localStorage.getItem('transfer-limits') || {};
+      const timeLimit = timeLimits[fromAccount.accountNumber] | '';
+      const fromProfile = await ApiService.getProfileByHandle(
+        fromAccount.owner,
+      );
+      const wealth = fromProfile.wealthLevel.toLowerCase();
+
+      if (transactionData.amount > transferLimits[wealth]) {
+        throw new Error(
+          `<span class="secondary-color">Error:</span> Limit ${transferLimits[wealth]} was exceeded`,
+        );
+      }
+console.log({ timeLimits, timeLimit, fromProfile, wealth })
+      if (timeLimit) {
+        const timeMoment = moment(timeLimit);
+        const now = moment();
+        const dif = moment.duration(now.diff(timeMoment));
+        const minutes = dif.asMinutes();
+        if (minutes < 15) {
+          throw new Error(
+            `<span class="secondary-color">Error:</span> You cannot make another transaction from this account for another ${
+              15 - minutes
+            } minutes.`,
+          );
+        }
       }
     }
 

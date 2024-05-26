@@ -217,15 +217,15 @@ export default class List {
       disableCode: 'balance',
       description: 'Get balance records about account',
     },
-    {
-      title:
-        'transfer [sender_accountNr] [receiver_accountNr] [amount] [title]',
-      onDisconnected: true,
-      onConnected: true,
-      special: '',
-      disableCode: 'transfer',
-      description: 'Transfer founds',
-    },
+    // {
+    //   title:
+    //     'transfer [sender_accountNr] [receiver_accountNr] [amount] [title]',
+    //   onDisconnected: true,
+    //   onConnected: true,
+    //   special: '',
+    //   disableCode: 'transfer',
+    //   description: 'Transfer founds',
+    // },
     {
       title: 'readMsg [conversationId]',
       onDisconnected: true,

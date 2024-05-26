@@ -1,13 +1,13 @@
 import { onlyTab } from './utils';
 
 export function getProgramAvailableMessage(
-  programName: string,
+  program: any,
   programKey: string,
 ): string[] {
   return [
-    `Program <span class="secondary-color">${programName}</span> with key: ${onlyTab(
+    `Program <span class="secondary-color">${program.name}</span> with key: ${onlyTab(
       programKey,
-    )} is available.`,
+    )} is available. (type <span class="secondary-color">${program.type}</span>)`,
   ];
 }
 

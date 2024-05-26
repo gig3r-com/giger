@@ -1,5 +1,9 @@
 import type CommandsServiceType from '../CommandsService';
-import {ApiService, ConfigService, ServerConnectionService} from '../../index';
+import {
+  ApiService,
+  ConfigService,
+  ServerConnectionService,
+} from '../../index';
 import { getErrorMessage } from '../responseLines/errors';
 import { getNewNameLines } from '../responseLines/misc';
 
@@ -24,7 +28,9 @@ export default class Name {
       return;
     }
     if (ServerConnectionService.isConnected) {
-      addLines(`<span class="secondary-color">Error: </span> You cant change your CIC Terminal name while connected to subntetwork`);
+      addLines(
+        `<span class="secondary-color">Error: </span> You cant change your CIC Terminal name while connected to subntetwork`,
+      );
       return;
     }
     let name = parsedCommand[0];
