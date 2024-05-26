@@ -212,7 +212,8 @@
     "NO_RECORDS": "No records",
     "NEW_MESSAGES_ABBREVIATION": "new msg",
     "ENTERTAINMENT": "Entertainment",
-    "TOTAL_DESC": "Payout and GIG3R commission (20%):",
+    "TOTAL_DESC_CLIENT": "I pay (payout and 20% GIG3R commission): ",
+    "TOTAL_DESC_PROVIDER": "I want to be paid (client cover GIG3R commision): ",
     "FIXER": "Fixer",
     "KILLER": "Killer",
     "HACKER": "Hacker",
@@ -230,5 +231,7 @@
     "ANONYMOUS": "Anonymous",
     "COMPLETE": "Complete",
     "NEW_STATUS": "New status",
-    "NEW": "New"
+    "NEW": "New",
+    "PROVIDER_WITH_EXPLANATION": "Provider (I want to be paid)",
+    "CLIENT_WITH_EXPLANATION": "Client (I'm willing to pay)"
 }
