@@ -67,7 +67,7 @@ export default class CommandsService {
     install: new Install(this),
     copydata: new CopyData(this),
     balance: new Balance(this),
-    // transfer: new Transfer(this),
+    transfer: new Transfer(this),
     log: new Log(this),
     exit: new Exit(this),
     readmsg: new ReadMsg(this),

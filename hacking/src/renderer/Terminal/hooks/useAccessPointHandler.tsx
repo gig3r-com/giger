@@ -4,22 +4,6 @@ import { ConfigService, ServerConnectionService } from '../../services';
 type Device = {
   productId: number;
 };
-// const accessPointConfig = [
-//   {
-//     accessPoint: {
-//       name: 'CombatZoneAC',
-//       type: 'red',
-//       place: 'combat zone',
-//       number: 0,
-//     },
-//     device: {
-//       manufacturerName: 'USB',
-//       productId: 11303,
-//       productName: 'USB Keyboard',
-//       vendorId: 6700,
-//     },
-//   },
-// ];
 
 const checkDevices = (deviceToCheck) => {
   const accessPoints = ConfigService.getAC();

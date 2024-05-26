@@ -53,6 +53,13 @@ export default class Run {
         return;
       }
 
+      const avaiablePrograms = await ApiService.getAvailablePrograms();
+      if (!avaiablePrograms.filter((p) => p.name.toLowerCase() === exploit.name.toLowerCase()).length) {
+        addLines(['programNotAvailable']);
+        setInputDisabled(false);
+        return;
+      }
+
       if (exploit.type === 'breacher') {
         await runBreacher(exploit);
       }
@@ -118,11 +125,11 @@ export default class Run {
           let where;
           switch (network?.ac) {
             case 'red': {
-              where = `type RED access point in <span class="secondary-color">SynthPulse-AP</span>, <span class="secondary-color">OMG-AP</span>, <span class="secondary-color">DropoffService-AP</span>`;
+              where = `type <span class="secondary-color">RED</span> access point.`;
               break;
             }
             case 'green': {
-              where = `type GREEN access point in <span class="secondary-color">Motel-AP</span>, <span class="secondary-color">L0-Maint-AP</span>, <span class="secondary-color">L3-Maint-AP</span>`;
+              where = `type <span class="secondary-color">GREEN</span> access point.`;
               break;
             }
             case 'blue':

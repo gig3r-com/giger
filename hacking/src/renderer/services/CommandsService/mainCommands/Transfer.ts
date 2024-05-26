@@ -115,14 +115,14 @@ export default class Transfer {
             targetUserName: fromAccount.owner,
           });
         } else {
-          const rest = localStorage.getItem('transfer-limits') | {};
-          localStorage.setItem(
-            'transfer-limits',
-            JSON.stringify({
-              ...rest,
-              [fromAccount.accountNumber]: moment().toISOString(),
-            }),
-          );
+          // const rest = localStorage.getItem('transfer-limits') | {};
+          // localStorage.setItem(
+          //   'transfer-limits',
+          //   JSON.stringify({
+          //     ...rest,
+          //     [fromAccount.accountNumber]: moment().toISOString(),
+          //   }),
+          // );
         }
       // } catch (err) {
       //   const error = err?.response?.data;
