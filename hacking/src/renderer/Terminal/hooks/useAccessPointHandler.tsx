@@ -36,7 +36,7 @@ const checkDevices = (deviceToCheck) => {
 // @ts-ignore
 export default function useAccessPointHandler({ setAccessPoint }) {
   useEffect(() => {
-    window.electron.ipcRenderer.on('devices', (devicesString: string) => {
+    window?.electron?.ipcRenderer?.on('devices', (devicesString: string) => {
       const devices = JSON.parse(devicesString);
       if (devices && devices.length) {
         console.log(devices);

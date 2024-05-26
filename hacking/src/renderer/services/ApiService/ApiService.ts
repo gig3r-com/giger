@@ -29,7 +29,7 @@ export default class ApiService {
       gigerApiUrl: 'http://app.localdomain/api',
       gigerUrl: 'http://app.localdomain',
     };
-    window.electron.ipcRenderer.on('config-app', (data) => {
+    window?.electron?.ipcRenderer?.on('config-app', (data) => {
       const config = {};
       data.split('\n').forEach((line) => {
         const [key, value] = line.split('=');

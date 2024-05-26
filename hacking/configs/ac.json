@@ -14,10 +14,10 @@
         "number": 1
       },
       "device": {
-        "manufacturerName": "USB",
-        "productId": 11303,
-        "productName": "USB Keyboard",
-        "vendorId": 6700
+        "manufacturerName": "",
+        "productId": 33032,
+        "productName": "",
+        "vendorId": 4292
       }
     }, {
       "accessPoint": {
@@ -27,10 +27,10 @@
         "number": 2
       },
       "device": {
-        "manufacturerName": "Logitech",
-        "productId": 49271,
-        "productName": "USB Optical Mouse",
-        "vendorId": 1133
+        "manufacturerName": "",
+        "productId": 33032,
+        "productName": "",
+        "vendorId": 4292
       }
     },
     {
@@ -42,9 +42,9 @@
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
-        "productName": "",
-        "vendorId": null
+        "productId": 14373,
+        "productName": " USB OPTICAL MOUSE",
+        "vendorId": 0
       }
     },
     {
@@ -56,9 +56,9 @@
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
-        "productName": "",
-        "vendorId": null
+        "productId": 14373,
+        "productName": " USB OPTICAL MOUSE",
+        "vendorId": 0
       }
     },
     {
@@ -70,9 +70,9 @@
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
+        "productId": 33032,
         "productName": "",
-        "vendorId": null
+        "vendorId": 4292
       }
     },
     {
@@ -83,10 +83,10 @@
         "number": 6
       },
       "device": {
-        "manufacturerName": "",
-        "productId": null,
-        "productName": "",
-        "vendorId": null
+        "manufacturerName": "SIGMACHIP",
+        "productId": 52,
+        "productName": "Usb Mouse",
+        "vendorId": 7247
       }
     }
   ],
