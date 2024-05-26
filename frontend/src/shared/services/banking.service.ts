@@ -74,8 +74,13 @@ export function useBankingService() {
 
         const transaction: ITransaction = {
             from: account.accountNumber,
-            to: receiverAccount[0].accountNumber,
-            fromUser: currentUser?.handle ?? '',
+            to:
+                receiverAccount[fromAccount === 'PRIVATE' ? 0 : 1]
+                    ?.accountNumber ?? receiverAccount[0].accountNumber,
+            fromUser:
+                (fromAccount === 'PRIVATE'
+                    ? currentUser?.handle
+                    : currentUser?.faction) ?? '',
             toUser: receiverHandle,
             amount,
             title,
@@ -100,14 +105,19 @@ export function useBankingService() {
             handle: faction
         }));
         const availableHolders: Holder[] = [...userList, ...factionHolders];
-        const holder = availableHolders.find((holder) => holder.handle === handle);
+        const holder = availableHolders.find(
+            (holder) => holder.handle === handle
+        );
 
         return holder?.handle ?? intl.formatMessage({ id: 'UNKNOWN_USER' });
     };
 
     const isNewTransaction = (transactionId: string) => {
-        return transferHashes[transactionId]?.current !== transferHashes[transactionId]?.lastSeen;
-    }
+        return (
+            transferHashes[transactionId]?.current !==
+            transferHashes[transactionId]?.lastSeen
+        );
+    };
 
     return {
         accounts,
