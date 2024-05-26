@@ -236,10 +236,10 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                         <MemoizedFormattedMessage id="PROVIDER_OR_CLIENT" />
                     </option>
                     <option value={GigModes.PROVIDER}>
-                        <MemoizedFormattedMessage id="PROVIDER" />
+                        <MemoizedFormattedMessage id="PROVIDER_WITH_EXPLANATION" />
                     </option>
                     <option value={GigModes.CLIENT}>
-                        <MemoizedFormattedMessage id="CLIENT" />
+                        <MemoizedFormattedMessage id="CLIENT_WITH_EXPLANATION" />
                     </option>
                 </select>
 
@@ -356,12 +356,31 @@ export const NewGig: FC<INewGigProps> = ({ active }) => {
                 />
 
                 <span className="new-gig__total">
-                    <span className="new-gig__total-desc">
-                        {intl.formatMessage({ id: 'TOTAL_DESC' })}
-                    </span>
-                    <span className="new-gig__total-value">
-                        {payout + payout * gigerCommission}{' '}
-                    </span>
+                    {mode === GigModes.CLIENT && (
+                        <>
+                            <span className="new-gig__total-desc">
+                                {intl.formatMessage({
+                                    id: 'TOTAL_DESC_CLIENT'
+                                })}
+                            </span>
+                            <span className="new-gig__total-value">
+                                {payout + payout * gigerCommission}{' '}
+                            </span>
+                        </>
+                    )}
+                    {mode === GigModes.PROVIDER && (
+                        <>
+                            <span className="new-gig__total-desc">
+                                {intl.formatMessage({
+                                    id: 'TOTAL_DESC_PROVIDER'
+                                })}
+                            </span>
+
+                            <span className="new-gig__total-value">
+                                {payout}{' '}
+                            </span>
+                        </>
+                    )}
                 </span>
 
                 {notEnoughMoneyWarning && (
