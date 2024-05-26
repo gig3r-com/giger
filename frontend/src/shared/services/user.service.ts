@@ -218,9 +218,8 @@ export function useUserService() {
             favoriteUserIds.add(favoriteUserId);
         }
 
-        await updateUserData(currentUser!.id, {
-            favoriteUserIds: Array.from(favoriteUserIds)
-        });
+        await api.url('User/favorites').body([...favoriteUserIds]).put().res();
+        dispatch(updateCurrentUser({ favoriteUserIds: [...favoriteUserIds] }));
     };
 
     const getCurrentUserFaction = () => {
