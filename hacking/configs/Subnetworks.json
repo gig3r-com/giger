@@ -1,0 +1,51 @@
+[
+  {
+    "_id": "04782487-aea5-4639-a439-e7ffd51fda92",
+    "Name": "basesubnetwork",
+    "NetworkId": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "Users": [
+      "redbot",
+      "bluebot"
+    ],
+    "Firewall": "ENCRYPT_GUARD",
+    "OperatingSystem": "FORCE_FIELD",
+    "Ice": [],
+    "PastHacks": []
+  },
+  {
+    "_id": "b0f3f7a2-1d45-4ee5-b847-62b70e2339cf",
+    "Name": "highsecuritysubnetwork",
+    "NetworkId": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "Users": [
+      "greenbot"
+    ],
+    "Firewall": "FIREWALL_X",
+    "OperatingSystem": "EVIL_TWIN",
+    "Ice": [
+      "PING1",
+      "CLEANER"
+    ],
+    "PastHacks": []
+  },
+  {
+    "_id": "0fa73ad8-1b59-4c54-8fe2-55c473f36fc0",
+    "Name": "hedin_room",
+    "NetworkId": "bf3c1c2c-7d6d-497b-92ea-27686980e5e6",
+    "Users": [
+      "hedin",
+      "hackerbot"
+    ],
+    "Firewall": "VIRTUAL_VAULT",
+    "OperatingSystem": "JOAN_OF_ARC",
+    "Ice": [
+      "CLEANER",
+      "PING3",
+      "BOOST",
+      "KICKER",
+      "BLOCKER",
+      "LOCKER",
+      "KILLER"
+    ],
+    "PastHacks": []
+  }
+]

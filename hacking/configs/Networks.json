@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "Name": "AeroSpace",
+    "Subnetworks": [
+      "04782487-aea5-4639-a439-e7ffd51fda92",
+      "b0f3f7a2-1d45-4ee5-b847-62b70e2339cf"
+    ],
+    "AdminId": ""
+  },
+  {
+    "_id": "bf3c1c2c-7d6d-497b-92ea-27686980e5e6",
+    "Name": "directorsnetwork",
+    "Subnetworks": [
+      "0fa73ad8-1b59-4c54-8fe2-55c473f36fc0"
+    ],
+    "AdminId": ""
+  }
+]

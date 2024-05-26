@@ -1,0 +1,27 @@
+export default function mapGig(data: any) {
+  return {
+    id: data.id,
+    isRevealed: true,
+    payout: data.payout,
+    title: data.title,
+    description: data.description,
+    conversasionId: data.conversationId,
+    category: data.category,
+    subcategory: data.subcategory,
+    repurationRequired: data.repurationRequired,
+    isAnonymizedAuthor: data.isAnonymizedAuthor,
+    status: data.status,
+    authorId: data.authorId,
+    authorName: data.authorName,
+    takenById: data.takenById,
+    takenForCompany: data.takenForCompany,
+    clientAccountNumber: data.clientAccountNumber,
+    providerAccountNumber: data.providerAccountNumber,
+    markedAsComplaintAt: data.markedAsComplaintAt,
+    complaintReason: data.complaintReason,
+    createdAt: data.createdAt,
+    acceptedAt: data.acceptedAt,
+    modes: data.modes,
+    isRevealedByClient: data.isRevealedByClient,
+  };
+}

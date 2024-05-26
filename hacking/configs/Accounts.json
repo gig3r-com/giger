@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "bd55e837-ec8a-4eeb-9602-eed8093d136a",
+    "Owner": "hackerbot",
+    "OwnerId": "2b727d97-b5f1-40b5-a207-282e68b38c20",
+    "Transactions": [],
+    "Type": "PRIVATE",
+    "Balance": 1777,
+    "AccountNumber": "505978"
+  },
+  {
+    "_id": "e2c38f1d-7a18-46a5-97ee-4b8c73030222",
+    "Owner": "redbot",
+    "OwnerId": "e13a897e-ee88-4dff-8a30-e5e7e7e3fa8b",
+    "Transactions": [],
+    "Type": "PRIVATE",
+    "Balance": 1327,
+    "AccountNumber": "648460"
+  },
+  {
+    "_id": "44b76e6d-7861-4fc7-a310-cb3c11368b50",
+    "Owner": "bluebot",
+    "OwnerId": "bcd0c69b-b78e-4e73-a00a-4279ec62b299",
+    "Transactions": [],
+    "Type": "PRIVATE",
+    "Balance": 1304,
+    "AccountNumber": "364589"
+  },
+  {
+    "_id": "37ecd42e-f047-4539-b9c3-b7bf50848cca",
+    "Owner": "bluebot",
+    "OwnerId": "bcd0c69b-b78e-4e73-a00a-4279ec62b299",
+    "Transactions": [],
+    "Type": "BUSINESS",
+    "Balance": 2310,
+    "AccountNumber": "831444"
+  },
+  {
+    "_id": "784906f6-f25a-4d3e-9a92-63d0929e2b76",
+    "Owner": "greenbot",
+    "OwnerId": "8027ca65-a281-49a4-b85e-1053a7609efa",
+    "Transactions": [],
+    "Type": "PRIVATE",
+    "Balance": 1777,
+    "AccountNumber": "202419"
+  },
+  {
+    "_id": "81cdffaf-1ace-4ea5-ac75-c3d13b3e343e",
+    "Owner": "hedin",
+    "OwnerId": "d52f1569-09cd-472f-8ec9-f1ccd2a3f97e",
+    "Transactions": [],
+    "Type": "PRIVATE",
+    "Balance": 99999,
+    "AccountNumber": "953148"
+  }
+]

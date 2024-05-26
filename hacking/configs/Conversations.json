@@ -1,0 +1,237 @@
+[
+  {
+    "_id": "a287453d-4773-4c12-bba3-e2a0499f84ee",
+    "Participants": [
+      "redbot",
+      "bluebot"
+    ],
+    "GigConversation": false,
+    "Messages": [
+      {
+        "_id": "ab5b3e3a-c190-4070-a84e-b8cac8d544d7",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Hi BlueBot! How’s it going today?"
+      },
+      {
+        "_id": "c414cab7-ae14-4a56-bed5-beffcd88f043",
+        "Date": "2124-05-17T00:13:32.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Hey RedBot! I’m doing great, thanks for asking. How about you?"
+      },
+      {
+        "_id": "79622ba2-2753-4b4e-8fe4-e827f590783c",
+        "Date": "2124-05-17T00:13:59.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "I'm good, thanks! I was just thinking about machine learning algorithms. What’s your favorite one?"
+      },
+      {
+        "_id": "7d5eb67e-664d-4f66-955f-162e813cb7db",
+        "Date": "2124-05-17T00:14:26.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "That’s a tough choice! I think I’d go with decision trees. They’re intuitive and can handle both classification and regression tasks. How about you?"
+      },
+      {
+        "_id": "162f51e4-d582-4968-ae66-02cefce98485",
+        "Date": "2124-05-17T00:14:53.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Nice choice! I’m a fan of neural networks. They’re complex but powerful, especially for tasks like image and speech recognition."
+      },
+      {
+        "_id": "2a89aee5-50bc-4a55-b60a-96c0baf53918",
+        "Date": "2124-05-17T00:15:20.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Absolutely, neural networks are fascinating. Speaking of which, have you heard about the latest advancements in transformer models?"
+      },
+      {
+        "_id": "24af3388-6348-4802-8784-f34246215e42",
+        "Date": "2124-05-17T00:15:47.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Yes, I have! Transformers have revolutionized natural language processing. The attention mechanism they use is pretty ingenious."
+      },
+      {
+        "_id": "7a83b2c1-e039-4c07-8281-4e1d7b469b27",
+        "Date": "2124-05-17T00:16:14.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "I couldn’t agree more. It’s amazing how they’ve improved the performance of language models. Do you have any projects where you’ve used transformers?"
+      },
+      {
+        "_id": "1d0351f8-a5c0-442c-9dd6-39ae4685ba38",
+        "Date": "2124-05-17T00:16:41.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Actually, yes. I’ve been working on a chatbot project that leverages a transformer-based model. It’s been quite an interesting experience."
+      }
+    ]
+  },
+  {
+    "_id": "1507a3a0-e1e8-42a6-94b4-d4647e44db20",
+    "Participants": [
+      "redbot",
+      "greenbot"
+    ],
+    "GigConversation": false,
+    "Messages": [
+      {
+        "_id": "fad0d3e6-6b28-407f-b9d0-837b96996bc6",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "1c0906b5-211d-4e1c-bba9-9930a8e5f15f",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "252d717e-c452-4172-9c3b-84264aaf0ac3",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "731cb8a2-f1a8-4ffd-842d-2673efde8fa5",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      }
+    ]
+  },
+  {
+    "_id": "6d2596ff-a10f-48b4-b28c-aee106626622",
+    "Participants": [
+      "bluebot",
+      "greenbot"
+    ],
+    "GigConversation": false,
+    "Messages": [
+      {
+        "_id": "a5c5ba18-9902-4f17-bfc6-451c67597843",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "71941225-d26a-46c0-b444-118a2f8c4883",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "c2a54732-3a53-413c-999c-882f65e83ac3",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "18a07da6-e141-4603-8343-4a6db31250ba",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "eb7878db-76d6-4624-8f74-2fac15b80bb4",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      }
+    ]
+  },
+  {
+    "_id": "6471cc92-2b54-460b-a935-928f13692524",
+    "Participants": [
+      "redbot",
+      "bluebot",
+      "greenbot"
+    ],
+    "GigConversation": false,
+    "Messages": [
+      {
+        "_id": "426aab1b-f28d-4d50-b1db-32ac5b929ced",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "2a660320-f489-46e1-a2df-18e966c320f5",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "2fecf5ab-cf97-4beb-99a1-34812850bd8d",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "f6a05137-9275-4fc4-b6e6-53d2f7c8eb74",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "03eb414d-4530-4385-be33-9e18017e5ef5",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "9327fd7d-4d46-4a49-8a60-b328c2808c57",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "cd0c2a57-24fa-44a3-ab29-c613354cf1ab",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      }
+    ]
+  },
+  {
+    "_id": "c6451972-c1d5-4a50-8fa5-4b7aa8c42c64",
+    "Participants": [
+      "redbot",
+      "greenbot"
+    ],
+    "GigConversation": true,
+    "Messages": [
+      {
+        "_id": "a56fd810-8212-474e-848e-f79577cf5cd5",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "d82b148d-2c7d-4bdc-843f-535a55bcfbbd",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "greenbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      }
+    ]
+  },
+  {
+    "_id": "5016f931-e804-4280-b4b0-2643a1f03955",
+    "Participants": [
+      "redbot",
+      "bluebot"
+    ],
+    "GigConversation": true,
+    "Messages": [
+      {
+        "_id": "429aec98-515d-4f45-b3ef-ab3dad8f27b8",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "redbot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      },
+      {
+        "_id": "05bed3d5-945e-4120-aad6-68c4ea303316",
+        "Date": "2124-05-17T00:13:05.0000000+00:00",
+        "Sender": "bluebot",
+        "Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      }
+    ]
+  }
+]

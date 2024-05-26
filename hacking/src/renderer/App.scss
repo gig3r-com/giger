@@ -1,0 +1,139 @@
+@import "../variables.scss";
+
+body {
+  position: relative;
+  color: white;
+  background: #000;
+  font-family: JetBrainsMono, monospace;
+  font-size: 16px;
+}
+
+#root {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  white-space: pre-wrap;
+  overflow-x: hidden;
+}
+
+.line {
+  text-indent: -10px;
+  color: $text-color;
+  margin: 0;
+  padding-left: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.user-line {
+  margin-left: 10px;
+  color: $base-text-color;
+}
+
+.secondary-color {
+  color: $secondary-color;
+}
+
+.accent-color {
+  color: $accent-color;
+}
+
+.accent-color-2 {
+  color: $accent-color-2;
+}
+
+.example-color {
+  color: $example-color;
+}
+
+.disabled-color {
+  color: $disabled-color;
+}
+
+.green-color {
+  color: yellowgreen;;
+}
+
+.selected-color {
+  color: black;
+  background: $base-text-color;
+}
+
+.error-title {
+  color: $secondary-color;
+}
+
+.date {
+  font-size: 14px;
+}
+
+.input-line {
+  display: flex;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  color: $base-text-color;
+  text-indent: 0;
+}
+
+.input-prefix {
+  padding-right: 4px;
+  text-indent: 0;
+}
+
+input {
+  background: black;
+  color: $base-text-color;
+  border: 0;
+  padding: 0 0 0 4px;
+  font-size: 18px;
+  width: 100%;
+}
+
+input:focus{
+  outline: none;
+}
+
+.loader {
+  &:after {
+    content: '';
+    animation: loading 1s steps(4, start) infinite;
+    margin-right: 8px;
+  }
+}
+
+table.list-table, table.profile-table, table.account-table, table.log-table {
+  td {
+    padding: 0 10px;
+  }
+  .command-cell {
+    white-space: nowrap;
+  }
+  margin: 0 20px;
+}
+
+table.list-table, table.log-table {
+  margin: -20px 0 0 -10px;
+}
+
+@keyframes loading {
+  0% {
+    content: '-';
+  }
+  25% {
+    content: '/';
+  }
+  50% {
+    content: '|';
+  }
+  75% {
+    content: '\\';
+  }
+  100% {
+    content: '-';
+  }
+}
+
+.margin-left {
+  margin-left: 10px;
+}

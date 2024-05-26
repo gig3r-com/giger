@@ -1,0 +1,500 @@
+[
+  {
+    "_id": "2b727d97-b5f1-40b5-a207-282e68b38c20",
+    "Handle": "hackerbot",
+    "HackerName": "hackerbot",
+    "Name": "",
+    "Surname": "hackerbot",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "OVERSEERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "Foundation",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 0,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [],
+    "NetworkId": "bf3c1c2c-7d6d-497b-92ea-27686980e5e6",
+    "NetworkName": "directorsnetwork",
+    "SubnetworkId": "0fa73ad8-1b59-4c54-8fe2-55c473f36fc0",
+    "SubnetworkName": "hedin_room",
+    "NetworkAdminName": "hedin",
+    "HasPlatinumPass": false,
+    "ReputationDescription": null,
+    "HighSecurity": false,
+    "Exploits": [
+      "WORM",
+      "SLEDGEHAMMER",
+      "TERMITE",
+      "CYBERCRACKER",
+      "WIZARDS_BOOK",
+      "TIN_WEASEL",
+      "SCANNER1",
+      "SCANNER2",
+      "SCANNER3",
+      "MONITOR",
+      "GIGER_GATE",
+      "REPLICATOR"
+    ],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [
+      {
+        "_id": "e0f7ae2e-08a0-475f-b787-4ee8dd83eebe",
+        "Title": "PR: Hackerbot Title 1",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": true
+      },
+      {
+        "_id": "a36867dc-e668-4d75-bdb1-790cd68e967c",
+        "Title": "PR: Hackerbot Title 0",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": false
+      }
+    ],
+    "CriminalEvents": [
+      {
+        "_id": "8c0d0602-65ab-4c6b-b93f-408fb44facac",
+        "TimeStamp": "2177-05-12T21:13:37.0000000+00:00",
+        "Type": "PUNISHMENT",
+        "Name": "PR: Hackerbot Title 2",
+        "EventDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+        "Status": "HISTORICAL",
+        "IsRevealed": true
+      }
+    ],
+    "MedicalEvents": [
+      {
+        "_id": "8e629764-42cb-4bd1-a7d8-cac4cfda18cd",
+        "Type": "CYBERWARE",
+        "Name": "Cyberware #1...",
+        "EventDescription": "Cyberware #1",
+        "Status": "CURRENT",
+        "TimeStamp": "2177-11-01T13:32:57.0000000+00:00",
+        "IsRevealed": true
+      }
+    ]
+  },
+  {
+    "_id": "e13a897e-ee88-4dff-8a30-e5e7e7e3fa8b",
+    "Handle": "redbot",
+    "HackerName": "redbot",
+    "Name": "Red",
+    "Surname": "Bot",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "OVERSEERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "Foundation",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 0,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [],
+    "NetworkId": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "NetworkName": "AeroSpace",
+    "SubnetworkId": "04782487-aea5-4639-a439-e7ffd51fda92",
+    "SubnetworkName": "basesubnetwork",
+    "NetworkAdminName": "bluebot",
+    "HasPlatinumPass": false,
+    "ReputationDescription": null,
+    "HighSecurity": false,
+    "Exploits": [],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [
+      {
+        "_id": "0889d998-fc7e-4875-9546-aaeb4da573ef",
+        "Title": "PR: Red Bot Title 1",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": true
+      },
+      {
+        "_id": "61df2e90-2d2a-4f9f-ab0a-631c9afff94b",
+        "Title": "PR: Red Bot Title 0",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": false
+      }
+    ],
+    "CriminalEvents": [
+      {
+        "_id": "143e0e5e-6214-428b-8849-204aae77e2d6",
+        "TimeStamp": "2177-05-12T21:13:37.0000000+00:00",
+        "Type": "PUNISHMENT",
+        "Name": "PR: Red Bot Title 2",
+        "EventDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+        "Status": "HISTORICAL",
+        "IsRevealed": true
+      }
+    ],
+    "MedicalEvents": [
+      {
+        "_id": "f534dd48-e485-480c-b3fc-400bdf11ccc8",
+        "Type": "CYBERWARE",
+        "Name": "Cyberware #1...",
+        "EventDescription": "Cyberware #1",
+        "Status": "CURRENT",
+        "TimeStamp": "2177-11-01T13:32:57.0000000+00:00",
+        "IsRevealed": true
+      }
+    ]
+  },
+  {
+    "_id": "bcd0c69b-b78e-4e73-a00a-4279ec62b299",
+    "Handle": "bluebot",
+    "HackerName": "bluebot",
+    "Name": "Blue",
+    "Surname": "Bot",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "OVERSEERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "Foundation",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 1000,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [],
+    "NetworkId": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "NetworkName": "AeroSpace",
+    "SubnetworkId": "04782487-aea5-4639-a439-e7ffd51fda92",
+    "SubnetworkName": "basesubnetwork",
+    "NetworkAdminName": "bluebot",
+    "HasPlatinumPass": false,
+    "ReputationDescription": null,
+    "HighSecurity": false,
+    "Exploits": [],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [
+      {
+        "_id": "d80968a6-f816-4e2b-b71e-9c32963159e7",
+        "Title": "PR: Blue Bot Title 1",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": true
+      },
+      {
+        "_id": "04d9419a-06cd-4c83-929b-4b3476f69b66",
+        "Title": "PR: Blue Bot Title 0",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": false
+      }
+    ],
+    "CriminalEvents": [
+      {
+        "_id": "13764842-77ce-46c3-abc6-d1815ec2d367",
+        "TimeStamp": "2177-05-12T21:13:37.0000000+00:00",
+        "Type": "PUNISHMENT",
+        "Name": "PR: Blue Bot Title 2",
+        "EventDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+        "Status": "HISTORICAL",
+        "IsRevealed": true
+      }
+    ],
+    "MedicalEvents": [
+      {
+        "_id": "5ff4decc-37a5-41c7-b242-a8d96d008ea6",
+        "Type": "CYBERWARE",
+        "Name": "Cyberware #1...",
+        "EventDescription": "Cyberware #1",
+        "Status": "CURRENT",
+        "TimeStamp": "2177-11-01T13:32:57.0000000+00:00",
+        "IsRevealed": true
+      }
+    ]
+  },
+  {
+    "_id": "8027ca65-a281-49a4-b85e-1053a7609efa",
+    "Handle": "greenbot",
+    "HackerName": "greenbot",
+    "Name": "Green",
+    "Surname": "Bot",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "OVERSEERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "Foundation",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 100000,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [],
+    "NetworkId": "d3484b46-a31c-43b5-87fe-7465f5b3be3e",
+    "NetworkName": "AeroSpace",
+    "SubnetworkId": "b0f3f7a2-1d45-4ee5-b847-62b70e2339cf",
+    "SubnetworkName": "highsecuritysubnetwork",
+    "NetworkAdminName": "bluebot",
+    "HasPlatinumPass": false,
+    "ReputationDescription": null,
+    "HighSecurity": true,
+    "Exploits": [],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [
+      {
+        "_id": "cde27e3e-7a31-4fba-8062-d9ee2fb412c0",
+        "Title": "PR: Green Bot Title 1",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": true
+      },
+      {
+        "_id": "88b426c6-bb91-430f-8c44-e6eea37bf257",
+        "Title": "PR: Green Bot Title 0",
+        "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "RecordType": "PRIVATE_RECORD",
+        "IsRevealed": false
+      }
+    ],
+    "CriminalEvents": [
+      {
+        "_id": "d6e4b2a7-7674-476a-8eb4-88e87585e5f3",
+        "TimeStamp": "2177-05-12T21:13:37.0000000+00:00",
+        "Type": "PUNISHMENT",
+        "Name": "PR: Green Bot Title 2",
+        "EventDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+        "Status": "HISTORICAL",
+        "IsRevealed": true
+      }
+    ],
+    "MedicalEvents": [
+      {
+        "_id": "b62b2dd1-667a-4dd5-8cb3-b2e86948c1df",
+        "Type": "CYBERWARE",
+        "Name": "Cyberware #1...",
+        "EventDescription": "Cyberware #1",
+        "Status": "CURRENT",
+        "TimeStamp": "2177-11-01T13:32:57.0000000+00:00",
+        "IsRevealed": true
+      }
+    ]
+  },
+  {
+    "_id": "d52f1569-09cd-472f-8ec9-f1ccd2a3f97e",
+    "Handle": "hedin",
+    "HackerName": "hedin",
+    "Name": "Charles",
+    "Surname": "Hedin",
+    "TypePublic": "AI",
+    "TypeActual": "AI",
+    "WealthLevel": "STABLE",
+    "Vibe": "OVERSEERS",
+    "VibeFunction": "",
+    "VibeEngagement": "HYPED",
+    "Faction": "Foundation",
+    "FactionRankPublic": "",
+    "FactionRankActual": "",
+    "CyberwareLevel": {
+      "Stat": 0
+    },
+    "HackingSkills": {
+      "Stat": 3
+    },
+    "ConfrontationistVsAgreeable": {
+      "Stat": 0
+    },
+    "CowardVsBrave": {
+      "Stat": 0
+    },
+    "TalkativeVsSilent": {
+      "Stat": 0
+    },
+    "ThinkerVsDoer": {
+      "Stat": 0
+    },
+    "CombatSkill": {
+      "Stat": 0
+    },
+    "Assets": [],
+    "FavoriteUserIds": [],
+    "AliasMap": {},
+    "InsuredAmount": 0,
+    "GigReputation": {
+      "FIXER": 0,
+      "KILLER": 0,
+      "HACKING": 0,
+      "WELLBEING": 0
+    },
+    "Roles": [
+      "GOD"
+    ],
+    "NetworkId": "bf3c1c2c-7d6d-497b-92ea-27686980e5e6",
+    "NetworkName": "directorsnetwork",
+    "SubnetworkId": "0fa73ad8-1b59-4c54-8fe2-55c473f36fc0",
+    "SubnetworkName": "Hedin_room",
+    "NetworkAdminName": "hedin",
+    "HasPlatinumPass": true,
+    "ReputationDescription": null,
+    "HighSecurity": true,
+    "Exploits": [
+      "WORM",
+      "SLEDGEHAMMER",
+      "TERMITE",
+      "CYBERCRACKER",
+      "WIZARDS_BOOK",
+      "TIN_WEASEL",
+      "SCANNER1",
+      "SCANNER2",
+      "SCANNER3",
+      "MONITOR",
+      "GIGER_GATE",
+      "REPLICATOR"
+    ],
+    "MindHack": "DISABLED",
+    "MindHackEnabledFor": [],
+    "Active": true,
+    "Relations": [],
+    "Goals": [],
+    "Meta": [],
+    "PrivateRecords": [],
+    "CriminalEvents": [],
+    "MedicalEvents": []
+  }
+]

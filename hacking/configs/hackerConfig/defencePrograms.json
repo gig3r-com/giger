@@ -1,0 +1,169 @@
+{
+  "ENCRYPT_GUARD": {
+    "name": "EncryptGuard",
+    "type": "firewall"
+  },
+  "FIREWALL_X": {
+    "name": "FirewallX",
+    "type": "firewall"
+  },
+  "VIRTUAL_VAULT": {
+    "name": "VirtualVault",
+    "type": "firewall"
+  },
+  "FORCE_FIELD": {
+    "name": "ForceField",
+    "type": "encrypter",
+    "timeOnPerfectBreach": 3000,
+    "timeOnImperfectBreach": 1500,
+    "encryptedCommands": [
+      "transfer",
+      "copydata"
+    ]
+  },
+  "EVIL_TWIN": {
+    "name": "EvilTwin",
+    "type": "encrypter",
+    "timeOnPerfectBreach": 3000,
+    "timeOnImperfectBreach": 1500,
+    "encryptedCommands": [
+      "transfer",
+      "copydata"
+    ]
+  },
+  "JOAN_OF_ARC": {
+    "name": "JoanOfArc",
+    "type": "encrypter",
+    "timeOnPerfectBreach": 3000,
+    "timeOnImperfectBreach": 1500,
+    "encryptedCommands": [
+      "transfer",
+      "copydata"
+    ]
+  },
+  "CLEANER": {
+    "name": "Cleaner",
+    "type": "ice",
+    "effect": "Cleans terminal and every terminal data lately.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100,
+    "cleanerTimerStep": 100
+  },
+  "PING1": {
+    "name": "Ping_v1",
+    "type": "ice",
+    "effect": "Log hacker id and notify admin.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100
+  },
+  "PING2": {
+    "name": "Ping_v2",
+    "type": "ice",
+    "effect": "Log hacker id and notify admin.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100
+  },
+  "PING3": {
+    "name": "Ping_v3",
+    "type": "ice",
+    "effect": "Log hacker id and notify admin.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100
+  },
+  "BOOST": {
+    "name": "Boost",
+    "type": "ice",
+    "effect": "Speeds up other ice programs.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100,
+    "boostValue": 500
+  },
+  "KICKER": {
+    "name": "Kicker",
+    "type": "ice",
+    "effect": "Kicks hacker off the subnetwork.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100
+  },
+  "BLOCKER": {
+    "name": "Blocker",
+    "type": "ice",
+    "effect": "Blocks hacker from using terminal for a time.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100,
+    "blockTimeInMin": 30
+  },
+  "LOCKER": {
+    "name": "Locker",
+    "type": "ice",
+    "effect": "Locks hacker from using his current AP for a time.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100,
+    "lockTimeInMin": 120
+  },
+  "KILLER": {
+    "name": "Killer",
+    "type": "ice",
+    "effect": "Gives full injuries to hacker.",
+    "targetModel": "active",
+    "stage1SuccessRate": 5,
+    "stage2SuccessRate": 25,
+    "stage3SuccessRate": 50,
+    "stage4SuccessRate": 75,
+    "stage5SuccessRate": 90,
+    "finalStageSuccessRate": 100,
+    "injuries": 3
+  },
+  "AP_BLOCKER_1": {
+    "name": "Ap_blocker_v1",
+    "type": "ice",
+    "effect": "Restricts subnetwork's access",
+    "targetModel": "passive"
+  },
+  "AP_BLOCKER_2": {
+    "name": "Ap_blocker_v2",
+    "type": "ice",
+    "effect": "Restricts subnetwork's access",
+    "targetModel": "passive"
+  }
+}

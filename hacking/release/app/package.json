@@ -1,0 +1,20 @@
+{
+  "name": "cic-terminal",
+  "version": "1.2.0",
+  "description": "A hacking app for Giger larp",
+  "license": "MIT",
+  "author": {
+    "name": "Hedin",
+    "email": "karolhinc244@gmail.com"
+  },
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {
+    "usb": "^2.12.1",
+    "fs": "^0.0.1-security"
+  }
+}
