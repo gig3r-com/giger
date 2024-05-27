@@ -77,6 +77,7 @@ export const NewTransaction: FC = () => {
             <UserSelect
                 mode="single"
                 onSelection={setSelectedHandle}
+                allowFindingSelf={true}
                 includeFactions={true}
             />
             <BigButton
