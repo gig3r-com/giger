@@ -7,6 +7,7 @@ import { Message } from '../message/message';
 import { setMessagesAsRead } from '../../../../store/messages.slice';
 import { IWebsocketContext } from '../../../providers/websocket.model';
 import { useWebSocketContext } from '../../../providers/websocket.provider';
+import { useUserService } from '../../../services/user.service';
 
 import './conversation.scss';
 
@@ -15,6 +16,7 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
     className
 }) => {
     const dispatch = useDispatch();
+    const { currentUser } = useUserService();
     const convoWrapper = useRef<HTMLDivElement>(null);
     const { lastMessage } = useWebSocketContext() as IWebsocketContext;
     const { chatId, gigId } = useParams();
@@ -47,6 +49,10 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
         [chatId, convo, dispatch, gigId, lastMessage]
     );
 
+    const senderAnonymized = (sender: string) =>
+        convo.anonymizedUsers.includes(sender) &&
+        currentUser?.handle !== sender;
+
     return (
         <motion.div
             ref={convoWrapper}
@@ -59,7 +65,12 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
             }}
         >
             {convo.messages.map((msg) => (
-                <Message key={msg.id} message={msg} convoId={convo.id} />
+                <Message
+                    key={msg.id}
+                    message={msg}
+                    convoId={convo.id}
+                    senderAnonymized={senderAnonymized(msg.sender)}
+                />
             ))}
         </motion.div>
     );
