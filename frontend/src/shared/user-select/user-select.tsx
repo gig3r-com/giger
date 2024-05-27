@@ -40,17 +40,20 @@ export const UserSelect: FC<IUserSelectProps> = ({
               );
         return [...favUsers, ...otherUsers]
             .filter((user) =>
-                allowFindingSelf ? user : user.id !== currentUser?.id
+                allowFindingSelf ? !!user : user.id !== currentUser?.id
             )
             .filter((user) =>
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
             )
             .map((user) => user.handle);
-    }, [users, searchString]);
+    }, [users, currentUser?.favoriteUserIds, currentUser?.id, allowFindingSelf, searchString]);
 
     const allHandles = useMemo(() => {
-        return [...filteredUsers, ...Object.values(Factions)];
-    }, [filteredUsers]);
+        const filteredFactions = Object.values(Factions).filter((faction) =>
+            faction.toLowerCase().includes(searchString.toLowerCase())
+        );
+        return [...filteredUsers, ...filteredFactions];
+    }, [filteredUsers, searchString]);
 
     const handleSelection = (handle: string) => {
         if (mode === 'single') {
