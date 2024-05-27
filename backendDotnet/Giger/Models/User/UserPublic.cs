@@ -16,7 +16,7 @@ namespace Giger.Models.User
         [BsonRepresentation(BsonType.String)]
         public UserRoles[] Roles { get; set; } = [];
 
-        public Dictionary<string, string> AliasMap { get; set; } = [];
+        public Dictionary<string, decimal> AliasMap { get; set; } = [];
 
         public bool Active { get; set; }
 
