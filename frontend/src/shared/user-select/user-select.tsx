@@ -28,16 +28,12 @@ export const UserSelect: FC<IUserSelectProps> = ({
     });
 
     const filteredUsers = useMemo(() => {
-        const favUsers = allowFindingSelf
-            ? users
-            : users.filter((user) =>
-                  currentUser?.favoriteUserIds.includes(user.id)
-              );
-        const otherUsers = allowFindingSelf
-            ? users
-            : users.filter(
-                  (user) => !currentUser?.favoriteUserIds.includes(user.id)
-              );
+        const favUsers = users.filter((user) =>
+            currentUser?.favoriteUserIds.includes(user.id)
+        );
+        const otherUsers = users.filter(
+            (user) => !currentUser?.favoriteUserIds.includes(user.id)
+        );
         return [...favUsers, ...otherUsers]
             .filter((user) =>
                 allowFindingSelf ? !!user : user.id !== currentUser?.id
@@ -46,13 +42,21 @@ export const UserSelect: FC<IUserSelectProps> = ({
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
             )
             .map((user) => user.handle);
-    }, [users, currentUser?.favoriteUserIds, currentUser?.id, allowFindingSelf, searchString]);
+    }, [
+        users,
+        currentUser?.favoriteUserIds,
+        currentUser?.id,
+        allowFindingSelf,
+        searchString
+    ]);
 
     const allHandles = useMemo(() => {
         const filteredFactions = Object.values(Factions).filter((faction) =>
             faction.toLowerCase().includes(searchString.toLowerCase())
         );
-        return [...filteredUsers, ...filteredFactions];
+        return [...filteredUsers, ...filteredFactions].sort((a, b) =>
+            a.localeCompare(b)
+        );
     }, [filteredUsers, searchString]);
 
     const handleSelection = (handle: string) => {
