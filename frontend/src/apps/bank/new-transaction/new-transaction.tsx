@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useIntl } from 'react-intl';
 import { UserSelect } from '../../../shared/user-select/user-select';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -12,12 +12,13 @@ import './new-transaction.scss';
 export const NewTransaction: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
+    const { state } = useLocation();
     const [amount, setAmount] = useState<number>(0);
     const [lockButton, setLockButton] = useState<boolean>(false);
     const [transferTitle, setTransferTitle] = useState<string>('');
     const [selectedHandle, setSelectedHandle] = useState<string[] | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
-        AccountType.PRIVATE
+        (state?.defaultAccountType as AccountType) ?? AccountType.PRIVATE
     );
     const { accounts, sendTransfer, fetchAccounts } = useBankingService();
 
@@ -60,6 +61,7 @@ export const NewTransaction: FC = () => {
             />
             {hasBusinessAccount && (
                 <select
+                    value={selectedAccount}
                     onChange={(event) =>
                         setSelectedAccount(event.target.value as AccountType)
                     }

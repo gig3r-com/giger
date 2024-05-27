@@ -12,6 +12,7 @@ import { Factions } from '../../models/companies';
 export const UserSelect: FC<IUserSelectProps> = ({
     onSelection,
     mode = 'single',
+    allowFindingSelf = false,
     includeFactions
 }) => {
     const intl = useIntl();
@@ -27,22 +28,27 @@ export const UserSelect: FC<IUserSelectProps> = ({
     });
 
     const filteredUsers = useMemo(() => {
-        const favUsers = users.filter((user) =>
-            currentUser?.favoriteUserIds.includes(user.id)
-        );
-        const otherUsers = users.filter(
-            (user) => !currentUser?.favoriteUserIds.includes(user.id)
-        );
+        const favUsers = allowFindingSelf
+            ? users
+            : users.filter((user) =>
+                  currentUser?.favoriteUserIds.includes(user.id)
+              );
+        const otherUsers = allowFindingSelf
+            ? users
+            : users.filter(
+                  (user) => !currentUser?.favoriteUserIds.includes(user.id)
+              );
         return [...favUsers, ...otherUsers]
             .filter((user) => user.id !== currentUser?.id)
             .filter((user) =>
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
-            ).map(user => user.handle);
+            )
+            .map((user) => user.handle);
     }, [users, searchString]);
 
     const allHandles = useMemo(() => {
         return [...filteredUsers, ...Object.values(Factions)];
-    }, [filteredUsers])
+    }, [filteredUsers]);
 
     const handleSelection = (handle: string) => {
         if (mode === 'single') {
@@ -102,18 +108,20 @@ export const UserSelect: FC<IUserSelectProps> = ({
                 />
             </div>
             <div className="start-new-convo__users" ref={usersWrapper}>
-                {(includeFactions ? allHandles : filteredUsers).map((handle) => (
-                    <div key={handle} className="start-new-convo__user">
-                        {handle}
-                        <input
-                            id={handle + 'checkbox'}
-                            type="checkbox"
-                            onChange={() => handleSelection(handle)}
-                            checked={selectedHandles.includes(handle)}
-                        />
-                        <label htmlFor={handle + 'checkbox'}></label>
-                    </div>
-                ))}
+                {(includeFactions ? allHandles : filteredUsers).map(
+                    (handle) => (
+                        <div key={handle} className="start-new-convo__user">
+                            {handle}
+                            <input
+                                id={handle + 'checkbox'}
+                                type="checkbox"
+                                onChange={() => handleSelection(handle)}
+                                checked={selectedHandles.includes(handle)}
+                            />
+                            <label htmlFor={handle + 'checkbox'}></label>
+                        </div>
+                    )
+                )}
             </div>
         </>
     );
