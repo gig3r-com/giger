@@ -75,7 +75,7 @@ namespace Giger.Controllers
         [HttpGet("hacker")]
         public async Task<string> LoginHacker(string hackerName, string password)
         {
-            var hackerLoginData = await _loginService.GetByHackerNameAsync(hackerName);
+            var hackerLoginData = await _loginService.GetByUserNameAsync(hackerName);
             if (hackerLoginData == null)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;

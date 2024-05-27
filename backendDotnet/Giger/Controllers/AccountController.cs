@@ -271,17 +271,17 @@ namespace Giger.Controllers
             }
 
             // limits for gig transfers are not checked
-            if (!isGigTransfer)
-            {
-                var user = await _userService.GetByUserNameAsync(giverAcc.Owner);
-                if (user != null)
-                {
-                    if (newTransaction.Amount > _transferLimits[user.WealthLevel])
-                    {
-                        return BadRequest(Messages.ACCOUNT_TRANSFER_LIMIT_EXCEEDED);
-                    }
-                }
-            }
+            // if (!isGigTransfer)
+            // {
+            //     var user = await _userService.GetByUserNameAsync(giverAcc.Owner);
+            //     if (user != null)
+            //     {
+            //         if (newTransaction.Amount > _transferLimits[user.WealthLevel])
+            //         {
+            //             return BadRequest(Messages.ACCOUNT_TRANSFER_LIMIT_EXCEEDED);
+            //         }
+            //     }
+            // }
 
             //if (isGigTransfer)
             //{

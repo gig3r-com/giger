@@ -26,54 +26,61 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(userName))
                 return Unauthorized();
 
-            var obscuredData = await _obscuredDataService.GetByCodeAndUserAsync(revealCode, userName);
-            if (obscuredData is null)
+            var obscuredDatas = await _obscuredDataService.GetByCodeAndUserAsyncList(revealCode, userName);
+            if (!obscuredDatas.Any()){
                 return NotFound("Wrong code");
-
-            if (obscuredData.IsUsed)
-                return BadRequest("Code already used");
+            }
 
             var user = await _userService.GetByUserNameAsync(userName);
             if (user is null)
                 return NotFound("User not found");
 
             // if obscuredData.Username is null, then it is implant
-            if (string.IsNullOrEmpty(obscuredData.Username))
-            {
-                return await _implantsController.Install(user.Id, revealCode);
-            }
+            
 
-            var matchingObscurableData = GetObscurableInfoFromUserProfile(user, obscuredData.ObscurableId);
-            if (matchingObscurableData is null)
+            foreach (var obscuredData in obscuredDatas) 
             {
-                matchingObscurableData = await GetObscurableInfoGigs(user.Id, obscuredData.ObscurableId);
+                if (string.IsNullOrEmpty(obscuredData.Username))
+                {
+                    return await _implantsController.Install(user.Id, revealCode);
+                }
 
+                if (obscuredData.IsUsed)
+                    continue;
+                    //return BadRequest("Code already used");
+
+                var matchingObscurableData = GetObscurableInfoFromUserProfile(user, obscuredData.ObscurableId);
                 if (matchingObscurableData is null)
                 {
-                    return NotFound("Locked data did not find matching user record. Please contact AI Assistant.");
-                }
-            }
+                    matchingObscurableData = await GetObscurableInfoGigs(user.Id, obscuredData.ObscurableId);
 
-            var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
-            if (isCodeValid)
-            {
-                if (matchingObscurableData is Models.GigModels.Gig gig)
-                {
-                    if (gig.TakenById == user.Id)
-                        gig.IsRevealedByClient = true;
-                    else if (gig.AuthorId == user.Id)
-                        gig.IsRevealed = true;
+                    if (matchingObscurableData is null)
+                    {
+                        return NotFound("Locked data did not find matching user record. Please contact AI Assistant.");
+                    }
+                }
 
-                    await _gigService.UpdateAsync(gig);
-                }
-                else
+                var isCodeValid = obscuredData.ExpectedRevealCode == revealCode;
+                if (isCodeValid)
                 {
-                    matchingObscurableData.IsRevealed = true;
-                    await _userService.UpdateAsync(user);
+                    if (matchingObscurableData is Models.GigModels.Gig gig)
+                    {
+                        if (gig.TakenById == user.Id)
+                            gig.IsRevealedByClient = true;
+                        else if (gig.AuthorId == user.Id)
+                            gig.IsRevealed = true;
+
+                        await _gigService.UpdateAsync(gig);
+                    }
+                    else
+                    {
+                        matchingObscurableData.IsRevealed = true;
+                        await _userService.UpdateAsync(user);
+                    }
+                    obscuredData.IsUsed = true;
+                    await _obscuredDataService.UpdateAsync(obscuredData);
+                    return Ok(matchingObscurableData.GetType().Name);
                 }
-                obscuredData.IsUsed = true;
-                await _obscuredDataService.UpdateAsync(obscuredData);
-                return Ok(matchingObscurableData.GetType().Name);
             }
             return NotFound("Wrong code");
         }
