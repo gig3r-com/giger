@@ -58,7 +58,7 @@ export default class Log {
         addLines(notConnectedError);
         return;
       }
-      ServerConnectionService.checkCommand('log');lo
+      ServerConnectionService.checkCommand('log');
 
       setInputDisabled(true);
       const logs = await ApiService.getSubnetworksLogs(
