@@ -16,7 +16,7 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
         });
 
     const scrollerClassNames = classNames({
-        'cards__scroller': true,
+        cards__scroller: true,
         'cards__scroller--double': accounts.length > 1
     });
 
@@ -47,14 +47,31 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
         };
     }, []);
 
+    const displayedAccountNumber = (accountNumber: string) => {
+        const base = Array(16).fill('*');
+
+        Array.from(accountNumber).reverse().forEach((char, index) => {
+            base[base.length - 1 - index] = char;
+        });
+
+        const splitBase = [
+            base.slice(0, 4),
+            ' ',
+            base.slice(4, 8),
+            ' ',
+            base.slice(8, 12),
+            ' ',
+            base.slice(12, 16)
+        ];
+
+        return splitBase.flat().join('');
+    };
+
     return (
         <article className="cards">
             <div className={scrollerClassNames} ref={scrollerRef}>
                 {accounts.map((account) => (
-                    <div
-                        className='cards__card'
-                        key={account.id}
-                    >
+                    <div className="cards__card" key={account.id}>
                         <div className={cardBgClassNames(account.type)}>
                             <span className="cards__account-type">
                                 <MemoizedFormattedMessage
@@ -62,7 +79,7 @@ export const Cards: FC<ICardsProps> = ({ accounts, onAccountChange }) => {
                                 />
                             </span>
                             <span className="cards__number">
-                                **** **** **** {account.accountNumber.slice(-4)}
+                                {displayedAccountNumber(account.accountNumber)}
                             </span>
                         </div>
                     </div>
