@@ -85,12 +85,12 @@ export default class Transfer {
           `Account ${fromAccount.accountNumber} is a business account, provide owner user handle:`,
         );
       }
-      await checkAccounts(fromAccount, toAccount, isBusinessAccount);
+      await checkAccounts(fromAccount, toAccount, transactionData);
       await checkLimits();
       const callback = sendTransaction.bind(this);
       await startTransaction(callback);
     } catch (err) {
-      console.log({ err2: err })
+      console.log({ err2: err });
       setInputDisabled(false);
       addLines(getErrorMessage(err));
     }
@@ -108,22 +108,22 @@ export default class Transfer {
 
     async function sendTransaction() {
       // try {
-        await ApiService.sendTransaction(transactionData);
-        if (!hackerIsOwner) {
-          await ApiService.addHackLog({
-            targetUserId: fromAccount.ownerId,
-            targetUserName: fromAccount.owner,
-          });
-        } else {
-          // const rest = localStorage.getItem('transfer-limits') | {};
-          // localStorage.setItem(
-          //   'transfer-limits',
-          //   JSON.stringify({
-          //     ...rest,
-          //     [fromAccount.accountNumber]: moment().toISOString(),
-          //   }),
-          // );
-        }
+      await ApiService.sendTransaction(transactionData);
+      if (!hackerIsOwner) {
+        await ApiService.addHackLog({
+          targetUserId: fromAccount.ownerId,
+          targetUserName: fromAccount.owner,
+        });
+      } else {
+        // const rest = localStorage.getItem('transfer-limits') | {};
+        // localStorage.setItem(
+        //   'transfer-limits',
+        //   JSON.stringify({
+        //     ...rest,
+        //     [fromAccount.accountNumber]: moment().toISOString(),
+        //   }),
+        // );
+      }
       // } catch (err) {
       //   const error = err?.response?.data;
       //   console.log({error})
@@ -136,10 +136,13 @@ export default class Transfer {
     }
 
     async function checkLimits() {
+      const ownerHandle = transactionData.orderingParty
+        ? transactionData.orderingParty
+        : fromAccount.owner;
       const timeLimits = localStorage.getItem('transfer-limits') || {};
       const timeLimit = timeLimits[fromAccount.accountNumber] | '';
       const fromProfile = await ApiService.getProfileByHandle(
-        fromAccount.owner,
+        ownerHandle,
       );
       const wealth = fromProfile.wealthLevel.toLowerCase();
 
@@ -148,7 +151,7 @@ export default class Transfer {
           `<span class="secondary-color">Error:</span> Limit ${transferLimits[wealth]} was exceeded`,
         );
       }
-console.log({ timeLimits, timeLimit, fromProfile, wealth })
+
       if (timeLimit) {
         const timeMoment = moment(timeLimit);
         const now = moment();
@@ -165,6 +168,7 @@ console.log({ timeLimits, timeLimit, fromProfile, wealth })
     }
 
     async function checkAccounts(fromAccount, toAccount, transactionData) {
+      let orderingUser;
       if (!fromAccount) {
         throw new Error(
           `<span class="secondary-color">Error:</span>: Wrong FROM account number`,
@@ -176,25 +180,15 @@ console.log({ timeLimits, timeLimit, fromProfile, wealth })
         );
       }
       const loginUserData = getLoginUserData();
-      if (fromAccount.owner === loginUserData.handle) {
+      const ownerHandle = transactionData.orderingParty
+        ? transactionData.orderingParty
+        : fromAccount.owner;
+      if (ownerHandle === loginUserData.handle) {
         hackerIsOwner = true;
         return;
       }
-      if (ServerConnectionService.isConnected) {
-        const serverUsers =
-          ServerConnectionService.connectedSubnetwork?.users || [];
-        if (!serverUsers.includes(fromAccount.owner)) {
-          throw new Error(
-            `<span class="secondary-color">Error:</span>: You don't have access to this account`,
-          );
-        }
-      } else {
-        throw new Error(
-          `<span class="secondary-color">Error:</span>: You don't have access to this account`,
-        );
-      }
       if (transactionData.orderingParty) {
-        const orderingUser = await ApiService.getUserProfile(
+        orderingUser = await ApiService.getUserProfile(
           transactionData.orderingParty,
         );
 
@@ -213,6 +207,20 @@ console.log({ timeLimits, timeLimit, fromProfile, wealth })
             `<span class="secondary-color">Error:</span>: You don't have access to this account'`,
           );
         }
+      }
+      if (ServerConnectionService.isConnected) {
+        const serverUsers =
+          ServerConnectionService.connectedSubnetwork?.users || [];
+
+        if (!serverUsers.includes(ownerHandle)) {
+          throw new Error(
+            `<span class="secondary-color">Error:</span>: You don't have access to this account`,
+          );
+        }
+      } else {
+        throw new Error(
+          `<span class="secondary-color">Error:</span>: You don't have access to this account`,
+        );
       }
       if (transactionData.amount > fromAccount.balance) {
         throw new Error(
