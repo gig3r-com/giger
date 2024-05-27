@@ -635,7 +635,7 @@ export const AP: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Access points`,
   `In megablock there are two types of Access points: Red and Green, some subnetworks require a connection to specyfic Access Point.`,
-  'Red Access Points: OMG-AP, SynthPulse-AP, L0-Maint-AP',
-  'Green: Access Points: L3-Maint-AP, Motel-AP, DropoffService-AP',
+  '<span class="secondary-color">Red</span> Access Points: <span class="secondary-color">OMG-AP</span>, <span class="secondary-color">SynthPulse-AP</span>, <span class="secondary-color">L0-Maint-AP</span>',
+  '<span class="secondary-color">Green</span>: Access Points: <span class="secondary-color">L3-Maint-AP</span>, <span class="secondary-color">Motel-AP</span>, <span class="secondary-color">DropoffService-AP</span>',
   '',
 ];
