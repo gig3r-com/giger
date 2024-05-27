@@ -28,14 +28,10 @@ export const UserSelect: FC<IUserSelectProps> = ({
     });
 
     const filteredUsers = useMemo(() => {
-        const favUsers = allowFindingSelf
-            ? users
-            : users.filter((user) =>
+        const favUsers = users.filter((user) =>
                   currentUser?.favoriteUserIds.includes(user.id)
               );
-        const otherUsers = allowFindingSelf
-            ? users
-            : users.filter(
+        const otherUsers = users.filter(
                   (user) => !currentUser?.favoriteUserIds.includes(user.id)
               );
         return [...favUsers, ...otherUsers]
