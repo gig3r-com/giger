@@ -29,19 +29,19 @@ export function useMessagesService() {
     const dispatch = useDispatch();
     const intl = useIntl();
     const { api } = useApiService();
-    const { sendMessage } =
-        useWebSocketContext() as IWebsocketContext;
+    const { sendMessage } = useWebSocketContext() as IWebsocketContext;
     const { displayToast } = useToastService();
     const { currentUser } = useUserService();
     const [fetchingConvo, setFetchingConvo] = useState(false);
     const gigConversations = useSelector(selectGigConversations);
     const unreadMessages = useSelector(selectUnreadMessages);
-    const unreadGigMessages = useSelector(selectUnreadGigMessages)
+    const unreadGigMessages = useSelector(selectUnreadGigMessages);
 
-    const createMessage: (text: string, senderHandle?: string) => IMessage = (
-        text,
-        senderHandle
-    ) => {
+    const createMessage: (
+        text: string,
+        senderHandle?: string,
+        anonymize?: boolean
+    ) => IMessage = (text, senderHandle) => {
         return {
             id: uuidv4(),
             date: dayjs().add(100, 'year').toISOString(),
@@ -55,29 +55,30 @@ export function useMessagesService() {
         id?: string,
         anonymize?: boolean
     ) => Promise<string> = (participants, id, anonymize) =>
-            new Promise((resolve, reject) => {
-                const convoId = id ?? uuidv4();
-                const convo: IConversation = {
-                    id: convoId,
-                    anonymizedUsers: anonymize ? [currentUser!.handle] : [],
-                    gigConversation: false,
-                    participants,
-                    messages: [...createInitialMessages(participants)]
-                };
+        new Promise((resolve, reject) => {
+            const convoId = id ?? uuidv4();
+            const anonymizedUsers = anonymize ? [currentUser!.handle] : [];
+            const convo: IConversation = {
+                id: convoId,
+                anonymizedUsers,
+                gigConversation: false,
+                participants,
+                messages: [...createInitialMessages(participants, anonymize)]
+            };
 
-                api.url('Conversation')
-                    .post(convo)
-                    .json<IConversation>()
-                    .catch(() => reject())
-                    .then((conversation) => {
-                        if (!conversation) {
-                            reject();
-                            return;
-                        }
-                        dispatch(addConversation(conversation));
-                        resolve(conversation.id);
-                    });
-            });
+            api.url('Conversation')
+                .post(convo)
+                .json<IConversation>()
+                .catch(() => reject())
+                .then((conversation) => {
+                    if (!conversation) {
+                        reject();
+                        return;
+                    }
+                    dispatch(addConversation(conversation));
+                    resolve(conversation.id);
+                });
+        });
 
     const getGigConvo = async (gigId: string): Promise<IConversation> => {
         return await api
@@ -85,11 +86,18 @@ export function useMessagesService() {
             .json<IConversation>();
     };
 
-    const createInitialMessages = (participants: string[]): IMessage[] => {
+    const createInitialMessages = (
+        participants: string[],
+        anonymize?: boolean
+    ): IMessage[] => {
         const initialMessages: IMessage[] = [];
         participants.forEach((participant) => {
+            const handle =
+                anonymize && participant === currentUser?.handle
+                    ? intl.formatMessage({ id: 'ANONYMOUS' })
+                    : participant;
             const message = createMessage(
-                `<@${participant} ${intl.formatMessage({
+                `<@${handle} ${intl.formatMessage({
                     id: 'ENTERED_THE_CHAT'
                 })}>`,
                 participant
@@ -161,7 +169,7 @@ export function useMessagesService() {
 
     const gigConvoHasUnreadMessages = (convoId: string): boolean => {
         return unreadGigMessages[convoId]?.length > 0;
-    }
+    };
 
     const updateConversationHashes = (
         hashes: Record<string, number>,

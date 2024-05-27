@@ -1,6 +1,8 @@
 import { FC, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
+import dayjs from 'dayjs';
+import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 import { IConversation } from '../../../models/message';
 import { Conversation } from '../../../shared/components/messaging/conversation/conversation';
@@ -12,12 +14,12 @@ import { useMessagesService } from '../../../shared/services/messages.service';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 
 import './convo-snippet.scss';
-import dayjs from 'dayjs';
 
 export const ConvoSnippet: FC<{
     convo: IConversation;
     delayMultiplier: number;
 }> = ({ convo, delayMultiplier }) => {
+    const intl = useIntl();
     const { chatId } = useParams();
     const { generateAnimation } = useStandardizedAnimation();
     const { convoHasUnreadMessages } = useMessagesService();
@@ -44,9 +46,13 @@ export const ConvoSnippet: FC<{
     }, [currentUser, convo.participantsAllowedToSendMsgs]);
 
     const otherParty = () => {
-        const others = convo.participants.filter(
-            (participant) => participant !== currentUser?.handle
-        );
+        const others = convo.participants
+            .filter((participant) => participant !== currentUser?.handle)
+            .map((participant) =>
+                convo.anonymizedUsers.includes(participant)
+                    ? intl.formatMessage({ id: 'ANONYMOUS' })
+                    : participant
+            );
 
         if (others.length === 1) {
             return others[0];
@@ -62,7 +68,7 @@ export const ConvoSnippet: FC<{
 
         if (diff === 0) {
             return date.format('HH:mm:ss');
-        } 
+        }
         if (diff < 3) {
             return `${now.diff(date, 'hours')} hours ago`;
         }
