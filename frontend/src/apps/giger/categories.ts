@@ -16,32 +16,32 @@ export const categories: IGigCategory[] = [
             {
                 type: GigSubcategoryNames.ITEM_ACQUISITION,
                 minPayout: 100,
-                maxPayout: 1200
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.ANDROID_ACQUISITION,
                 minPayout: 250,
-                maxPayout: 1750
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.DEBT_COLLECTION,
                 minPayout: 100,
-                maxPayout: 6000
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.INTIMIDATION,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.KIDNAPPING,
                 minPayout: 1000,
-                maxPayout: 2000
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.BODYGUARD,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.HIT,
@@ -57,32 +57,32 @@ export const categories: IGigCategory[] = [
             {
                 type: GigSubcategoryNames.INTEL,
                 minPayout: 100,
-                maxPayout: 1500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.BANK_ACCOUNT_MANIPULATION,
                 minPayout: 1000,
-                maxPayout: 6000
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.SPOOFING,
                 minPayout: 400,
-                maxPayout: 2000
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.SECURITY,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.ANDROID_HIJACK,
                 minPayout: 250,
-                maxPayout: 1750
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.MINDEXPLOIT,
                 minPayout: 250,
-                maxPayout: 1750
+                maxPayout: 15000
             }
         ]
     },
@@ -94,18 +94,18 @@ export const categories: IGigCategory[] = [
             {
                 type: GigSubcategoryNames.DELIVERY,
                 minPayout: 40,
-                maxPayout: 250
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.GUNS_AND_AMMO,
                 minPayout: 10,
-                maxPayout: 1500
+                maxPayout: 15000
             },
             { type: GigSubcategoryNames.DRUGS, minPayout: 10, maxPayout: 200 },
             {
                 type: GigSubcategoryNames.OTHER_MERCH,
                 minPayout: 10,
-                maxPayout: 500
+                maxPayout: 15000
             }
         ]
     },
@@ -116,38 +116,38 @@ export const categories: IGigCategory[] = [
             {
                 type: GigSubcategoryNames.ENTERTAINMENT,
                 minPayout: 30,
-                maxPayout: 1500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.LOVER_EXPERIENCE,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.SEX_DOLL,
                 minPayout: 400,
-                maxPayout: 1500
+                maxPayout: 15000
             },
             { type: GigSubcategoryNames.QUICKIE, minPayout: 30, maxPayout: 50 },
             {
                 type: GigSubcategoryNames.FIRST_AID,
                 minPayout: 200,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.CYBERWARE,
                 minPayout: 400,
-                maxPayout: 7000
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.MEDEVAC,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             },
             {
                 type: GigSubcategoryNames.RENTING_LOCATION,
                 minPayout: 100,
-                maxPayout: 500
+                maxPayout: 15000
             }
         ]
     }
