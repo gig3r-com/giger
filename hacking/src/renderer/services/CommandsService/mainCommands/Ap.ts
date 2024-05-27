@@ -17,8 +17,8 @@ export default class Ap {
     }
 
     if (parsedCommand[0] === 'green') {
-      setAccessPoint('green');
-      ServerConnectionService.accessPoint = 'green';
+      setAccessPoint('Green-AP');
+      ServerConnectionService.accessPoint = { type: 'green' };
       addLines([
         `<span class="accent-color-2">Green</span> access point engaged.`,
       ]);
@@ -26,8 +26,8 @@ export default class Ap {
     }
 
     if (parsedCommand[0] === 'red') {
-      setAccessPoint('red');
-      ServerConnectionService.accessPoint = 'red';
+      setAccessPoint('Red-AP');
+      ServerConnectionService.accessPoint = { type: 'red' };
       addLines([
         `<span class="accent-color-2">Red</span> access point engaged.`,
       ]);

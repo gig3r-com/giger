@@ -38,6 +38,7 @@ export default function useAccessPointHandler({ setAccessPoint }) {
         }
         setAccessPoint(foundDevices[0].accessPoint?.name);
         ServerConnectionService.accessPoint = foundDevices[0].accessPoint;
+        console.log('test', foundDevices[0].accessPoint);
       } else {
         ServerConnectionService.disconnect();
         setAccessPoint(null);
