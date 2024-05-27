@@ -396,16 +396,77 @@ namespace Giger.Controllers
 
         private async Task UpdateGigReputation(Gig? gig, bool isPositive)
         {
+            var cat = gig.Category.ToString();
             var providerUser = await _userService.GetAsync(gig.TakenById);
-            if (isPositive)
+            if (providerUser != null)
             {
-                providerUser.GigReputation[gig.Category.ToString()] += gig.Payout;
+                if (!providerUser.AliasMap.ContainsKey(cat))
+                {
+                    var rep = providerUser.GigReputation[cat];
+                    switch (rep)
+                    {
+                        case 0:
+                            providerUser.AliasMap[cat] = ReputationLevel[0];
+                            break;
+                        case 1:
+                            providerUser.AliasMap[cat] = ReputationLevel[1];
+                            break;
+                        case 2:
+                            providerUser.AliasMap[cat] = ReputationLevel[2];
+                            break;
+                        case 3:
+                            providerUser.AliasMap[cat] = ReputationLevel[3];
+                            break;
+                        case 4:
+                            providerUser.AliasMap[cat] = ReputationLevel[4];
+                            break;
+                        case 5:
+                            providerUser.AliasMap[cat] = ReputationLevel[5];
+                            break;
+                        default:
+                            providerUser.AliasMap[cat] = providerUser.GigReputation[cat];
+                            break;
+                    }
+                }
+
+                if (isPositive)
+                {
+                    providerUser.AliasMap[cat] += gig.Payout;
+                }
+                else
+                {
+                    providerUser.AliasMap[cat] -= gig.Payout;
+                }
+
+                if (providerUser.AliasMap[cat] >= ReputationLevel[5])
+                {
+                    providerUser.GigReputation[cat] = 5;
+                }
+                else if (providerUser.AliasMap[cat] >= ReputationLevel[4])
+                {
+                    providerUser.GigReputation[cat] = 4;
+                }
+                else if (providerUser.AliasMap[cat] >= ReputationLevel[3])
+                {
+                    providerUser.GigReputation[cat] = 3;
+                }
+                else if (providerUser.AliasMap[cat] >= ReputationLevel[2])
+                {
+                    providerUser.GigReputation[cat] = 2;
+                }
+                else if (providerUser.AliasMap[cat] >= ReputationLevel[1])
+                {
+                    providerUser.GigReputation[cat] = 1;
+                }
+                else if (providerUser.AliasMap[cat] <= ReputationLevel[0])
+                {
+                    providerUser.GigReputation[cat] = 0;
+                }
+
+
+
+                _userService.UpdateAsync(providerUser);
             }
-            else
-            {
-                providerUser.GigReputation[gig.Category.ToString()] -= gig.Payout;
-            }
-            _userService.UpdateAsync(providerUser);
         }
 
         [HttpDelete("{id}/remove")]
@@ -721,6 +782,16 @@ namespace Giger.Controllers
 
             await _accountController.CreateTransaction(trx, true);
         }
+
+        public Dictionary<int, int> ReputationLevel = new()
+        {
+            {0, 0 },
+            {1, 1 },
+            {2, 2001 },
+            {3, 5001 },
+            {4, 10001 },
+            {5, 20001 },
+        };
 
         private void ObscureGig(Gig gig, string requestSenderId)
         {
