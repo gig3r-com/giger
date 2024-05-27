@@ -98,6 +98,9 @@ export default class Doc {
     network: DOCUMENTATIONS.NETWORK,
     subnetwork: DOCUMENTATIONS.SUBNETWORK,
     netops: DOCUMENTATIONS.NETOPS,
+    ap: DOCUMENTATIONS.AP,
+    accesspoint: DOCUMENTATIONS.AP,
+    accesspoints: DOCUMENTATIONS.AP,
   };
 }
 

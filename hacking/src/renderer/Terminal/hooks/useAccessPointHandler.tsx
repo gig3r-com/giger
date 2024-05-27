@@ -32,6 +32,7 @@ export default function useAccessPointHandler({ setAccessPoint }) {
           }
         });
         if (!foundDevices.length) {
+          ServerConnectionService.disconnect();
           setAccessPoint(null);
           ServerConnectionService.accessPoint = null;
         }

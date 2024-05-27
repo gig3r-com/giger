@@ -303,12 +303,14 @@ export const GIGER_GATE: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> GIGER_GATE`,
   `Type: <span class="secondary-color">OTHER</span>`,
+  `This program works mostly automatic (for decrypting anonymus gigs)`,
   '',
 ];
 export const MONITOR: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> Monitor`,
   `Type: <span class="secondary-color">OTHER</span>`,
+  `Use <span class="accent-color-2">run monitor</span> tu enable seeing ice targeting you during a breach.`,
   '',
 ];
 export const BLUE_MIRROR: () => string[] = () => [
@@ -626,5 +628,14 @@ export const NETOPS: () => string[] = () => [
   '',
   `<span class="secondary-color">Documentation</span> NetOps`,
   `A person taking care of the network, with slightly greater possibilities of operating within the network.`,
+  '',
+];
+
+export const AP: () => string[] = () => [
+  '',
+  `<span class="secondary-color">Documentation</span> Access points`,
+  `In megablock there are two types of Access points: Red and Green, some subnetworks require a connection to specyfic Access Point.`,
+  'Red Access Points: XX, XX, XX',
+  'Green: Access Points: XX, XX, XX',
   '',
 ];

@@ -24,6 +24,9 @@ export function getAccountMessage(account: BankAccountType): string[] {
     return `<tr>
         <td>${transaction.title}</td>
         <td>${transaction.amount}</td>
+        <td>FROM: ${transaction.fromUser}</td>
+        <td>TO: ${transaction.toUser}</td>
+        <td>Ordered by: ${transaction.orderingParty ? transaction.orderingParty : 'not applicable'}</td>
         <td><span class="accent-color">${transaction.date}</span></td>
         </tr>`;
   }

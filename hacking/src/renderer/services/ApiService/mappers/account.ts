@@ -29,7 +29,10 @@ export function mapTransaction(data, accountNumber: number) {
   return {
     id: data.id,
     title: data.title,
+    fromUser: data.fromUser,
+    toUser: data.toUser,
     amount: isIncoming ? String(data.amount) : `-${data.amount}`,
-    date: moment(data.date).format('DD/MM HH:mm:ss'),
+    date: moment(data.timestamp).format('DD/MM HH:mm:ss'),
+    orderingParty: data.orderingParty,
   };
 }

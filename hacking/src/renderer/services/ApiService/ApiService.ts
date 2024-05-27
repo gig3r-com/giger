@@ -22,6 +22,8 @@ export default class ApiService {
       // gigerUrl: 'http://localhost:9090',
       // gigerApiUrl: 'http://192.168.50.100:9090/api',
       // gigerUrl: 'http://192.168.50.100:9090',
+      // gigerApiUrl: 'http://192.168.39.237/api',
+      // gigerUrl: 'http://192.168.39.237',
       // gigerApiUrl: 'https://dev.gig3r.com/api',
       // gigerUrl: 'https://dev.gig3r.com',
       // gigerApiUrl: 'https://app.gig3r.com/api',
@@ -53,6 +55,7 @@ export default class ApiService {
     };
   }
 
+  public ghostProtocolOn: boolean = false;
   private isConfigLoaded: boolean = false;
 
   private authToken = null;

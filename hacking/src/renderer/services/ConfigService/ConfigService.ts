@@ -150,6 +150,13 @@ export default class ConfigService {
     return exploit[0];
   }
 
+  async getInstallExploit(exploitName: string): ExploitType | null {
+    await this.loadMain();
+    const exploit = this.exploits[exploitName];
+    if (!exploit) return null;
+    return exploit;
+  }
+
   async getDefenceProgram(programName: string): ProgramType | null {
     await this.loadMain();
     const program = this.defencePrograms[programName];

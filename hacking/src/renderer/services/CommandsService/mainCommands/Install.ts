@@ -54,6 +54,7 @@ export default class Install {
       }
 
       const { program, isDefence } = await this.getProgramByCode(programCode);
+      console.log({ program })
       if (!program) {
         addLines(noProgramError);
         setInputDisabled(false);
@@ -285,7 +286,7 @@ export default class Install {
     let program;
 
     try {
-      exploit = await ConfigService.getExploit(programName);
+      exploit = await ConfigService.getInstallExploit(programName);
     } catch (e) {
       console.log(e);
     }

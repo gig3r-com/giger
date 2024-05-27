@@ -17,6 +17,7 @@ import {
   ReadMsg,
   SendMsg,
   Gig,
+  Ap,
 } from './mainCommands';
 import {
   getErrorMessage,
@@ -73,6 +74,7 @@ export default class CommandsService {
     readmsg: new ReadMsg(this),
     sendmsg: new SendMsg(this),
     gig: new Gig(this),
+    ap: new Ap(this),
   };
 
   public activeCommand: string = '';
@@ -82,6 +84,8 @@ export default class CommandsService {
   public addErrors: ((lines: string[]) => void) | undefined;
 
   public setLines: ((lines: string[]) => void) | undefined;
+
+  public setAccessPoint;
 
   public parsedCommand: string[] = [];
 
@@ -137,6 +141,7 @@ export default class CommandsService {
     logout,
     refreshPrefix,
     removeLastLine,
+    setAccessPoint,
   }: InitType) {
     this.addLines = addLines.bind(this);
     this.addErrors = addErrors.bind(this);
@@ -145,6 +150,7 @@ export default class CommandsService {
     this.logout = logout.bind(this);
     this.refreshPrefix = refreshPrefix.bind(this);
     this.removeLastLine = removeLastLine.bind(this);
+    this.setAccessPoint = setAccessPoint.bind(this);
   }
 
   executeCommand(command: string) {

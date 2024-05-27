@@ -87,6 +87,7 @@ export default function Terminal() {
       logout,
       refreshPrefix,
       removeLastLine,
+      setAccessPoint,
     });
     window.config.services = {
       ApiService,
