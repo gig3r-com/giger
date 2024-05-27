@@ -17,6 +17,7 @@ import { Factions } from '../../models/companies';
 import { useApiService } from './api.service';
 import { useIntl } from 'react-intl';
 import { selectTransferHashes } from '../../store/bank.selectors';
+import { useToastService } from './toast.service';
 
 type Holder = {
     id: string;
@@ -27,6 +28,7 @@ export function useBankingService() {
     const intl = useIntl();
     const dispatch = useDispatch();
     const { api } = useApiService();
+    const { displayToast } = useToastService();
     const currentPrivateBalance = useSelector(
         (state: RootState) => state.bank.account?.balance ?? 0
     );
@@ -93,8 +95,11 @@ export function useBankingService() {
         api.url('Account/transaction')
             .post(transaction)
             .res(() => {
-                fetchAccounts();
-            });
+                setTimeout(() => fetchAccounts(), 2500);
+            })
+            .catch(() =>
+                displayToast(intl.formatMessage({ id: 'TRANSFER_FAILED' }))
+            );
     };
 
     const getAccountHolderName = (handle: string): string => {

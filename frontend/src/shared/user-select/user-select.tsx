@@ -39,7 +39,9 @@ export const UserSelect: FC<IUserSelectProps> = ({
                   (user) => !currentUser?.favoriteUserIds.includes(user.id)
               );
         return [...favUsers, ...otherUsers]
-            .filter((user) => user.id !== currentUser?.id)
+            .filter((user) =>
+                allowFindingSelf ? user : user.id !== currentUser?.id
+            )
             .filter((user) =>
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
             )
