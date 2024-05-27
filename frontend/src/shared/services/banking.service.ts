@@ -74,9 +74,7 @@ export function useBankingService() {
 
         const transaction: ITransaction = {
             from: account.accountNumber,
-            to:
-                receiverAccount[fromAccount === 'PRIVATE' ? 0 : 1]
-                    ?.accountNumber ?? receiverAccount[0].accountNumber,
+            to: receiverAccount[0]?.accountNumber,
             fromUser:
                 (fromAccount === 'PRIVATE'
                     ? currentUser?.handle

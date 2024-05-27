@@ -34,7 +34,7 @@ export const Bank: FC = () => {
                 account?.type === type
         });
 
-    const transfer = () => navigate('/bank/new');
+    const transfer = () => navigate('/bank/new', { state: { defaultAccountType: account?.type } });
 
     const cardAccounts = useMemo(() => {
         return Object.values(accounts).filter(
