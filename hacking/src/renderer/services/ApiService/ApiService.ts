@@ -24,12 +24,12 @@ export default class ApiService {
       // gigerUrl: 'http://192.168.50.100:9090',
       // gigerApiUrl: 'http://192.168.39.237/api',
       // gigerUrl: 'http://192.168.39.237',
-      // gigerApiUrl: 'https://dev.gig3r.com/api',
-      // gigerUrl: 'https://dev.gig3r.com',
+      gigerApiUrl: 'https://dev.gig3r.com/api',
+      gigerUrl: 'https://dev.gig3r.com',
       // gigerApiUrl: 'https://app.gig3r.com/api',
       // gigerUrl: 'https://app.gig3r.com',
-      gigerApiUrl: 'http://app.localdomain/api',
-      gigerUrl: 'http://app.localdomain',
+      // gigerApiUrl: 'http://app.localdomain/api',
+      // gigerUrl: 'http://app.localdomain',
     };
     window?.electron?.ipcRenderer?.on('config-app', (data) => {
       const config = {};
