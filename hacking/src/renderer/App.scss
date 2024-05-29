@@ -81,10 +81,10 @@ body {
   text-indent: 0;
 }
 
-input {
+input, textarea {
   background: black;
   color: $base-text-color;
-  border: 0;
+  border: 1px solid white;
   padding: 0 0 0 4px;
   font-size: 18px;
   width: 100%;

@@ -134,35 +134,12 @@ export default function useKeyHandler({
     }
   };
 
-  const f9 = async (event: KeyboardEvent) => {
-    // getOwned
-    const id = '5e25cc44-2278-4050-b59d-006f2bcaf8a6';
-    // await ApiService.addFirewallToSubnetwork(id, 'ENCRYPT_GUARD');
-    await ApiService.addFirewallToSubnetwork(id, 'FIREWALL_X');
-    // await ApiService.addFirewallToSubnetwork(id, 'VIRTUAL_VAULT');
-
-    // await ApiService.addSystemToSubnetwork(id, 'FORCE_FIELD');
-    await ApiService.addSystemToSubnetwork(id, 'EVIL_TWIN');
-    // await ApiService.addSystemToSubnetwork(id, 'JOAN_OF_ARC');
-
-    // await ApiService.addICEToSubnetwork(id, 'CLEANER');
-    // await ApiService.addICEToSubnetwork(id, 'PING1');
-    await ApiService.addICEToSubnetwork(id, 'PING2');
-    // await ApiService.addICEToSubnetwork(id, 'PING3');
-    // await ApiService.addICEToSubnetwork(id, 'BOOST');
-    // await ApiService.addICEToSubnetwork(id, 'KICKER');
-    // await ApiService.addICEToSubnetwork(id, 'BLOCKER');
-    await ApiService.addICEToSubnetwork(id, 'LOCKER');
-    // await ApiService.addICEToSubnetwork(id, 'KILLER');
-  };
-
   const keyMap: { [key: number]: (event: KeyboardEvent) => void } = {
     9: tab,
     13: enter,
     32: space,
     38: upArrow,
     67: c,
-    // 120: f9,
   };
 
   const handleKey = (event: KeyboardEvent) => {

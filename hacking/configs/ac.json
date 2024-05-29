@@ -1,30 +1,17 @@
 {
   "resetTimeInS": 500,
   "defencePrograms": 1,
-  "exploits": 1,
+  "exploits": 2,
   "testConfig": 1,
-  "isHackingEnabled": false,
+  "isHackingEnabled": true,
   "isTestHackingEnabled": true,
   "ac": [
     {
       "accessPoint": {
-        "name": "Motel-AP",
-        "type": "green",
-        "place": "motel",
+        "name": "Black-AP",
+        "type": "black",
+        "place": "test",
         "number": 1
-      },
-      "device": {
-        "manufacturerName": "USB",
-        "productId": 11303,
-        "productName": "USB Keyboard",
-        "vendorId": 6700
-      }
-    }, {
-      "accessPoint": {
-        "name": "L3-Maint-AP",
-        "type": "green",
-        "place": "combat zone",
-        "number": 2
       },
       "device": {
         "manufacturerName": "Logitech",
@@ -35,49 +22,77 @@
     },
     {
       "accessPoint": {
-        "name": "SynthPulse-AP",
+        "name": "Green-AP",
         "type": "green",
+        "place": "motel",
+        "number": 1
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": 33032,
+        "productName": "",
+        "vendorId": 4292
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "Green-AP",
+        "type": "green",
+        "place": "combat zone",
+        "number": 2
+      },
+      "device": {
+        "manufacturerName": "",
+        "productId": 33032,
+        "productName": "",
+        "vendorId": 4292
+      }
+    },
+    {
+      "accessPoint": {
+        "name": "Red-AP",
+        "type": "red",
         "place": "SynthPulse",
         "number": 3
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
-        "productName": "",
-        "vendorId": null
+        "productId": 14373,
+        "productName": " USB OPTICAL MOUSE",
+        "vendorId": 0
       }
     },
     {
       "accessPoint": {
-        "name": "L0-Maint-AP",
+        "name": "Red-AP",
         "type": "red",
         "place": "",
         "number": 4
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
-        "productName": "",
-        "vendorId": null
+        "productId": 14373,
+        "productName": " USB OPTICAL MOUSE",
+        "vendorId": 0
       }
     },
     {
       "accessPoint": {
-        "name": "DropoffService-AP",
-        "type": "red",
+        "name": "Green-AP",
+        "type": "green",
         "place": "",
         "number": 5
       },
       "device": {
         "manufacturerName": "",
-        "productId": null,
+        "productId": 33032,
         "productName": "",
-        "vendorId": null
+        "vendorId": 4292
       }
     },
     {
       "accessPoint": {
-        "name": "OMG-AP",
+        "name": "Red-AP",
         "type": "red",
         "place": "",
         "number": 6

@@ -1,3 +1,4 @@
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { ServerConnectionService } from '../../index';
 import CommandsServiceType from '../CommandsService';
 
@@ -15,6 +16,35 @@ export default class Ap {
       fireInitError();
       return;
     }
+    try {
+      switch (parsedCommand[0]) {
+        case 'start': {
+          console.log('start');
+          const connection = new HubConnectionBuilder()
+            .withUrl('http://localhost:5058/chat')
+            .configureLogging(LogLevel.Information)
+            .build();
+
+          connection.on('ReceiveMessage', (message) => {
+            console.log(message);
+          });
+
+          connection.on('ReceiveConnectedUsers', (users) => {
+            console.log(users);
+          });
+
+          connection.onclose((e) => {
+            // setConnection(undefined);
+            // setMessages([]);
+            // setUsers([]);
+          });
+
+          await connection.start();
+          // await connection.invoke("JoinRoom", userName);
+          break;
+        }
+      }
+    } catch (e) {}
 
     if (parsedCommand[0] === 'green') {
       setAccessPoint('Green-AP');
