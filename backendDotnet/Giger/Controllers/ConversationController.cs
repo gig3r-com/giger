@@ -25,13 +25,28 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
+            bool isAuthorized = false;
+            foreach (var participant in conversation.Participants)
+            {
+                if (IsAuthorizedNotHacker(participant))
+                {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            if (!isAuthorized)
+            {
+                Unauthorized();
+            }
+
             return conversation;
         }
 
         [HttpGet("byParticipant")]
         public async Task<ActionResult<List<Conversation>>> GetAllConversationOfParticipant(string participant)
         {
-            if (!IsAuthorized(participant))
+            if (!IsAuthorizedNotHacker(participant))
             {
                 Unauthorized();
             }

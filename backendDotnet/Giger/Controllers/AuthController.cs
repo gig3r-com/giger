@@ -83,6 +83,49 @@ namespace Giger.Controllers
             return false;
         }
 
+        protected bool IsAuthorizedNotHacker(string owner = "", short minimumHackingLevel = 1)
+        {
+#if DEBUG
+            if (!AuthEnabled)
+                return true;
+#endif
+            // if Request is null, then it redirect from other controller which has authorised action
+            if (Request == null)
+            {
+                return true;
+            }
+            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+            if (string.IsNullOrEmpty(senderAuthToken))
+                return false;
+
+            var senderHandle = _loginService.GetByAuthTokenAsync(senderAuthToken).Result?.Username;
+            if (string.IsNullOrEmpty(senderHandle))
+                return false;
+
+            var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
+
+            if (senderUser != null && owner != null)
+            {
+                if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
+                    owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (owner == senderUser.Faction.ToString())
+                    return true;
+
+                if (senderUser.Roles.Contains(UserRoles.GOD))
+                    return true;
+
+                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                    return true;
+
+                //if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
+                //    return true;
+            }
+
+            return false;
+        }
+
         protected bool IsRole(UserRoles allowedRole)
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
