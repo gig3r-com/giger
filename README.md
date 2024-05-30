@@ -39,6 +39,23 @@ This project is licensed under the Creative Commons License.
 
 Created with ❤️ by GIG3R Larp Team and LarpVenture
 
+Frontend & Coordination
+Borys Juśkiw
+
+Backend
+Jakub Zielnik
+
+DEVOps
+Grzegorz Kawka-Osik
+
+ITPM:
+Anna Kowalska
+
+Idea & High Level Design:
+Maciej Starzycki
+Paweł Jasiński
+Ida Pawłowicz
+
 For any inquiries, please contact juskiw.borys - at - gmail.com
 
 ## DevOps
