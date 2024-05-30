@@ -45,7 +45,7 @@ Borys Juśkiw
 Backend
 Jakub Zielnik
 
-Hacking Application
+Hacking Module / Electron App
 Karol Hinc
 
 DEVOps
