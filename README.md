@@ -42,6 +42,9 @@ Created with ❤️ by GIG3R Larp Team and LarpVenture
 Frontend & Coordination
 Borys Juśkiw
 
+Design & UX
+Marta Salamon
+
 Backend
 Jakub Zielnik
 
