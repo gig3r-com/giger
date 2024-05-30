@@ -39,6 +39,29 @@ This project is licensed under the Creative Commons License.
 
 Created with ❤️ by GIG3R Larp Team and LarpVenture
 
+Frontend & Coordination
+Borys Juśkiw
+
+Design & UX
+Marta Salamon
+
+Backend
+Jakub Zielnik
+
+Hacking Module / Electron App
+Karol Hinc
+
+DEVOps
+Grzegorz Kawka-Osik
+
+ITPM:
+Anna Kowalska
+
+Idea & High Level Design:
+Maciej Starzycki
+Paweł Jasiński
+Ida Pawłowicz
+
 For any inquiries, please contact juskiw.borys - at - gmail.com
 
 ## DevOps
