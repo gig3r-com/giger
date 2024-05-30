@@ -45,6 +45,9 @@ Borys Juśkiw
 Backend
 Jakub Zielnik
 
+Hacking Application
+Karol Hinc
+
 DEVOps
 Grzegorz Kawka-Osik
 
