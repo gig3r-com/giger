@@ -9,3 +9,6 @@ backendDotnet/Models/*
 docker-compose.override.yaml
 .env
 node_modules
+.DS_Store
+yarn.lock
+package-lock.json
