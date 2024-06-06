@@ -4,6 +4,7 @@ import Console from '..';
 import { tab, clearTab } from './tabEvents';
 import { CommandsService } from '../../index';
 import Auth from '../../Auth';
+import Minesweeper from '../../Games/Minesweeper';
 
 const keyMap: { [key: number]: (event: KeyboardEvent) => void } = {
   9: tab,
@@ -28,7 +29,6 @@ export default function setupWindowListener() {
 }
 
 function enter(event: KeyboardEvent) {
-
   if (Console.isInputLoading || Console.isInputHidden) {
     event.preventDefault();
     return;
@@ -91,7 +91,10 @@ function downArrow(event: KeyboardEvent) {
 
 function f9() {
   console.log('test');
-  Auth.test();
+
+  Minesweeper.init(10, 10, 2);
+
+  // Auth.test();
 
   // Timelines.start('TestTimer', 21, { blockInput: true });
 

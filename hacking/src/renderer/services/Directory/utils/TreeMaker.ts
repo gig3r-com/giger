@@ -32,6 +32,11 @@ export default function makeProfileTree(userData: ProfileType) {
       profileData: userData,
     },
     {
+      name: 'minesweeper',
+      type: 'game',
+      data: { type: 'minesweeper' },
+    },
+    {
       name: 'medical',
       type: 'folder',
       files: medical,

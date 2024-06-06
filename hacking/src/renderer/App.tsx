@@ -22,7 +22,7 @@ export default function App() {
         Console.setInputLoading(true);
         Directory.build().then(() => {
           Console.setInputLoading(false);
-          Overlay.initializeModal(1);
+          // Overlay.initializeModal(1);
         });
       });
     });

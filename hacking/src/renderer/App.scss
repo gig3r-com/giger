@@ -162,3 +162,60 @@ table.list-table, table.log-table {
 .line table td.right {
   text-align: right;
 }
+
+.minesweeper-cell {
+  background: $basic-background;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: center;
+  margin: 2px;
+}
+
+.minesweeper-border-cell {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px;
+}
+
+.minesweeper-row {
+  display: flex;
+}
+
+.minesweeper-selected-double {
+  color: $secondary-color;
+}
+
+.minesweeper-revealed {
+  background: transparent;
+}
+
+.minesweeper-ui {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.minesweeper-title {
+  padding: 0 5px;
+  width: 100%;
+}
+
+.minesweeper-bombs {
+  padding: 0 5px;
+  width: 50%;
+}
+
+.minesweeper-time {
+  padding: 0 5px;
+  width: 50%;
+}
