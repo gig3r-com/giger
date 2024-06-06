@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-app:
-    runs-on: "microk8s-runner-1"
+    runs-on: [self-hosted, X86]
     steps:
       - name: install additional packages
         run: |
