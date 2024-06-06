@@ -6,7 +6,8 @@ import {
   decryptingSuccessLines,
   decryptingFailedLines,
 } from '../../Terminal/responseLines/runCommands';
-import { ApiService, OverlayService } from '../index';
+import { ApiService } from '../index';
+import Overlay from '../Overlay';
 import { SubnetworkType, ProgramType, ExploitType } from '../../types';
 import { runCleaner, runKicker } from './utils/ice';
 
@@ -285,7 +286,7 @@ export default class ServerConnectionService {
           ``,
           `You feel an excruciating pain at your CIC location, like searing hot knives twisting deeper. Your body begins to shut down, numbness creeping in as if life is slipping away. Everything starts to fade, and you can't hold on any longer. You need immediate medical assistance.`,
           ``,
-          ``
+          ``,
         ]);
       }
       case 'Cleaner': {
@@ -345,7 +346,7 @@ export default class ServerConnectionService {
     if (this.cleanerInterval) {
       this.removeLastLine();
       clearInterval(this.cleanerInterval);
-      OverlayService.closeModal();
+      Overlay.closeModal();
     }
   }
 

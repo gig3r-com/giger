@@ -18,6 +18,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'class-methods-use-this': 'off',
     'jsx-a11y/no-autofocus': 'off',
+    'import/no-cycle': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

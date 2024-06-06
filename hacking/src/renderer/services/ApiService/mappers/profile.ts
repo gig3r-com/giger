@@ -44,6 +44,14 @@ export default function mapProfile(
     accounts: accounts || [],
     conversations: conversations || [],
     gigs: gigs || [],
+    faction: data.faction,
+    factionRankActual: data.factionRankActual,
+    functionRankPublic: data.functionRankPublic,
+    gigReputation: data.gigReputation,
+    hasPlatinumPass: data.hasPlatinumPass,
+    highSecurity: data.highSecurity,
+    insurance: data.insuredAmount,
+    vibe: data.vibe,
   };
 
   function mapEvent(data: any): EventType {

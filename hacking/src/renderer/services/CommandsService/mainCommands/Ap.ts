@@ -1,6 +1,7 @@
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { ServerConnectionService } from '../../index';
 import CommandsServiceType from '../CommandsService';
+import Console from '../../Console';
 
 export default class Ap {
   private Service: CommandsServiceType;
@@ -9,9 +10,9 @@ export default class Ap {
     this.Service = CommandsService;
   }
 
-  execute() {
-    const { addLines, fireInitError, parsedCommand, setAccessPoint } =
-      this.Service;
+  async execute() {
+    const { fireInitError, parsedCommand, setAccessPoint } = this.Service;
+    const { addLines } = Console;
     if (!addLines) {
       fireInitError();
       return;
@@ -24,6 +25,7 @@ export default class Ap {
             .withUrl('http://localhost:5058/chat')
             .configureLogging(LogLevel.Information)
             .build();
+          console.log('connection', connection);
 
           connection.on('ReceiveMessage', (message) => {
             console.log(message);
@@ -46,33 +48,33 @@ export default class Ap {
       }
     } catch (e) {}
 
-    if (parsedCommand[0] === 'green') {
-      setAccessPoint('Green-AP');
-      ServerConnectionService.accessPoint = { type: 'green' };
-      addLines([
-        `<span class="accent-color-2">Green</span> access point engaged.`,
-      ]);
-      return;
-    }
-
-    if (parsedCommand[0] === 'red') {
-      setAccessPoint('Red-AP');
-      ServerConnectionService.accessPoint = { type: 'red' };
-      addLines([
-        `<span class="accent-color-2">Red</span> access point engaged.`,
-      ]);
-      return;
-    }
-
-    if (parsedCommand[0] === 'off') {
-      setAccessPoint(null);
-      ServerConnectionService.accessPoint = null;
-      addLines([`Access point disengaged.`]);
-      return;
-    }
-
-    setAccessPoint(null);
-    ServerConnectionService.accessPoint = null;
-    addLines([`Access point disengaged.`]);
+    // if (parsedCommand[0] === 'green') {
+    //   setAccessPoint('Green-AP');
+    //   ServerConnectionService.accessPoint = { type: 'green' };
+    //   addLines([
+    //     `<span class="accent-color-2">Green</span> access point engaged.`,
+    //   ]);
+    //   return;
+    // }
+    //
+    // if (parsedCommand[0] === 'red') {
+    //   setAccessPoint('Red-AP');
+    //   ServerConnectionService.accessPoint = { type: 'red' };
+    //   addLines([
+    //     `<span class="accent-color-2">Red</span> access point engaged.`,
+    //   ]);
+    //   return;
+    // }
+    //
+    // if (parsedCommand[0] === 'off') {
+    //   setAccessPoint(null);
+    //   ServerConnectionService.accessPoint = null;
+    //   addLines([`Access point disengaged.`]);
+    //   return;
+    // }
+    //
+    // setAccessPoint(null);
+    // ServerConnectionService.accessPoint = null;
+    // addLines([`Access point disengaged.`]);
   }
 }

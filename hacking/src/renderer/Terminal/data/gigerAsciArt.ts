@@ -16,8 +16,8 @@ export const gigerArt = [
 ];
 
 export const newGigerArt: LineType[] = [
-  { text: null, tag: 'br', id: crypto.randomUUID() },
-  { text: null, tag: 'br', id: crypto.randomUUID() },
+  // { tag: 'br', id: crypto.randomUUID() },
+  // { tag: 'br', id: crypto.randomUUID() },
   {
     children: `##########################################################################################`,
     tag: 'p',
@@ -63,6 +63,7 @@ export const newGigerArt: LineType[] = [
     tag: 'p',
     id: crypto.randomUUID(),
   },
-  { text: null, tag: 'br', id: crypto.randomUUID() },
-  { text: null, tag: 'br', id: crypto.randomUUID() },
+  // { tag: 'br', id: crypto.randomUUID() },
+  // { tag: 'br', id: crypto.randomUUID() },
+  // { tag: 'br', id: crypto.randomUUID() },
 ];

@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
-import Overlay from '../../components/Overlay';
-import { CommandsService } from '../index';
+import OverlayComponent from '../../components/Overlay';
+import Console from '../Console';
 
-export default class OverlayService {
+export default class Overlay {
   private closeOverlayModal: any;
 
   public setActiveQuest: any;
@@ -12,24 +12,25 @@ export default class OverlayService {
   constructor() {
     const container = document.getElementById('overlay') as HTMLElement;
     const root = createRoot(container);
-    root.render(<Overlay />);
+    root.render(<OverlayComponent />);
   }
 
   init({ closeOverlayModal, setModal, setActiveQuest }) {
+    console.log(closeOverlayModal);
     this.closeOverlayModal = closeOverlayModal;
     this.setModal = setModal;
     this.setActiveQuest = setActiveQuest;
   }
 
-  initializeModal(modalNumber: number) {
-    CommandsService.setInputDisabled(true);
+  initializeModal = (modalNumber: number) => {
+    Console.setInputLoading(true);
     this.setModal(modalNumber);
-  }
+  };
 
-  closeModal() {
-    CommandsService.setInputDisabled(false);
+  closeModal = () => {
+    Console.setInputLoading(false);
     this.closeOverlayModal();
-  }
+  };
 
   iceModal(message: string) {
     this.setModal(99, message);

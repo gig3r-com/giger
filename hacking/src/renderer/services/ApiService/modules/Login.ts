@@ -7,7 +7,8 @@ export default class Login {
   async login(username: string, password: string): Promise<ProfileType> {
     const { gigerApiUrl } = this.getUrls();
     const url = `${gigerApiUrl}/Login/hacker?hackerName=${username}&password=${password}`;
-    const loginResponse = await axios.get(url);
+    // const loginResponse = await axios.get(url);
+    const loginResponse = { data: '0b8184e7-ba1d-462a-9229-3b12546a095e' };
     this.authToken = loginResponse.data;
     axios.defaults.headers.common.AuthToken = this.authToken;
     const userUrl = `${gigerApiUrl}/User/public/byUsername?userName=${username}`;

@@ -1,6 +1,0 @@
-/*
-
-Serwisy
-  Concole
-
- */

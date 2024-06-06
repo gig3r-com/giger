@@ -17,7 +17,8 @@ body {
 }
 
 .line {
-  text-indent: -10px;
+  all: unset;
+  display: block;
   color: $text-color;
   margin: 0;
   padding-left: 10px;
@@ -26,7 +27,6 @@ body {
 }
 
 .user-line {
-  margin-left: 10px;
   color: $base-text-color;
 }
 
@@ -73,28 +73,39 @@ body {
   white-space: nowrap;
   font-size: 18px;
   color: $base-text-color;
-  text-indent: 0;
+}
+
+.input {
+  all: unset;
+  display: flex;
+  color: $base-text-color;
+
+  font-weight: bold;
 }
 
 .input-prefix {
-  padding-right: 4px;
-  text-indent: 0;
+  padding: 0 0 0 10px;
+  white-space: nowrap;
+
+  font-weight: bold;
 }
 
 input, textarea {
+  all: unset;
   background: black;
-  color: $base-text-color;
-  border: 1px solid white;
-  padding: 0 0 0 4px;
-  font-size: 18px;
+  display: inline;
+  border: none;
+  padding: 0 0 0 10px;
+  font-size: 16px;
   width: 100%;
 }
 
-input:focus{
+input:focus, textarea:focus{
   outline: none;
 }
 
 .loader {
+  margin-left: 10px;
   &:after {
     content: '';
     animation: loading 1s steps(4, start) infinite;
@@ -136,4 +147,18 @@ table.list-table, table.log-table {
 
 .margin-left {
   margin-left: 10px;
+}
+
+.line table th {
+  color: $secondary-color;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.line table td {
+  padding: 0 10px;
+}
+
+.line table td.right {
+  text-align: right;
 }

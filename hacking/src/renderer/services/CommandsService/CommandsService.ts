@@ -1,23 +1,23 @@
 import {
+  Ap,
+  Balance,
   Clear,
+  CopyData,
+  Doc,
   End,
+  Exit,
+  Gig,
+  Install,
   List,
-  Scan,
+  Log,
+  Logout,
   Name,
   Profile,
-  Run,
-  Logout,
-  Doc,
-  Install,
-  CopyData,
-  Balance,
-  Transfer,
-  Log,
-  Exit,
   ReadMsg,
+  Run,
+  Scan,
   SendMsg,
-  Gig,
-  Ap,
+  Transfer,
 } from './mainCommands';
 import {
   getErrorMessage,
@@ -33,6 +33,9 @@ import type ServerConnectionServiceType from '../ServerConnectionService/ServerC
 import type LineStateServiceType from '../LineStateService/LineStateService';
 import { getLoginUserData } from '../../Terminal/utils/store';
 import { ProfileType } from '../../types';
+import Directory from '../Directory';
+import Console from '../Console';
+import { LineType } from '../Console/components/Output';
 
 type InitType = {
   addLines: (lines: string[]) => void;
@@ -52,12 +55,20 @@ export type CommandsTableType = {
   [key: string]: () => void;
 };
 
+export class BaseCommand {
+  public list: {} = {};
+
+  execute: () => void = () => {};
+
+  public documentation: LineType[] = [];
+}
+
 export default class CommandsService {
   public mainCommandsTable: MainCommandsTableType = {
-    clear: new Clear(this),
+    // clear: new Clear(this),
     end: new End(this),
     list: new List(this),
-    scan: new Scan(this),
+    // scan: new Scan(this),
     name: new Name(this),
     profile: new Profile(this),
     run: new Run(this),
@@ -70,7 +81,7 @@ export default class CommandsService {
     balance: new Balance(this),
     transfer: new Transfer(this),
     log: new Log(this),
-    exit: new Exit(this),
+    // exit: new Exit(this),
     readmsg: new ReadMsg(this),
     sendmsg: new SendMsg(this),
     gig: new Gig(this),
@@ -153,6 +164,18 @@ export default class CommandsService {
     this.setAccessPoint = setAccessPoint.bind(this);
   }
 
+  addCommand(commandActivator: string, commandHandler) {
+    this.mainCommandsTable[commandActivator] = commandHandler;
+  }
+
+  removeCommand(commandActivator: string) {
+    delete this.mainCommandsTable[commandActivator];
+  }
+
+  listsCommands() {
+    return Object.keys(this.mainCommandsTable);
+  }
+
   executeCommand(command: string) {
     this.parsedCommandRaw = command
       .trim()
@@ -166,12 +189,10 @@ export default class CommandsService {
 
     if (this.mainCommandsTable[this.activeCommand]) {
       this.mainCommandsTable[this.activeCommand].execute();
-    } else {
-      if (!this.addLines) {
-        this.fireInitError();
-        return;
-      }
-      this.addLines(wrongCommandError);
+    } else if (this.activeCommand) {
+      Console.addLines(
+        `'${this.activeCommand}' is not recognized as an internal or external command, operable program or batch file.`,
+      );
     }
   }
 

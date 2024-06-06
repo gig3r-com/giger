@@ -1,7 +1,12 @@
 import axios from 'axios';
 import mapProfile from './mappers/profile';
 import mapExploits from './mappers/exploits';
-import { ProfileType, ProgramCodeInfoType, SubnetworkType } from '../../types';
+import {
+  NetworkType,
+  ProfileType,
+  ProgramCodeInfoType,
+  SubnetworkType,
+} from '../../types';
 import mapSubnetwork from './mappers/subnetwork';
 import mapRecordToApi from './mappers/record';
 import { getLoginUserData, setLoginUserData } from '../../Terminal/utils/store';
@@ -13,7 +18,7 @@ import HackConfigModule from './modules/HackConfig';
 import ConversationsModule from './modules/Conversations';
 import LoginModule from './modules/Login';
 import GigsModule from './modules/Gigs';
-import {ServerConnectionService} from "../index";
+import { ServerConnectionService } from '../index';
 
 export default class ApiService {
   constructor() {
@@ -56,6 +61,7 @@ export default class ApiService {
   }
 
   public ghostProtocolOn: boolean = false;
+
   private isConfigLoaded: boolean = false;
 
   private authToken = null;
@@ -226,7 +232,6 @@ export default class ApiService {
         (subnetwork: any) =>
           subnetwork.id.toLowerCase() === subnetworkId.toLowerCase(),
       );
-      console.log(foundSubnetwork)
       if (foundSubnetwork) return mapSubnetwork(foundSubnetwork);
       throw new Error(`Subnetwork with id ${subnetworkId} not found`);
     });
@@ -310,17 +315,24 @@ export default class ApiService {
   async sendPingMsg(): Promise<void> {
     const subnetwork = ServerConnectionService.connectedSubnetwork;
     const { data } = await this.scanForNetworkById(subnetwork?.networkId);
-    const sender = await this.getUserProfile('ad77a91f-51b7-4107-a970-ad8541842a95');
+    const sender = await this.getUserProfile(
+      'ad77a91f-51b7-4107-a970-ad8541842a95',
+    );
     const receiver = await this.getProfileByHandle(data.adminId);
     const messageData = {
       from: sender.handle,
       to: receiver.handle,
-      text: `ICE Deployed: PING. ${getLoginUserData().handle} is hacking ${subnetwork.name} right now.`,
+      text: `ICE Deployed: PING. ${getLoginUserData().handle} is hacking ${
+        subnetwork.name
+      } right now.`,
     };
     this.sendMsgFromTerminal(sender, receiver, messageData);
   }
+
   async sendKillMsg(): Promise<void> {
-    const sender = await this.getUserProfile('ad77a91f-51b7-4107-a970-ad8541842a95');
+    const sender = await this.getUserProfile(
+      'ad77a91f-51b7-4107-a970-ad8541842a95',
+    );
     const receiver = getLoginUserData();
     const messageData = {
       from: sender.handle,
@@ -337,7 +349,7 @@ export default class ApiService {
     const { gigerApiUrl } = this.getUrls();
     const url = `${gigerApiUrl}/ProgramCodes/get/all`;
     const programsResponse = await axios.get(url);
-    const filtered = programsResponse.data?.filter(pr => {
+    const filtered = programsResponse.data?.filter((pr) => {
       return pr.programCode.toLowerCase() === programCode;
     });
     if (!filtered.length) {
@@ -401,5 +413,12 @@ export default class ApiService {
     const response = await axios.put(url, data);
     await axios.patch(url2, 'ENABLED');
     return response.data;
+  }
+
+  async getNetworkById(networkId: string): Promise<NetworkType> {
+    const { gigerApiUrl } = this.getUrls();
+    const url = `${gigerApiUrl}/Networks/network/?id=${networkId}`;
+    const respone = await axios.get(url);
+    return respone.data;
   }
 }

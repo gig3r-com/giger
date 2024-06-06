@@ -1,4 +1,4 @@
-import { OverlayService } from '../../index';
+import Overlay from '../../Overlay';
 
 export function runCleaner() {
   this.cleanerInterval = setInterval(() => {
@@ -11,29 +11,29 @@ export function runCleaner() {
       console.log('END CLEANER');
       this.removeLastLine();
       clearInterval(this.cleanerInterval);
-      OverlayService.closeModal();
+      Overlay.closeModal();
     }
   }, 250);
   this.addLines([`ICE: CLEANER targeting successfully!`]);
-  OverlayService.iceModal(`Warning: ICE CLEANER deployed`);
+  Overlay.iceModal(`Warning: ICE CLEANER deployed`);
 }
 
 export function runKicker() {
   this.addLines([`ICE: KICKER targeting successfully!`]);
-  OverlayService.iceModal(`Warning: ICE KICKER deployed`);
+  Overlay.iceModal(`Warning: ICE KICKER deployed`);
   this.addLines(['Connection to subnetwork was forcefully terminated']);
   this.disconnect();
   setTimeout(() => {
-    OverlayService.closeModal();
+    Overlay.closeModal();
   }, 4000);
 }
 
 export function run() {
   this.addLines([`ICE: KICKER targeting successfully!`]);
-  OverlayService.iceModal(`Warning: ICE KICKER deployed`);
+  Overlay.iceModal(`Warning: ICE KICKER deployed`);
   this.addLines(['Connection to subnetwork was forcefully terminated']);
   this.disconnect();
   setTimeout(() => {
-    OverlayService.closeModal();
+    Overlay.closeModal();
   }, 4000);
 }

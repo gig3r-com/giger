@@ -1,9 +1,5 @@
-import { DebugService } from '../../../services';
 
 export default function Hacker1Modal({ testIsActive }) {
-  const reset = () => DebugService.resetQuest(0);
-  const start = () => DebugService.startQuest(0);
-  const close = () => DebugService.closeModal()
 
   return (
     <div className="quest-modal">
