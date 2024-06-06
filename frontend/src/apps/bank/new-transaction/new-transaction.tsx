@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useIntl } from 'react-intl';
 import { UserSelect } from '../../../shared/user-select/user-select';
 import { BigButton } from '../../../shared/components/big-button/big-button';
@@ -8,19 +8,32 @@ import { Controls } from '../../../shared/components/controls/controls';
 import { AccountType } from '../../../models/banking';
 
 import './new-transaction.scss';
+import { useHashService } from '../../../shared/services/hash.service';
 
 export const NewTransaction: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
     const { state } = useLocation();
-    const [amount, setAmount] = useState<number>(0);
+    const { hashParams, setupStateChanger, setHash } = useHashService();
+    const [amount, setAmount] = useState<number>(hashParams.amount || 0);
     const [lockButton, setLockButton] = useState<boolean>(false);
-    const [transferTitle, setTransferTitle] = useState<string>('');
-    const [selectedHandle, setSelectedHandle] = useState<string[] | null>(null);
+    const [transferTitle, setTransferTitle] = useState<string>(hashParams.transferTitle || '');
+    const [selectedHandle, setSelectedHandle] = useState<string[] | null>(hashParams.selectedHandle || null);
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
         (state?.defaultAccountType as AccountType) ?? AccountType.PRIVATE
     );
     const { accounts, sendTransfer, fetchAccounts } = useBankingService();
+    const handleSetAmount = setupStateChanger('amount', setAmount);
+    const handleSetTitle = setupStateChanger('transferTitle', setTransferTitle);
+    const handleSetSelectedHandle = (value) => {
+        if (value && value.length > 0 && value[0]) {
+            setHash('selectedHandle', value[0]);
+        } else {
+            setHash('selectedHandle', null);
+        }
+        setSelectedHandle(value[0])
+    }
+    const handleSetSelectedAccount = setupStateChanger('selectedAccount', setSelectedAccount);
 
     const onTransfer = async () => {
         if (!selectedHandle || !selectedHandle.length) return;
@@ -39,7 +52,7 @@ export const NewTransaction: FC = () => {
 
     const onAmountChanged = (val: string): void => {
         const value = parseInt(val);
-        setAmount(Number.isNaN(value) ? 0 : value);
+        handleSetAmount(Number.isNaN(value) ? 0 : value);
     };
 
     const hasBusinessAccount = !!accounts.business;
@@ -57,13 +70,13 @@ export const NewTransaction: FC = () => {
                 type="text"
                 placeholder={intl.formatMessage({ id: 'TITLE' })}
                 value={transferTitle}
-                onChange={(event) => setTransferTitle(event.target.value)}
+                onChange={(event) => handleSetTitle(event.target.value)}
             />
             {hasBusinessAccount && (
                 <select
                     value={selectedAccount}
                     onChange={(event) =>
-                        setSelectedAccount(event.target.value as AccountType)
+                        handleSetSelectedAccount(event.target.value as AccountType)
                     }
                 >
                     <option value={AccountType.PRIVATE}>
@@ -76,7 +89,8 @@ export const NewTransaction: FC = () => {
             )}
             <UserSelect
                 mode="single"
-                onSelection={setSelectedHandle}
+                onSelection={handleSetSelectedHandle}
+                initialSelected={selectedHandle ? [selectedHandle] : null}
                 allowFindingSelf={true}
                 includeFactions={true}
             />

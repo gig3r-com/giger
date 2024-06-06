@@ -42,124 +42,118 @@ export const Router = () => {
     return (
         <AnimatePresence mode="wait">
             <BrowserRouter>
-                {isLoggedIn ? (
-                    <Routes>
-                        <Route path="/" element={<LoggedInRoot />}>
-                            <Route path="giger" element={<Giger />}>
-                                <Route path="new-gig" element={<Giger />} />
-                                <Route path=":gigId" element={<Giger />}>
-                                    <Route
-                                        path="report-problem"
-                                        element={<Giger />}
-                                    />
-                                </Route>
-                            </Route>
-                            <Route path="chat" element={<Chat />}>
-                                <Route path=":chatId" element={<Chat />} />
-                                <Route path="new" element={<Chat />} />
-                            </Route>
-                            <Route path="bank" element={<Bank />}>
+                { !isLoggedIn && <Login /> }
+                <Routes>
+                    <Route path="/" element={<LoggedInRoot />}>
+                        <Route path="giger" element={<Giger />}>
+                            <Route path="new-gig" element={<Giger />} />
+                            <Route path=":gigId" element={<Giger />}>
                                 <Route
-                                    path="new"
-                                    element={<NewTransaction />}
+                                    path="report-problem"
+                                    element={<Giger />}
                                 />
                             </Route>
-                            <Route path="myid" element={<MyId />}>
-                                <Route path="details" element={<Details />}>
+                        </Route>
+                        <Route path="chat" element={<Chat />}>
+                            <Route path=":chatId" element={<Chat />} />
+                            <Route path="new" element={<Chat />} />
+                        </Route>
+                        <Route path="bank" element={<Bank />}>
+                            <Route
+                                path="new"
+                                element={<NewTransaction />}
+                            />
+                        </Route>
+                        <Route path="myid" element={<MyId />}>
+                            <Route path="details" element={<Details />}>
+                                <Route
+                                    path="contacts"
+                                    element={
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key="myid"
+                                                initial={{ x: '-100vw' }}
+                                                animate={{ x: 0 }}
+                                                exit={{ x: '100vw' }}
+                                            >
+                                                <Contacts />
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    }
+                                >
                                     <Route
-                                        path="contacts"
-                                        element={
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key="myid"
-                                                    initial={{ x: '-100vw' }}
-                                                    animate={{ x: 0 }}
-                                                    exit={{ x: '100vw' }}
-                                                >
-                                                    <Contacts />
-                                                </motion.div>
-                                            </AnimatePresence>
-                                        }
-                                    >
-                                        <Route
-                                            path=":contactId"
-                                            element={<Contacts />}
-                                        />
-                                    </Route>
-                                    <Route path="vibe" element={<Vibe />} />
-                                    <Route
-                                        path="medical"
-                                        element={
-                                            <EventRecord
-                                                type={EventRecordType.MEDICAL}
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="criminal"
-                                        element={
-                                            <EventRecord
-                                                type={EventRecordType.CRIMINAL}
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="goals"
-                                        element={
-                                            <UserRecords
-                                                mode={UserRecordTypes.GOAL}
-                                            />
-                                        }
-                                    />
-                                    <Route path="hacking" element={<MyId />} />
-                                    <Route
-                                        path="meta"
-                                        element={
-                                            <UserRecords
-                                                mode={UserRecordTypes.META}
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="records"
-                                        element={
-                                            <UserRecords
-                                                mode={
-                                                    UserRecordTypes.PRIVATE_RECORD
-                                                }
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="goals"
-                                        element={
-                                            <UserRecords
-                                                mode={UserRecordTypes.GOAL}
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="relations"
-                                        element={
-                                            <UserRecords
-                                                mode={UserRecordTypes.RELATION}
-                                            />
-                                        }
-                                    />
-                                    <Route
-                                        path="code"
-                                        element={<CodeEntry />}
+                                        path=":contactId"
+                                        element={<Contacts />}
                                     />
                                 </Route>
+                                <Route path="vibe" element={<Vibe />} />
+                                <Route
+                                    path="medical"
+                                    element={
+                                        <EventRecord
+                                            type={EventRecordType.MEDICAL}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="criminal"
+                                    element={
+                                        <EventRecord
+                                            type={EventRecordType.CRIMINAL}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="goals"
+                                    element={
+                                        <UserRecords
+                                            mode={UserRecordTypes.GOAL}
+                                        />
+                                    }
+                                />
+                                <Route path="hacking" element={<MyId />} />
+                                <Route
+                                    path="meta"
+                                    element={
+                                        <UserRecords
+                                            mode={UserRecordTypes.META}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="records"
+                                    element={
+                                        <UserRecords
+                                            mode={
+                                                UserRecordTypes.PRIVATE_RECORD
+                                            }
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="goals"
+                                    element={
+                                        <UserRecords
+                                            mode={UserRecordTypes.GOAL}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="relations"
+                                    element={
+                                        <UserRecords
+                                            mode={UserRecordTypes.RELATION}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="code"
+                                    element={<CodeEntry />}
+                                />
                             </Route>
                         </Route>
-                    </Routes>
-                ) : (
-                    <Routes>
-                        <Route path="/" element={<Login />} />
-                        <Route path="*" element={<Login />} />
-                    </Routes>
-                )}
+                    </Route>
+                </Routes>
                 <Toaster
                     position="bottom-center"
                     containerStyle={{

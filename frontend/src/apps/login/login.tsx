@@ -2,7 +2,6 @@ import { useState, FC, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
 import { useUserService } from '../../shared/services/user.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import LoginHelp from './login-help/login-help';
@@ -14,7 +13,6 @@ import './login.scss';
 
 export const Login: FC = () => {
     const intl = useIntl();
-    const navigate = useNavigate();
     const [notLoggedIn, setNotLoggedIn] = useState<boolean | undefined>();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -57,7 +55,6 @@ export const Login: FC = () => {
                 setLoading(false);
                 setError(intl.formatMessage({ id: 'LOGIN_FAILED' }));
             })
-            .then(() => navigate('/giger'));
     };
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -69,7 +66,6 @@ export const Login: FC = () => {
     useEffect(function redirectIfAlreadyLoggedIn() {
         if (localStorage.getItem('loggedInUser')) {
             retrieveLoginData();
-            navigate('/giger');
         } else {
             setNotLoggedIn(true);
         }

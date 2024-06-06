@@ -13,6 +13,8 @@ import './vibe.scss';
 
 export const Vibe: FC = () => {
     const { updateUserData, currentUser } = useUserService();
+    if (!currentUser) return;
+
     return (
         <section className="vibe">
             <span className="vibe__label">

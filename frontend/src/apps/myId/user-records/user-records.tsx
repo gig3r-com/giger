@@ -24,7 +24,7 @@ import './user-records.scss';
 export function UserRecords(props: IUserRecordsProps) {
     const { mode } = props;
     const { getRecords, fetchRecords } = useUserRecordsService();
-    const { isGod } = useUserService();
+    const { isGod, currentUser } = useUserService();
     const { setLastSeenHash } = useMyIdService();
     const isRevealed = (record: IGoal | IMeta | IPrivateRecord | IRelation) => {
         if (isIObscurableInfo(record) && !record.isRevealed) {
@@ -39,7 +39,7 @@ export function UserRecords(props: IUserRecordsProps) {
         fetchRecords(mode);
         const hashType = modeMap.get(mode)?.hashProperty;
         hashType && setLastSeenHash(hashType);
-    }, []);
+    }, [currentUser]);
 
     useEffect(function setSeenHash() {
         const hashType = modeMap.get(mode)?.hashProperty;

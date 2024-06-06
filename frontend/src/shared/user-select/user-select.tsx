@@ -13,14 +13,16 @@ export const UserSelect: FC<IUserSelectProps> = ({
     onSelection,
     mode = 'single',
     allowFindingSelf = false,
-    includeFactions
+    includeFactions,
+    initialSelected = []
 }) => {
+    console.log({initialSelected})
     const intl = useIntl();
     const users = useSelector((state: RootState) => state.users.users);
     const { currentUser } = useUserService();
     const usersWrapper = useRef<HTMLDivElement>(null);
     const [inputSelected, setInputSelected] = useState(false);
-    const [selectedHandles, setSelectedHandles] = useState<string[]>([]);
+    const [selectedHandles, setSelectedHandles] = useState<string[]>(initialSelected || []);
     const [searchString, setSearchString] = useState('');
     const userSelectClasses = classNames({
         'user-select': true,
