@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-app:
-    runs-on: [self-hosted, X86]
+    runs-on: [self-hosted, x64]
     steps:
       - name: install additional packages
         run: |
