@@ -14,6 +14,7 @@
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never && npm run build:dll",
+    "package:all": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build -wlm --x64 --publish never && npm run build:dll",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
@@ -36,7 +37,9 @@
     ]
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.0",
     "axios": "^1.6.8",
+    "classnames": "^2.5.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-store": "^8.2.0",
@@ -149,7 +152,7 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "portable"
       ]
     },
     "linux": {
