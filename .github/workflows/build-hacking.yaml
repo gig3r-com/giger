@@ -1,0 +1,35 @@
+name: Build
+on:
+  push:
+    branches:
+      - hacking_autobuild
+
+jobs:
+  build-app:
+    runs-on: "microk8s-runner-1"
+    steps:
+      - name: install additional packages
+        run: |
+          sudo apt update
+          sudo apt install -y curl git libudev-dev
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DATA_SSH_KEY }}
+          submodules: recursive
+      - uses: actions/setup-node@master
+        with:
+          node-version: 22
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+        with:
+          prefix: CI_
+      - name: install deps
+        working-directory: hacking
+        run: npm install
+      - name: build
+        working-directory: hacking
+        run: npm run package
+      - name: ls
+        run: find . -name 'CIC Terminal*'
+        working-directory: hacking
