@@ -20,7 +20,7 @@ import { LockedEntry } from '../../../shared/components/locked-entry/locked-entr
 export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
     const intl = useIntl();
     const { getEvents, fetchEvents } = useEventRecordService();
-    const { isGod } = useUserService();
+    const { isGod, currentUser } = useUserService();
 
     const getEventList = () => {
         return type === EventRecordType.MEDICAL ? medicalLists : criminalLists;
@@ -30,7 +30,7 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
 
     useEffect(function fetchData() {
         fetchEvents(type);
-    }, []);
+    }, [currentUser]);
 
     return (
         <motion.div key="event-record" className="event-record">

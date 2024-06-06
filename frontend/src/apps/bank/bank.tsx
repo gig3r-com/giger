@@ -1,5 +1,6 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useUserService } from "../../shared/services/user.service.ts";
 import dayjs from 'dayjs';
 import classNames from 'classnames';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -22,6 +23,7 @@ export const Bank: FC = () => {
     const { accounts, fetchAccounts } = useBankingService();
     const [loading, setLoading] = useState(false);
     const [account, setAccount] = useState<IAccount | undefined>(undefined);
+    const { currentUser } = useUserService();
     const showCards = useMemo(
         () => accounts.private || accounts.business,
         [accounts]
@@ -51,7 +53,7 @@ export const Bank: FC = () => {
     useEffect(function fetchAccountsOnMount() {
         setLoading(true);
         fetchAccounts().then(() => setLoading(false));
-    }, []);
+    }, [currentUser]);
 
     useEffect(
         function setAccountAfterFetching() {
