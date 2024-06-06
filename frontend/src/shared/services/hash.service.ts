@@ -21,17 +21,14 @@ export const useHashService = () => {
     }, [hash]);
 
     const setHash = (key: string, value: string) => {
-        console.log({value})
         if (value || (Array.isArray(value) && value.length && value[0])) {
             hashParams[key] = value;
         } else {
             delete hashParams[key];
         }
-        console.log({hashParams})
         const newHash = '#' + Object.keys(hashParams).map(key => {
             return `${key}=${hashParams[key]}`
         }).join('&');
-        console.log({newHash})
         navigate(newHash);
     }
 

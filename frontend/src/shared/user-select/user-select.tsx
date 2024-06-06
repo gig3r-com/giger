@@ -16,7 +16,6 @@ export const UserSelect: FC<IUserSelectProps> = ({
     includeFactions,
     initialSelected = []
 }) => {
-    console.log({initialSelected})
     const intl = useIntl();
     const users = useSelector((state: RootState) => state.users.users);
     const { currentUser } = useUserService();
