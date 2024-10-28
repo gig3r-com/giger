@@ -20,6 +20,11 @@ export const useHashService = () => {
         return params;
     }, [hash]);
 
+    /**
+     * Sets Url Hash with a key and a value.
+     * @param key string key of a hash param
+     * @param value string value of a hash param
+     */
     const setHash = (key: string, value: string) => {
         if (value || (Array.isArray(value) && value.length && value[0])) {
             hashParams[key] = value;
@@ -32,7 +37,13 @@ export const useHashService = () => {
         navigate(newHash);
     }
 
-    const setupStateChanger = (hashName: string, setState: React.Dispatch<React.SetStateAction<string>> | React.Dispatch<React.SetStateAction<number>>) => (value: string | number) => {
+    /**
+     * Creates a wrapper function on a setState that handles both state change and hash param change.
+     * After setting up use in form returned function instead of setState.
+     * @param hashName string key of a hash param
+     * @param setState React setState action for a state handling value of a hash param
+     */
+    const setupStateChanger = (hashName: string, setState: React.Dispatch<React.SetStateAction<string>> | React.Dispatch<React.SetStateAction<number>>) => (value: string | number | null) => {
         setHash(hashName, String(value));
         setState(value);
     }
