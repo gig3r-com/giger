@@ -1,100 +1,77 @@
-import { FC, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { FC } from 'react';
+import { useNavigate } from 'react-router';
+import * as Yup from 'yup';
 import { useIntl } from 'react-intl';
-import { UserSelect } from '../../../shared/user-select/user-select';
-import { BigButton } from '../../../shared/components/big-button/big-button';
-import { useBankingService } from '../../../shared/services/banking.service';
 import { Controls } from '../../../shared/components/controls/controls';
+import { useBankingService } from '../../../shared/services/banking.service';
+import { useHashService } from '../../../shared/services/hash.service';
 import { AccountType } from '../../../models/banking';
+import { BigButton } from '../../../shared/components/big-button/big-button';
+import { Form } from '../../../shared/components/form/form';
+import { NumberInput } from '../../../shared/components/form/inputs/number-input';
+import { StringInput } from '../../../shared/components/form/inputs/string-input';
+import { AccountPicker } from '../../../shared/components/form/inputs/account-picker';
+import { UserPicker } from '../../../shared/components/form/inputs/user-picker';
 
 import './new-transaction.scss';
-import { useHashService } from '../../../shared/services/hash.service';
 
 export const NewTransaction: FC = () => {
     const intl = useIntl();
     const navigate = useNavigate();
-    const { state } = useLocation();
-    const { hashParams, setupStateChanger, setHash } = useHashService();
-    const [amount, setAmount] = useState<number>(Number(hashParams.amount) || 0);
-    const [lockButton, setLockButton] = useState<boolean>(false);
-    const [transferTitle, setTransferTitle] = useState<string>(hashParams.transferTitle || '');
-    const [selectedHandle, setSelectedHandle] = useState<string | null>(hashParams.selectedHandle || null);
-    const [selectedAccount, setSelectedAccount] = useState<AccountType>(
-        (state?.defaultAccountType as AccountType) ?? AccountType.PRIVATE
-    );
-    const { accounts, sendTransfer, fetchAccounts } = useBankingService();
-    const handleSetAmount = setupStateChanger('amount', setAmount);
-    const handleSetTitle = setupStateChanger('transferTitle', setTransferTitle);
-    const handleSetSelectedHandle = (value) => {
-        setHash('selectedHandle', value?.[0] ?? null);
-        setSelectedHandle(value[0])
-    }
-    const handleSetSelectedAccount = setupStateChanger('selectedAccount', setSelectedAccount);
-
-    const onTransfer = async () => {
-        if (!selectedHandle || !selectedHandle.length) return;
-
-        setLockButton(true);
+    const { hashParams, } = useHashService();
+    const { sendTransfer, fetchAccounts } = useBankingService();
+    const handleTransfer = async ({ handle, amount, title, account }) => {
         await sendTransfer(
-            selectedHandle[0],
+            handle,
             amount,
-            transferTitle,
-            selectedAccount
+            title,
+            account
         );
         fetchAccounts();
-        setLockButton(false);
         navigate('/bank');
     };
-
-    const onAmountChanged = (val: string): void => {
-        const value = parseInt(val);
-        handleSetAmount(Number.isNaN(value) ? null : value);
+    const initialValues = {
+        amount: hashParams.amount || 0,
+        title: hashParams.title || '',
+        account: AccountType.PRIVATE,
+        handle: hashParams.handle || '',
     };
+    const schema = Yup.object({
+        amount: Yup
+            .number()
+            .min(1)
+            .max(200)
+            .required('Field required'),
+        title: Yup
+            .string()
+            .trim()
+            .required('Field required'),
+        account: Yup
+            .mixed()
+            .oneOf([AccountType.PRIVATE, AccountType.BUSINESS])
+            .required('Field required'),
+        handle: Yup
+            .string()
+            .required('Field required'),
+    });
 
-    const hasBusinessAccount = !!accounts.business;
+    const amountPlaceholder = intl.formatMessage({ id: 'AMOUNT' });
+    const titlePlaceholder = intl.formatMessage({ id: 'TITLE' });
+    const transferButtonText = intl.formatMessage({ id: 'TRANSFER' });
 
     return (
-        <div className="new-transaction">
+        <Form
+            initialValues={initialValues}
+            onSubmit={handleTransfer}
+            schema={schema}
+            className="new-transaction"
+        >
             <Controls leftSideOption="back" />
-            <input
-                type="number"
-                placeholder={intl.formatMessage({ id: 'AMOUNT' })}
-                value={amount}
-                onChange={(event) => onAmountChanged(event.target.value)}
-            />
-            <input
-                type="text"
-                placeholder={intl.formatMessage({ id: 'TITLE' })}
-                value={transferTitle}
-                onChange={(event) => handleSetTitle(event.target.value)}
-            />
-            {hasBusinessAccount && (
-                <select
-                    value={selectedAccount}
-                    onChange={(event) =>
-                        handleSetSelectedAccount(event.target.value as AccountType)
-                    }
-                >
-                    <option value={AccountType.PRIVATE}>
-                        {intl.formatMessage({ id: 'PRIVATE' })}
-                    </option>
-                    <option value={AccountType.BUSINESS}>
-                        {intl.formatMessage({ id: 'BUSINESS' })}
-                    </option>
-                </select>
-            )}
-            <UserSelect
-                mode="single"
-                onSelection={handleSetSelectedHandle}
-                initialSelected={selectedHandle ? [selectedHandle] : undefined}
-                allowFindingSelf={true}
-                includeFactions={true}
-            />
-            <BigButton
-                onClick={() => onTransfer()}
-                disabled={!amount || !selectedHandle || lockButton}
-                text={intl.formatMessage({ id: 'TRANSFER' })}
-            />
-        </div>
+            <NumberInput name="amount" placeholder={amountPlaceholder} />
+            <StringInput name="title" placeholder={titlePlaceholder} />
+            <AccountPicker name="account" />
+            <UserPicker name="handle" />
+            <BigButton type="submit" text={transferButtonText} />
+        </Form>
     );
 };

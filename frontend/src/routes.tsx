@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Giger } from './apps/giger/giger';
+import { QrScanner } from './apps/qr-scanner/qr-scanner';
 import { Chat } from './apps/chat/chat';
 import { Bank } from './apps/bank/bank';
 import { MyId } from './apps/myId/my-id';
@@ -45,6 +46,7 @@ export const Router = () => {
                 { !isLoggedIn && <Login /> }
                 <Routes>
                     <Route path="/" element={<LoggedInRoot />}>
+                        <Route path="scanner" element={<QrScanner />} />
                         <Route path="giger" element={<Giger />}>
                             <Route path="new-gig" element={<Giger />} />
                             <Route path=":gigId" element={<Giger />}>
