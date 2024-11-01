@@ -59,7 +59,7 @@ export const Chat: FC = () => {
 
     useEffect(function fetchOnMount() {
         currentUser && fetchUserConvos();
-    }, []);
+    }, [currentUser]);
 
     useEffect(
         function redirectOnConvoNotFound() {
