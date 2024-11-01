@@ -17,6 +17,8 @@ import { useUserRecordsService } from './user-records.service';
 import { useUserService } from '../../../shared/services/user.service';
 import { FormattedMessage } from 'react-intl';
 import { isIObscurableInfo } from '../../../models/general';
+import { Controls } from '../../../shared/components/controls/controls';
+import { SectionBody } from '../../../shared/components/section-body/section-body';
 import { useMyIdService } from '../../../shared/services/myid.service';
 
 import './user-records.scss';
@@ -70,7 +72,8 @@ export function UserRecords(props: IUserRecordsProps) {
     };
 
     return (
-        <section className="user-records">
+        <SectionBody>
+            <Controls leftSideOption="back" />
             {records
                 .filter((record) => isRevealed(record))
                 .map((record) => getRecord(record))}
@@ -86,6 +89,6 @@ export function UserRecords(props: IUserRecordsProps) {
             {records.length === 0 && <FormattedMessage id="NO_RECORDS" />}
 
             {isGod && <NewRecord type={mode} />}
-        </section>
+        </SectionBody>
     );
 }

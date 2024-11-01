@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 import { useUserService } from "../../shared/services/user.service.ts";
 import dayjs from 'dayjs';
 import classNames from 'classnames';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBankingService } from '../../shared/services/banking.service';
 import { BigButton } from '../../shared/components/big-button/big-button';
@@ -17,7 +17,6 @@ import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 import './bank.scss';
 
 export const Bank: FC = () => {
-    const location = useLocation();
     const intl = useIntl();
     const navigate = useNavigate();
     const { accounts, fetchAccounts } = useBankingService();
@@ -64,74 +63,71 @@ export const Bank: FC = () => {
 
     return (
         <>
-            {location.pathname === '/bank' && (
-                <article className="bank">
+            <article className="bank">
                     <span className="bank__balance-label">
                         <MemoizedFormattedMessage id="ACCOUNT_BALANCE" />
                     </span>
-                    <div className="bank__balance">
-                        {accounts.private && (
-                            <span
-                                className={balanceClasses(AccountType.PRIVATE)}
-                            >
+                <div className="bank__balance">
+                    {accounts.private && (
+                        <span
+                            className={balanceClasses(AccountType.PRIVATE)}
+                        >
                                 {accounts.private?.balance.toFixed(2) ?? '-'} ¤
                             </span>
-                        )}
-                        {accounts.business && (
-                            <span
-                                className={balanceClasses(AccountType.BUSINESS)}
-                            >
+                    )}
+                    {accounts.business && (
+                        <span
+                            className={balanceClasses(AccountType.BUSINESS)}
+                        >
                                 {accounts.business?.balance.toFixed(2) ?? '-'} ¤
                             </span>
-                        )}
-                    </div>
-
-                    {showCards && (
-                        <Cards
-                            accounts={cardAccounts}
-                            onAccountChange={setAccount}
-                        />
                     )}
+                </div>
 
-                    <BigButton
-                        text={intl.formatMessage({ id: 'TRANSFER' })}
-                        color="primary"
-                        onClick={() => transfer()}
+                {showCards && (
+                    <Cards
+                        accounts={cardAccounts}
+                        onAccountChange={setAccount}
                     />
+                )}
 
-                    <h4 className="bank__transfer-history-label">
-                        <MemoizedFormattedMessage id="TRANSFER_HISTORY" />
-                    </h4>
-                    <AnimatePresence mode="sync">
-                        {account && (
-                            <motion.ol
-                                className="bank__transactions"
-                                key={account?.id}
-                                transition={{
-                                    ease: standardTimingFunction,
-                                    duration: 3.2
-                                }}
-                            >
-                                {account &&
-                                    sortedTransactions(
-                                        account.transactions
-                                    ).map((transaction) => (
-                                        <Transaction
-                                            key={transaction.id}
-                                            transaction={transaction}
-                                            accountType={account.type}
-                                        />
-                                    ))}
-                            </motion.ol>
-                        )}
-                    </AnimatePresence>
+                <BigButton
+                    text={intl.formatMessage({ id: 'TRANSFER' })}
+                    color="primary"
+                    onClick={() => transfer()}
+                />
 
-                    {loading && (
-                        <LoadingBar isLoading={loading} text="LOADING" />
+                <h4 className="bank__transfer-history-label">
+                    <MemoizedFormattedMessage id="TRANSFER_HISTORY" />
+                </h4>
+                <AnimatePresence mode="sync">
+                    {account && (
+                        <motion.ol
+                            className="bank__transactions"
+                            key={account?.id}
+                            transition={{
+                                ease: standardTimingFunction,
+                                duration: 3.2
+                            }}
+                        >
+                            {account &&
+                                sortedTransactions(
+                                    account.transactions
+                                ).map((transaction) => (
+                                    <Transaction
+                                        key={transaction.id}
+                                        transaction={transaction}
+                                        accountType={account.type}
+                                    />
+                                ))}
+                        </motion.ol>
                     )}
-                </article>
-            )}
-            <Outlet />
+                </AnimatePresence>
+
+                {loading && (
+                    <LoadingBar isLoading={loading} text="LOADING" />
+                )}
+            </article>
         </>
     );
 };
