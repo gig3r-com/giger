@@ -75,8 +75,6 @@ namespace Giger.Controllers
         [HttpGet("hacker")]
         public async Task<string> LoginHacker(string hackerName, string password)
         {
-            return "This service is not available at the moment.";
-
             var hackerLoginData = await _loginService.GetByUserNameAsync(hackerName);
             if (hackerLoginData == null)
             {
