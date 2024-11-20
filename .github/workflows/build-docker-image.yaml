@@ -80,5 +80,6 @@ jobs:
           platforms: linux/arm64
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
+          add-hosts: "api.nuget.org:13.107.253.72,dl-cdn.alpinelinux.org:199.232.190.132"
         env:
           IMAGE_TAG: ${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
