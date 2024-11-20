@@ -39,7 +39,7 @@ jobs:
       - name: install additional packages
         run: |
           sudo apt update
-          sudo apt install -y curl git
+          sudo apt install -y curl git nuget
       - name: Checkout
         uses: actions/checkout@v4
         with:
