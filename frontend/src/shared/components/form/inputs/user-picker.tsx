@@ -1,27 +1,27 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { IUserSelectProps } from './user-select.model';
+import React, {FC, useMemo, useRef, useState,} from 'react';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { useUserService } from '../services/user.service';
+import { useFormikContext } from 'formik';
+import { RootState } from '../../../../store/store';
+import { useUserService } from "../../../services/user.service";
+import { Factions } from '../../../../models/companies';
+import { UserPickerProps } from './models';
+import {useHashService} from "../../../services/hash.service";
 
-import './user-select.scss';
-import { Factions } from '../../models/companies';
-
-export const UserSelect: FC<IUserSelectProps> = ({
-    onSelection,
-    mode = 'single',
-    allowFindingSelf = false,
-    includeFactions,
-    initialSelected = []
-}) => {
+export const UserPicker: FC<UserPickerProps> = ({ name }) => {
+    const {
+        values,
+        handleBlur,
+        handleChange,
+    } = useFormikContext();
+    const { setHash, } = useHashService();
     const intl = useIntl();
+    const value = values[name];
     const users = useSelector((state: RootState) => state.users.users);
     const { currentUser } = useUserService();
-    const usersWrapper = useRef<HTMLDivElement>(null);
-    const [inputSelected, setInputSelected] = useState(false);
-    const [selectedHandles, setSelectedHandles] = useState<string[]>(initialSelected || []);
+    const usersWrapper = useRef<HTMLDivElement | null>(null);
+    const [inputSelected, setInputSelected] = useState(!!value);
     const [searchString, setSearchString] = useState('');
     const userSelectClasses = classNames({
         'user-select': true,
@@ -37,9 +37,6 @@ export const UserSelect: FC<IUserSelectProps> = ({
         );
         return [...favUsers, ...otherUsers]
             .filter((user) =>
-                allowFindingSelf ? !!user : user.id !== currentUser?.id
-            )
-            .filter((user) =>
                 user.handle.toLowerCase().includes(searchString.toLowerCase())
             )
             .map((user) => user.handle);
@@ -47,7 +44,6 @@ export const UserSelect: FC<IUserSelectProps> = ({
         users,
         currentUser?.favoriteUserIds,
         currentUser?.id,
-        allowFindingSelf,
         searchString
     ]);
 
@@ -60,65 +56,45 @@ export const UserSelect: FC<IUserSelectProps> = ({
         );
     }, [filteredUsers, searchString]);
 
-    const handleSelection = (handle: string) => {
-        if (mode === 'single') {
-            setSelectedHandles(
-                selectedHandles.includes(handle) ? [] : [handle]
-            );
-            return;
-        }
+    const onFocus = () => {
+        setInputSelected(true);
+    }
 
-        if (selectedHandles.includes(handle)) {
-            setSelectedHandles(selectedHandles.filter((u) => u !== handle));
+    const onBlur = (e) => {
+        setInputSelected(false);
+        handleBlur(e);
+    }
+
+    const handleSelection = (handle) => {
+        if (value === handle) {
+            setHash(name, '')
+            handleChange({target: {name, value: ''}});
         } else {
-            setSelectedHandles([...selectedHandles, handle]);
+            setHash(name, handle)
+            handleChange({target: {name, value: handle}});
         }
-        adjustContainerSize();
-    };
-
-    const adjustContainerSize = () =>
-        setTimeout(() => {
-            if (!usersWrapper.current) {
-                return;
-            }
-            const inputHeight =
-                document.querySelector('.user-select')?.clientHeight;
-
-            if (inputHeight) {
-                usersWrapper.current.style.height = `calc(100vh - ${
-                    inputHeight + 210
-                }px`;
-            }
-        }, 0);
-
-    useEffect(
-        function emitSelectionChange() {
-            onSelection(selectedHandles);
-        },
-        [selectedHandles]
-    );
+    }
 
     return (
         <>
             <div className={userSelectClasses}>
-                {selectedHandles.map((handle) => (
-                    <span key={handle} className="user-select__user">
-                        {handle}
+                { value && <span className="user-select__user">
+                        {value}
                     </span>
-                ))}
+                }
                 <input
                     type="text"
                     placeholder={intl.formatMessage({
                         id: 'SEARCH'
                     })}
                     value={searchString}
-                    onFocus={() => setInputSelected(true)}
-                    onBlur={() => setInputSelected(false)}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     onChange={(event) => setSearchString(event.target.value)}
                 />
             </div>
             <div className="start-new-convo__users" ref={usersWrapper}>
-                {(includeFactions ? allHandles : filteredUsers).map(
+                {allHandles.map(
                     (handle) => (
                         <div key={handle} className="start-new-convo__user">
                             {handle}
@@ -126,7 +102,7 @@ export const UserSelect: FC<IUserSelectProps> = ({
                                 id={handle + 'checkbox'}
                                 type="checkbox"
                                 onChange={() => handleSelection(handle)}
-                                checked={selectedHandles.includes(handle)}
+                                checked={value === handle}
                             />
                             <label htmlFor={handle + 'checkbox'}></label>
                         </div>
