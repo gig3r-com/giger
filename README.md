@@ -79,3 +79,4 @@ docker-compose exec backend flask init backdoor
 
 App should be now available on localhost 8080. If you don't like the port, create file `.env` and add `PORT=your_desiderd_port`.
 
+
