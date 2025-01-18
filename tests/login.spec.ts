@@ -1,27 +1,39 @@
 import { test, expect } from "@playwright/test";
-
-const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8080/"
+import { randomSuccessfulLogin, randomUnSuccessfulLogin } from "./testData";
+import { BASE_URL } from "./testData";
 
 test.describe("UserLogin", () => {
-  test("SuccesfullLogin", async ({ page }) => {
+  test("SuccessfulLogin", async ({ page }) => {
     await page.goto(BASE_URL);
-    await page.getByPlaceholder("Username").fill("0_connor");
-    await page.getByPlaceholder("Username").press("Tab");
-    await page.getByPlaceholder("Password").fill("chip");
+    await page
+      .getByPlaceholder("Username")
+      .fill(randomSuccessfulLogin.username);
+    await page
+      .getByPlaceholder("Password")
+      .fill(randomSuccessfulLogin.password);
     await page.getByRole("button", { name: "Log in" }).click();
-    await page.click('//a[text()="my.id"]');
-
-    await expect(page.getByText("O'connor")).toHaveText("O'connor");
+    await expect(page).toHaveURL(/\/giger\/?$/);
+    const authToken = await page.evaluate(() =>
+      localStorage.getItem("authToken")
+    );
+    expect(authToken).toBeDefined();
+    expect(authToken).not.toBe("");
   });
 });
 
 test("UnsuccesfullLogin", async ({ page }) => {
   await page.goto(BASE_URL);
-  await page.getByPlaceholder("Username").fill("O_connor");
-  await page.getByPlaceholder("Password").fill("chip");
+  for (const user of randomUnSuccessfulLogin){
+  await page
+    .getByPlaceholder("Username")
+    .fill(user.username);
+  await page
+    .getByPlaceholder("Password")
+    .fill(user.password);}
   await page.getByRole("button", { name: "Log in" }).click();
 
   await expect(
     page.getByText("Wrong username or password provided")
   ).toHaveText("Wrong username or password provided");
+
 });
