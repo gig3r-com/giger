@@ -52,11 +52,6 @@ jobs:
     outputs:
       address: ${{ steps.address.outputs.address }}
     steps:
-      - name: install additional packages
-        run: |
-          sudo apt update
-          sudo apt install -y curl git
-
       - name: Checkout
         uses: actions/checkout@v4
         with:

@@ -36,10 +36,6 @@ jobs:
   build-app:
     runs-on: ${{ inputs.GITHUB_RUNNER_NAME }}
     steps:
-      - name: install additional packages
-        run: |
-          sudo apt update
-          sudo apt install -y curl git nuget
       - name: Checkout
         uses: actions/checkout@v4
         with:
