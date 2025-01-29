@@ -2,6 +2,24 @@
 
 Welcome to the Giger Web App! This application simulates a dystopian cyberpunk world where players can interact with various gigs and immerse themselves in the futuristic setting.
 
+# Testing
+CI automatically builds and deploys new env on each pull request (with URL based on the PR name, you will get info about URL in github actions log).
+
+Data loaded to the test database, are taken from https://github.com/gig3r-com/giger-data repository, and selected based on branch parameter in data submodule: https://github.com/gig3r-com/giger/blob/main/.gitmodules
+
+```
+[submodule "data"]
+    path = data
+    url = git@github.com:gig3r-com/giger-data.git
+    branch = main
+```
+
+To change loaded data:
+1. Change data in giger-data repo
+2. Either merge to main, or change REF for your giger branch to one in giger-data
+3. Run `git module update --remote` on main giger app
+CAUTION: If you merge this to main, base env will be loading dataset from REF on each deploy
+
 ## Installation
 
 Before you start, make sure you have Node.js and npm (Node Package Manager) installed on your machine.
