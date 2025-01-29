@@ -17,7 +17,7 @@ Data loaded to the test database, are taken from https://github.com/gig3r-com/gi
 To change loaded data:
 1. Change data in giger-data repo
 2. Either merge to main, or change REF for your giger branch to one in giger-data
-
+3. Run `git module update --remote` on main giger app
 CAUTION: If you merge this to main, base env will be loading dataset from REF on each deploy
 
 ## Installation
