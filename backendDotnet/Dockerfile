@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine3.19 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine3.20 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.20 AS build
 
 ARG TARGETPLATFORM
 ARG TARGETOS
