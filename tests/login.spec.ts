@@ -1,16 +1,18 @@
 import { test, expect } from "@playwright/test";
-import { randomSuccessfulLogin, randomUnSuccessfulLogin } from "./testData";
-import { BASE_URL } from "./testData";
+import { BASE_URL, AUTHS, USERS } from "./testData";
+
+const auth = AUTHS[6];
+const user = USERS.find((user) => user.Handle === auth.Username);
 
 test.describe("UserLogin", () => {
   test("SuccessfulLogin", async ({ page }) => {
     await page.goto(BASE_URL);
     await page
       .getByPlaceholder("Username")
-      .fill(randomSuccessfulLogin.username);
+      .fill(auth.Username);
     await page
       .getByPlaceholder("Password")
-      .fill(randomSuccessfulLogin.password);
+      .fill(auth.Password);
     await page.getByRole("button", { name: "Log in" }).click();
     await expect(page).toHaveURL(/\/giger\/?$/);
     const authToken = await page.evaluate(() =>
@@ -23,13 +25,12 @@ test.describe("UserLogin", () => {
 
 test("UnsuccesfullLogin", async ({ page }) => {
   await page.goto(BASE_URL);
-  for (const user of randomUnSuccessfulLogin){
   await page
     .getByPlaceholder("Username")
-    .fill(user.username);
+    .fill(auth.Username);
   await page
     .getByPlaceholder("Password")
-    .fill(user.password);}
+    .fill("Wr0nG_P@$$w0rd");
   await page.getByRole("button", { name: "Log in" }).click();
 
   await expect(

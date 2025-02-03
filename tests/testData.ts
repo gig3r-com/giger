@@ -1,67 +1,9 @@
-export const BASE_URL = "http://localhost:5173/";
+const fs = require("fs");
 
-type randomSuccessfulLogin = {
-  username: string;
-  password: string;
-};
+export const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8080/";
 
-export const randomSuccessfulLogin = { username: "0_connor", password: "chip" };
-
-type randomUnSuccessfulLogin = {
-  username: string;
-  password: string;
-};
-
-export const randomUnSuccessfulLogin = [
-{
-  username: "O_connor",
-  password: "chip",
-},
-{
-  username: "o_connor",
-  password: "chip",
-},
-{
-  username: "0_Connor",
-  password: "chip",
-},
-{
-  username: "0_conor",
-  password: "chip",
-},
-{
-  username: "0_connor",
-  password: "Chip",
-},
-{
-  username: "",
-  password: "chip",
-},
-{
-  username: "0_connor",
-  password: "",
-},
-{
-  username: "0_connor",
-  password: " chip ",
-},
-{
-  username: " 0_connor ",
-  password: "chip",
-},
-{
-  username: "0_connor",
-  password: "@!#^",
-},
-{
-  username: "0#connor",
-  password: "chip",
-},
-{
-  username: "incorrectUser",
-  password: "incorrectPassword",
-},
-];
+export const AUTHS = JSON.parse(fs.readFileSync("data/mongo/Auths.json"));
+export const USERS = JSON.parse(fs.readFileSync("data/mongo/Users.json"));
 
 //Konta do weryfikacji limitów bankowych
 
