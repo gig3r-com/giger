@@ -43,6 +43,7 @@ export const MainMenu = () => {
                     <Fragment key={option.name + option.link}>
                         <li
                             className={classes(option)}
+                            data-pw={"bottom-menu-link-" + option.name}
                             onClick={() =>
                                 dispatch(setSelectedGig({ gigId: '' }))
                             }

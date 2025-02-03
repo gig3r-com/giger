@@ -98,4 +98,4 @@ jobs:
 
       - name: output address
         id: address
-        run: echo "address=${{ env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> $GITHUB_OUTPUT
+        run: echo "address=${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> $GITHUB_OUTPUT
