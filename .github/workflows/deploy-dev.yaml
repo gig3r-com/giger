@@ -77,7 +77,7 @@ jobs:
       - name: Run tests
         run: npx playwright test
         env:
-          BASE_URL: ${{ needs.deploy-helm-chart.outputs.address }}
+          BASE_URL: "https://${{ needs.deploy-helm-chart.outputs.address }}"
 
   comment:
     if: github.event_name == 'pull_request'
