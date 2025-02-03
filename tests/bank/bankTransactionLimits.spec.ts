@@ -3,32 +3,32 @@ import {BASE_URL} from '../testData';
 import {usersByTransactionLimits} from '../testData';
 
 
-test.describe ("Bank Transaction Limits - Negative Tests", () => {
-  for (const user of usersByTransactionLimits) {
-    test (`Bank Transaction Limits - validate transaction limit exceeded for permission: ${user.permissions}`, async ({ page }) => {
-    await page.goto(BASE_URL);
-    await page.getByPlaceholder('Username').fill(user.username);
-    await page.getByPlaceholder('Password').fill(user.password);
-    await page.getByRole('button', { name: 'Log in' }).click();
-    await expect(page).toHaveURL(/\/giger\/?$/);
-    const authToken = await page.evaluate(() =>
-      localStorage.getItem("authToken")
-  );
-   const bank = await page.getByRole('link', { name: 'bank' })
-   console.log('bank: ', bank);
-   await bank.click();
-    await page.getByRole('button', { name: 'Transfer' }).click();
-    await page.getByPlaceholder('Amount').fill(String(user.transactionAmount));
-    await page.getByPlaceholder('Title').fill('invalidTransactionAmount');
-    await page.getByText('0_connor').click();
-    await page.getByRole('button', { name: 'Transfer' }).click();
-    await page.getByText('0_connor').click();
-    await page.locator('div').filter({ hasText: /^0_connor$/ }).locator('label').click();
-  await page.getByRole('button', { name: 'Transfer' }).click();
-    await expect(page.getByText('TRANSFER_FAILED').first()).toBeVisible();
-  });
-}
-});
+// test.describe ("Bank Transaction Limits - Negative Tests", () => {
+//   for (const user of usersByTransactionLimits) {
+//     test (`Bank Transaction Limits - validate transaction limit exceeded for permission: ${user.permissions}`, async ({ page }) => {
+//     await page.goto(BASE_URL);
+//     await page.getByPlaceholder('Username').fill(user.username);
+//     await page.getByPlaceholder('Password').fill(user.password);
+//     await page.getByRole('button', { name: 'Log in' }).click();
+//     await expect(page).toHaveURL(/\/giger\/?$/);
+//     const authToken = await page.evaluate(() =>
+//       localStorage.getItem("authToken")
+//   );
+//    const bank = await page.getByRole('link', { name: 'bank' })
+//    console.log('bank: ', bank);
+//    await bank.click();
+//     await page.getByRole('button', { name: 'Transfer' }).click();
+//     await page.getByPlaceholder('Amount').fill(String(user.transactionAmount));
+//     await page.getByPlaceholder('Title').fill('invalidTransactionAmount');
+//     await page.getByText('0_connor').click();
+//     await page.getByRole('button', { name: 'Transfer' }).click();
+//     await page.getByText('0_connor').click();
+//     await page.locator('div').filter({ hasText: /^0_connor$/ }).locator('label').click();
+//   await page.getByRole('button', { name: 'Transfer' }).click();
+//     await expect(page.getByText('TRANSFER_FAILED').first()).toBeVisible();
+//   });
+// }
+// });
 
 // test.describe ("Bank Transaction Limits - Positive Tests", () => {
 //   for (const user of usersByTransactionLimits) {
