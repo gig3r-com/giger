@@ -40,9 +40,9 @@ spec:
         volumeMounts:
         - name: mongo-scripts
           mountPath: /docker-entrypoint-initdb.d
-        {{- if eq "app" .Values.environment }}
+        {{- if (or (eq true .Values.mongo.persistent) (eq "app" .Values.environment )) }}
         - name: mongo-persistent-storage
-          mountPath: /data/db
+          mountPath: {{ include "gig3r.mongodb.mountPath" . }}
           {{- end }}
       imagePullSecrets:
       - name: regcred
@@ -51,7 +51,7 @@ spec:
         - name: "mongo-scripts"
           configMap:
             name: "mongo-scripts"
-        {{- if eq "app" .Values.environment }}
+        {{- if (or (eq true .Values.mongo.persistent) (eq "app" .Values.environment )) }}
         - name: mongo-persistent-storage
           hostPath:
             path: /opt/mongo/{{ .Values.environment }}

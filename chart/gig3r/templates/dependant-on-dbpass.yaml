@@ -1,4 +1,4 @@
-{{ $dbpass := include "gig3r.database.password" (dict "Namespace" .Release.Namespace ) }}
+{{ $dbpass := include "gig3r.mongodb.password" (dict "Namespace" .Release.Namespace ) }}
 {{ with (mergeOverwrite . (dict "Values" (dict "database" (dict "password" $dbpass)) )) }}
 ---
 apiVersion: v1
