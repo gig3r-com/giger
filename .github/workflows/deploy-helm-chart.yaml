@@ -96,7 +96,7 @@ jobs:
           HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_DATABASE_TAG: ${{ inputs.HELM_DATABASE_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
-          PERSISTENT: ${{ contains(github.event.pull_request.labels.*.name, 'persistent-storage')) }}
+          PERSISTENT: ${{ contains(github.event.pull_request.labels.*.name, 'persistent-storage') }}
 
       - name: output address
         id: address
