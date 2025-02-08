@@ -19,6 +19,5 @@ db.createCollection('ObscuredCodesMap')
 db.createCollection('ProgramCodesMap')
 db.createCollection('Subnetworks')
 db.createCollection('Users')
-db.Auths.insert({_id: '1fe35579-5ce7-46ec-89e0-7e7236700297', Username: 'admin', Password: 'admin'})
 
 EOF
