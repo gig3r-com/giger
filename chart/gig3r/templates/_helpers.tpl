@@ -61,9 +61,9 @@
 
 {{- define "gig3r.mongodb.mountPath" -}}
   {{- if (eq "app" .Values.environment) -}}
-    /data/db
+    /opt/mongo/app
   {{- else -}}
-    /data/db-{{ .Values.environment }}
+    /opt/mongo/db-{{ .Values.environment }}
   {{- end -}}
 {{- end -}}
 
