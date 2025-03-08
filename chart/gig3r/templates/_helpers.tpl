@@ -67,6 +67,14 @@
   {{- end -}}
 {{- end -}}
 
+{{- define "gig3r.mongodb.pv" -}}
+  gig3r-{{ .Values.environment }}-mongo-pv
+{{- end -}}
+
+{{- define "gig3r.mongodb.storage.size" -}}
+  500Mi
+{{- end -}}
+
 ########## MONGO_EXPRESS ##########
 
 {{- define "gig3r.mongo-express.app" -}}
