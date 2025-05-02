@@ -54,6 +54,7 @@ Contributions are welcome! Feel free to fork the repository and submit pull requ
 
 ## License
 This project is licensed under the Creative Commons License.
+If you want to use this application with your larp, you can do it freely - as long as you include "Powered by GiG3R Project" in your credits.
 
 Created with ❤️ by GIG3R Larp Team and LarpVenture
 
