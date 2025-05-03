@@ -16,7 +16,7 @@ on:
 
 jobs:
   build-frontend:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./frontend
       DOCKERFILE_NAME: ./frontend/Dockerfile
@@ -25,7 +25,7 @@ jobs:
     secrets: inherit
 
   build-backend:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./backendDotnet/Giger
       DOCKERFILE_NAME: ./backendDotnet/Dockerfile
@@ -34,7 +34,7 @@ jobs:
     secrets: inherit
 
   build-mongo:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./data/
       DOCKERFILE_NAME: ./data/Dockerfile
@@ -43,7 +43,7 @@ jobs:
     secrets: inherit
   
   deploy-helm-chart:
-    uses: gig3r-com/giger/.github/workflows/deploy-helm-chart.yaml@main
+    uses: ./.github/workflows/deploy-helm-chart.yaml
     needs:
       - build-frontend
       - build-backend
