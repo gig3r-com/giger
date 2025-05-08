@@ -3,4 +3,5 @@ export interface IUserSelectProps {
     mode?: 'single' | 'multi';
     allowFindingSelf?: boolean;
     includeFactions?: boolean;
+    initialSelected?: string[];
 }
