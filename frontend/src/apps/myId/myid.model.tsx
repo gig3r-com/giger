@@ -20,6 +20,5 @@ export interface MyIdItem {
 }
 
 export type MyIdNavigationProps = {
-    active?: boolean;
     onItemClick?: (name: string) => void;
 };

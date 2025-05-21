@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useMyIdService } from '../../shared/services/myid.service';
@@ -96,16 +96,16 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
         <nav className={wrapperClassnames}>
             <ul className="my-id-navigation__category-list">
                 {itemsByCategory.map(({ name, items }) => (
-                    <>
-                        <li className="my-id-navigation__category" key={name}>
+                    <Fragment key={name}>
+                        <li className="my-id-navigation__category">
                             <span className="my-id-navigation__category--title">
                                 {name}
                             </span>
+                            <ul className="my-id-navigation__list">
+                                {items.map(getItem)}
+                            </ul>
                         </li>
-                        <ul className="my-id-navigation__list">
-                            {items.map(getItem)}
-                        </ul>
-                    </>
+                    </Fragment>
                 ))}
             </ul>
         </nav>
