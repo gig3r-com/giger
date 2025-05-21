@@ -7,3 +7,18 @@ export enum MyIdUncoverableSections {
     CRIMINAL = 'CRIMINAL',
     CONTACTS = 'CONTACTS',
 }
+
+export interface MyIdCategory {
+    name: string;
+    items: MyIdItem[];
+}
+
+export interface MyIdItem {
+    name: string;
+    isNew?: boolean;
+    onClickAction?: () => void;
+}
+
+export type MyIdNavigationProps = {
+    onItemClick?: (name: string) => void;
+};
