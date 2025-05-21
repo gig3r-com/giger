@@ -3,15 +3,15 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useMyIdService } from '../../shared/services/myid.service';
-import { MyIdUncoverableSections } from './myid.model';
+import {
+    MyIdCategory,
+    MyIdItem,
+    MyIdNavigationProps,
+    MyIdUncoverableSections
+} from './myid.model';
 import { useApiService } from '../../shared/services/api.service';
 
 import './my-id-navigation.scss';
-
-export type MyIdNavigationProps = {
-    active?: boolean;
-    onItemClick?: (name: string) => void;
-};
 
 export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
     const userName = useSelector(
@@ -22,52 +22,90 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
     const wrapperClassnames = classNames({
         'my-id-navigation': true
     });
-    const items = [
-        { name: 'contacts' },
-        { name: 'vibe' },
+    const itemsByCategory: MyIdCategory[] = [
         {
-            name: 'medical',
-            isNew: hasNewEntries(MyIdUncoverableSections.MEDICAL)
+            name: 'general',
+            items: [
+                { name: 'contacts' },
+                {
+                    name: 'medical',
+                    isNew: hasNewEntries(MyIdUncoverableSections.MEDICAL)
+                },
+                {
+                    name: 'criminal',
+                    isNew: hasNewEntries(MyIdUncoverableSections.CRIMINAL)
+                },
+                {
+                    name: 'records',
+                    isNew: hasNewEntries(
+                        MyIdUncoverableSections.PRIVATE_RECORDS
+                    )
+                }
+            ]
         },
         {
-            name: 'criminal',
-            isNew: hasNewEntries(MyIdUncoverableSections.CRIMINAL)
+            name: 'private',
+            items: [
+                { name: 'vibe' },
+                {
+                    name: 'goals',
+                    isNew: hasNewEntries(MyIdUncoverableSections.GOALS)
+                },
+                {
+                    name: 'relations',
+                    isNew: hasNewEntries(MyIdUncoverableSections.RELATIONS)
+                }
+            ]
         },
-        { name: 'goals', isNew: hasNewEntries(MyIdUncoverableSections.GOALS) },
         {
-            name: 'relations',
-            isNew: hasNewEntries(MyIdUncoverableSections.RELATIONS)
-        },
-        { name: 'meta', isNew: hasNewEntries(MyIdUncoverableSections.META) },
-        {
-            name: 'records',
-            isNew: hasNewEntries(MyIdUncoverableSections.PRIVATE_RECORDS)
-        },
-        { name: 'code' },
-        { name: 'log out', onClickAction: () => logout(userName ?? '') }
+            name: 'meta',
+            items: [
+                {
+                    name: 'meta',
+                    isNew: hasNewEntries(MyIdUncoverableSections.META)
+                },
+                { name: 'code' },
+                { name: 'log out', onClickAction: () => logout(userName ?? '') }
+            ]
+        }
     ];
+
+    const getItem = (item: MyIdItem) => {
+        return (
+            <li
+                className="my-id-navigation__item"
+                key={item.name}
+                onClick={() =>
+                    item.onClickAction
+                        ? item.onClickAction()
+                        : onItemClick?.(item.name)
+                }
+            >
+                {item.name}
+                {item.isNew && (
+                    <span className="my-id-navigation__item--badge-new">
+                        <div className="oval" />
+                        new
+                    </span>
+                )}
+            </li>
+        );
+    };
 
     return (
         <nav className={wrapperClassnames}>
-            <ul className="my-id-navigation__list">
-                {items.map(({ name, isNew, onClickAction }) => (
-                    <li
-                        className="my-id-navigation__item"
-                        key={name}
-                        onClick={() =>
-                            onClickAction
-                                ? onClickAction()
-                                : onItemClick?.(name)
-                        }
-                    >
-                        {name}
-                        {isNew && (
-                            <span className="my-id-navigation__item--badge-new">
-                                <div className="oval" />
-                                new
+            <ul className="my-id-navigation__category-list">
+                {itemsByCategory.map(({ name, items }) => (
+                    <>
+                        <li className="my-id-navigation__category" key={name}>
+                            <span className="my-id-navigation__category--title">
+                                {name}
                             </span>
-                        )}
-                    </li>
+                        </li>
+                        <ul className="my-id-navigation__list">
+                            {items.map(getItem)}
+                        </ul>
+                    </>
                 ))}
             </ul>
         </nav>
