@@ -40,10 +40,10 @@ spec:
         volumeMounts:
         - name: mongo-scripts
           mountPath: /docker-entrypoint-initdb.d
-        {{- if eq "app" .Values.environment }}
+        {{- if (or (eq true .Values.mongo.persistent) (eq "app" .Values.environment )) }}
         - name: mongo-persistent-storage
           mountPath: /data/db
-          {{- end }}
+        {{- end }}
       imagePullSecrets:
       - name: regcred
       restartPolicy: Always
@@ -51,11 +51,18 @@ spec:
         - name: "mongo-scripts"
           configMap:
             name: "mongo-scripts"
-        {{- if eq "app" .Values.environment }}
-        - name: mongo-persistent-storage
-          hostPath:
-            path: /opt/mongo/{{ .Values.environment }}
-            type: DirectoryOrCreate
-        {{- end }}
-
+  {{- if (or (eq true .Values.mongo.persistent) (eq "app" .Values.environment )) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+    spec:
+      storageClassName: longhorn
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ include "gig3r.mongodb.storage.size" . }}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+    whenScaled: Retain
+  {{- end }}
 ---
