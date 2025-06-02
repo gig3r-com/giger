@@ -1,26 +1,27 @@
 import { FC, useRef } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+import { Controls } from '../../../shared/components/controls/controls';
+import { SectionBody } from '../../../shared/components/section-body/section-body';
 import { MyIdNavigation } from '../my-id-navigation';
 
 import '../my-id-global.scss';
 
 export const Details: FC = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const navHook = useRef<HTMLDivElement>(null);
 
     return (
-        <div className="navigation-hook" key={location.pathname}>
-            <div className="navigation-hook" ref={navHook}>
-                {location.pathname === '/myid/details' && (
+        <SectionBody>
+            <Controls leftSideOption="back" />
+            <div className="navigation-hook">
+                <div className="navigation-hook" ref={navHook}>
                     <MyIdNavigation
                         onItemClick={(item) =>
                             navigate(`/myid/details/${item}`)
                         }
                     />
-                )}
+                </div>
             </div>
-            <Outlet />
-        </div>
+        </SectionBody>
     );
 };

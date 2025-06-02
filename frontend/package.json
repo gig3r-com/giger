@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "local": "env-cmd -f src/env/.env.local vite",
-        "dev": "env-cmd -f src/env/.env.dev vite",
+        "dev": "env-cmd -f src/env/.env.dev vite --host",
         "prod": "env-cmd -f src/env/.env.prod vite",
         "build": "tsc && vite build",
         "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
@@ -15,9 +15,11 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.9.5",
+        "@yudiel/react-qr-scanner": "^2.0.8",
         "classnames": "^2.3.2",
         "dayjs": "^1.11.10",
         "env-cmd": "^10.1.0",
+        "formik": "^2.4.6",
         "framer-motion": "^10.15.1",
         "lodash-es": "^4.17.21",
         "material-icons": "^1.13.12",
@@ -30,7 +32,8 @@
         "react-router-dom": "^6.14.2",
         "shader-canvas": "^0.8.3",
         "uuid": "^9.0.0",
-        "wretch": "^2.8.1"
+        "wretch": "^2.8.1",
+        "yup": "^1.4.0"
     },
     "devDependencies": {
         "@types/lodash-es": "^4.17.12",
@@ -48,6 +51,7 @@
         "sass": "^1.64.2",
         "typescript": "^5.0.2",
         "vite": "^5.2.10",
+        "vite-plugin-mkcert": "^1.17.6",
         "vite-plugin-pwa": "^0.19.8",
         "vite-plugin-svgr": "^4.2.0"
     }
