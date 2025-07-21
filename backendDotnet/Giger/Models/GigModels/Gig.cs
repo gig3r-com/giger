@@ -1,8 +1,4 @@
 ﻿using Giger.Models.Obscured;
-using Giger.Models.User;
-using Microsoft.Extensions.Primitives;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace Giger.Models.GigModels
 {
@@ -16,17 +12,14 @@ namespace Giger.Models.GigModels
 
         public string? ConversationId { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public required GigCategoryNames Category { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public required GigSubcategoryNames Subcategory { get; set; }
 
         public required GigRepuationLevels ReputationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public GigStatus Status { get; set; }
 
         public required string AuthorId { get; set; }
@@ -47,7 +40,6 @@ namespace Giger.Models.GigModels
 
         public DateTime? AcceptedAt { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public required GigModes Mode { get; set; }
 
         public bool IsRevealedByClient { get; set; } = true;

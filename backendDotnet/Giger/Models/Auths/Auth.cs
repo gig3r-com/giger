@@ -1,11 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace Giger.Models.Auths
+﻿namespace Giger.Models.Auths
 {
     public class Auth
     {
-        [BsonId]
-        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public required string Username { get; set; } // UserPublic.Handle

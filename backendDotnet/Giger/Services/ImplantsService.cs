@@ -1,33 +1,43 @@
-﻿using Giger.Models;
-using Giger.Models.EventModels;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.EventModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class ImplantsService : AbstractService
-    { 
-        private readonly IMongoCollection<MedicalEvent> _implantsCollection;
+    public class ImplantsService
+    {
+        private readonly GigerDbContext _dbContext;
 
-        public ImplantsService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public ImplantsService(GigerDbContext dbContext)
         {
-            _implantsCollection = _mongoDatabase.GetCollection<MedicalEvent>(
-                gigerDatabaseSettings.Value.ImplantsCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<MedicalEvent>> GetAllAsync() =>
-            await _implantsCollection.Find(_ => true).ToListAsync();
+            await _dbContext.MedicalEvents.ToListAsync();
 
         public async Task<MedicalEvent?> GetAsync(string id) =>
-            await _implantsCollection.Find(i => i.Id == id).FirstOrDefaultAsync();
+            await _dbContext.MedicalEvents.FirstOrDefaultAsync(i => i.Id == id);
 
-        public async Task CreateAsync(MedicalEvent newEvent) =>
-            await _implantsCollection.InsertOneAsync(newEvent);
+        public async Task CreateAsync(MedicalEvent newEvent)
+        {
+            _dbContext.MedicalEvents.Add(newEvent);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(MedicalEvent updatedEvent) =>
-            await _implantsCollection.ReplaceOneAsync(x => x.Id == updatedEvent.Id, updatedEvent);
+        public async Task UpdateAsync(MedicalEvent updatedEvent)
+        {
+            _dbContext.MedicalEvents.Update(updatedEvent);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _implantsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var medicalEvent = await GetAsync(id);
+            if (medicalEvent != null)
+            {
+                _dbContext.MedicalEvents.Remove(medicalEvent);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

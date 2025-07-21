@@ -8,7 +8,7 @@ namespace Giger.Services.Extensions
         {
             foreach (var type in Assembly.GetEntryAssembly().ExportedTypes)
             {
-                if (type.GetTypeInfo().BaseType == typeof(AbstractService))
+                if (type.GetTypeInfo().BaseType == typeof(GigerDbContext))
                     services.AddSingleton(type);
             }
             return services;

@@ -1,51 +1,69 @@
-﻿using Giger.Models;
-using Giger.Models.GigModels;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.GigModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class GigService : AbstractService
-    { 
-        private readonly IMongoCollection<Gig> _gigsCollection;
+    public class GigService
+    {
+        private readonly GigerDbContext _dbContext;
 
-        public GigService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public GigService(GigerDbContext dbContext)
         {
-            _gigsCollection = _mongoDatabase.GetCollection<Gig>(
-                gigerDatabaseSettings.Value.GigsCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<Gig>> GetAllAsync() =>
-            await _gigsCollection.Find(_ => true).ToListAsync();
+            await _dbContext.Gigs.ToListAsync();
 
         public async Task<List<Gig>> GetAllVisibleToUserAsync(string requestSenderId) =>
-            await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE ||
-                    g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
+            await _dbContext.Gigs
+                .Where(g => g.Status == GigStatus.AVAILABLE ||
+                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .ToListAsync();
 
         public async Task<List<Gig>> GetAllVisibleToModeratorAsync(string requestSenderId) =>
-            await _gigsCollection.Find(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
-                    g.TakenById == requestSenderId || g.AuthorId == requestSenderId).ToListAsync();
+            await _dbContext.Gigs
+                .Where(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
+                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .ToListAsync();
 
         public async Task<List<Gig>> GetAllOwnAsync(string userId) =>
-            await _gigsCollection.Find(g => g.TakenById == userId || g.AuthorId == userId).ToListAsync();
+            await _dbContext.Gigs
+                .Where(g => g.TakenById == userId || g.AuthorId == userId)
+                .ToListAsync();
 
         public async Task<Gig?> GetAsync(string id) =>
-            await _gigsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            await _dbContext.Gigs.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<long> GetLimitedUserGigsCountAsync(string takenBy) =>
-            await _gigsCollection.Find(x => x.TakenById == takenBy && x.Mode == GigModes.CLIENT &&
-                (x.Status == GigStatus.IN_PROGRESS || x.Status == GigStatus.DISPUTE)).CountDocumentsAsync();
+            await _dbContext.Gigs
+                .Where(x => x.TakenById == takenBy && x.Mode == GigModes.CLIENT &&
+                    (x.Status == GigStatus.IN_PROGRESS || x.Status == GigStatus.DISPUTE))
+                .LongCountAsync();
 
         public async Task<Gig?> GetByFirstNameAsync(string title) =>
-            await _gigsCollection.Find(x => x.Title == title).FirstOrDefaultAsync();
+            await _dbContext.Gigs.FirstOrDefaultAsync(x => x.Title == title);
 
-        public async Task CreateAsync(Gig newGig) =>
-            await _gigsCollection.InsertOneAsync(newGig);
+        public async Task CreateAsync(Gig newGig)
+        {
+            _dbContext.Gigs.Add(newGig);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Gig updatedGig) =>
-            await _gigsCollection.ReplaceOneAsync(x => x.Id == updatedGig.Id, updatedGig);
+        public async Task UpdateAsync(Gig updatedGig)
+        {
+            _dbContext.Gigs.Update(updatedGig);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _gigsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var gig = await GetAsync(id);
+            if (gig != null)
+            {
+                _dbContext.Gigs.Remove(gig);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

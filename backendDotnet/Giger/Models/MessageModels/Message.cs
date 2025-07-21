@@ -1,12 +1,9 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Giger.Models.MessageModels
 {
     public class Message
     {
-        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public required DateTime Date { get; set; }

@@ -7,6 +7,13 @@
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string DatabaseName { get; set; } = null!;
+        public string ConnectionString
+        {
+            get
+            {
+                return $"Host=localhost;Port={Port};Database={DatabaseName};Username={Username};Password={Password}";
+            }
+        }
 
         // Database table names
         public string AccountsCollectionName { get; set; } = null!;

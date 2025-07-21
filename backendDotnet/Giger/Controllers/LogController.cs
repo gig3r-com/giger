@@ -1,7 +1,6 @@
 ﻿using Giger.Models.Logs;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace Giger.Controllers
 {

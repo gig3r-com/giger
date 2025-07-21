@@ -1,8 +1,6 @@
 ﻿using Giger.Models.EventModels;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace Giger.Models.User
 {
@@ -10,7 +8,6 @@ namespace Giger.Models.User
     {
         public required CyberwareLevel CyberwareLevel { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public required UserTypes TypeActual { get; set; }
 
         public string? FactionRankActual { get; set; }
@@ -33,15 +30,12 @@ namespace Giger.Models.User
 
         public string? VibeOpinions { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         public required VibeEngagement VibeEngagement { get; set; }
 
         public string[] FavoriteUserIds { get; set; } = [];
 
-        [BsonRepresentation(BsonType.String)]
         public required Factions Faction { get; set; }
 
-        [BsonRepresentation(BsonType.Int32)]
         public int InsuredAmount { get; set; }
 
         public Dictionary<string, decimal> GigReputation { get; set; } = [];
@@ -64,7 +58,6 @@ namespace Giger.Models.User
         // hacker only
         public string[] Exploits { get; set; } = [];
 
-        [BsonRepresentation(BsonType.String)]
         public required MindHacks MindHack { get; set; }
 
         public string[] MindHackEnabledFor { get; set; } = []; 

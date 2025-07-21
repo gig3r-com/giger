@@ -1,13 +1,9 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models.Networks
 {
     public class Subnetwork
     {
-        [BsonId]
-        [BsonElement("_id")]
         public required string Id { get; set; }
 
         public required string Name { get; set; }
@@ -16,10 +12,8 @@ namespace Giger.Models.Networks
 
         public required string[] Users { get; set; } = [];
 
-        [BsonRepresentation(BsonType.String)]
         public Firewall? Firewall { get; set; }
         
-        [BsonRepresentation(BsonType.String)]
         public OperatingSystem? OperatingSystem { get; set; }
 
         public string[] Ice { get; set; } = [];
