@@ -1,5 +1,4 @@
 ﻿using Giger.Models.User;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.User
 {
