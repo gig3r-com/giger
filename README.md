@@ -1,58 +1,38 @@
-# Giger Web App
+# CyberCrush Web App
 
-Welcome to the Giger Web App! This application simulates a dystopian cyberpunk world where players can interact with various gigs and immerse themselves in the futuristic setting.
+This is a fork of Giger App. We develop it to fit our cyberpunk world and the CyberCrush Larp. Doue to that some freatures might be missing and some will be added. 
 
-# Testing
-CI automatically builds and deploys new env on each pull request (with URL based on the PR name, you will get info about URL in github actions log).
+## Installation (Linux)
 
-Data loaded to the test database, are taken from https://github.com/gig3r-com/giger-data repository, and selected based on branch parameter in data submodule: https://github.com/gig3r-com/giger/blob/main/.gitmodules
+### 1. Prerequesits
 
-```
-[submodule "data"]
-    path = data
-    url = git@github.com:gig3r-com/giger-data.git
-    branch = main
-```
+Before you start, make sure you have all those tools installed on your development machine.
+ - .Net 8
+ - Docker
+ - Node.js
 
-To change loaded data:
-1. Change data in giger-data repo
-2. Either merge to main, or change REF for your giger branch to one in giger-data
-3. Run `git module update --remote` on main giger app
-CAUTION: If you merge this to main, base env will be loading dataset from REF on each deploy
+### 2. Clone the repository
+Use the `git clone` command to clone the repository. Go into the CyberCrush folder.
 
-## Installation
+### 3. Setup the database (optional)
+Before you create new accounts we recommend to run the app on some example data and see if everything is working. To generate example data go to `backendDotnet/DatabaseSerializer`. There you will find a file named `Program.cs`. Use the `dotnet run` command on the `Program.cs` and wait for the output (it might take a while). If everything worked correctly you should see a new folder called `bin`. In it you should see a folder named `ModelsExample`, this folder contains Mongodb `.json` files.
 
-Before you start, make sure you have Node.js and npm (Node Package Manager) installed on your machine.
+Go to the root folder and find the `data` directory. In it create a new folder named mongo. At last copy all the generated `.json` files into that folder.
 
-# Clone the repository:
-git clone <repository-url>
-Navigate to the project directory:
+### 4. Use docker to build the app
+Run application stack from the folder root of the project.
 
-cd giger
+    docker compose up -d --build
 
-## Install dependencies:
-npm install
-Running the App
-To start the development server and run the application, follow these steps:
+### 5. Check if everything is working
+Open a web browser and go to `127.0.0.1:8081` to access the database. The default login credentials are `Admin` for the username and `pass` for the password. Find the `Auth` collection and check if it contains 3 entries.
 
-## Run the development server:
-npm run dev
-Open your web browser and visit: http://localhost:5137
-You should now see the Giger Web App running in your browser.
-
-Features
-Explore a range of illegal gigs in a cyberpunk world.
-Engage with various gig categories, messages, and statuses.
-Immerse yourself in the futuristic setting through the app's user interface.
-Technologies Used
-Vite: Build tool for rapid web development.
-React: JavaScript library for building user interfaces.
-TypeScript: Superset of JavaScript with static types.
+In an another tab go to `127.0.0.1:8080` to access the web app. Use the login credentials from the database to login.
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit pull requests for any enhancements or bug fixes.
 
-## License
+## Giger License
 This project is licensed under the Creative Commons License.
 If you want to use this application with your larp, you can do it freely - as long as you include "Powered by GiG3R Project" in your credits.
 
@@ -82,21 +62,3 @@ Paweł Jasiński
 Ida Pawłowicz
 
 For any inquiries, please contact juskiw.borys - at - gmail.com
-
-## DevOps
-
-- Run application stack from the root of the repository:
-    ```sh
-    docker compose up -d --build
-    ```
-- Reinitialize mongo database:
-    ```sh
-    docker compose down
-    rm ./docker/volumes/mongo
-    docker compose up -d
-    ```
-
-
-App should be now available on localhost:8080. If you don't like the port, create file `.env` and add `PORT=your_desiderd_port`.
-
-
