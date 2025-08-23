@@ -4,6 +4,8 @@
     width: 100%;
     height: calc(100dvh - 137px);
     overflow: auto;
+    padding: 2rem 1rem 1rem 1rem;
+    box-sizing: border-box;
 
     &__list {
         padding: 0;

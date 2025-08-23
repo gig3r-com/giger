@@ -74,6 +74,7 @@ export const GigHeader: FC<{
                     className={gigSummaryClassName(gig)}
                     onClick={onClickHandler}
                     key={gig.id}
+                    transition={{duration: 0.3}}
                     {...generateAnimation('horExpand', {
                         delay: delayMultiplier * 0.03
                     })}

@@ -9,15 +9,16 @@ import { WebSocketProvider } from './shared/providers/websocket.provider.tsx';
 import './index.css';
 import 'material-icons/iconfont/material-icons.css';
 import './styles/general.scss';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <>
-        <Provider store={store}>
-            <IntlProvider messages={messages} locale="en" defaultLocale="en">
-                <WebSocketProvider>
+    <Provider store={store}>
+        <IntlProvider messages={messages} locale="en" defaultLocale="en">
+            <WebSocketProvider>
+                <BrowserRouter>
                     <Router />
-                </WebSocketProvider>
-            </IntlProvider>
-        </Provider>
-    </>
+                </BrowserRouter>
+            </WebSocketProvider>
+        </IntlProvider>
+    </Provider>
 );

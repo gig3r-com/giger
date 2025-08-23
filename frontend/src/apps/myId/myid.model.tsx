@@ -10,12 +10,14 @@ export enum MyIdUncoverableSections {
 
 export interface MyIdCategory {
     name: string;
+    hidden?: boolean;
     items: MyIdItem[];
 }
 
 export interface MyIdItem {
     name: string;
     isNew?: boolean;
+    hidden?: boolean;
     onClickAction?: () => void;
 }
 
