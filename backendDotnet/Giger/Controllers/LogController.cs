@@ -6,12 +6,11 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LogController(UserService userService, LoginService loginService, LogService logService, NetworksService networksService) 
+    public class LogController(UserService userService, LoginService loginService, 
+        LogService _logService,
+        NetworksService _networksService) 
         : AuthController(userService, loginService)
     {
-        private readonly LogService _logService = logService;
-        private readonly NetworksService _networksService = networksService;
-
         [HttpGet("{subnetworkId}/all")]
         public async Task<List<Log>> GetAllSubnetworkLogs(string subnetworkId) => await _logService.GetAllForSubnetworkAsync(subnetworkId);
 

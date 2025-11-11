@@ -3,31 +3,14 @@ using Giger.Connections.SocketsManagment;
 using Giger.Models.Logs;
 using Giger.Models.MessageModels;
 using Giger.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class ConversationMessageHandler : SocketHandler
+    public class ConversationMessageHandler(ConnectionsManager connections, IServiceProvider _serviceProvider) : SocketHandler(connections)
     {
-        ConversationService _conversationService;
-        LogService _logService;
-        UserService _userService;
-        private readonly IServiceProvider _serviceProvider;
-
-        public ConversationMessageHandler(ConnectionsManager connections, 
-            //ConversationService conversationService,             LogService logService, UserService userService,
-            IServiceProvider serviceProvider
-            ) : base(connections)
-        {
-            _serviceProvider = serviceProvider;
-            //_conversationService = conversationService;
-            //_logService = logService;
-            //_userService = userService;
-        }
-
         public async Task SendMessageAsync(IEnumerable<string> participants, string converasationId, Message message)
         {
             try
@@ -58,16 +41,17 @@ namespace Giger.Connections.Handlers
 
             try
             {
+                var conversationService = ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider);
                 var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 var payload = JsonSerializer.Deserialize<MessagePayload>(msg);
-                var conversation = await _conversationService.GetAsync(payload.ConversationId);
+                var conversation = await conversationService.GetAsync(payload.ConversationId);
                 if (conversation != null)
                 {
                     conversation.Messages.Add(payload.Message);
-                    await _conversationService.UpdateAsync(conversation);
+                    await conversationService.UpdateAsync(conversation);
                     var message = JsonSerializer.Serialize(payload);
                     await SendMessageToParticipantsAsync(message, conversation.Participants);
-                    LogMessage(payload.Message, payload.ConversationId);
+                    LogMessage(payload.Message, payload.ConversationId, conversationService);
                 }
             } 
             catch (Exception ex)
@@ -76,10 +60,17 @@ namespace Giger.Connections.Handlers
             }
         }
 
-        private async void LogMessage(Message message, string conversationId)
+        private async void LogMessage(Message message, string conversationId, ConversationService? conversationService = null)
         {
-            var user = await _userService.GetByUserNameAsync(message.Sender);
-            var conversation = await _conversationService.GetAsync(conversationId);
+            LogMessage(message, conversationId,
+                conversationService ?? ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider),
+                ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider),
+                ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider));
+        }
+        private async void LogMessage(Message message, string conversationId, ConversationService conversationService, LogService logService, UserService userService)
+        {
+            var user = await userService.GetByUserNameAsync(message.Sender);
+            var conversation = await conversationService.GetAsync(conversationId);
             var log = new Log()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -94,7 +85,7 @@ namespace Giger.Connections.Handlers
                 SubnetworkName = user.SubnetworkName,
             };
 
-            _logService.CreateAsync(log);
+            logService.CreateAsync(log);
         }
     }
 }

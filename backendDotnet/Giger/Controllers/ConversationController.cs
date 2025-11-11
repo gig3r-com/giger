@@ -7,14 +7,14 @@ namespace Giger.Controllers
 {
     //[ApiController]
     [Route("api/[controller]")]
-    public class ConversationController(UserService userService, LoginService loginService,
-        ConversationService conversationService, NotificationsSocketHandler notificationsHandler, ConversationMessageHandler conversationSocketHandler)
-        : AuthController(userService, loginService)
+    public class ConversationController(UserService _userService, LoginService _loginService,
+        ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
+        : AuthController(_userService, _loginService)
     {
-        private readonly ConversationService _conversationService = conversationService;
-
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
-        private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
+       //private readonly ConversationService _conversationService = conversationService;
+       //
+       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+       //private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)

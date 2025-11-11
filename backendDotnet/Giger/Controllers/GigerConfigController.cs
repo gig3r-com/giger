@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    //[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
-    public class GigerConfigController(UserService userService, LoginService loginService, GigerConfigService gigerConfigService) : AuthController(userService, loginService)
+    public class GigerConfigController(UserService userService, LoginService loginService, GigerConfigService _gigerConfigService) : AuthController(userService, loginService)
     {
-        private readonly GigerConfigService _gigerConfigService = gigerConfigService;
-
         [HttpGet("get")]
         public async Task<ActionResult<GigerConfig>> Get()
         {

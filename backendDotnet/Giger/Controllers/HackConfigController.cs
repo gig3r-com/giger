@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    //[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
-    public class HackConfigController(UserService userService, LoginService loginService, HackConfigService hackConfigService) : AuthController(userService, loginService)
+    public class HackConfigController(UserService userService, LoginService loginService, HackConfigService _hackConfigService) : AuthController(userService, loginService)
     {
-        private readonly HackConfigService _hackConfigService = hackConfigService;
-
         [HttpGet("get/all")]
         public async Task<ActionResult<List<HackConfig>>> GetAll()
         {

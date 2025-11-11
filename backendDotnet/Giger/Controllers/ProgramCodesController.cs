@@ -6,10 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProgramCodesController(UserService userService, LoginService loginService, ProgramCodesService programCodesService) : AuthController(userService, loginService)
+    public class ProgramCodesController(UserService userService, LoginService loginService, 
+        ProgramCodesService _programCodesService) 
+        : AuthController(userService, loginService)
     {
-        private readonly ProgramCodesService _programCodesService = programCodesService;
-
         [HttpGet("get/all")]
         public async Task<List<ProgramCodes>> GetAll()
         {

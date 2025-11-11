@@ -1,28 +1,14 @@
 ﻿using Giger.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController
-        //(IServiceProvider serviceProvider)
+    public class LoginController(UserService _userService, LoginService _loginService)
         : Controller
     {
-        private UserService _userService;// => ScopedServiceProvider.CreateScopedGigerService<UserService>(serviceProvider);  
-        private LoginService _loginService;//{ get => ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider); }
-
-        public LoginController(//IServiceProvider serviceProvider
-            UserService userService, LoginService loginService
-            ) //: this(serviceProvider)
-        {
-            //_loginService = ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider);
-            _loginService = loginService;
-            _userService = userService;
-        }
-
         // TODO: For testing purposes only, remove in production
 #if DEBUG
         [HttpGet("disableAuth")]

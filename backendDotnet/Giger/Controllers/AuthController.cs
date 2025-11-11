@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Giger.Controllers
 {
     public abstract class AuthController//(IServiceProvider serviceProvider
-        //UserService userService, LoginService loginService
+        //(UserService _userService, LoginService _loginService)
         //)
         : Controller
     {

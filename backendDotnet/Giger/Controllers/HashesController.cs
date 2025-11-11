@@ -4,15 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    //[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
-    public class HashesController(UserService userService, LoginService loginService, AccountService accountService,
-        GigService gigService, ConversationService conversationService) : AuthController(userService, loginService)
+    public class HashesController(UserService userService, LoginService loginService,
+        AccountService _accountService,
+        GigService _gigService, 
+        ConversationService _conversationService) : AuthController(userService, loginService)
     {
-        private AccountService _accountService  = accountService;
-        private GigService _gigService = gigService;
-        private ConversationService _conversationService = conversationService;
-
         [HttpGet("update/{id}")]
         public async Task<ActionResult<UpdateHashes>> Get(string id)
         {

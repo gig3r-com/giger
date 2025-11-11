@@ -11,16 +11,8 @@ using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class NotificationsSocketHandler(ConnectionsManager connections,
-        //GigService gigService,        UserService userService, LogService logService,
-        IServiceProvider serviceProvider) : SocketHandler(connections)
+    public class NotificationsSocketHandler(ConnectionsManager connections, IServiceProvider _serviceProvider) : SocketHandler(connections)
     {
-        private readonly IServiceProvider _serviceProvider = serviceProvider;
-
-        //private readonly GigService _gigService = gigService;
-        //private readonly UserService _userService = userService;
-        //private readonly LogService _logService = logService;
-
         public async Task NotifyAccount(string username, Account account) 
             => await NotifyPayload(username, new NotificationPayload() { AccountId = account.Id, AccountHash = account.GetHashCode()});
 
@@ -84,11 +76,10 @@ namespace Giger.Connections.Handlers
 
         private async void LogGigStatusChanged(string gigId)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var gigService = scope.ServiceProvider.GetRequiredService<GigService>();
-            var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+            var gigService = ScopedServiceProvider.CreateScopedGigerService<GigService>(_serviceProvider);
+            var userService = ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider);
+            var logService = ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider);
 
-            var logService = scope.ServiceProvider.GetRequiredService<LogService>();
             var gig = await gigService.GetAsync(gigId);
             var taker = await userService.GetAsync(gig.TakenById);
             var author = await userService.GetAsync(gig.AuthorId);
