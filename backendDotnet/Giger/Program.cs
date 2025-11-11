@@ -23,10 +23,9 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
 builder.Services.AddMvc().AddControllersAsServices();
-builder.Services.AddDbServices();
 
-builder.Services.AddDbContext<GigerDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<GigerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();
 

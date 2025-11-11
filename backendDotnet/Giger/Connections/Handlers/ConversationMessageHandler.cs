@@ -3,6 +3,7 @@ using Giger.Connections.SocketsManagment;
 using Giger.Models.Logs;
 using Giger.Models.MessageModels;
 using Giger.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -14,13 +15,17 @@ namespace Giger.Connections.Handlers
         ConversationService _conversationService;
         LogService _logService;
         UserService _userService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public ConversationMessageHandler(ConnectionsManager connections, ConversationService conversationService, 
-            LogService logService, UserService userService) : base(connections)
+        public ConversationMessageHandler(ConnectionsManager connections, 
+            //ConversationService conversationService,             LogService logService, UserService userService,
+            IServiceProvider serviceProvider
+            ) : base(connections)
         {
-            _conversationService = conversationService;
-            _logService = logService;
-            _userService = userService;
+            _serviceProvider = serviceProvider;
+            //_conversationService = conversationService;
+            //_logService = logService;
+            //_userService = userService;
         }
 
         public async Task SendMessageAsync(IEnumerable<string> participants, string converasationId, Message message)

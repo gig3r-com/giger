@@ -11,12 +11,15 @@ using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class NotificationsSocketHandler(ConnectionsManager connections, GigService gigService,
-        UserService userService, LogService logService) : SocketHandler(connections)
+    public class NotificationsSocketHandler(ConnectionsManager connections,
+        //GigService gigService,        UserService userService, LogService logService,
+        IServiceProvider serviceProvider) : SocketHandler(connections)
     {
-        private readonly GigService _gigService = gigService;
-        private readonly UserService _userService = userService;
-        private readonly LogService _logService = logService;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+
+        //private readonly GigService _gigService = gigService;
+        //private readonly UserService _userService = userService;
+        //private readonly LogService _logService = logService;
 
         public async Task NotifyAccount(string username, Account account) 
             => await NotifyPayload(username, new NotificationPayload() { AccountId = account.Id, AccountHash = account.GetHashCode()});
@@ -54,6 +57,7 @@ namespace Giger.Connections.Handlers
 
         private async Task NotifyPayload(string username, NotificationPayload payload)
         {
+            
             try
             {
                 var message = JsonSerializer.Serialize(payload);
@@ -80,9 +84,14 @@ namespace Giger.Connections.Handlers
 
         private async void LogGigStatusChanged(string gigId)
         {
-            var gig = await _gigService.GetAsync(gigId);
-            var taker = await _userService.GetAsync(gig.TakenById);
-            var author = await _userService.GetAsync(gig.AuthorId);
+            using var scope = _serviceProvider.CreateScope();
+            var gigService = scope.ServiceProvider.GetRequiredService<GigService>();
+            var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+            var logService = scope.ServiceProvider.GetRequiredService<LogService>();
+            var gig = await gigService.GetAsync(gigId);
+            var taker = await userService.GetAsync(gig.TakenById);
+            var author = await userService.GetAsync(gig.AuthorId);
 
             var authorName = gig.IsAnonymizedAuthor ? Gig.ANONIMIZED : gig.AuthorName;
             string sourceId, sourceName, targetId, targetName, subnetworkId, subnetworkName;
@@ -168,7 +177,7 @@ namespace Giger.Connections.Handlers
                 SubnetworkName = subnetworkName,
             };
 
-            _logService.CreateAsync(log);
+            logService.CreateAsync(log);
         }
     }
 }

@@ -9,6 +9,7 @@ using Giger.Models.MessageModels;
 using Giger.Models.Networks;
 using Giger.Models.Obscured;
 using Giger.Models.User;
+using Giger.Models.User.Stats;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -59,12 +60,76 @@ namespace Giger.Services
 
         public GigerDbContext(DbContextOptions<GigerDbContext> options) : base(options) 
         {
-            new AccountService(this);
+        
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Optional: configure relationships, keys, table names, etc.
+            modelBuilder.Entity<Auth>(entity =>
+            {
+                entity.Property(g => g.Id).HasMaxLength(50);
+                entity.Property(g => g.Username).HasMaxLength(50);
+                entity.Property(g => g.Password).HasMaxLength(50);
+                entity.Property(g => g.HackerName).HasMaxLength(50);
+                entity.Property(g => g.AuthToken).HasMaxLength(50);
+            });
+
+
+            modelBuilder.Entity<Gig>()
+                .Property(g => g.ReputationRequired)
+                .HasConversion(
+                    v => v.Level, // Convert struct to short for storage
+                    v => new GigRepuationLevels(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.CyberwareLevel)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new CyberwareLevel(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.CombatSkill)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new SkillStat(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.HackingSkills)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new SkillStat(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.ConfrontationistVsAgreeable)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new CharStat(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.CowardVsBrave)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new CharStat(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.TalkativeVsSilent)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new CharStat(v) // Convert short from db to struct
+                );
+
+            modelBuilder.Entity<UserPrivate>()
+                .Property(g => g.ThinkerVsDoer)
+                .HasConversion(
+                    v => v.Stat, // Convert struct to short for storage
+                    v => new CharStat(v) // Convert short from db to struct
+                );
         }
     }
 }

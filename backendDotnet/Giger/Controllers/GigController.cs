@@ -10,7 +10,7 @@ using Microsoft.VisualBasic;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class GigController(GigService gigService, UserService userService, LoginService loginService,
         AnonymizedService anonymizedService, AccountService accountService, ConversationService conversationService,

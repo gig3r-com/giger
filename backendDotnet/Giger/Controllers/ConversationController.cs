@@ -5,7 +5,7 @@ using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class ConversationController(UserService userService, LoginService loginService,
         ConversationService conversationService, NotificationsSocketHandler notificationsHandler, ConversationMessageHandler conversationSocketHandler)
@@ -104,7 +104,7 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(newMessage.Id))
             {
                 newMessage = new Message(newMessage.Sender, newMessage.Text);
-                newMessage.Date = DateTime.Now;
+                newMessage.Date = GigerDateTime.Now;
             }
 
             conversation.Messages.Add(newMessage);

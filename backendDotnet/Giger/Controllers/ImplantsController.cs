@@ -4,7 +4,7 @@ using Giger.Models.EventModels;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class ImplantsController(UserService userService, LoginService loginService, ImplantsService implantsService, ObscuredDataService obscuredDataService) 
         : AuthController(userService, loginService)

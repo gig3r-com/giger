@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class HackConfigController(UserService userService, LoginService loginService, HackConfigService hackConfigService) : AuthController(userService, loginService)
     {

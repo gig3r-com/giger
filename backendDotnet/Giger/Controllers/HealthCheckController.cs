@@ -2,7 +2,7 @@
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class HealthCheckController : Controller
     {

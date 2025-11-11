@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Giger.Models.User
 {
     public class UserPublic
@@ -10,6 +12,8 @@ namespace Giger.Models.User
         public required string Handle { get; set; } // username
 
         public UserRoles[] Roles { get; set; } = [];
+
+        [NotMapped]
 
         public Dictionary<string, decimal> AliasMap { get; set; } = [];
 

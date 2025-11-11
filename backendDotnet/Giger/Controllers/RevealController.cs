@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService, ImplantsController implantsController)
         : AuthController(userService, loginService)

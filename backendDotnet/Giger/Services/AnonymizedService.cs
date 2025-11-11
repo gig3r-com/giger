@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class AnonymizedService
+    public class AnonymizedService : IGigerService
     {
         private readonly GigerDbContext _dbContext;
 

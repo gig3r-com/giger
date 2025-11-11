@@ -4,10 +4,15 @@ namespace Giger.Models.Hashes
 {
     public class RecordsHashes
     {
-        public RecordsHashes() { }
+        public RecordsHashes() 
+        {
+            Id = new Guid().ToString();
+        }
 
         public RecordsHashes(UserPrivate user)
         {
+            Id = new Guid().ToString();
+
             int relationsHashCode = 3;
             foreach (var relation in user.Relations)
             {
@@ -43,6 +48,8 @@ namespace Giger.Models.Hashes
             }
             MedicalEventsHash = medicalEventsHashCode;
         }
+
+        public string Id { get; set; }
 
         public int RelationsHash { get; set; }
 

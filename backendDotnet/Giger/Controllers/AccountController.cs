@@ -11,15 +11,26 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService,
-        LogService logService, NetworksService networksService, NotificationsSocketHandler notificationsHandler)
-        : AuthController(userService, loginService)
+    public class AccountController//(//IServiceProvider serviceProvider,
+        //UserService userService, LoginService loginService, AccountService accountService,        LogService logService, NetworksService networksService, 
+        //NotificationsSocketHandler notificationsHandler)
+        //: AuthController(userService, loginService)
+        : AuthController//(serviceProvider)
     {
-        private readonly AccountService _accountService = accountService;
-        private readonly LogService _logService = logService;
-        private readonly NetworksService _networksService = networksService;
+        public AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService,
+        NotificationsSocketHandler notificationsHandler) : base(userService, loginService)
+        {
+            _accountService = accountService;
+            _logService = logService;
+            _networksService = networksService;
+            _notificationsHandler = notificationsHandler;
+        }
 
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+        private readonly AccountService _accountService;// = (AccountService)ScopedServiceProvider.CreateScopedGigerService<AccountService>(serviceProvider);
+        private readonly LogService _logService;// = (LogService)ScopedServiceProvider.CreateScopedGigerService<LogService>(serviceProvider);
+        private readonly NetworksService _networksService;// = (NetworksService)ScopedServiceProvider.CreateScopedGigerService<NetworksService>(serviceProvider);
+
+        private readonly NotificationsSocketHandler _notificationsHandler;// = notificationsHandler;
 
         //TODO put it into config
         private readonly Dictionary<WealthLevels, decimal> _transferLimits = new()

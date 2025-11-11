@@ -1,23 +1,29 @@
 ﻿using Giger.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : Controller
+    public class LoginController
+        //(IServiceProvider serviceProvider)
+        : Controller
     {
-        private readonly UserService _userService;  
-        private readonly LoginService _loginService;
+        private UserService _userService;// => ScopedServiceProvider.CreateScopedGigerService<UserService>(serviceProvider);  
+        private LoginService _loginService;//{ get => ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider); }
 
-        public LoginController(UserService userService, LoginService loginService)
+        public LoginController(//IServiceProvider serviceProvider
+            UserService userService, LoginService loginService
+            ) //: this(serviceProvider)
         {
+            //_loginService = ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider);
             _loginService = loginService;
             _userService = userService;
         }
 
-// TODO: For testing purposes only, remove in production
+        // TODO: For testing purposes only, remove in production
 #if DEBUG
         [HttpGet("disableAuth")]
         public async Task<string> DisableAuth()
@@ -50,15 +56,15 @@ namespace Giger.Controllers
                 return "Wrong password";
             }
 
-            var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
-            {
-                if (userLoginData.AuthToken != null)
-                {
-                    Response.StatusCode = StatusCodes.Status200OK;
-                    return userLoginData.AuthToken;
-                }
-            }
+            //var user = await _userService.GetByUserNameAsync(userName);
+            //if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
+            //{
+            //    if (userLoginData.AuthToken != null)
+            //    {
+            //        Response.StatusCode = StatusCodes.Status200OK;
+            //        return userLoginData.AuthToken;
+            //    }
+            //}
 
             var newAuthToken = Guid.NewGuid().ToString();
             while (_loginService.GetByAuthTokenAsync(newAuthToken).Result != null)

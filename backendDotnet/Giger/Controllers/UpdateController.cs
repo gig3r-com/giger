@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class UpdateController(UserService userService, LoginService loginService, NotificationsSocketHandler notificationsSocketHandler) 
         : AuthController(userService, loginService)

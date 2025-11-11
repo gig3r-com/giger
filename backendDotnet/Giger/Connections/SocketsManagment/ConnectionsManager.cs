@@ -9,9 +9,11 @@ namespace Giger.Connections.SocketsManagment
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
         private LoginService _auths{ get; }
 
-        public ConnectionsManager(LoginService loginService)
+        public ConnectionsManager(IServiceProvider serviceProvider
+            //LoginService loginService
+            )
         {
-            _auths = loginService;
+            _auths = ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider) as LoginService;
         }
 
         public WebSocket GetSocketByUser(string username)

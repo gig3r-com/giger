@@ -1,6 +1,7 @@
 ﻿using Giger.Models.EventModels;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.User
 {
@@ -37,6 +38,8 @@ namespace Giger.Models.User
         public required Factions Faction { get; set; }
 
         public int InsuredAmount { get; set; }
+
+        [NotMapped]
 
         public Dictionary<string, decimal> GigReputation { get; set; } = [];
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class LoginService
+    public class LoginService : IGigerService
     {
         private readonly GigerDbContext _dbContext;
 
@@ -12,8 +12,10 @@ namespace Giger.Services
             _dbContext = dbContext;
         }
 
-        public async Task<Auth?> GetByUserNameAsync(string userName) =>
-            await _dbContext.Auths.FirstOrDefaultAsync(x => x.Username.Equals(userName, System.StringComparison.OrdinalIgnoreCase));
+        public async Task<Auth?> GetByUserNameAsync(string userName)
+        {
+            return await _dbContext.Auths.FirstOrDefaultAsync(x => x.Username.ToLower() == userName.ToLower());// .Equals(userName, System.StringComparison.OrdinalIgnoreCase));
+        }
 
         public async Task<Auth?> GetByHackerNameAsync(string hackerName) =>
             await _dbContext.Auths.FirstOrDefaultAsync(x => x.HackerName.Equals(hackerName, System.StringComparison.OrdinalIgnoreCase));

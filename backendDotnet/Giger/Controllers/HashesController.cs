@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class HashesController(UserService userService, LoginService loginService, AccountService accountService,
         GigService gigService, ConversationService conversationService) : AuthController(userService, loginService)

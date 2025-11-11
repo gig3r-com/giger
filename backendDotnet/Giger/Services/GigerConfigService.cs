@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class GigerConfigService
+    public class GigerConfigService : IGigerService
     {
         private readonly GigerDbContext _dbContext;
 
