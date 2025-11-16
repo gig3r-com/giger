@@ -6,6 +6,8 @@ import {
     IUserPrivate,
     Vibe as VibeNames
 } from '../../../models/user';
+import { SectionBody } from '../../../shared/components/section-body/section-body';
+import { Controls } from '../../../shared/components/controls/controls';
 import { AdminEditableField } from '../../../shared/components/admin-editable-field/admin-editable-field';
 import { FieldTypes } from '../../../shared/components/admin-editable-field/admin-editable-field.model';
 
@@ -13,8 +15,11 @@ import './vibe.scss';
 
 export const Vibe: FC = () => {
     const { updateUserData, currentUser } = useUserService();
+    if (!currentUser) return;
+
     return (
-        <section className="vibe">
+        <SectionBody>
+            <Controls leftSideOption="back" />
             <span className="vibe__label">
                 <MemoizedFormattedMessage id="VIBE" />:
             </span>
@@ -85,6 +90,6 @@ export const Vibe: FC = () => {
                     })
                 }
             />
-        </section>
+        </SectionBody>
     );
 };

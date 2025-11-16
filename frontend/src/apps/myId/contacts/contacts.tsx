@@ -7,13 +7,15 @@ import { IUserBase, IUserPublic } from '../../../models/user';
 import { useUserService } from '../../../shared/services/user.service';
 import { CharSummary } from '../char-summary/char-summary';
 import { selectActiveUsers } from '../../../store/users.selectors';
+import { Controls } from '../../../shared/components/controls/controls';
+import { SectionBody } from '../../../shared/components/section-body/section-body';
 
 import './contacts.scss';
 
 export const Contacts: FC = () => {
     const { currentUser, getUserById, toggleUserAsFavorite } = useUserService();
     const navigate = useNavigate();
-    const { contactId } = useParams();
+    const { contactId, } = useParams();
     const [selectedUser, setSelectedUser] = useState<IUserPublic | null>(null);
     const userList = useSelector(selectActiveUsers);
     const usersSansCurrent = useMemo(
@@ -82,7 +84,8 @@ export const Contacts: FC = () => {
     );
 
     return (
-        <section className="contacts">
+        <SectionBody>
+            <Controls leftSideOption="back" />
             {!contactId && (
                 <motion.div key="contacts">
                     <h2 className="contacts__heading">
@@ -103,6 +106,6 @@ export const Contacts: FC = () => {
             {selectedUser && (
                 <CharSummary mode="public" userData={selectedUser} />
             )}
-        </section>
+        </SectionBody>
     );
 };
