@@ -14,7 +14,6 @@ export const Details: FC = () => {
             <div className="navigation-hook" ref={navHook}>
                 {location.pathname === '/myid/details' && (
                     <MyIdNavigation
-                        active={true}
                         onItemClick={(item) =>
                             navigate(`/myid/details/${item}`)
                         }

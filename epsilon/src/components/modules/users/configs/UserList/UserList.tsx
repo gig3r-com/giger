@@ -35,8 +35,8 @@ export default function UserList() {
     return items.filter((user) =>
       user.handle.includes(q) ||
       user.name.includes(q) ||
-      user.faction.includes(q) ?
-      user.handle === selected?.handle : null
+      user.faction.includes(q) ??
+      user.handle === selected?.handle
     );
   }, [deferredQuery, items, selected]);
 

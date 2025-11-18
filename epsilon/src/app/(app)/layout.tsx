@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import AppHeader from './components/AppHeader'
+import AppHeader from '@/components/header/AppHeader'
 import ConversationsContextProvider from '@/components/modules/conversations/context/provider';
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'

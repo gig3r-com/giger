@@ -1,23 +1,48 @@
 @import '../../variables.scss';
 
-@mixin bordercut($border-cut: 10px, $border-thickness: 1px, $border-color: $primary-color) {
+@mixin bordercut(
+    $border-cut: 10px,
+    $border-thickness: 1px,
+    $border-color: $primary-color
+) {
     border: $border-thickness solid $border-color;
     border-bottom: calc($border-thickness + 1px) solid $border-color;
     background:
-        linear-gradient(45deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) bottom left / 50%
-            50%,
-        linear-gradient(-45deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) bottom right/50%
-            50%,
-        linear-gradient(135deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) top left / 50% 50%,
-        linear-gradient(-135deg, $border-color 0 calc($border-cut + $border-thickness), transparent 0) top right / 50%
-            50%;
+        linear-gradient(
+                45deg,
+                $border-color 0 calc($border-cut + $border-thickness),
+                transparent 0
+            )
+            bottom left / 50% 50%,
+        linear-gradient(
+                -45deg,
+                $border-color 0 calc($border-cut + $border-thickness),
+                transparent 0
+            )
+            bottom right/50% 50%,
+        linear-gradient(
+                135deg,
+                $border-color 0 calc($border-cut + $border-thickness),
+                transparent 0
+            )
+            top left / 50% 50%,
+        linear-gradient(
+                -135deg,
+                $border-color 0 calc($border-cut + $border-thickness),
+                transparent 0
+            )
+            top right / 50% 50%;
     background-origin: border-box;
     background-repeat: no-repeat;
     -webkit-mask:
-        linear-gradient(45deg, transparent 0 $border-cut, $border-color 0) bottom left,
-        linear-gradient(-45deg, transparent 0 $border-cut, $border-color 0) bottom right,
-        linear-gradient(135deg, transparent 0 $border-cut, $border-color 0) top left,
-        linear-gradient(-135deg, transparent 0 $border-cut, $border-color 0) top right;
+        linear-gradient(45deg, transparent 0 $border-cut, $border-color 0)
+            bottom left,
+        linear-gradient(-45deg, transparent 0 $border-cut, $border-color 0)
+            bottom right,
+        linear-gradient(135deg, transparent 0 $border-cut, $border-color 0) top
+            left,
+        linear-gradient(-135deg, transparent 0 $border-cut, $border-color 0) top
+            right;
     -webkit-mask-size: 50.5% 50.5%;
     -webkit-mask-repeat: no-repeat;
 }
@@ -40,6 +65,18 @@
         flex-wrap: wrap;
         justify-content: stretch;
         gap: 1rem;
+        padding-bottom: 1.5rem;
+    }
+
+    &__category-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    &__category {
+        color: $accent-color;
+        text-transform: capitalize;
+        padding-bottom: 0.5rem;
     }
 
     &__item {
@@ -51,7 +88,7 @@
         border: 1px solid $primary-color; //fallback if bordercut mixin fails
         border-radius: 1rem;
         cursor: pointer;
-
+        color: white;
         font-size: 20px;
         text-transform: uppercase;
         font-weight: 500;

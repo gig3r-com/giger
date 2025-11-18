@@ -58,6 +58,27 @@ jobs:
       HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 
+  tests_e2e:
+    name: Run end-to-end tests
+    runs-on: microk8s-runner-1
+    needs: [ deploy-helm-chart ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.DATA_SSH_KEY }}
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run tests
+        run: npx playwright test
+        env:
+          BASE_URL: "https://${{ needs.deploy-helm-chart.outputs.address }}"
+
   comment:
     if: github.event_name == 'pull_request'
     runs-on: microk8s-runner-1
@@ -70,5 +91,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'PR had been deployed successfully. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
+              body: 'PR had been deployed. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
             })

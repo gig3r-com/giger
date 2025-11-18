@@ -82,6 +82,7 @@ const TabsUI: React.FC<TabsUIProps> = ({
       <Paper
         sx={{
           px: 1,
+          pt: 0.5,
           width: "100%",
         }}
       >

@@ -11,4 +11,7 @@ docker-compose.override.yaml
 node_modules
 .DS_Store
 yarn.lock
-package-lock.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
