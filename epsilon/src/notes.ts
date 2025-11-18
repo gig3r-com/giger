@@ -1,4 +1,4 @@
-type Transaction = {
+export type Transaction = {
     id: string;
     from: string; // accountNumber
     to: string; // accountNumber
@@ -9,16 +9,17 @@ type Transaction = {
     hackData?: string;
 }
 
-type Account = {
+export type Account = {
     id: string;
     type: 'PRIVATE' | 'BUSINESS';
+    name?: string;
     accountNumber: string;
     balance: number; // can be negative
     owners: string[]; // user handles
     transactions: Transaction[];
 }
 
-type RecordType = {
+export type RecordType = {
     id: string;
     type: string;
     category?: string;
@@ -26,11 +27,14 @@ type RecordType = {
     title: string;
     data: string;
     timestamp?: timestamp;
-    hackData?: string;
     isReveled: boolean;
+    revealCode?: string;
+    isEncrypted: boolean;
+    encryptionLevel: number;
+    hackData?: string;
 }
 
-type Message = {
+export type Message = {
     id: string;
     timestamp: timestamp;
     sender: string; // user handle
@@ -41,7 +45,7 @@ type Message = {
     epsilonNote: string;
 }
 
-type Conversation = {
+export type Conversation = {
     id: string;
     title?: string;
     participants: string[]; // user handles
@@ -51,39 +55,7 @@ type Conversation = {
     hackers: string[]; // user handles
 }
 
-type GigStatus = 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'PENDING_CONFIRMATION' | 'DISPUTE' | 'EXPIRED';
-
-type Gig = {
-    id: string;
-    category: string;
-    subCategory: string;
-    payout: number;
-    title: string;
-    description: string;
-    descriptionDetailed: string;
-    IsRevealedByClient: boolean;
-    createdAt: timestamp;
-    acceptedAt: timestamp;
-    mode: 'CREATED_BY_WORKER' | 'CREATED_BY_EMPLOYER';
-
-    creator: 'WORKER' | 'EMPLOYER';
-    status: GigStatus;
-    reputationRequired: number;
-    conversationId: string; // conversation id
-
-    isEmployerAnonymized: boolean;
-    employerHandle?: string;
-    employerAccount?: string;
-
-    isWorkerAnonymized: boolean;
-    workerAccount?: string;
-    workerHandle?: string;
-
-    markedAsComplaintAt: timestamp;
-    complaintReason: string;
-}
-
-type Log = {
+export type Log = {
     id: string;
     timestamp: timestamp;
     sourceUser: string; // user handle
@@ -94,7 +66,7 @@ type Log = {
     // todo hack data
 }
 
-type Subnetwork = {
+export type Subnetwork = {
     id: string;
     name: string;
     network: string; // network name
@@ -107,7 +79,7 @@ type Subnetwork = {
     logs: Log[];
 }
 
-type Network = {
+export type Network = {
     id: string;
     name: string;
     admin: string; // user handle
@@ -116,14 +88,14 @@ type Network = {
     data: Record<string, string>; // { [string]: [string] }
 }
 
-type ProgramCodes = {
+export type ProgramCodes = {
     id: string;
     code: string;
     program: string;
     isUsed: boolean;
 }
 
-type User = {
+export type User = {
     id: string;
     roles: string[];
 
@@ -159,6 +131,7 @@ type User = {
     hackerSkill: number;
 
     favoriteUsers: string[]; // user handles
+
     hardRecords: RecordType[];
     offGameRecords: RecordType[];
     mindRecords: RecordType[];
@@ -176,7 +149,8 @@ type User = {
 
     epsilonNotes: string;
     epsilonBankingNotes: string;
+    epsilonConversationNotes: string;
     epsilonConversationsNotes: { participants: string[], notes: string, }[];
-    epsilonPlots: string[];
+    epsilonPlots: string;
     epsilonData: Record<string, string>; // { [string]: [string] }
 }
