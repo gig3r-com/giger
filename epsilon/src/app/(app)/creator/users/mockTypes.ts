@@ -1,15 +1,15 @@
-type Transaction = {
+export type Transaction = {
     id: string;
     from: string; // accountNumber
     to: string; // accountNumber
     amount: number;
-    timestamp: timestamp;
+    string: string;
     title: string;
     orderingUser: string; // user handle
     hackData?: string;
 }
 
-type Account = {
+export type Account = {
     id: string;
     type: 'PRIVATE' | 'BUSINESS';
     accountNumber: string;
@@ -18,42 +18,37 @@ type Account = {
     transactions: Transaction[];
 }
 
-type RecordType = {
+export type Record = {
     id: string;
     type: string;
     category?: string;
     subCategory?: string;
     title: string;
     data: string;
-    timestamp?: timestamp;
+    string?: string;
     hackData?: string;
-    isReveled: boolean;
 }
 
-type Message = {
+export type Message = {
     id: string;
-    timestamp: timestamp;
+    string: string;
     sender: string; // user handle
     type: string;
     data: string;
     readBy: string[]; // user handles
-    hacker?: string; // user handle
-    epsilonNote: string;
 }
 
-type Conversation = {
+export type Conversation = {
     id: string;
-    title?: string;
     participants: string[]; // user handles
     anonymizedUsers: string[]; // user handles
     gigConversation: boolean;
     messages: Message[];
-    hackers: string[]; // user handles
 }
 
-type GigStatus = 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'PENDING_CONFIRMATION' | 'DISPUTE' | 'EXPIRED';
+export type GigStatus = 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'PENDING_CONFIRMATION' | 'DISPUTE' | 'EXPIRED';
 
-type Gig = {
+export type Gig = {
     id: string;
     category: string;
     subCategory: string;
@@ -62,8 +57,8 @@ type Gig = {
     description: string;
     descriptionDetailed: string;
     IsRevealedByClient: boolean;
-    createdAt: timestamp;
-    acceptedAt: timestamp;
+    createdAt: string;
+    acceptedAt: string;
     mode: 'CREATED_BY_WORKER' | 'CREATED_BY_EMPLOYER';
 
     creator: 'WORKER' | 'EMPLOYER';
@@ -79,22 +74,21 @@ type Gig = {
     workerAccount?: string;
     workerHandle?: string;
 
-    markedAsComplaintAt: timestamp;
+    markedAsComplaintAt: string;
     complaintReason: string;
 }
 
-type Log = {
+export type Log = {
     id: string;
-    timestamp: timestamp;
+    string: string;
     sourceUser: string; // user handle
     targetUser: string; // user target
     logType: string; // a lot of logs will be created by api, on sending message, transfer etc. so if you really need enum you can use one (check public enum LogType) but if possible add a possibility to add a random string :) if you dont need enum just use string
     logData: string;
     subnetwork: string // subnetwork name
-    // todo hack data
 }
 
-type Subnetwork = {
+export type Subnetwork = {
     id: string;
     name: string;
     network: string; // network name
@@ -102,81 +96,71 @@ type Subnetwork = {
     firewall: string;
     operationSystem: string;
     ice: string[];
-    accessPoint: string;
     pastHacks: string[];
+    nodes: string[];
     logs: Log[];
 }
 
-type Network = {
+export type Network = {
     id: string;
     name: string;
     admin: string; // user handle
     subnetworks: string[]; // subnetwork names
-    nodes: Record<string, string>; // { [string]: [string] }
-    data: Record<string, string>; // { [string]: [string] }
+    data: string[];
 }
 
-type ProgramCodes = {
+export type ProgramCodes = {
     id: string;
     code: string;
-    program: string;
     isUsed: boolean;
 }
 
-type User = {
+export type User = {
     id: string;
-    roles: string[];
-
-    handle: string;
     active: boolean;
+    roles: string[];
+    handle: string;
+
     name: string;
     surname: string;
+    species: string;
+    cyberwareLevel: number;
 
     faction: string;
     factionRankPublic: string;
     factionRankActual: string;
 
-    speciesPublic: string;
-    speciesActual: string;
-    vibe: string;
-    vibeLevel: number;
+    speciesPrivate: string;
+    hardRecords: Record[];
+    favoriteUsers: string[]; // user handles
 
+    offGameRecords: Record[];
+    combatSkill: number;
+    hackerSkill: number;
     confrontationistVsAgreeable: number;
     cowardVsBrave: number;
     talkativeVsSilent: number;
     thinkerVsDoer: number;
 
+    vibe: string;
+    mindRecords: Record[];
     affiliation: string;
     profession: string;
     wealth: string;
-    cyberwareLevel: number;
-
-    network: string; // networkName
-    networkAdmin: string;
-    subnetwork: string; // subnetworkName
-
-    combatSkill: number;
-    hackerSkill: number;
-
-    favoriteUsers: string[]; // user handles
-    hardRecords: RecordType[];
-    offGameRecords: RecordType[];
-    mindRecords: RecordType[];
 
     accounts: Account[];
     mainAccount: string; // accountNumber
 
     conversations: Conversation[];
 
+    network: string; // networkName
+    networkAdmin: string;
+    subnetwork: string; // subnetworkName
+
     gigReputation: Record<string, number>; // { [string]: [number] }
 
+    hackingSkill: number;
     personalIce: number;
     hackerName: string;
     exploits: string[];
-
-    epsilonNotes: string;
-    epsilonBankingNotes: string;
-    epsilonConversationsNotes: { participants: string[], notes: string, }[];
-    epsilonPlots: string[];
-    epsilonData: Record<string, string>; // { [string]: [string] }
 }
