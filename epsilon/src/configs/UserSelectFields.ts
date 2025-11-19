@@ -132,3 +132,18 @@ export const OFFGAME_RECORDS_META_SUBCATEGORIES = [
 export const OFFGAME_RECORDS_GOAL_SUBCATEGORIES = [
     { value: 'FACTION', label: 'Faction' },
 ]
+
+/*
+ * ***************************************************************
+ *                     Notes
+ * ***************************************************************
+ */
+export const PLOTS = [
+    { value: 'Po trupach na szczyt', label: 'Po trupach na szczyt' },
+    { value: 'Troubles of Pigmalion', label: 'Troubles of Pigmalion' },
+    { value: 'I always pay my debts', label: 'I always pay my debts' },
+    { value: 'AI guru wars', label: 'AI guru wars' },
+    { value: 'Bad Package Day', label: 'Bad Package Day' },
+    { value: 'Blade Runner Blues', label: 'Blade Runner Blues' },
+    { value: 'Internal Investigation', label: 'Internal Investigation' },
+];

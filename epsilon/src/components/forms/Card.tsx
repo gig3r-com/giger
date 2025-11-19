@@ -18,7 +18,8 @@ interface Props {
 
 const notesStyles = (theme) => ({
     flex: 2,
-    backgroundColor: theme.palette.background.paper,
+    background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, 
+    ${alpha(theme.palette.secondary.main, 0.2)} 35%, ${theme.palette.background.paper} 100%)`,
     border: `1px dashed ${alpha(theme.palette.secondary.main, 0.8)}`,
     boxShadow: `0 0 14px ${alpha(theme.palette.secondary.main, 0.38)}`,
 });
