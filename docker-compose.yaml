@@ -12,6 +12,23 @@ services:
     volumes:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
+  epsilon:
+    image: mivalsten/gig3r-epsilon:${GIGER_IMAGE_TAG:-latest}
+    build:
+      context: ./epsilon
+    restart: unless-stopped
+    ports:
+      - ${EPSILON_PORT:-8082}:3000
+    environment:
+      - NEXTAUTH_URL=http://localhost:${EPSILON_PORT:-8082}/api/auth
+      - AUTH_URL=http://localhost:${EPSILON_PORT:-8082}/api/auth
+      - AUTH_SECRET=V3ryS3cretSring
+      - GITHUB_ID=dfgrgrgaesafgbcxvbae
+      - GITHUB_SECRET=GitHubS3cret
+      - API_BASE_URL=http://localhost:${APP_PORT:-8080}/api
+      - API_SERVICE_TOKEN=Secreeeeeeeeeet
+      - AUTH_TRUST_HOST=true
+
   frontend:
     image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
     build:
