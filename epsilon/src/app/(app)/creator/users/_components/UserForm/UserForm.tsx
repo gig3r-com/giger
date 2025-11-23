@@ -12,6 +12,9 @@ import HackingTab from './tabs/HackingTab';
 import BankingTab from './tabs/BankingTab';
 import ConversationsTab from './tabs/ConversationsTab';
 import type { User } from '@/notes';
+import {
+    HARD_RECORD_CATEGORIES
+} from '@/configs/Record';
 
 type UserFormProps = {
     /** When provided (e.g. from /users/[handle]) the form will prefill with this user */
@@ -72,24 +75,46 @@ const BASE_USER = {
     exploits: [],
 } satisfies User;
 
-const mergeInitials = (partial?: Partial<User>): User => ({
-    ...BASE_USER,
-    ...partial,
-    // Ensure arrays/objects are always defined
-    roles: partial?.roles ?? BASE_USER.roles,
-    hardRecords: partial?.hardRecords ?? BASE_USER.hardRecords,
-    favoriteUsers: partial?.favoriteUsers ?? BASE_USER.favoriteUsers,
-    offGameRecords: partial?.offGameRecords ?? BASE_USER.offGameRecords,
-    mindRecords: partial?.mindRecords ?? BASE_USER.mindRecords,
-    accounts: partial?.accounts ?? BASE_USER.accounts,
-    conversations: partial?.conversations ?? BASE_USER.conversations,
-    exploits: partial?.exploits ?? BASE_USER.exploits,
-    gigReputation: partial?.gigReputation ?? BASE_USER.gigReputation,
-});
+const mapUserToForm = (partial?: Partial<User>): User => {
+    const hardRecords = partial?.hardRecords ?? BASE_USER.hardRecords;
+    const mindRecords = partial?.mindRecords ?? BASE_USER.mindRecords;
+    const offGameRecords = partial?.offGameRecords ?? BASE_USER.offGameRecords;
+
+
+    return ({
+        ...BASE_USER,
+        ...partial,
+        // Ensure arrays/objects are always defined
+        roles: partial?.roles ?? BASE_USER.roles,
+        // hardRecords: partial?.hardRecords ?? BASE_USER.hardRecords,
+        favoriteUsers: partial?.favoriteUsers ?? BASE_USER.favoriteUsers,
+        // offGameRecords: partial?.offGameRecords ?? BASE_USER.offGameRecords,
+        // mindRecords: partial?.mindRecords ?? BASE_USER.mindRecords,
+        accounts: partial?.accounts ?? BASE_USER.accounts,
+        conversations: partial?.conversations ?? BASE_USER.conversations,
+        exploits: partial?.exploits ?? BASE_USER.exploits,
+        gigReputation: partial?.gigReputation ?? BASE_USER.gigReputation,//
+        // Records
+        criminalHardRecords: hardRecords
+            .filter(r => r.category === HARD_RECORD_CATEGORIES.CRIMINAL)
+            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        medicalHardRecords: hardRecords
+            .filter(r => r.category === HARD_RECORD_CATEGORIES.MEDICAL)
+            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        fileHardRecords: hardRecords
+            .filter(r => r.category === HARD_RECORD_CATEGORIES.FILE)
+            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        memoryMindRecords: [],
+        goalMindRecords: [],
+        relationMindRecords: [],
+        goalOffGameRecords: [],
+        ruleOffGameHardRecords: [],
+    });
+}
 
 export const UserForm: React.FC<UserFormProps> = ({ initialUser }) => {
     const [tab, setTab] = React.useState('main');
-    const initialValues = React.useMemo(() => mergeInitials(initialUser), [initialUser]);
+    const initialValues = React.useMemo(() => mapUserToForm(initialUser), [initialUser]);
 
     return (
         <Formik<User>

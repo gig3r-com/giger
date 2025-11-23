@@ -76,11 +76,12 @@ const BankingSummary = ({ totalBalance, accountCount, privateCount, businessCoun
 
             <Card variant="notes" title="Epsilon banking notes" subTitle="Off-game notes for writers about this character's finances.">
                 <Input
+                    color="epsilon"
                     name="epsilonBankingNotes"
                     label="Banking notes"
                     placeholder="Meta notes, hooks, secrets, planned twists about this character's banking and finances..."
                     multiline
-                    minRows={2}
+                    minRows={3}
                 />
             </Card>
         </Stack>

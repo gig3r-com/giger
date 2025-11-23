@@ -79,13 +79,7 @@ const TabsUI: React.FC<TabsUIProps> = ({
 
   return (
     <>
-      <Paper
-        sx={{
-          px: 1,
-          pt: 0.5,
-          width: "100%",
-        }}
-      >
+      <Paper sx={{ px: 1, width: "100%", }}>
         <Tabs
           value={effectiveValue}
           onChange={handleChange}

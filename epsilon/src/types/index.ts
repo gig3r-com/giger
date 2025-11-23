@@ -44,3 +44,8 @@ export interface EnhancedMessageType extends MessageType {
   note: string;
   hacker?: string;
 }
+
+export type OPTIONS<V extends Record<string, string>, L extends Record<string, string>> = {
+    value: V[keyof V];
+    label: L[keyof L];
+}[];

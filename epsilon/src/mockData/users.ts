@@ -37,8 +37,8 @@ export const users = [
     "hardRecords": [
       {
         "id": "rec-2627",
-        "type": "META",
-        "category": "META",
+        "type": "TEXT",
+        "category": "CRIMINAL",
         "subCategory": "INFORMATIONS",
         "title": "Dead drop",
         "data": "A ledger of bribes",
@@ -48,8 +48,8 @@ export const users = [
       },
       {
         "id": "rec-8450",
-        "type": "HARD",
-        "category": "RELATIONSHIP",
+        "type": "TEXT",
+        "category": "CRIMINAL",
         "subCategory": "FACTION",
         "title": "Dead drop",
         "data": "A promise to a ghost",
@@ -59,8 +59,8 @@ export const users = [
       },
       {
         "id": "rec-2124",
-        "type": "MEMORY",
-        "category": "RELATIONSHIP",
+        "type": "TEXT",
+        "category": "CRIMINAL",
         "subCategory": "TRAUMA",
         "title": "Old wound",
         "data": "A promise to a ghost",

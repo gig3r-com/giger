@@ -27,7 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 inputRef={ref}
                 id={props.id ?? name}
                 error={isError}
-                helperText={isError ? meta.error ?? ` ` : props.helperText ?? ` `}
+                helperText={isError ? meta.error ?? `` : props.helperText ?? ``}
                 value={field.value as string ?? ''}
             />
         );

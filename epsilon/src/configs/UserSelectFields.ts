@@ -71,6 +71,11 @@ export const WEALTH_LEVELS = [
  * ***************************************************************
  */
 
+export const RECORDS_TYPES = [
+    { value: 'TEXT', label: 'Text' },
+    { value: 'FLAG', label: 'Flag' },
+]
+
 export const HARD_RECORDS_CATEGORIES = [
     { value: 'CRIMINAL', label: 'Criminal' },
     { value: 'MEDICAL', label: 'Medical' },

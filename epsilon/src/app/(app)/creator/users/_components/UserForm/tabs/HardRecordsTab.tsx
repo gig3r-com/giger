@@ -1,46 +1,60 @@
-'use client'
+'use client';
 
-import React from 'react';
-import ArrayObjectField from '@/components/forms/ArrayObjectField';
-import { makeRecordRenderItem } from './makeRecordRenderItem';
-import {
-    HARD_RECORDS_ASSET_SUBCATEGORIES,
-    HARD_RECORDS_CATEGORIES,
-    HARD_RECORDS_CRIMINAL_SUBCATEGORIES,
-    HARD_RECORDS_FILE_SUBCATEGORIES,
-    HARD_RECORDS_MEDICAL_SUBCATEGORIES,
-} from "@/configs/UserSelectFields";
+import React, { useState, useMemo } from 'react';
+import { Button, ButtonGroup, Stack } from '@mui/material';
+import { useFormikContext } from 'formik';
+import HardRecord from './records/HardRecord';
 
-const createRecord = (): RecordType => ({
-    id:
-        typeof crypto !== 'undefined' && 'randomUUID' in crypto
-            ? crypto.randomUUID()
-            : `tmp-${Math.random().toString(36).slice(2, 9)}`,
-    type: 'TEXT',
-    category: undefined,
-    subCategory: undefined,
-    title: '',
-    data: '',
-    timestamp: '',
-    hackData: '',
-});
+function HardRecordsTab() {
+    const [category, setCategory] = useState('criminal');
+    const { values } = useFormikContext();
 
-function HardRecordsTab(props) {
+    const list = useMemo(() => {
+        if (category === 'criminal') return values.criminalHardRecords;
+        if (category === 'medical') return values.medicalHardRecords;
+        if (category === 'assets') return values.fileHardRecords;
+        return [];
+    }, [category, values]);
+
+    const isSelected = (name) => category === name;
+
     return (
-        <ArrayObjectField<RecordType>
-            name="hardRecords"
-            label="Records"
-            createItem={createRecord}
-            renderItem={makeRecordRenderItem('hardRecords', HARD_RECORDS_CATEGORIES, {
-                'ASSET': HARD_RECORDS_ASSET_SUBCATEGORIES,
-                'CRIMINAL': HARD_RECORDS_CRIMINAL_SUBCATEGORIES,
-                'FILE': HARD_RECORDS_FILE_SUBCATEGORIES,
-                'MEDICAL': HARD_RECORDS_MEDICAL_SUBCATEGORIES,
-            })}
-            // Example: make some items unremovable (e.g. based on id)
-            isItemRemovable={(item) => item.id !== 'root'}
-            getItemKey={(item, index) => item.id || `tmp-${index}`}
-        />
+        <Stack direction="column" gap={2}>
+            <Stack direction="row" gap={2} justifyContent="space-between">
+                <ButtonGroup>
+                    <Button
+                        variant={isSelected('criminal') ? 'contained' : 'outlined'}
+                        onClick={() => setCategory('criminal')}
+                    >
+                        Criminal records
+                    </Button>
+                    <Button
+                        variant={isSelected('medical') ? 'contained' : 'outlined'}
+                        onClick={() => setCategory('medical')}
+                    >
+                        Medical records
+                    </Button>
+                    <Button
+                        variant={isSelected('assets') ? 'contained' : 'outlined'}
+                        onClick={() => setCategory('assets')}
+                    >
+                        Files
+                    </Button>
+                </ButtonGroup>
+
+                <Button size="small">Add Hard Record</Button>
+            </Stack>
+            {
+                list.map((record, index) => {
+                    return (
+                        <HardRecord
+                            index={index}
+                            name={'criminalHardRecords'}
+                        />
+                    )
+                })
+            }
+        </Stack>
     );
 }
 

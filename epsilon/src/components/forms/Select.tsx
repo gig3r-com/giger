@@ -31,7 +31,7 @@ const Select = React.forwardRef<HTMLInputElement, SelectProps>(
                 inputRef={ref}
                 id={props.id ?? name}
                 error={isError}
-                helperText={isError ? meta.error ?? ` ` : props.helperText ?? ` `}
+                helperText={isError ? meta.error ?? `` : props.helperText ?? ``}
                 value={field.value as string ?? ''}
             >
                 {options.map((option) => (
