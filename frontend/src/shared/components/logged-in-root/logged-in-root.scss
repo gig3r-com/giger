@@ -1,3 +1,6 @@
+@use '@theme' as *;
+
 .logged-in-user {
+    background: $app-background;
     height: 100vh;
 }

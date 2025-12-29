@@ -1,0 +1,36 @@
+// COLORS
+$primary-color:             #77fef8;
+$secondary-color:           #e16973;
+$accent-color:              #fbd758;
+$accent-color-2:            #86222c;
+$muted-accent:              #464764;
+$disabled-color:            #42458d;
+
+$base-text-color:           #787ced;
+$other-user-color:          #866730;
+$own-msg-color:             #E16973;
+$muted-background:          #86c0ff;
+$dark-background:           #0e091a;
+$highlight-background:      #282b4b;
+$app-background:            linear-gradient(155deg, #32141c, #0e0819 100%);
+$basic-background:          #22193c;
+$muted-text:                #969ff4;
+$input-text-color:          #787ced;
+$dark-text:                 #0e091a;
+$text-color:                #fff;
+$link-color:                $accent-color-2;
+$link-hover-color:          $secondary-color;
+$button-text-color:         #0e0819;
+
+// ANIMATIONS
+$standard-timing-function:  cubic-bezier(0.87, 0, 0.13, 1);
+$ease-out:                  cubic-bezier(0.61, 1, 0.88, 1);
+$color-timing-function:     cubic-bezier(0, 0.55, 0.45, 1);
+$standard-duration:           0.3s;
+$color-transition-duration:   0.6s;
+$fast-duration:               0.2s;
+$slow-duration:               0.4s;
+
+// SIZES
+$menu-size:                   60px;
+$standard-viewport-height:    calc(calc(100dvh - #{$menu-size}) - 2px);

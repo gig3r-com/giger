@@ -58,7 +58,7 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
             ref={convoWrapper}
             className={`${className ?? ''} conversation`}
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'calc(100dvh - 200px)' }}
+            animate={{ opacity: 1, height: 'calc(100dvh - 512px)' }}
             exit={{ opacity: 0, height: 0, transform: 'scale(0)' }}
             transition={{
                 ease: cubicBezier(0.16, 1, 0.3, 1)

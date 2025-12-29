@@ -13,7 +13,7 @@ export const NestedPage: FC<{
             animate="in"
             exit="out"
             variants={MOTION_VARIANTS}
-            style={{ width: '100%', position: 'absolute', top: 200, left: 0 }}
+            style={{ width: '100%', position: 'absolute', top: 50, left: 0, boxSizing: 'border-box', padding: '1rem' }}
         >
             <>{children}</>
         </motion.div>

@@ -1,0 +1,12 @@
+@use '@theme' as *;
+
+.gig__details {
+    .new-msg {
+        margin-bottom: 1rem;
+    }
+
+    .big-button {
+        width: 100%;
+        background-color: $primary-color !important;
+    }
+}

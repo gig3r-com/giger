@@ -95,13 +95,19 @@ export const GigListFilters: FC<IGigListFiltersProps> = ({
                                     select={selectCategory}
                                     category={category}
                                     delayMultiplier={catIndex}
-                                    isSelected={newSelectedCategories.has(category)}
+                                    isSelected={newSelectedCategories.has(
+                                        category
+                                    )}
                                 />
                             </AnimatePresence>
                         ))}
                     </div>
                 ))}
-                <BigButton text="SAVE" onClick={save} color="primary" />
+                <BigButton
+                    text={intl.formatMessage({ id: 'SAVE' })}
+                    onClick={save}
+                    color="primary"
+                />
             </div>
         </section>
     );

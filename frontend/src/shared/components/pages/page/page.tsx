@@ -15,7 +15,14 @@ export const Page: FC<{
             animate="in"
             exit="out"
             variants={MOTION_VARIANTS}
-            style={{ width: '100%', position: 'absolute', top: 0, left: 0 }}
+            style={{
+                width: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                boxSizing: 'border-box',
+                padding: '1rem'
+            }}
         >
             <>{children}</>
         </motion.div>

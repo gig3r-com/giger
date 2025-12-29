@@ -8,12 +8,14 @@ import { NoGigFound } from '../no-gig-found/no-gig-found';
 import { useUserService } from '../../../shared/services/user.service';
 import { RootState } from '../../../store/store';
 import { useGigsService } from '../../../shared/services/gigs.service';
-import { GigHeader } from '../gig/gig-header/gig-header';
+import GigHeader from '../gig/gig-header/gig-header';
+import { List } from 'react-virtualized';
+import { useTenant } from '../../../shared/providers/tenant.provider';
 
 import './gigList.scss';
-import { List } from 'react-virtualized';
 
 export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
+    const tenant = useTenant();
     const { currentUser } = useUserService();
     const { filteredGigs } = useGigsService();
     const fetchingGigs = useSelector(
@@ -55,7 +57,9 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
     function rowRenderer({
         key, // Unique key within array of rows
         index, // Index of row within collection
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         isScrolling, // The List is currently being scrolled
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         isVisible, // This row is visible within the List (eg it is not an overscanned row)
         style // Style object to be applied to row (to position it)
     }: {
@@ -97,21 +101,9 @@ export const GigList: FC<IGigListProps> = ({ toggleMenuState }) => {
                 width={window.innerWidth}
                 height={window.innerHeight}
                 rowCount={sortedGigs.length}
-                rowHeight={109}
+                rowHeight={tenant === 'gigerDefault' ? 109 : 160}
                 rowRenderer={rowRenderer}
             />
-            {/* <motion.ul className="gig-list__list">
-                <AnimatePresence>
-                    {sortedGigs.map((gig, i) => (
-                        <GigHeader
-                            gig={gig}
-                            delayMultiplier={i}
-                            key={gig.id}
-                            mode="list"
-                        />
-                    ))}
-                </AnimatePresence>
-            </motion.ul> */}
         </section>
     );
 };

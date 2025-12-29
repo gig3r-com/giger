@@ -1,4 +1,5 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
+@use '@gig-new-msg-style' as *;
 
 .new-gig {
     transition: $standard-duration $standard-timing-function transform;

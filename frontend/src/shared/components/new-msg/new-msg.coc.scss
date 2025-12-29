@@ -1,0 +1,22 @@
+@use '@theme' as *;
+
+.new-msg {
+    border: 1px solid $secondary-color;
+    width: 99%!important;
+
+    &__send-message {
+        border-color: $secondary-color !important;
+        span {
+            color: $secondary-color !important;
+        }
+    }
+
+    input {
+        border: 1px solid $secondary-color;
+        color: $secondary-color;
+
+        &::placeholder {
+            color: $secondary-color;
+        }
+    }
+}

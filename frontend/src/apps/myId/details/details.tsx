@@ -1,6 +1,6 @@
 import { FC, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { MyIdNavigation } from '../my-id-navigation';
+import MyIdNavigation from '../my-id-navigation/my-id-navigation';
 
 import '../my-id-global.scss';
 

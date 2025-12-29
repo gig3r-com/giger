@@ -226,12 +226,17 @@
     "ERROR_FAILED_TO_DELETE_GIG": "Failed to delete. Try again or contact support.",
     "INSUFFICIENT_FUNDS": "Insufficient funds",
     "INSUFFICIENT_COMPANY_FUNDS": "Insufficient company funds",
-    "NO_RECORDER_EVENTS": "No recorded events",
+    "NO_RECORDED_EVENTS": "No recorded events",
     "ORDERING_PARTY": "Ordering party",
     "ANONYMOUS": "Anonymous",
     "COMPLETE": "Complete",
     "NEW_STATUS": "New status",
     "NEW": "New",
     "PROVIDER_WITH_EXPLANATION": "Provider (I want to be paid)",
-    "CLIENT_WITH_EXPLANATION": "Client (I'm willing to pay)"
+    "CLIENT_WITH_EXPLANATION": "Client (I'm willing to pay)",
+    "OFFERS": "Offers",
+    "PROFILE": "Profile",
+    "MY_ID": "MyID",
+    "CHAT": "Chat",
+    "BANK": "Banking"
 }

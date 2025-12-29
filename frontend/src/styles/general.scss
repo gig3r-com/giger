@@ -1,4 +1,4 @@
-@import '../variables.scss';
+@use '@theme' as *;
 
 // disables the 'tap to search' feature on chrome mobile
 * { 
@@ -52,4 +52,14 @@ select option {
 
 textarea {
     min-height: 6rem;
+}
+
+a {
+    font-weight: 500;
+    color: $link-color;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: $link-hover-color;
 }
