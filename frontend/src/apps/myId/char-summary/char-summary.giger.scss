@@ -1,0 +1,31 @@
+@use '@theme' as *;
+
+.char-summary {
+    border: 1px solid $base-text-color;
+
+    &:before {
+        background: $base-text-color;
+    }
+    &__header {
+        border-bottom: 1px solid $base-text-color;
+    }
+
+    &__name {
+        color: $base-text-color;
+    }
+
+    &__label,
+    &__entry {
+        border-bottom: 1px solid $base-text-color !important;
+        color: white;
+    }
+
+    &__label {
+        color: $base-text-color;
+    }
+
+    &__id-valid-to {
+        text-transform: uppercase;
+        color: $base-text-color;
+    }
+}

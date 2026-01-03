@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
 import { IUserBase, IUserPublic } from '../../../models/user';
 import { useUserService } from '../../../shared/services/user.service';
-import { CharSummary } from '../char-summary/char-summary';
+import CharSummary from '../char-summary/char-summary';
 import { selectActiveUsers } from '../../../store/users.selectors';
 
 import './contacts.scss';

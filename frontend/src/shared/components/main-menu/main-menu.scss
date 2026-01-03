@@ -1,4 +1,5 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
+@use '@main-menu-style' as *;
 
 .main-menu {
     width: 100%;
@@ -10,7 +11,6 @@
     left: 0;
     display: block;
     backdrop-filter: blur(8px);
-    border-top: 1px solid $input-text-color;
 
     &__option {
         width: calc(25% - 15px);
@@ -38,44 +38,33 @@
         }
 
         &--active {
-            background-image: linear-gradient(to bottom, rgba(84, 90, 233, 0) 28%, rgba(84, 90, 233, 0.2));
-            
             a {
                 color: #fff;
             }
-            
+
             &::before {
-                background-color: #fff;
                 transform: scaleY(1);
             }
         }
 
-        &:nth-of-type(1) { left: 0 }
-        &:nth-of-type(2) { left: calc(25% - 15px) }
-        &:nth-of-type(3) { right: calc(25% - 15px) }
-        &:nth-of-type(4) { right: 0 }
+        &:nth-of-type(1) {
+            left: 0;
+        }
+        &:nth-of-type(2) {
+            left: calc(25% - 15px);
+        }
+        &:nth-of-type(3) {
+            right: calc(25% - 15px);
+        }
+        &:nth-of-type(4) {
+            right: 0;
+        }
     }
 
     &__add-button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: $primary-color;
         position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        top: 10px;
         left: calc(50% - 20px);
         box-shadow: 0 5px 20px 0 rgba(84, 90, 233, 0.3);
-
-        span {
-            font-size: 36px;
-            line-height: 36px;
-            box-shadow: inset 0 1px 3px 0 rgba(84, 90, 233, 0.4);
-            color: #fff;
-            transform: translateY(-3px);
-        }
     }
 
     a {

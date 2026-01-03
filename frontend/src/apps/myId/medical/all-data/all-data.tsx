@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import { useUserService } from '../../../../shared/services/user.service';
-import { CharSummary } from '../../char-summary/char-summary';
+import CharSummary from '../../char-summary/char-summary';
 import { BigButton } from '../../../../shared/components/big-button/big-button';
 
 export const AllData: FC = () => {

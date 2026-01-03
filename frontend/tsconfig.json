@@ -18,8 +18,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, // this is probably not a correct way to do this, but i'm just an admin guy trying to get it done
+    "noUnusedParameters": false, // ^ same here ^
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

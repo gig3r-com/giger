@@ -1,0 +1,45 @@
+.gig {
+    $summary-height: 85px;
+
+    height: $summary-height;
+    min-height: $summary-height;
+
+    &__summary {
+        height: $summary-height;
+        border: 3px solid;
+        padding: 0.5rem;
+        padding-left: 1rem;
+        clip-path: polygon(
+            12px 0,
+            100% 0,
+            100% calc(100% - 19px),
+            calc(100% - 19px) 100%,
+            0 100%,
+            0 15px
+        );
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -9px;
+            width: 34px;
+            height: 2px;
+            transform: rotate(315deg);
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: -5px;
+            width: 34px;
+            height: 2px;
+            transform: rotate(315deg);
+        }
+    }
+
+    .big-button {
+        width: 95%;
+    }
+}

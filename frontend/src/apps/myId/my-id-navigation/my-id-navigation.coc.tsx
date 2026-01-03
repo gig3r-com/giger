@@ -1,17 +1,15 @@
 import classNames from 'classnames';
 import { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { useMyIdService } from '../../shared/services/myid.service';
+import { RootState } from '../../../store/store';
+import { useMyIdService } from '../../../shared/services/myid.service';
 import {
     MyIdCategory,
     MyIdItem,
     MyIdNavigationProps,
     MyIdUncoverableSections
-} from './myid.model';
-import { useApiService } from '../../shared/services/api.service';
-
-import './my-id-navigation.scss';
+} from './../myid.model';
+import { useApiService } from '../../../shared/services/api.service';
 
 export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
     const userName = useSelector(
@@ -28,7 +26,8 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
             items: [
                 { name: 'contacts' },
                 {
-                    name: 'medical',
+                    name: 'cyberware',
+                    url: 'medical',
                     isNew: hasNewEntries(MyIdUncoverableSections.MEDICAL)
                 },
                 {
@@ -36,24 +35,11 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
                     isNew: hasNewEntries(MyIdUncoverableSections.CRIMINAL)
                 },
                 {
-                    name: 'records',
+                    name: 'firmware',
+                    url: 'records',
                     isNew: hasNewEntries(
                         MyIdUncoverableSections.PRIVATE_RECORDS
                     )
-                }
-            ]
-        },
-        {
-            name: 'private',
-            items: [
-                { name: 'vibe' },
-                {
-                    name: 'goals',
-                    isNew: hasNewEntries(MyIdUncoverableSections.GOALS)
-                },
-                {
-                    name: 'relations',
-                    isNew: hasNewEntries(MyIdUncoverableSections.RELATIONS)
                 }
             ]
         },
@@ -64,7 +50,6 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
                     name: 'meta',
                     isNew: hasNewEntries(MyIdUncoverableSections.META)
                 },
-                { name: 'code' },
                 { name: 'log out', onClickAction: () => logout(userName ?? '') }
             ]
         }
@@ -78,7 +63,7 @@ export const MyIdNavigation: FC<MyIdNavigationProps> = ({ onItemClick }) => {
                 onClick={() =>
                     item.onClickAction
                         ? item.onClickAction()
-                        : onItemClick?.(item.name)
+                        : onItemClick?.(item.url ?? item.name)
                 }
             >
                 {item.name}

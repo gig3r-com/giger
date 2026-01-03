@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Giger } from './apps/giger/giger';
 import { Chat } from './apps/chat/chat';
@@ -18,11 +18,13 @@ import { EventRecord } from './apps/myId/medical/event-record';
 import { EventRecordType } from './models/events';
 import { UserRecords } from './apps/myId/user-records/user-records';
 import { UserRecordTypes } from './models/user';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { NewTransaction } from './apps/bank/new-transaction/new-transaction';
 import { useIntl } from 'react-intl';
 import { CodeEntry } from './apps/myId/code-entry/code-entry';
 import { LoggedInRoot } from './shared/components/logged-in-root/logged-in-root';
+import { Page } from './shared/components/pages/page/page';
+import { NestedPage } from './shared/components/pages/nested-page/nested-page';
 
 export const Router = () => {
     const intl = useIntl();
@@ -38,14 +40,24 @@ export const Router = () => {
         (state: RootState) =>
             !!(state.users.currentUser && !state.users.requiresGodUserSelection)
     );
+    const location = useLocation();
+
+    const locationArr = location.pathname?.split('/') ?? [];
 
     return (
-        <AnimatePresence mode="wait">
-            <BrowserRouter>
-                {isLoggedIn ? (
-                    <Routes>
+        <>
+            {isLoggedIn ? (
+                <AnimatePresence mode="wait">
+                    <Routes location={location} key={locationArr[1]}>
                         <Route path="/" element={<LoggedInRoot />}>
-                            <Route path="giger" element={<Giger />}>
+                            <Route
+                                path="giger"
+                                element={
+                                    <Page>
+                                        <Giger />
+                                    </Page>
+                                }
+                            >
                                 <Route path="new-gig" element={<Giger />} />
                                 <Route path=":gigId" element={<Giger />}>
                                     <Route
@@ -54,31 +66,66 @@ export const Router = () => {
                                     />
                                 </Route>
                             </Route>
-                            <Route path="chat" element={<Chat />}>
-                                <Route path=":chatId" element={<Chat />} />
-                                <Route path="new" element={<Chat />} />
+                            <Route
+                                path="chat"
+                                element={
+                                    <Page>
+                                        <Chat />
+                                    </Page>
+                                }
+                            >
+                                <Route
+                                    path=":chatId"
+                                    element={
+                                        <Page>
+                                            <Chat />
+                                        </Page>
+                                    }
+                                />
+                                <Route
+                                    path="new"
+                                    element={
+                                        <Page>
+                                            <Chat />
+                                        </Page>
+                                    }
+                                />
                             </Route>
-                            <Route path="bank" element={<Bank />}>
+                            <Route
+                                path="bank"
+                                element={
+                                    <Page>
+                                        <Bank />
+                                    </Page>
+                                }
+                            >
                                 <Route
                                     path="new"
                                     element={<NewTransaction />}
                                 />
                             </Route>
-                            <Route path="myid" element={<MyId />}>
-                                <Route path="details" element={<Details />}>
+                            <Route
+                                path="myid"
+                                element={
+                                    <Page>
+                                        <MyId />
+                                    </Page>
+                                }
+                            >
+                                <Route
+                                    path="details"
+                                    element={
+                                        <Page>
+                                            <Details />
+                                        </Page>
+                                    }
+                                >
                                     <Route
                                         path="contacts"
                                         element={
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key="myid"
-                                                    initial={{ x: '-100vw' }}
-                                                    animate={{ x: 0 }}
-                                                    exit={{ x: '100vw' }}
-                                                >
-                                                    <Contacts />
-                                                </motion.div>
-                                            </AnimatePresence>
+                                            <NestedPage>
+                                                <Contacts />
+                                            </NestedPage>
                                         }
                                     >
                                         <Route
@@ -154,21 +201,23 @@ export const Router = () => {
                             </Route>
                         </Route>
                     </Routes>
-                ) : (
+                </AnimatePresence>
+            ) : (
+                <AnimatePresence mode="wait">
                     <Routes>
                         <Route path="/" element={<Login />} />
                         <Route path="*" element={<Login />} />
                     </Routes>
-                )}
-                <Toaster
-                    position="bottom-center"
-                    containerStyle={{
-                        bottom: 80
-                    }}
-                >
-                    {(t) => <ToastItem toast={t} />}
-                </Toaster>
-            </BrowserRouter>
-        </AnimatePresence>
+                </AnimatePresence>
+            )}
+            <Toaster
+                position="bottom-center"
+                containerStyle={{
+                    bottom: 80
+                }}
+            >
+                {(t) => <ToastItem toast={t} />}
+            </Toaster>
+        </>
     );
 };

@@ -1,15 +1,13 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
+@use '@gig-style' as *;
 
 .gig {
     $new-msg-wrapper-height: 57px;
-    $summary-height: 85px;
 
     display: block;
     list-style: none;
     transition: $standard-duration $standard-timing-function;
     transition-property: height, min-height, margin-bottom;
-    height: $summary-height;
-    min-height: $summary-height;
     max-height: calc(#{$standard-viewport-height} - 70px);
     overflow: hidden;
 
@@ -32,26 +30,14 @@
         position: relative;
         transform-origin: left;
         box-sizing: border-box;
-        border: 3px solid;
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        height: $summary-height;
-        padding: 0.5rem;
-        padding-left: 1rem;
         transition:
             $color-transition-duration $color-timing-function border-color,
             $color-transition-duration $color-timing-function background-color;
         cursor: pointer;
-        clip-path: polygon(
-            12px 0,
-            100% 0,
-            100% calc(100% - 19px),
-            calc(100% - 19px) 100%,
-            0 100%,
-            0 15px
-        );
         flex-wrap: wrap;
 
         &::before {
@@ -125,26 +111,6 @@
         &--expired:after {
             background-color: $muted-accent;
         }
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -9px;
-            width: 34px;
-            height: 2px;
-            transform: rotate(315deg);
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: -5px;
-            width: 34px;
-            height: 2px;
-            transform: rotate(315deg);
-        }
     }
 
     &__date {
@@ -158,7 +124,6 @@
     }
 
     .big-button {
-        width: 95%;
         position: relative;
         top: -1px;
     }

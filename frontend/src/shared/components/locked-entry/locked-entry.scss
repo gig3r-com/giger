@@ -1,4 +1,4 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
 
 .locked-entry {
     border: 1px solid $accent-color;

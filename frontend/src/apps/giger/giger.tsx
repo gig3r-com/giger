@@ -1,15 +1,15 @@
 import { FC, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
-import { GigList } from './gigList/gigList';
-import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
-import { NewGig } from './new-gig/new-gig';
-import { AnimatePresence } from 'framer-motion';
-import { useGigsService } from '../../shared/services/gigs.service';
-import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import { AnimatePresence } from 'framer-motion';
+import { GigList } from './gigList/gigList';
+import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
+import NewGig from './new-gig/new-gig';
+import { useGigsService } from '../../shared/services/gigs.service';
+import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 import { selectSelectedGig } from '../../store/gigs.selectors';
-import { Gig } from './gig/gig';
+import Gig from './gig/gig';
 
 import './giger.scss';
 

@@ -8,9 +8,11 @@ import { useBankingService } from '../../services/banking.service';
 import { useNotificationsService } from '../../services/notifications.service';
 import { useUserService } from '../../services/user.service';
 import { GodMarker } from '../god-marker/god-marker';
-import { MainMenu } from '../main-menu/main-menu';
+import MainMenu from '../main-menu/main-menu';
 import { useMessagesService } from '../../services/messages.service';
 import { useMyIdService } from '../../services/myid.service';
+
+import './logged-in-root.scss';
 
 export const LoggedInRoot: FC = () => {
     const { lastMessage, lastNotificationUpdate } =

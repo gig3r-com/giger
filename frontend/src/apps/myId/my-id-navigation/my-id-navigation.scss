@@ -1,51 +1,5 @@
-@import '../../variables.scss';
-
-@mixin bordercut(
-    $border-cut: 10px,
-    $border-thickness: 1px,
-    $border-color: $primary-color
-) {
-    border: $border-thickness solid $border-color;
-    border-bottom: calc($border-thickness + 1px) solid $border-color;
-    background:
-        linear-gradient(
-                45deg,
-                $border-color 0 calc($border-cut + $border-thickness),
-                transparent 0
-            )
-            bottom left / 50% 50%,
-        linear-gradient(
-                -45deg,
-                $border-color 0 calc($border-cut + $border-thickness),
-                transparent 0
-            )
-            bottom right/50% 50%,
-        linear-gradient(
-                135deg,
-                $border-color 0 calc($border-cut + $border-thickness),
-                transparent 0
-            )
-            top left / 50% 50%,
-        linear-gradient(
-                -135deg,
-                $border-color 0 calc($border-cut + $border-thickness),
-                transparent 0
-            )
-            top right / 50% 50%;
-    background-origin: border-box;
-    background-repeat: no-repeat;
-    -webkit-mask:
-        linear-gradient(45deg, transparent 0 $border-cut, $border-color 0)
-            bottom left,
-        linear-gradient(-45deg, transparent 0 $border-cut, $border-color 0)
-            bottom right,
-        linear-gradient(135deg, transparent 0 $border-cut, $border-color 0) top
-            left,
-        linear-gradient(-135deg, transparent 0 $border-cut, $border-color 0) top
-            right;
-    -webkit-mask-size: 50.5% 50.5%;
-    -webkit-mask-repeat: no-repeat;
-}
+@use '@theme' as *;
+@use '@my-id-navigation-style' as *;
 
 .my-id-navigation {
     height: calc(#{$standard-viewport-height} - 74px);
@@ -55,6 +9,7 @@
     flex-direction: column;
     gap: 1rem;
     background: $app-background;
+    padding: 2rem 0 1rem 0;
 
     &__list {
         margin: 0;
@@ -85,10 +40,8 @@
         display: flex;
         justify-content: center;
         padding: 1.5rem;
-        border: 1px solid $primary-color; //fallback if bordercut mixin fails
         border-radius: 1rem;
         cursor: pointer;
-        color: white;
         font-size: 20px;
         text-transform: uppercase;
         font-weight: 500;
@@ -96,12 +49,6 @@
         font-style: normal;
         line-height: normal;
         letter-spacing: normal;
-
-        @include bordercut;
-
-        &:active {
-            @include bordercut(10px, 2px, $text-color);
-        }
 
         &--badge-new {
             height: 1rem;

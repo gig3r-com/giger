@@ -64,7 +64,7 @@ export const EventRecord: FC<{ type: EventRecordType }> = ({ type }) => {
                         {events.filter((event) => event.type === section.name)
                             .length === 0 && (
                             <span className="event-record__no-entry">
-                                <FormattedMessage id="NO_RECORDER_EVENTS" />
+                                <FormattedMessage id="NO_RECORDED_EVENTS" />
                             </span>
                         )}
                         {isGod && (

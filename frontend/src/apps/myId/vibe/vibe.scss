@@ -1,4 +1,4 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
 
 .vibe {
     max-height: calc(100dvh - 120px);

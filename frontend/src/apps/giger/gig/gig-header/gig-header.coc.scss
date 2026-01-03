@@ -1,0 +1,45 @@
+@use '@theme' as *;
+
+.gig-header {
+    &__title {
+        position: absolute;
+        top: 6%;
+        left: 13%;
+        word-wrap: break-word;
+        height: 56px;
+        max-width: 60%;
+        display: block;
+        line-height: 28px;
+    }
+
+    &__payout {
+        &-label {
+            position: absolute;
+            color: black;
+            top: 63%;
+            left: 9%;
+            text-transform: uppercase;
+            font-size: 19px;
+        }
+    }
+
+    &__payout-amount {
+        position: absolute;
+        top: 64%;
+        right: 34%;
+    }
+
+    &__arrow-icon {
+        position: absolute;
+        right: 0.5%;
+        top: 4.2%;
+        width: 23%;
+    }
+
+    &__status-indicator {
+        position: absolute;
+        bottom: -9.5%;
+        left: 15%;
+        color: $primary-color;
+    }
+}
