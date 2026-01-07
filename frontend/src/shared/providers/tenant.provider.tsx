@@ -11,7 +11,8 @@ function fromQuery(): TenantId | null {
 }
 function fromSubdomainOrPath(): TenantId | null {
     const host = window.location.host.toLowerCase();
-    if (host.startsWith('cityofchange')) return 'cityOfChange';
+    console.log('Host:', host);
+    if (host.includes('cityofchange')) return 'cityOfChange';
     if (window.location.pathname.startsWith('/coc')) return 'cityOfChange';
     return null;
 }
@@ -38,6 +39,7 @@ export const useTenant = () => useContext(TenantContext);
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
     const tenant = useMemo(resolveTenant, []);
+    console.log('Resolved tenant:', tenant);
     return (
         <TenantContext.Provider value={tenant}>
             {children}
