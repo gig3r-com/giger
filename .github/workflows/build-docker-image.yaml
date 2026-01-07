@@ -24,6 +24,10 @@ on:
         type: string
         required: false
         default: "microk8s-runner-1"
+      BUILD_ARGS:
+        type: string
+        required: false
+        default: "microk8s-runner-1"
     secrets:
       DOCKERHUB_USERNAME:
         required: true
@@ -77,5 +81,6 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
           add-hosts: "api.nuget.org:13.107.253.72,dl-cdn.alpinelinux.org:199.232.190.132"
+          build-args: ${{ inputs.BUILD_ARGS }}
         env:
           IMAGE_TAG: ${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}

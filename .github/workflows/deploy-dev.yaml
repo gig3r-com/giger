@@ -24,6 +24,17 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
 
+  build-frontend-coc:
+    uses: ./.github/workflows/build-docker-image.yaml
+    with:
+      DOCKER_CONTEXT: ./frontend
+      DOCKERFILE_NAME: ./frontend/Dockerfile
+      IMAGE_NAME: "coc-frontend"
+      IMAGE_TAG: ${{ github.sha }}
+      BUILD_ARGS: |
+        TENANT=coc
+    secrets: inherit
+
   build-backend:
     uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
@@ -41,9 +52,20 @@ jobs:
       IMAGE_NAME: "gig3r-mongo"
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
+
+  build-mongo-coc:
+    uses: ./.github/workflows/build-docker-image.yaml
+    with:
+      DOCKER_CONTEXT: ./data/
+      DOCKERFILE_NAME: ./data/Dockerfile
+      IMAGE_NAME: "coc-mongo"
+      IMAGE_TAG: ${{ github.sha }}
+      BUILD_ARGS: |
+        TENANT=coc
+    secrets: inherit
   
   deploy-helm-chart:
-    uses: gig3r-com/giger/.github/workflows/deploy-helm-chart.yaml@main
+    uses: ./.github/workflows/deploy-helm-chart.yaml
     needs:
       - build-frontend
       - build-backend
@@ -58,10 +80,30 @@ jobs:
       HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 
+  deploy-helm-chart-coc:
+    uses: ./.github/workflows/deploy-helm-chart.yaml
+    needs:
+      - build-frontend-coc
+      - build-backend
+      - build-mongo-coc
+    with:
+      HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
+      HELM_FRONTEND_IMAGE: "mivalsten/coc-frontend"
+      HELM_FRONTEND_TAG: ${{ github.sha }}
+      HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
+      HELM_BACKEND_TAG: ${{ github.sha }}
+      HELM_DATABASE_IMAGE: "mivalsten/coc-mongo"
+      HELM_DATABASE_TAG: ${{ github.sha }}
+      HELM_TENANT: "coc"
+      BASE_URL: "coc.gig3r.com"
+    secrets: inherit
+
   tests_e2e:
     name: Run end-to-end tests
     runs-on: microk8s-runner-1
-    needs: [ deploy-helm-chart ]
+    needs:
+      - deploy-helm-chart
+      - deploy-helm-chart-coc
     steps:
       - uses: actions/checkout@v3
         with:
@@ -82,7 +124,9 @@ jobs:
   comment:
     if: github.event_name == 'pull_request'
     runs-on: microk8s-runner-1
-    needs: [ deploy-helm-chart ]
+    needs:
+      - deploy-helm-chart
+      - deploy-helm-chart-coc
     steps:
       - uses: actions/github-script@v6
         with:
@@ -91,5 +135,10 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'PR had been deployed. \nEnvironment address is: \n  - [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }})\n  - [cityofchange.${{ needs.deploy-helm-chart.outputs.address }}](https://cityofchange.${{ needs.deploy-helm-chart.outputs.address }}) \n\nIt may take up to 10 minutes for DNS to propagate.'
+              body: `PR had been deployed.
+                Environment address is: 
+                  - [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }})
+                  - [${{ needs.deploy-helm-chart-coc.outputs.address }}](https://${{ needs.deploy-helm-chart-coc.outputs.address }})
+                  
+                  It may take up to 10 minutes for DNS to propagate.`
             })

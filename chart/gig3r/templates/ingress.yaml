@@ -54,33 +54,8 @@ spec:
             name: {{ include "gig3r.mongo-express.app" . }}
             port:
               number: 8080
-  - host: cityofchange.{{ include "gig3r.host" . }}
-    http:
-      paths:
-      - path: /(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.frontend.app" . }}
-            port:
-              number: 80
-      - path: /((?:api|swagger)/.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.backend.app" . }}
-            port:
-              number: 8080
-      - path: /((?:ws2137|ws1337).*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.backend.app" . }}
-            port:
-              number: 8080
   tls:
   - hosts:
     - {{ include "gig3r.host" . }}
     - express.{{ include "gig3r.host" . }}
-    - cityofchange.{{ include "gig3r.host" . }}
     secretName: tls-secret-gig3r-{{ default "app" .Values.environment }}
