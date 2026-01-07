@@ -26,9 +26,9 @@ function fromLocalStorage(): TenantId | null {
 
 export function resolveTenant(): TenantId {
     return (
-        fromQuery() ??
-        fromSubdomainOrPath() ??
-        fromLocalStorage() ??
+        fromQuery() ||
+        fromSubdomainOrPath() ||
+        fromLocalStorage() ||
         'gigerDefault'
     );
 }
