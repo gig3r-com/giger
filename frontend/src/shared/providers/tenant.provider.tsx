@@ -1,19 +1,9 @@
 import { createContext, useContext, useMemo } from 'react';
 import { TenantId } from '../../models/tenants';
 
-function fromRuntimeEnv(): TenantId | null {
-    // window.RUNTIME_ENV is filled at runtime by env.js (see below)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const t = (window as any).RUNTIME_ENV?.TENANT;
-    return t === 'cityOfChange'
-        ? 'cityOfChange'
-        : t === 'gigerDefault'
-          ? 'gigerDefault'
-          : null;
-}
 function fromQuery(): TenantId | null {
     const t = new URLSearchParams(window.location.search).get('tenant');
-    return t === 'cityOfChange'
+    return t?.toLowerCase() === 'cityOfChange'.toLowerCase()
         ? 'cityOfChange'
         : t === 'gigerDefault'
           ? 'gigerDefault'
@@ -21,7 +11,7 @@ function fromQuery(): TenantId | null {
 }
 function fromSubdomainOrPath(): TenantId | null {
     const host = window.location.host.toLowerCase();
-    if (host.startsWith('cityofchange.')) return 'cityOfChange';
+    if (host.startsWith('cityofchange')) return 'cityOfChange';
     if (window.location.pathname.startsWith('/coc')) return 'cityOfChange';
     return null;
 }
@@ -36,7 +26,6 @@ function fromLocalStorage(): TenantId | null {
 
 export function resolveTenant(): TenantId {
     return (
-        fromRuntimeEnv() ??
         fromQuery() ??
         fromSubdomainOrPath() ??
         fromLocalStorage() ??
