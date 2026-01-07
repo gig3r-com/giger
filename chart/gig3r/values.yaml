@@ -1,20 +1,17 @@
-environment: app
-base_url: gig3r.com
-
-frontend:
-  image: mivalsten/gig3r-frontend
-  tag: 0.2.0
-
 backend:
   image: mivalsten/gig3r-backend
-  tag: 0.2.0
-
+  tag: 493f58e2c2dc81c2eedd5de904e092075a0affe1
+base_url: gig3r.com
 database:
-  name: admin
-  user: gig3r
   image: mivalsten/gig3r-mongo
-  tag: 0.2.0
-
+  name: dev
+  tag: 493f58e2c2dc81c2eedd5de904e092075a0affe1
+  user: dev
+dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsiYXV0aCI6ImJXbDJZV3h6ZEdWdU9tUmphM0pmY0dGMFh6UnJTMjR0YzAxV2VsOWpTRzlTV0ZCU00xUlZVMVl6U25KcVp3PT0ifX19Cg==
+environment: feat-235-my-id-navigation
+frontend:
+  image: mivalsten/gig3r-frontend
+  tag: 493f58e2c2dc81c2eedd5de904e092075a0affe1
 mongoexpress:
-  user: changeme
-  password: changeaswell
+  password: c4cbdb4d-8de2-4999-af18-32eca120b933
+  user: 3e5d1b47-57ca-407f-8f62-e336cc95f781
