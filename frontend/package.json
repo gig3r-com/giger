@@ -14,6 +14,8 @@
         "prod:giger": "cross-env VITE_TENANT=gigerDefault env-cmd -f src/env/.env.prod vite",
         "prod:coc": "cross-env VITE_TENANT=cityOfChange env-cmd -f src/env/.env.dev vite",
         "build": "tsc && vite build",
+        "build:giger": "tsc && cross-env VITE_TENANT=gigerDefault vite build --outDir dist-giger",
+        "build:coc": "tsc && cross-env VITE_TENANT=cityOfChange vite build --outDir dist-coc",
         "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
