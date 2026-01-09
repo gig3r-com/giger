@@ -24,7 +24,7 @@ import { selectStatusHashes } from '../../store/gigs.selectors';
 export function useGigsService() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { api, logout } = useApiService();
+    const { api } = useApiService();
     const { accounts } = useBankingService();
     const { currentUser } = useUserService();
     const currentGigs = useSelector((state: RootState) => state.gigs.gigs);
@@ -84,13 +84,7 @@ export function useGigsService() {
     const fetchGigs = async () => {
         dispatch(setFetchingGigs(true));
 
-        const gigs = await api
-            .get('Gig/get/all')
-            .unauthorized(() => logout(currentUser!.handle))
-            .json<IGig[]>();
-        if (gigs.length === 0) {
-            logout(currentUser!.handle);
-        }
+        const gigs = await api.get('Gig/get/all').json<IGig[]>();
         dispatch(setGigs(gigs));
         setTimeout(() => setFetchingGigs(false), 25);
     };
