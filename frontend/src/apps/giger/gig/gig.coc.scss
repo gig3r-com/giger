@@ -1,0 +1,10 @@
+.gig {
+    $summary-height: 135px;
+
+    height: $summary-height;
+    min-height: $summary-height;
+
+    &__summary {
+        height: $summary-height;
+    }
+}

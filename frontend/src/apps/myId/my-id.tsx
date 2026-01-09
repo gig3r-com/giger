@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useIntl } from 'react-intl';
 import { Controls } from '../../shared/components/controls/controls';
 import { BigButton } from '../../shared/components/big-button/big-button';
-import { CharSummary } from './char-summary/char-summary';
+import CharSummary from './char-summary/char-summary';
 import { useUserService } from '../../shared/services/user.service';
 
 import './my-id.scss';

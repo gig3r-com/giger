@@ -16,8 +16,11 @@ $app-background:            linear-gradient(155deg, #22193c, #0a0613 100%);
 $basic-background:          #22193c;
 $muted-text:                #969ff4;
 $input-text-color:          #787ced;
+$link-color:                $accent-color-2;
+$link-hover-color:          $secondary-color;
 $dark-text:                 #0e091a;
 $text-color:                #fff;
+$button-text-color:         #0e0819;
 
 // ANIMATIONS
 $standard-timing-function:  cubic-bezier(0.87, 0, 0.13, 1);

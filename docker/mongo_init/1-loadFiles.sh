@@ -1,4 +1,4 @@
-for COL in `ls /data/*.json`; do
+for COL in `ls /input/*.json`; do
     echo "Processing $COL file..."
     mongoimport --host localhost \
                 --db $MONGO_INITDB_DATABASE \

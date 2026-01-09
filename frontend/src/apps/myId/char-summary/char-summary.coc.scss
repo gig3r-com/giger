@@ -1,0 +1,35 @@
+@use '@theme' as *;
+
+.char-summary {
+    border: 1px solid $secondary-color;
+
+    .slider__label, .slider__label2 {
+        color: $secondary-color;
+    }
+
+    &:before {
+        background: $secondary-color;
+    }
+    &__header {
+        border-bottom: 1px solid $secondary-color;
+    }
+
+    &__name {
+        color: $base-text-color;
+    }
+
+    &__label,
+    &__entry {
+        border-bottom: 1px solid $secondary-color !important;
+        color: white;
+    }
+
+    &__label {
+        color: $secondary-color;
+    }
+
+    &__id-valid-to {
+        text-transform: uppercase;
+        color: $secondary-color;
+    }
+}

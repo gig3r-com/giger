@@ -1,7 +1,7 @@
-@import '../../../variables.scss';
+@use '@theme' as *;
+@use '@char-summary-style' as *;
 
 .char-summary {
-    border: 1px solid $base-text-color;
     margin-bottom: 1rem;
     clip-path: polygon(calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%, 0 0);
     position: relative;
@@ -12,7 +12,6 @@
         transform: rotate(45deg);
         width: 28px;
         height: 1px;
-        background: $base-text-color;
         position: absolute;
         right: -4px;
         top: 9px;
@@ -33,7 +32,6 @@
         font-family: 'Saira', sans-serif;
         font-size: 1.4rem;
         padding: 1rem;
-        border-bottom: 1px solid $base-text-color;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         display: flex;
@@ -46,16 +44,13 @@
 
     &__name {
         margin-left: 0.5rem;
-        color: $base-text-color;
     }
 
     &__label,
     &__entry {
         width: 50%;
         box-sizing: border-box;
-        border-bottom: 1px solid $base-text-color !important;
         padding: 0.25rem 1rem;
-        color: white;
 
         &--full-length {
             width: 100%;
@@ -70,7 +65,6 @@
     }
 
     &__label {
-        color: $base-text-color;
         padding-left: 1rem;
         display: flex;
         align-items: center;

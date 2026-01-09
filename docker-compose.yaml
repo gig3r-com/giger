@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     expose:
       - 8080
-
+  
   backend:
     image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
     deploy:
@@ -55,7 +55,7 @@ services:
     volumes:
       - ./docker/volumes/mongo:/data/db
       - ./docker/mongo_init:/docker-entrypoint-initdb.d
-      - ./data/mongo:/data/
+      - ./data/mongo-giger:/input/
     environment:
       MONGO_INITDB_DATABASE: ${GIGER_DATABASE:-admin}
       MONGO_INITDB_ROOT_USERNAME: ${GIGER_USERNAME:-giger}

@@ -9,6 +9,8 @@
     width: 100%;
     padding: 1rem;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1000;
 
     &__back {
         display: flex;

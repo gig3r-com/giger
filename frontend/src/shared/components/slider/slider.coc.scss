@@ -1,0 +1,30 @@
+@use '@theme' as *;
+
+.slider {
+    &__label,
+    &__label2 {
+        color: $secondary-color;
+    }
+
+    &__min {
+        color: $secondary-color;
+    }
+
+    &__max {
+        color: $secondary-color;
+    }
+
+    input[type='range'] {
+        background-color: $secondary-color;
+        border-color: $secondary-color;
+
+        &::-webkit-slider-thumb {
+            background-color: $secondary-color;
+            border: 1px solid $base-text-color;
+
+            &::before {
+                color: red;
+            }
+        }
+    }
+}

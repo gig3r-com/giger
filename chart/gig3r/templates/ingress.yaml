@@ -23,23 +23,6 @@ spec:
   - host: {{ include "gig3r.host" . }}
     http:
       paths:
-      - path: /((?:api|swagger)/.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.backend.app" . }}
-            port:
-              number: 8080
-  - host: {{ include "gig3r.host" . }}
-    http:
-      paths:
-      - path: /((?:ws2137|ws1337).*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.backend.app" . }}
-            port:
-              number: 8080
       - path: /(.*)
         pathType: ImplementationSpecific
         backend:
@@ -47,6 +30,20 @@ spec:
             name: {{ include "gig3r.frontend.app" . }}
             port:
               number: 80
+      - path: /((?:api|swagger)/.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "gig3r.backend.app" . }}
+            port:
+              number: 8080
+      - path: /((?:ws2137|ws1337).*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "gig3r.backend.app" . }}
+            port:
+              number: 8080
   - host: express.{{ include "gig3r.host" . }}
     http:
       paths:

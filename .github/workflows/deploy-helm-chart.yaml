@@ -34,6 +34,10 @@ on:
         type: string
         required: false
         default: mivalsten/gig3r-mongo
+      HELM_TENANT:
+        type: string
+        required: false
+        default: gig3r
     secrets:
       KUBECONFIG:
         required: true
@@ -68,11 +72,11 @@ jobs:
         with:
           exec: |
             helm upgrade --install \
-            gig3r-${{ env.HELM_ENVIRONMENT }} \
+            ${{ inputs.HELM_TENANT }}-${{ env.HELM_ENVIRONMENT }} \
             ./chart/gig3r \
             --wait \
             --atomic \
-            --namespace=${{ env.HELM_ENVIRONMENT }} \
+            --namespace=${{ inputs.HELM_TENANT }}-${{ env.HELM_ENVIRONMENT }} \
             --create-namespace \
             --set environment=${{ env.HELM_ENVIRONMENT }} \
             --set base_url=${{ inputs.BASE_URL }} \
@@ -85,6 +89,7 @@ jobs:
             --set database.user=${{ env.HELM_ENVIRONMENT }} \
             --set database.image=${{ inputs.HELM_DATABASE_IMAGE }} \
             --set database.tag=${{ env.HELM_DATABASE_TAG }} \
+            --set tenant=${{ inputs.HELM_TENANT }} \
             --set mongoexpress.user=${{ secrets.ME_USER }} \
             --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
                     
