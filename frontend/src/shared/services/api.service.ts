@@ -4,12 +4,15 @@ import QueryStringAddon from 'wretch/addons/queryString';
 import { IUserPrivate } from '../../models/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuthToken, setAuthToken } from '../../store/auth.slice';
+import { useTenant } from '../providers/tenant.provider';
 
 export function useApiService() {
     const dispatch = useDispatch();
     const token = useSelector(selectAuthToken);
+    const tenantId = useTenant();
+    const endpointFromTenant = `VITE_${tenantId.toUpperCase()}_API_ENDPOINT`;
     const endpointBase =
-        import.meta.env.VITE_API_ENDPOINT ?? `${window.origin}/api/`;
+        import.meta.env[endpointFromTenant] ?? `${window.origin}/api/`;
 
     const loginCall = async (
         username: string,
