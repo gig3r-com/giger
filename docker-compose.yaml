@@ -20,9 +20,9 @@ services:
     ports:
       - ${EPSILON_PORT:-8082}:3000
     environment:
-      - NEXTAUTH_URL=http://localhost:${EPSILON_PORT:-8082}/api/auth
-      - AUTH_URL=http://localhost:${EPSILON_PORT:-8082}/api/auth
-      - AUTH_SECRET=V3ryS3cretSring
+      - NEXTAUTH_URL=http://localhost:${EPSILON_PORT:-8082}
+      - AUTH_URL=http://localhost:${EPSILON_PORT:-8082}
+      - NEXTAUTH_SECRET=V3ryS3cretSring
       - GITHUB_ID=dfgrgrgaesafgbcxvbae
       - GITHUB_SECRET=GitHubS3cret
       - API_BASE_URL=http://localhost:${APP_PORT:-8080}/api
