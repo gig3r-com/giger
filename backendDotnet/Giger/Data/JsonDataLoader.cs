@@ -74,12 +74,9 @@ namespace Giger.Data
                 LoadJsonFile<AnonymizedUser>(context, logger, Path.Combine(dataPath, "Anonymized.json"),
                     context.AnonymizedUsers, options);
 
-                // Users.json - DISABLED DUE TO MODEL ISSUES
-                // Issue: EF Core doesn't support array[] for navigation properties (Relations, Goals, etc.)
-                // Need to convert all controller methods from returning arrays to Lists
-                // OR keep arrays and manually handle JSON deserialization without EF
-                // LoadJsonFile<UserPrivate>(context, logger, Path.Combine(dataPath, "Users.json"),
-                //     context.Users, options);
+                // Users - loaded last due to complex relationships
+                LoadJsonFile<UserPrivate>(context, logger, Path.Combine(dataPath, "Users.json"),
+                    context.Users, options);
 
                 logger.LogInformation("JSON data loading completed successfully.");
                 

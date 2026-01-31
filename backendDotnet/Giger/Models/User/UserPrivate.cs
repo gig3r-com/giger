@@ -46,17 +46,17 @@ namespace Giger.Models.User
         public string NetworkAdminName { get; set; }
 
         // things below are obscured
-        public virtual Relation[] Relations { get; set; } = [];
+        public virtual List<Relation> Relations { get; set; } = [];
 
-        public virtual Goal[] Goals { get; set; } = [];
+        public virtual List<Goal> Goals { get; set; } = [];
 
-        public virtual Meta[] Meta { get; set; } = [];
+        public virtual List<Meta> Meta { get; set; } = [];
 
-        public virtual PrivateRecord[] PrivateRecords { get; set; } = [];
+        public virtual List<PrivateRecord> PrivateRecords { get; set; } = [];
 
-        public virtual CriminalEvent[] CriminalEvents { get; set; } = [];
+        public virtual List<CriminalEvent> CriminalEvents { get; set; } = [];
 
-        public virtual MedicalEvent[] MedicalEvents { get; set; } = [];
+        public virtual List<MedicalEvent> MedicalEvents { get; set; } = [];
 
         // hacker only
         public string[] Exploits { get; set; } = [];

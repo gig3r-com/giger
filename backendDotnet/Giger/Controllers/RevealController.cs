@@ -104,7 +104,7 @@ namespace Giger.Controllers
 
             return returnData;
 
-            ObscurableInfo? CheckCollection(ObscurableInfo[] records)
+            ObscurableInfo? CheckCollection<T>(List<T> records) where T : ObscurableInfo
             {
                 return records.FirstOrDefault(e => e.Id == obscurableId);
             }

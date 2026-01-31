@@ -9,7 +9,7 @@ namespace Giger.Controllers
 		#region UserRecords
 
 		[HttpGet("{id}/privateRecords")]
-		public async Task<ActionResult<PrivateRecord[]>> GetPrivateRecords(string id)
+		public async Task<ActionResult<List<PrivateRecord>>> GetPrivateRecords(string id)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -31,7 +31,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpPut("{id}/privateRecords")]
-		public async Task<IActionResult> UpdatePrivateRecords(string id, PrivateRecord[] privateRecords)
+		public async Task<IActionResult> UpdatePrivateRecords(string id, List<PrivateRecord> privateRecords)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -85,7 +85,7 @@ namespace Giger.Controllers
             }
             if (user.PrivateRecords.Any(pr => pr.Id == recordId))
             {
-                user.PrivateRecords= user.PrivateRecords.Where(pr => pr.Id != recordId).ToArray();
+                user.PrivateRecords= user.PrivateRecords.Where(pr => pr.Id != recordId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }
@@ -93,7 +93,7 @@ namespace Giger.Controllers
         }
 
 		[HttpGet("{id}/relations")]
-		public async Task<ActionResult<Relation[]>> GetRelations(string id)
+		public async Task<ActionResult<List<Relation>>> GetRelations(string id)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -115,7 +115,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpPut("{id}/relations")]
-		public async Task<IActionResult> UpdateRelations(string id, Relation[] relations)
+		public async Task<IActionResult> UpdateRelations(string id, List<Relation> relations)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -169,7 +169,7 @@ namespace Giger.Controllers
             }
             if (user.Relations.Any(pr => pr.Id == relationId))
             {
-                user.Relations= user.Relations.Where(pr => pr.Id != relationId).ToArray();
+                user.Relations= user.Relations.Where(pr => pr.Id != relationId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }
@@ -177,7 +177,7 @@ namespace Giger.Controllers
         }
 
 		[HttpGet("{id}/goals")]
-		public async Task<ActionResult<Goal[]>> GetGoals(string id)
+		public async Task<ActionResult<List<Goal>>> GetGoals(string id)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -199,7 +199,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpPut("{id}/goals")]
-		public async Task<IActionResult> UpdateGoals(string id, Goal[] goals)
+		public async Task<IActionResult> UpdateGoals(string id, List<Goal> goals)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -253,7 +253,7 @@ namespace Giger.Controllers
             }
             if (user.Goals.Any(pr => pr.Id == goalId))
             {
-                user.Goals= user.Goals.Where(pr => pr.Id != goalId).ToArray();
+                user.Goals= user.Goals.Where(pr => pr.Id != goalId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }
@@ -261,7 +261,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("{id}/metas")]
-        public async Task<ActionResult<Meta[]>> GetMetas(string id)
+        public async Task<ActionResult<List<Meta>>> GetMetas(string id)
         {
             if (!IsAuthorized(id))
             {
@@ -278,7 +278,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("{id}/metas")]
-        public async Task<IActionResult> UpdateMetas(string id, Meta[] metas)
+        public async Task<IActionResult> UpdateMetas(string id, List<Meta> metas)
         {
             if (!IsAuthorized(id))
             {
@@ -332,7 +332,7 @@ namespace Giger.Controllers
             }
             if (user.Meta.Any(pr => pr.Id == metaId))
             {
-                user.Meta= user.Meta.Where(pr => pr.Id != metaId).ToArray();
+                user.Meta= user.Meta.Where(pr => pr.Id != metaId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }
@@ -340,7 +340,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("{id}/criminalEvents")]
-        public async Task<ActionResult<CriminalEvent[]>> GetCriminalEvents(string id)
+        public async Task<ActionResult<List<CriminalEvent>>> GetCriminalEvents(string id)
         {
             if (!IsAuthorized(id))
             {
@@ -362,7 +362,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("{id}/criminalEvents")]
-        public async Task<IActionResult> UpdateCriminalEvents(string id, CriminalEvent[] criminalEvents)
+        public async Task<IActionResult> UpdateCriminalEvents(string id, List<CriminalEvent> criminalEvents)
         {
             if (!IsAuthorized(id))
             {
@@ -416,7 +416,7 @@ namespace Giger.Controllers
             }
             if (user.CriminalEvents.Any(pr => pr.Id == criminalEventId))
             {
-                user.CriminalEvents= user.CriminalEvents.Where(pr => pr.Id != criminalEventId).ToArray();
+                user.CriminalEvents= user.CriminalEvents.Where(pr => pr.Id != criminalEventId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }
@@ -424,7 +424,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("{id}/medicalEvents")]
-        public async Task<ActionResult<MedicalEvent[]>> GetMedicalEvents(string id)
+        public async Task<ActionResult<List<MedicalEvent>>> GetMedicalEvents(string id)
         {
             if (!IsAuthorized(id))
             {
@@ -446,7 +446,7 @@ namespace Giger.Controllers
         }
 
         [HttpPut("{id}/medicalEvents")]
-        public async Task<IActionResult> UpdateMedicalEvents(string id, MedicalEvent[] medicalEvents)
+        public async Task<IActionResult> UpdateMedicalEvents(string id, List<MedicalEvent> medicalEvents)
         {
             if (!IsAuthorized(id))
             {
@@ -500,7 +500,7 @@ namespace Giger.Controllers
             }
             if (user.MedicalEvents.Any(pr => pr.Id == medicalEventId))
             {
-                user.MedicalEvents= user.MedicalEvents.Where(pr => pr.Id != medicalEventId).ToArray();
+                user.MedicalEvents= user.MedicalEvents.Where(pr => pr.Id != medicalEventId).ToList();
                 await _userService.UpdateAsync(user);
                 return Ok();
             }

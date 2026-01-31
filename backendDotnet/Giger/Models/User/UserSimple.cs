@@ -11,22 +11,22 @@ namespace Giger.Models.User
         public RecordsHashes Hashes { get; set; }
 
         [JsonIgnore]
-        public override Relation[] Relations { get; set; }
+        public override List<Relation> Relations { get; set; }
 
         [JsonIgnore]
-        public override Goal[] Goals { get; set; }
+        public override List<Goal> Goals { get; set; }
 
         [JsonIgnore]
-        public override Meta[] Meta { get; set; }
+        public override List<Meta> Meta { get; set; }
 
         [JsonIgnore]
-        public override PrivateRecord[] PrivateRecords { get; set; }
+        public override List<PrivateRecord> PrivateRecords { get; set; }
 
         [JsonIgnore]
-        public override CriminalEvent[] CriminalEvents { get; set; }
+        public override List<CriminalEvent> CriminalEvents { get; set; }
 
         [JsonIgnore]
-        public override MedicalEvent[] MedicalEvents { get; set; }
+        public override List<MedicalEvent> MedicalEvents { get; set; }
 
         public UserSimple() { }
 

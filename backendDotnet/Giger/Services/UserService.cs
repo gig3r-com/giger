@@ -19,7 +19,7 @@ namespace Giger.Services
             await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
         public async Task<UserPrivate?> GetByUserNameAsync(string userHandle) =>
-            await _dbContext.Users.FirstOrDefaultAsync(x => x.Handle.Equals(userHandle, System.StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Users.FirstOrDefaultAsync(x => x.Handle.ToLower() == userHandle.ToLower());
 
         public async Task<List<UserPrivate>> GetAllFactionUser(Factions faction) =>
             await _dbContext.Users.Where(x => x.Faction == faction).ToListAsync();
