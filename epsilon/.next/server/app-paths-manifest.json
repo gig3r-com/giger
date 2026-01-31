@@ -1,0 +1,11 @@
+{
+  "/(app)/creator/chats/page": "app/(app)/creator/chats/page.js",
+  "/(app)/creator/page": "app/(app)/creator/page.js",
+  "/(app)/creator/users/page": "app/(app)/creator/users/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/network/[id]/route": "app/api/network/[id]/route.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}

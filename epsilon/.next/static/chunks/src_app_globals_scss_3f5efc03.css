@@ -1,0 +1,99 @@
+/* [project]/src/app/globals.scss.css [app-client] (css) */
+:root {
+  --bg-base: #06090b;
+  --grid-x: clamp(26px, 2.8vw, 44px);
+  --grid-y: clamp(26px, 2.8vh, 44px);
+  --glow-green: rgba(182, 255, 46, .08);
+  --glow-yellow: rgba(249, 240, 2, .08);
+  --grid-strong: rgba(110, 255, 90, .09);
+  --grid-soft: rgba(110, 255, 90, .04);
+  --scanline: rgba(255, 255, 255, .03);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--g0, var(--bg-base));
+  --lightningcss-light: ;
+  --lightningcss-dark: initial;
+  color-scheme: dark;
+  min-height: 100svh;
+  margin: 0;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body:before {
+  content: "";
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(ellipse 60vmax 40vmax at 20% 15%, var(--glow-green) 0, transparent 60%), radial-gradient(ellipse 50vmax 40vmax at 85% 80%, var(--glow-yellow) 0, transparent 60%), repeating-linear-gradient(0deg, var(--grid-strong) 0 1px, transparent 1px var(--grid-y)), repeating-linear-gradient(90deg, var(--grid-soft) 0 1px, transparent 1px var(--grid-x)), linear-gradient(var(--g0, var(--bg-base)), var(--g0, var(--bg-base)));
+  background-blend-mode: screen, screen, normal, normal, normal;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 170, .08));
+  will-change: transform;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateZ(0);
+}
+
+body:after {
+  content: "";
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(180deg, var(--scanline) 0 1px, transparent 1px 3px);
+  mix-blend-mode: soft-light;
+  opacity: .6;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:after {
+    opacity: .35;
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  body:before {
+    filter: drop-shadow(0 0 6px rgba(0, 255, 170, .06));
+  }
+}
+
+::selection {
+  color: #101510;
+  background: rgba(182, 255, 46, .35);
+}
+
+.glitch {
+  text-shadow: 0 0 6px rgba(182, 255, 46, .35), 0 0 14px rgba(249, 240, 2, .25);
+  position: relative;
+}
+
+.glitch:before, .glitch:after {
+  content: attr(data-glitch);
+  z-index: -1;
+  opacity: .25;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.glitch:before {
+  color: var(--bio-acid);
+  transform: translate(1px);
+}
+
+.glitch:after {
+  color: var(--cp-yellow);
+  transform: translate(-1px);
+}
+
+/*# sourceMappingURL=src_app_globals_scss_3f5efc03.css.map*/

@@ -13,7 +13,7 @@ services:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
   frontend:
-    image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
+    # image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
     build:
       context: ./frontend
     restart: unless-stopped
@@ -21,7 +21,7 @@ services:
       - 8080
 
   backend:
-    image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
+    # image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
     deploy:
       replicas: 3
     build:
@@ -34,16 +34,19 @@ services:
       - 8080
     volumes:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
+      - ./data/mongo:/data:ro
     environment:
-      #- GigerDB__ConnectionString=mongodb://mongo:27017
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=giger;Username=giger;Password=giger;
       - GigerDB__Host=postgres
       - GigerDB__Port=5432
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
-      - GigerDB__DatabaseName=${GIGER_DATABASE:-admin}
+      - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
+      - FORCE_DATA_RELOAD=${FORCE_DATA_RELOAD:-false}
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:16
@@ -52,7 +55,13 @@ services:
       - '5432:5432'
     volumes:
       - ./volumes/postgres:/var/lib/postgresql
+      - ./docker/postgres_init:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=giger
       - POSTGRES_PASSWORD=giger
       - POSTGRES_DB=giger
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U giger -d giger"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
