@@ -24,6 +24,14 @@ export const ConvoSnippet: FC<{
     const { generateAnimation } = useStandardizedAnimation();
     const { convoHasUnreadMessages } = useMessagesService();
     const { currentUser } = useUserService();
+    
+    console.log('ConvoSnippet rendering:', {
+        convoId: convo.id,
+        participants: convo.participants,
+        messageCount: convo.messages?.length,
+        lastMessage: convo.messages[convo.messages.length - 1]
+    });
+    
     const msgToDisplayAsSnippet = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({

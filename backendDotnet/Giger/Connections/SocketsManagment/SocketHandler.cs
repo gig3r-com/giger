@@ -14,13 +14,19 @@ namespace Giger.Connections.SocketsManagment
 
         public virtual async Task OnConnected(WebSocket socket, HttpContext context)
         {
+            Console.WriteLine($"[SocketHandler] OnConnected called");
             context.Request.Query.TryGetValue("AuthToken", out var token);
+            Console.WriteLine($"[SocketHandler] AuthToken from query: {(string.IsNullOrEmpty(token) ? "EMPTY" : token.ToString().Substring(0, 8) + "...")}");
+            
             if (string.IsNullOrEmpty(token))
             {
+                Console.WriteLine($"[SocketHandler] No token provided, closing socket");
                 await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "No token", CancellationToken.None);
                 return;
             }
+            Console.WriteLine($"[SocketHandler] Calling AddSocket");
             await Task.Run(() => { Connections.AddSocket(socket, token); });
+            Console.WriteLine($"[SocketHandler] AddSocket task started");
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)

@@ -53,15 +53,19 @@ export const conversationsSlice = createSlice({
             state,
             action: PayloadAction<{ convoId: string; hash: number }>
         ) => {
-            state.conversationHashes[action.payload.convoId].lastSeen =
-                action.payload.hash;
+            if (state.conversationHashes[action.payload.convoId]) {
+                state.conversationHashes[action.payload.convoId].lastSeen =
+                    action.payload.hash;
+            }
         },
         setSeenGigConversationHash: (
             state,
             action: PayloadAction<{ gigId: string; hashData: number }>
         ) => {
-            state.gigConversationHashes[action.payload.gigId].lastSeen =
-                action.payload.hashData;
+            if (state.gigConversationHashes[action.payload.gigId]) {
+                state.gigConversationHashes[action.payload.gigId].lastSeen =
+                    action.payload.hashData;
+            }
         },
         setAllConversationHashes: (
             state,
@@ -69,7 +73,11 @@ export const conversationsSlice = createSlice({
         ) => {
             if (!action.payload) return;
             Object.entries(action.payload).forEach(([conversationId, hash]) => {
-                state.conversationHashes[conversationId].current = hash;
+                if (!state.conversationHashes[conversationId]) {
+                    state.conversationHashes[conversationId] = { current: hash, lastSeen: 0 };
+                } else {
+                    state.conversationHashes[conversationId].current = hash;
+                }
             });
         },
         setAllGigConversationHashes: (
@@ -77,7 +85,11 @@ export const conversationsSlice = createSlice({
             action: PayloadAction<Record<string, number>>
         ) => {
             Object.entries(action.payload).forEach(([gigId, hash]) => {
-                state.gigConversationHashes[gigId].current = hash;
+                if (!state.gigConversationHashes[gigId]) {
+                    state.gigConversationHashes[gigId] = { current: hash, lastSeen: 0 };
+                } else {
+                    state.gigConversationHashes[gigId].current = hash;
+                }
             });
         },
         updateConversation: (

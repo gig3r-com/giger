@@ -32,16 +32,24 @@ namespace Giger.Connections.SocketsManagment
 
         public async Task AddSocket(WebSocket socket, string authToken)
         {
+            Console.WriteLine($"[ConnectionsManager] AddSocket called with authToken: {authToken?.Substring(0, 8)}...");
             using var scope = _scopeFactory.CreateScope();
             var loginService = scope.ServiceProvider.GetRequiredService<LoginService>();
             var auth = await loginService.GetByAuthTokenAsync(authToken);
             if (auth != null)
             {
+                Console.WriteLine($"[ConnectionsManager] Found auth for username: {auth.Username}");
                 if (_connections.ContainsKey(auth.Username))
                 {
+                    Console.WriteLine($"[ConnectionsManager] Removing existing connection for {auth.Username}");
                     await RemoveConnectionAsync(auth.Username);
                 }
                 _connections.TryAdd(auth.Username, socket);
+                Console.WriteLine($"[ConnectionsManager] Added socket for {auth.Username}. Total connections: {_connections.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"[ConnectionsManager] ERROR: No auth found for token");
             }
         }   
 

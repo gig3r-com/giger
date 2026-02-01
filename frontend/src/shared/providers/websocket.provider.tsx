@@ -42,9 +42,9 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
 
     const generateSocket = useCallback(
         (mode: 'notifications' | 'convo') => {
-            return new WebSocket(
-                `${endpointBase}/ws${mode === 'convo' ? '1337' : '2137'}?AuthToken=${authToken}`
-            );
+            const url = `${endpointBase}/ws${mode === 'convo' ? '1337' : '2137'}?AuthToken=${authToken}`;
+            console.log(`[WebSocket] Connecting to: ${url}`);
+            return new WebSocket(url);
         },
         [authToken, endpointBase]
     );
@@ -99,20 +99,24 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
             socket.binaryType = 'arraybuffer';
 
             socket.onopen = () => {
+                console.log(`[WebSocket] ${mode} socket connected`);
                 interval = ping(socket);
             };
 
             socket.onclose = () => {
+                console.log(`[WebSocket] ${mode} socket closed`);
                 clearInterval(interval);
                 // setupWebsocket();
             };
 
             socket.onerror = (error) => {
-                console.error('WebSocket error', error);
+                console.error(`[WebSocket] ${mode} socket error:`, error);
             };
 
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
+                console.log('[WebSocket] Received message:', message);
+                
                 if (mode === 'convo') {
                     handleConvoMessage(message as IConversationUpdatePayload);
                     return;
@@ -133,6 +137,7 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
     );
 
     const handleConvoMessage = (message: IConversationUpdatePayload) => {
+        console.log('[WebSocket] Handling convo message:', message);
         setLastMessage({
             conversationId: message.ConversationId,
             isGigConversation: !!message.IsGigConveration,
@@ -143,11 +148,18 @@ export const WebSocketProvider: FC<{ children: React.ReactNode }> = ({
                 text: message.Message.Text
             }
         });
+        console.log('[WebSocket] lastMessage state updated');
     };
 
     const sendMessage = (message: IConversationUpdatePayload) => {
+        console.log('[WebSocket] sendMessage called with:', message);
+        console.log('[WebSocket] WebSocket state:', ws.current?.readyState, 'OPEN=', WebSocket.OPEN);
+        
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            ws.current.send(JSON.stringify(message));
+            const payload = JSON.stringify(message);
+            console.log('[WebSocket] Sending payload:', payload);
+            ws.current.send(payload);
+            console.log('[WebSocket] Message sent successfully');
         } else {
             console.error('Convo WebSocket is not connected');
             setTimeout(async () => {

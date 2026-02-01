@@ -25,6 +25,12 @@ export const Chat: FC = () => {
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
     );
+    
+    console.log('Chat component:', {
+        conversationsCount: conversations.length,
+        chatId,
+        currentUser: currentUser?.handle
+    });
 
     const sortedConvos = useMemo(() => {
         return [...conversations].sort((a, b) => {

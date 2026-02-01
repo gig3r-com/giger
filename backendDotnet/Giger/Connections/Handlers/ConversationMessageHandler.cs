@@ -41,22 +41,47 @@ namespace Giger.Connections.Handlers
 
             try
             {
-                var conversationService = ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider);
                 var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                Console.WriteLine($"[WebSocket] Received message: {msg}");
+                
+                // Create a scope that lives for the entire operation
+                using var scope = _serviceProvider.CreateScope();
+                var conversationService = scope.ServiceProvider.GetRequiredService<ConversationService>();
+                
                 var payload = JsonSerializer.Deserialize<MessagePayload>(msg);
+                
+                // Handle ping messages
+                if (payload?.ConversationId == null)
+                {
+                    return;
+                }
+                
+                Console.WriteLine($"[WebSocket] Parsed payload - ConvoId: {payload.ConversationId}, Sender: {payload.Message.Sender}");
+                
                 var conversation = await conversationService.GetAsync(payload.ConversationId);
                 if (conversation != null)
                 {
+                    Console.WriteLine($"[WebSocket] Found conversation with {conversation.Messages.Count} existing messages");
                     conversation.Messages.Add(payload.Message);
                     await conversationService.UpdateAsync(conversation);
+                    Console.WriteLine($"[WebSocket] Message saved successfully");
+                    
                     var message = JsonSerializer.Serialize(payload);
+                    var participantSockets = Connections.GetParticipants(conversation.Participants).ToList();
+                    Console.WriteLine($"[WebSocket] Found {participantSockets.Count} connected sockets for {conversation.Participants.Count()} participants");
+                    
                     await SendMessageToParticipantsAsync(message, conversation.Participants);
-                    LogMessage(payload.Message, payload.ConversationId, conversationService);
+                    Console.WriteLine($"[WebSocket] Message sent to participants");
+                }
+                else
+                {
+                    Console.WriteLine($"[WebSocket] ERROR: Conversation {payload.ConversationId} not found");
                 }
             } 
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"[WebSocket] ERROR: {ex.Message}");
+                Console.WriteLine($"[WebSocket] Stack trace: {ex.StackTrace}");
             }
         }
 

@@ -16,15 +16,19 @@ namespace Giger.Services
             await _dbContext.Conversations.ToListAsync();
 
         public async Task<Conversation?> GetAsync(string id) =>
-            await _dbContext.Conversations.FirstOrDefaultAsync(x => x.Id == id);
+            await _dbContext.Conversations
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
             await _dbContext.Conversations
+                .Include(c => c.Messages)
                 .Where(x => x.Participants.Contains(participant) && !x.GigConversation)
                 .ToListAsync();
 
         public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
             await _dbContext.Conversations
+                .Include(c => c.Messages)
                 .Where(x => x.Participants.Contains(participant) && x.GigConversation)
                 .ToListAsync();
 

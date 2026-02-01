@@ -20,6 +20,13 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
     const convoWrapper = useRef<HTMLDivElement>(null);
     const { lastMessage } = useWebSocketContext() as IWebsocketContext;
     const { chatId, gigId } = useParams();
+    
+    console.log('Conversation component rendering:', {
+        convoId: convo.id,
+        participants: convo.participants,
+        messageCount: convo.messages?.length,
+        messages: convo.messages
+    });
 
     useEffect(() => {
         setTimeout(() => {

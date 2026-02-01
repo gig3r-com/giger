@@ -15,6 +15,15 @@ export const Message: FC<{
     const intl = useIntl();
     const { currentUser, isInfluencer } = useUserService();
     const { isMessageUnread } = useMessagesService();
+    
+    console.log('Rendering message:', {
+        id: message.id,
+        sender: message.sender,
+        text: message.text,
+        textLength: message.text?.length,
+        date: message.date
+    });
+    
     const messageClassnames = classNames({
         message: true,
         'message--own': currentUser?.handle === message.sender,

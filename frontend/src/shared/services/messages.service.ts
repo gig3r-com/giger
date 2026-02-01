@@ -140,9 +140,20 @@ export function useMessagesService() {
     ) => void = (messageText, convoId, isGigConversation = false) => {
         if (messageText.trim() === '') {
             console.error('Message text cannot be empty');
+            return;
         }
 
         const message = createMessage(messageText);
+        
+        console.log('Sending message:', {
+            convoId,
+            messageId: message.id,
+            text: message.text,
+            date: message.date,
+            sender: message.sender
+        });
+        
+        console.log('sendMessage function:', typeof sendMessage, sendMessage);
 
         sendMessage({
             ConversationId: convoId,
@@ -154,6 +165,8 @@ export function useMessagesService() {
             },
             IsGigConveration: isGigConversation
         });
+        
+        console.log('sendMessage called');
     };
 
     const isMessageUnread = (convoId: string, messageId: string): boolean => {
