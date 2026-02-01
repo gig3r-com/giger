@@ -66,15 +66,22 @@ export function useMessagesService() {
                 messages: [...createInitialMessages(participants, anonymize)]
             };
 
+            console.log('[CreateConvo] Creating conversation with:', JSON.stringify(convo, null, 2));
+
             api.url('Conversation')
                 .post(convo)
                 .json<IConversation>()
-                .catch(() => reject())
+                .catch((error) => {
+                    console.error('[CreateConvo] POST failed:', error);
+                    reject(error);
+                })
                 .then((conversation) => {
                     if (!conversation) {
+                        console.error('[CreateConvo] No conversation returned');
                         reject();
                         return;
                     }
+                    console.log('[CreateConvo] POST succeeded, adding to Redux:', conversation.id);
                     dispatch(addConversation(conversation));
                     resolve(conversation.id);
                 });

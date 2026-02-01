@@ -3,7 +3,7 @@ namespace Giger.Models.MessageModels
 {
     public class Conversation
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         public List<Message> Messages { get; set; } = [];
 
@@ -11,7 +11,7 @@ namespace Giger.Models.MessageModels
 
         public List<string> AnonymizedUsers { get; set; } = []; // UserNames
 
-        public required bool GigConversation { get; set; }
+        public bool GigConversation { get; set; }
 
         public override int GetHashCode()
         {

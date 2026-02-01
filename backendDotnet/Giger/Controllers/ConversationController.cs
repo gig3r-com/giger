@@ -2,6 +2,7 @@
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Connections.Handlers;
+using System.Text.Json;
 
 namespace Giger.Controllers
 {
@@ -60,11 +61,22 @@ namespace Giger.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post(Conversation newConversation)
+        public async Task<IActionResult> Post([FromBody] JsonElement requestBody)
         {
-            if (string.IsNullOrEmpty(newConversation.Id))
+            // Write to file since console logging might not work
+            System.IO.File.AppendAllText("/tmp/convo-post.log", $"[{DateTime.UtcNow}] POST called\n");
+            System.IO.File.AppendAllText("/tmp/convo-post.log", requestBody.GetRawText() + "\n\n");
+            
+            var newConversation = JsonSerializer.Deserialize<Conversation>(requestBody.GetRawText(), new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+            
+            System.IO.File.AppendAllText("/tmp/convo-post.log", $"Deserialized - Id: {newConversation?.Id ?? "null"}, Participants: {newConversation?.Participants?.Count ?? 0}\n");
+            
+            if (string.IsNullOrEmpty(newConversation?.Id))
             {
-                newConversation.Id = Guid.NewGuid().ToString();
+                newConversation!.Id = Guid.NewGuid().ToString();
             }
             await _conversationService.CreateAsync(newConversation);
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);

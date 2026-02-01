@@ -21,13 +21,17 @@ export const StartNewConvo: FC = () => {
     const [selectedUserHandles, setSelectedUserHandles] = useState<string[]>([]);
 
     const onConvoCreation = () => {
+        console.log('[StartNewConvo] Creating conversation with participants:', [...selectedUserHandles, currentUser!.handle]);
         createConvo(
             [...selectedUserHandles, currentUser!.handle],
             undefined,
             anonymize === 'YES'
         ).then((id) => {
+            console.log('[StartNewConvo] Conversation created, navigating to:', id);
             setSelectedUserHandles([]);
             navigate(`/chat/${id}`);
+        }).catch((error) => {
+            console.error('[StartNewConvo] Failed to create conversation:', error);
         });
     };
 
