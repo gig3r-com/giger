@@ -47,18 +47,7 @@ spec:
             name: {{ include "gig3r.frontend.app" . }}
             port:
               number: 80
-  - host: express.{{ include "gig3r.host" . }}
-    http:
-      paths:
-      - path: /(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.mongo-express.app" . }}
-            port:
-              number: 8080
   tls:
   - hosts:
     - {{ include "gig3r.host" . }}
-    - express.{{ include "gig3r.host" . }}
     secretName: tls-secret-gig3r-{{ default "app" .Values.environment }}

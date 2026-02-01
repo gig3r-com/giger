@@ -33,7 +33,7 @@ on:
       HELM_DATABASE_IMAGE:
         type: string
         required: false
-        default: mivalsten/gig3r-mongo
+        default: mivalsten/gig3r-postgres
     secrets:
       KUBECONFIG:
         required: true
@@ -85,8 +85,7 @@ jobs:
             --set database.user=${{ env.HELM_ENVIRONMENT }} \
             --set database.image=${{ inputs.HELM_DATABASE_IMAGE }} \
             --set database.tag=${{ env.HELM_DATABASE_TAG }} \
-            --set mongoexpress.user=${{ secrets.ME_USER }} \
-            --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
+            --set database.password=${{ secrets.POSTGRES_PASSWORD }}
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true

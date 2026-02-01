@@ -33,12 +33,12 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
 
-  build-mongo:
+  build-postgres:
     uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
     with:
       DOCKER_CONTEXT: ./data/
-      DOCKERFILE_NAME: ./data/Dockerfile
-      IMAGE_NAME: "gig3r-mongo"
+      DOCKERFILE_NAME: ./data/Dockerfile.postgres
+      IMAGE_NAME: "gig3r-postgres"
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
   
@@ -47,14 +47,14 @@ jobs:
     needs:
       - build-frontend
       - build-backend
-      - build-mongo
+      - build-postgres
     with:
       HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
       HELM_FRONTEND_IMAGE: "mivalsten/gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ github.sha }}
       HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
       HELM_BACKEND_TAG: ${{ github.sha }}
-      HELM_DATABASE_IMAGE: "mivalsten/gig3r-mongo"
+      HELM_DATABASE_IMAGE: "mivalsten/gig3r-postgres"
       HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 
