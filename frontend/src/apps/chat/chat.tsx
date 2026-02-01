@@ -11,6 +11,7 @@ import { ConvoSnippet } from './convo-snippet/convo-snippet';
 import { StartNewConvo } from './start-new/start-new-convo';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { useUserService } from '../../shared/services/user.service';
+import { debugLog } from '../../shared/utils/debug';
 
 import './chat.scss';
 import dayjs from 'dayjs';
@@ -26,7 +27,7 @@ export const Chat: FC = () => {
         (state: RootState) => state.conversations.conversations
     );
     
-    console.log('Chat component:', {
+    debugLog('Chat component:', {
         conversationsCount: conversations.length,
         chatId,
         currentUser: currentUser?.handle

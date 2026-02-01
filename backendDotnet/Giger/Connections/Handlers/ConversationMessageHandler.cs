@@ -42,7 +42,7 @@ namespace Giger.Connections.Handlers
             try
             {
                 var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                Console.WriteLine($"[WebSocket] Received message: {msg}");
+                DebugLogger.Log($"[WebSocket] Received message: {msg}");
                 
                 // Create a scope that lives for the entire operation
                 using var scope = _serviceProvider.CreateScope();
@@ -56,22 +56,22 @@ namespace Giger.Connections.Handlers
                     return;
                 }
                 
-                Console.WriteLine($"[WebSocket] Parsed payload - ConvoId: {payload.ConversationId}, Sender: {payload.Message.Sender}");
+                DebugLogger.Log($"[WebSocket] Parsed payload - ConvoId: {payload.ConversationId}, Sender: {payload.Message.Sender}");
                 
                 var conversation = await conversationService.GetAsync(payload.ConversationId);
                 if (conversation != null)
                 {
-                    Console.WriteLine($"[WebSocket] Found conversation with {conversation.Messages.Count} existing messages");
+                    DebugLogger.Log($"[WebSocket] Found conversation with {conversation.Messages.Count} existing messages");
                     conversation.Messages.Add(payload.Message);
                     await conversationService.UpdateAsync(conversation);
-                    Console.WriteLine($"[WebSocket] Message saved successfully");
+                    DebugLogger.Log($"[WebSocket] Message saved successfully");
                     
                     var message = JsonSerializer.Serialize(payload);
                     var participantSockets = Connections.GetParticipants(conversation.Participants).ToList();
-                    Console.WriteLine($"[WebSocket] Found {participantSockets.Count} connected sockets for {conversation.Participants.Count()} participants");
+                    DebugLogger.Log($"[WebSocket] Found {participantSockets.Count} connected sockets for {conversation.Participants.Count()} participants");
                     
                     await SendMessageToParticipantsAsync(message, conversation.Participants);
-                    Console.WriteLine($"[WebSocket] Message sent to participants");
+                    DebugLogger.Log($"[WebSocket] Message sent to participants");
                 }
                 else
                 {

@@ -8,6 +8,7 @@ import { useMessagesService } from '../../../shared/services/messages.service';
 import { UserSelect } from '../../../shared/user-select/user-select';
 import { Controls } from '../../../shared/components/controls/controls';
 import { useUserService } from '../../../shared/services/user.service';
+import { debugLog } from '../../../shared/utils/debug';
 
 import './start-new-convo.scss';
 
@@ -21,13 +22,13 @@ export const StartNewConvo: FC = () => {
     const [selectedUserHandles, setSelectedUserHandles] = useState<string[]>([]);
 
     const onConvoCreation = () => {
-        console.log('[StartNewConvo] Creating conversation with participants:', [...selectedUserHandles, currentUser!.handle]);
+        debugLog('[StartNewConvo] Creating conversation with participants:', [...selectedUserHandles, currentUser!.handle]);
         createConvo(
             [...selectedUserHandles, currentUser!.handle],
             undefined,
             anonymize === 'YES'
         ).then((id) => {
-            console.log('[StartNewConvo] Conversation created, navigating to:', id);
+            debugLog('[StartNewConvo] Conversation created, navigating to:', id);
             setSelectedUserHandles([]);
             navigate(`/chat/${id}`);
         }).catch((error) => {

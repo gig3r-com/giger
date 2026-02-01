@@ -63,22 +63,21 @@ namespace Giger.Controllers
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] JsonElement requestBody)
         {
-            // Write to file since console logging might not work
-            System.IO.File.AppendAllText("/tmp/convo-post.log", $"[{DateTime.UtcNow}] POST called\n");
-            System.IO.File.AppendAllText("/tmp/convo-post.log", requestBody.GetRawText() + "\n\n");
+            DebugLogger.Log($"[ConversationController] POST called - Raw JSON:\n{requestBody.GetRawText()}");
             
             var newConversation = JsonSerializer.Deserialize<Conversation>(requestBody.GetRawText(), new JsonSerializerOptions 
             { 
                 PropertyNameCaseInsensitive = true 
             });
             
-            System.IO.File.AppendAllText("/tmp/convo-post.log", $"Deserialized - Id: {newConversation?.Id ?? "null"}, Participants: {newConversation?.Participants?.Count ?? 0}\n");
+            DebugLogger.Log($"[ConversationController] Deserialized - Id: {newConversation?.Id ?? "null"}, Participants: {newConversation?.Participants?.Count ?? 0}");
             
             if (string.IsNullOrEmpty(newConversation?.Id))
             {
                 newConversation!.Id = Guid.NewGuid().ToString();
             }
             await _conversationService.CreateAsync(newConversation);
+            DebugLogger.Log($"[ConversationController] Created conversation {newConversation.Id} with {newConversation.Participants.Count} participants");
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
         }
             

@@ -12,6 +12,7 @@ import { useStandardizedAnimation } from '../../../shared/services/standardizedA
 import { useUserService } from '../../../shared/services/user.service';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
+import { debugLog } from '../../../shared/utils/debug';
 
 import './convo-snippet.scss';
 
@@ -25,7 +26,7 @@ export const ConvoSnippet: FC<{
     const { convoHasUnreadMessages } = useMessagesService();
     const { currentUser } = useUserService();
     
-    console.log('ConvoSnippet rendering:', {
+    debugLog('ConvoSnippet rendering:', {
         convoId: convo.id,
         participants: convo.participants,
         messageCount: convo.messages?.length,

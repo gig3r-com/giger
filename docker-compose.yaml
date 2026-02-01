@@ -16,6 +16,8 @@ services:
     # image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
     build:
       context: ./frontend
+      args:
+        - VITE_DEBUG_LOGGING=${VITE_DEBUG_LOGGING:-false}
     restart: unless-stopped
     expose:
       - 8080
@@ -38,6 +40,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=giger;Username=giger;Password=giger;
       - GigerDB__Host=postgres
+      - GIGER_DEBUG_LOGGING=${GIGER_DEBUG_LOGGING:-false}
       - GigerDB__Port=5432
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}

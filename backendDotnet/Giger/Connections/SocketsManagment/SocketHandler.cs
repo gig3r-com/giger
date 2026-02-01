@@ -14,9 +14,9 @@ namespace Giger.Connections.SocketsManagment
 
         public virtual async Task OnConnected(WebSocket socket, HttpContext context)
         {
-            Console.WriteLine($"[SocketHandler] OnConnected called");
+            DebugLogger.Log($"[SocketHandler] OnConnected called");
             context.Request.Query.TryGetValue("AuthToken", out var token);
-            Console.WriteLine($"[SocketHandler] AuthToken from query: {(string.IsNullOrEmpty(token) ? "EMPTY" : token.ToString().Substring(0, 8) + "...")}");
+            DebugLogger.Log($"[SocketHandler] AuthToken from query: {(string.IsNullOrEmpty(token) ? "EMPTY" : token.ToString().Substring(0, 8) + "...")}");
             
             if (string.IsNullOrEmpty(token))
             {
@@ -24,9 +24,9 @@ namespace Giger.Connections.SocketsManagment
                 await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "No token", CancellationToken.None);
                 return;
             }
-            Console.WriteLine($"[SocketHandler] Calling AddSocket");
+            DebugLogger.Log($"[SocketHandler] Calling AddSocket");
             await Task.Run(() => { Connections.AddSocket(socket, token); });
-            Console.WriteLine($"[SocketHandler] AddSocket task started");
+            DebugLogger.Log($"[SocketHandler] AddSocket task started");
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)

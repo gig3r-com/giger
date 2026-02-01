@@ -18,6 +18,7 @@ import { useApiService } from './api.service';
 import { useIntl } from 'react-intl';
 import { selectTransferHashes } from '../../store/bank.selectors';
 import { useToastService } from './toast.service';
+import { debugLog } from '../utils/debug';
 
 type Holder = {
     id: string;
@@ -65,8 +66,8 @@ export function useBankingService() {
         title: string,
         fromAccount: AccountType
     ) => {
-        console.log('sendTransfer called with:', { receiverHandle, amount, title, fromAccount });
-        console.log('Available accounts:', accounts);
+        debugLog('sendTransfer called with:', { receiverHandle, amount, title, fromAccount });
+        debugLog('Available accounts:', accounts);
         
         const account =
             accounts[fromAccount.toLocaleLowerCase() as 'private' | 'business'];
@@ -77,8 +78,8 @@ export function useBankingService() {
             return;
         }
         
-        console.log('Sender account found:', account);
-        console.log('Fetching receiver account for:', receiverHandle);
+        debugLog('Sender account found:', account);
+        debugLog('Fetching receiver account for:', receiverHandle);
         
         let receiverAccount;
         try {
@@ -108,20 +109,20 @@ export function useBankingService() {
         };
 
         try {
-            console.log('Starting transfer...', transaction);
+            debugLog('Starting transfer...', transaction);
             await api.url('Account/transaction')
                 .post(transaction)
                 .res();
             
-            console.log('Transfer posted, waiting 2.5s...');
+            debugLog('Transfer posted, waiting 500ms...');
             // Wait for backend to process, then refresh accounts
             await new Promise<void>((resolve) => {
                 setTimeout(async () => {
-                    console.log('Fetching accounts...');
+                    debugLog('Fetching accounts...');
                     await fetchAccounts();
-                    console.log('Accounts fetched, transfer complete');
+                    debugLog('Accounts fetched, transfer complete');
                     resolve();
-                }, 2500);
+                }, 500);
             });
         } catch (error) {
             console.error('Transfer error:', error);
