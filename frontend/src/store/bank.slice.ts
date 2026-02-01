@@ -54,7 +54,7 @@ export const bankSlice = createSlice({
             Object.keys(action.payload).forEach((id) => {
                 state.transferHashes[id] = {
                     current: action.payload[id],
-                    lastSeen: state.transferHashes[id].current ?? 0
+                    lastSeen: state.transferHashes[id]?.current ?? 0
                 };
             })
         },

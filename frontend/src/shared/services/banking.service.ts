@@ -65,13 +65,28 @@ export function useBankingService() {
         title: string,
         fromAccount: AccountType
     ) => {
+        console.log('sendTransfer called with:', { receiverHandle, amount, title, fromAccount });
+        console.log('Available accounts:', accounts);
+        
         const account =
             accounts[fromAccount.toLocaleLowerCase() as 'private' | 'business'];
-        const receiverAccount = await getAccountByHandle(receiverHandle);
-
+        
         if (!account) {
-            console.error('Account not found');
+            console.error('Account not found. fromAccount:', fromAccount, 'accounts:', accounts);
+            displayToast(intl.formatMessage({ id: 'ACCOUNT_NOT_FOUND' }));
             return;
+        }
+        
+        console.log('Sender account found:', account);
+        console.log('Fetching receiver account for:', receiverHandle);
+        
+        let receiverAccount;
+        try {
+            receiverAccount = await getAccountByHandle(receiverHandle);
+        } catch (error) {
+            console.error('Receiver account not found:', error);
+            displayToast(`User ${receiverHandle} does not have a bank account`);
+            throw error;
         }
 
         const transaction: ITransaction = {
@@ -92,14 +107,27 @@ export function useBankingService() {
                     : null
         };
 
-        api.url('Account/transaction')
-            .post(transaction)
-            .res(() => {
-                setTimeout(() => fetchAccounts(), 2500);
-            })
-            .catch(() =>
-                displayToast(intl.formatMessage({ id: 'TRANSFER_FAILED' }))
-            );
+        try {
+            console.log('Starting transfer...', transaction);
+            await api.url('Account/transaction')
+                .post(transaction)
+                .res();
+            
+            console.log('Transfer posted, waiting 2.5s...');
+            // Wait for backend to process, then refresh accounts
+            await new Promise<void>((resolve) => {
+                setTimeout(async () => {
+                    console.log('Fetching accounts...');
+                    await fetchAccounts();
+                    console.log('Accounts fetched, transfer complete');
+                    resolve();
+                }, 2500);
+            });
+        } catch (error) {
+            console.error('Transfer error:', error);
+            displayToast(intl.formatMessage({ id: 'TRANSFER_FAILED' }));
+            throw error;
+        }
     };
 
     const getAccountHolderName = (handle: string): string => {

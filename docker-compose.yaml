@@ -23,7 +23,7 @@ services:
   backend:
     # image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
     deploy:
-      replicas: 3
+      replicas: 1
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile

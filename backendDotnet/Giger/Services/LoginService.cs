@@ -18,7 +18,7 @@ namespace Giger.Services
         }
 
         public async Task<Auth?> GetByHackerNameAsync(string hackerName) =>
-            await _dbContext.Auths.FirstOrDefaultAsync(x => x.HackerName.Equals(hackerName, System.StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Auths.FirstOrDefaultAsync(x => x.HackerName.ToLower() == hackerName.ToLower());
 
         public async Task<Auth?> GetByAuthTokenAsync(string authToken) =>
             await _dbContext.Auths.FirstOrDefaultAsync(x => x.AuthToken == authToken);

@@ -25,7 +25,12 @@ namespace Giger.Services
             await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<Account?> GetByAccountNameAsync(string owner) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner.Equals(owner, System.StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner.ToLower() == owner.ToLower());
+
+        public async Task<Account?> GetByAccountNameWithTransactionsAsync(string owner) =>
+            await _dbContext.Accounts
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(x => x.Owner.ToLower() == owner.ToLower());
 
         public async Task<Account?> GetByUserIdAsync(string ownerId) =>
             await _dbContext.Accounts.FirstOrDefaultAsync(x => x.OwnerId == ownerId);
