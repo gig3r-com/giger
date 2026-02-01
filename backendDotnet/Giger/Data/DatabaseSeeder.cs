@@ -55,6 +55,9 @@ namespace Giger.Data
                 // Try to load from JSON files first
                 JsonDataLoader.LoadFromJsonFiles(context, logger, "/data");
 
+                // Create accounts for users who don't have one
+                CreateMissingAccounts(context, logger);
+
                 // If no data was loaded, seed with default admin user
                 if (!context.Auths.Any())
                 {
@@ -86,6 +89,61 @@ namespace Giger.Data
             {
                 logger.LogError(ex, "An error occurred while seeding the database.");
                 throw;
+            }
+        }
+
+        private static void CreateMissingAccounts(GigerDbContext context, ILogger logger)
+        {
+            try
+            {
+                logger.LogInformation("Checking for users without bank accounts...");
+                
+                // Get all users
+                var allUsers = context.UsersPublic.ToList();
+                logger.LogInformation($"Found {allUsers.Count} total users");
+                
+                // Get all existing account owners
+                var existingAccountOwners = context.Accounts
+                    .Select(a => a.Owner.ToLower())
+                    .ToHashSet();
+                
+                // Find users without accounts
+                var usersWithoutAccounts = allUsers
+                    .Where(u => !existingAccountOwners.Contains(u.Handle.ToLower()))
+                    .ToList();
+                
+                if (usersWithoutAccounts.Count == 0)
+                {
+                    logger.LogInformation("All users already have bank accounts");
+                    return;
+                }
+                
+                logger.LogInformation($"Creating accounts for {usersWithoutAccounts.Count} users...");
+                
+                var random = new Random();
+                foreach (var user in usersWithoutAccounts)
+                {
+                    var account = new Models.BankingModels.Account
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Owner = user.Handle,
+                        OwnerId = user.Id,
+                        AccountNumber = random.Next(100000, 999999999).ToString(),
+                        Balance = 1000, // Starting balance
+                        Type = Models.BankingModels.AccountType.PRIVATE,
+                        IsActive = true,
+                        Transactions = new List<Models.BankingModels.Transaction>()
+                    };
+                    
+                    context.Accounts.Add(account);
+                }
+                
+                context.SaveChanges();
+                logger.LogInformation($"Created {usersWithoutAccounts.Count} new bank accounts");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error creating missing accounts");
             }
         }
     }
