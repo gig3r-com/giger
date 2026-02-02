@@ -124,6 +124,12 @@ namespace Giger.Data
                 return new List<string>();
 
             var list = new List<string>();
+            ReadArray(ref reader, list);
+            return list;
+        }
+
+        private void ReadArray(ref Utf8JsonReader reader, List<string> list)
+        {
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndArray)
@@ -134,6 +140,11 @@ namespace Giger.Data
                     var value = reader.GetString();
                     if (!string.IsNullOrEmpty(value))
                         list.Add(value);
+                }
+                else if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    // Recursively flatten nested arrays
+                    ReadArray(ref reader, list);
                 }
                 else if (reader.TokenType == JsonTokenType.StartObject)
                 {
@@ -148,8 +159,6 @@ namespace Giger.Data
                     }
                 }
             }
-
-            return list;
         }
 
         public override void Write(Utf8JsonWriter writer, List<string> value, JsonSerializerOptions options)
