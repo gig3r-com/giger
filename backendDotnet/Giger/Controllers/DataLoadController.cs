@@ -153,22 +153,25 @@ namespace Giger.Controllers
                     (item, id) => { item.Id = id; return item; },
                     "Account");
 
-                // Also deduplicate nested transactions
+                // GLOBAL transaction deduplication across all accounts
+                var seenTransactions = new HashSet<string>();
                 foreach (var account in processed)
                 {
                     if (account.Transactions.Any())
                     {
-                        var uniqueTransactions = account.Transactions
-                            .GroupBy(t => t.Id)
-                            .Select(g =>
+                        var uniqueTransactions = new List<Transaction>();
+                        foreach (var tx in account.Transactions)
+                        {
+                            if (!seenTransactions.Contains(tx.Id))
                             {
-                                if (g.Count() > 1)
-                                {
-                                    _logger.LogWarning($"Duplicate Transaction ID {g.Key} in Account {account.Id}, keeping last");
-                                }
-                                return g.Last();
-                            })
-                            .ToList();
+                                seenTransactions.Add(tx.Id);
+                                uniqueTransactions.Add(tx);
+                            }
+                            else
+                            {
+                                _logger.LogWarning($"Skipping duplicate Transaction {tx.Id} in Account {account.Id}");
+                            }
+                        }
                         account.Transactions = uniqueTransactions;
                     }
                 }
