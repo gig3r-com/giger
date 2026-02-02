@@ -8,6 +8,8 @@ set -e
 # Configuration
 API_BASE="${API_BASE:-http://localhost:8080/api/DataLoad}"
 DATA_DIR="${DATA_DIR:-./data/mongo}"
+DATALOAD_USERNAME="${DATALOAD_USERNAME:-admin}"
+DATALOAD_PASSWORD="${DATALOAD_PASSWORD:-changeme}"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -35,6 +37,7 @@ fi
 
 log_info "Using API: $API_BASE"
 log_info "Using data directory: $DATA_DIR"
+log_info "Using basic auth with username: $DATALOAD_USERNAME"
 
 # Function to load data file
 load_data() {
@@ -51,6 +54,7 @@ load_data() {
     
     http_code=$(curl -s -w "%{http_code}" -X POST "$API_BASE/$endpoint" \
         -H "Content-Type: application/json" \
+        -u "$DATALOAD_USERNAME:$DATALOAD_PASSWORD" \
         -d @"$file" \
         -o /tmp/load_response.json)
     
@@ -66,8 +70,8 @@ load_data() {
 
 # Check API status
 log_info "Checking API status..."
-if ! curl -s -f "$API_BASE/status" > /dev/null; then
-    log_error "API is not accessible at $API_BASE"
+if ! curl -s -f -u "$DATALOAD_USERNAME:$DATALOAD_PASSWORD" "$API_BASE/status" > /dev/null; then
+    log_error "API is not accessible at $API_BASE or authentication failed"
     log_error "Make sure the backend is running"
     exit 1
 fi

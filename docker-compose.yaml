@@ -47,6 +47,8 @@ services:
       - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
       - FORCE_DATA_RELOAD=${FORCE_DATA_RELOAD:-false}
       - ASPNETCORE_ENVIRONMENT=Development
+      - DataLoad__Username=${DATALOAD_USERNAME:-admin}
+      - DataLoad__Password=${DATALOAD_PASSWORD:-changeme}
     depends_on:
       postgres:
         condition: service_healthy

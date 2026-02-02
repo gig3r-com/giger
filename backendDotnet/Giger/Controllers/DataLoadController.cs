@@ -13,6 +13,7 @@ using Giger.Models.MessageModels;
 using Giger.Models.Networks;
 using Giger.Models.Obscured;
 using Giger.Models.User;
+using System.Text;
 
 namespace Giger.Controllers
 {
@@ -22,11 +23,54 @@ namespace Giger.Controllers
     {
         private readonly GigerDbContext _context;
         private readonly ILogger<DataLoadController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public DataLoadController(GigerDbContext context, ILogger<DataLoadController> logger)
+        public DataLoadController(GigerDbContext context, ILogger<DataLoadController> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
+            _configuration = configuration;
+        }
+
+        private bool CheckBasicAuth()
+        {
+            var requiredUser = _configuration["DataLoad:Username"];
+            var requiredPass = _configuration["DataLoad:Password"];
+
+            // If no credentials configured, allow access (backward compatibility)
+            if (string.IsNullOrEmpty(requiredUser) || string.IsNullOrEmpty(requiredPass))
+            {
+                _logger.LogWarning("DataLoad endpoints have no authentication configured. Set DataLoad:Username and DataLoad:Password.");
+                return true;
+            }
+
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Basic "))
+            {
+                Response.Headers["WWW-Authenticate"] = "Basic realm=\"Data Load API\"";
+                Response.StatusCode = 401;
+                return false;
+            }
+
+            try
+            {
+                var encodedCreds = authHeader.Substring("Basic ".Length).Trim();
+                var decodedCreds = Encoding.UTF8.GetString(Convert.FromBase64String(encodedCreds));
+                var credentials = decodedCreds.Split(':', 2);
+
+                if (credentials.Length != 2 || credentials[0] != requiredUser || credentials[1] != requiredPass)
+                {
+                    Response.StatusCode = 401;
+                    return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                Response.StatusCode = 401;
+                return false;
+            }
         }
 
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
@@ -72,10 +116,11 @@ namespace Giger.Controllers
             return deduped;
         }
 
-        [AllowAnonymous]
         [HttpPost("load-auths")]
         public async Task<IActionResult> LoadAuths([FromBody] Auth[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -108,10 +153,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-users")]
         public async Task<IActionResult> LoadUsers([FromBody] UserPrivate[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -141,10 +187,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-accounts")]
         public async Task<IActionResult> LoadAccounts([FromBody] Account[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -197,10 +244,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-gigs")]
         public async Task<IActionResult> LoadGigs([FromBody] Gig[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -230,10 +278,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-networks")]
         public async Task<IActionResult> LoadNetworks([FromBody] Network[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -263,10 +312,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-subnetworks")]
         public async Task<IActionResult> LoadSubnetworks([FromBody] Subnetwork[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -296,10 +346,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-hackconfigs")]
         public async Task<IActionResult> LoadHackConfigs([FromBody] HackConfig[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -329,10 +380,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-programcodes")]
         public async Task<IActionResult> LoadProgramCodes([FromBody] ProgramCodes[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -362,10 +414,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-obscuredcodes")]
         public async Task<IActionResult> LoadObscuredCodes([FromBody] ObscuredCodesMap[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -395,10 +448,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-conversations")]
         public async Task<IActionResult> LoadConversations([FromBody] Conversation[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -428,10 +482,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-anonymized")]
         public async Task<IActionResult> LoadAnonymized([FromBody] AnonymizedUser[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -461,10 +516,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("load-logs")]
         public async Task<IActionResult> LoadLogs([FromBody] Log[] data)
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 // Preprocess data: handle nulls and duplicates
@@ -494,10 +550,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("clear-all")]
         public async Task<IActionResult> ClearAllData()
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 _context.Auths.RemoveRange(_context.Auths);
@@ -526,10 +583,11 @@ namespace Giger.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet("status")]
         public IActionResult GetStatus()
         {
+            if (!CheckBasicAuth()) return Unauthorized();
+            
             try
             {
                 var status = new

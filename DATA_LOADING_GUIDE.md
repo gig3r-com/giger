@@ -11,11 +11,37 @@ Data loading has been redesigned to use API endpoints instead of direct database
 - **API-based** - Uses standard HTTP endpoints with proper error handling
 - **Selective loading** - Load specific data types independently
 - **Status tracking** - Check what data is currently loaded
+- **Secure** - Protected with Basic Authentication
 
 ## Prerequisites
 
 1. Backend must be running (`docker compose up backend`)
 2. Data submodule must be initialized (`git submodule update --init`)
+
+## Authentication
+
+All data loading endpoints require Basic Authentication. Default credentials:
+
+- **Username**: `admin`
+- **Password**: `changeme`
+
+### Configuring Credentials
+
+Set environment variables in docker-compose or .env file:
+
+```bash
+DATALOAD_USERNAME=your_username
+DATALOAD_PASSWORD=your_secure_password
+```
+
+Or in docker-compose.yaml:
+```yaml
+environment:
+  - DataLoad__Username=your_username
+  - DataLoad__Password=your_secure_password
+```
+
+**IMPORTANT**: Change the default password in production!
 
 ## Quick Start
 
@@ -41,22 +67,25 @@ API_BASE=https://dev.giger.com/api/DataLoad ./load-data.sh
 
 # Use different data directory
 DATA_DIR=./my-data ./load-data.sh
+
+# Use custom credentials
+DATALOAD_USERNAME=myuser DATALOAD_PASSWORD=mypass ./load-data.sh
 ```
 
 ## Manual Loading
 
-You can also load data manually using curl:
+You can also load data manually using curl (include -u for authentication):
 
 ### Check Current Status
 
 ```bash
-curl http://localhost:8080/api/DataLoad/status
+curl -u admin:changeme http://localhost:8080/api/DataLoad/status
 ```
 
 ### Clear All Data
 
 ```bash
-curl -X POST http://localhost:8080/api/DataLoad/clear-all
+curl -X POST -u admin:changeme http://localhost:8080/api/DataLoad/clear-all
 ```
 
 ### Load Specific Data Types
@@ -65,19 +94,19 @@ Load data files individually:
 
 ```bash
 # Load authentication data
-curl -X POST http://localhost:8080/api/DataLoad/load-auths \
+curl -X POST -u admin:changeme http://localhost:8080/api/DataLoad/load-auths \
   -H "Content-Type: application/json" \
   -d @./data/mongo/Auths.json
 
 # Load users
-curl -X POST http://localhost:8080/api/DataLoad/load-users \
+curl -X POST -u admin:changeme http://localhost:8080/api/DataLoad/load-users \
   -H "Content-Type: application/json" \
   -d @./data/mongo/Users.json
 ```
 
 ## Available Endpoints
 
-All endpoints are under `/api/DataLoad`:
+All endpoints are under `/api/DataLoad` and require Basic Authentication:
 
 - `POST /load-auths` - Load authentication records
 - `POST /load-users` - Load user profiles
