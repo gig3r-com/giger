@@ -1,4 +1,6 @@
-﻿namespace Giger.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models
 {
     public class GigerConfig
     {

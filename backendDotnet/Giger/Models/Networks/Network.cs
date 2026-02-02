@@ -1,4 +1,6 @@
-﻿namespace Giger.Models.Networks
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.Networks
 {
     public class Network
     {

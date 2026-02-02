@@ -1,4 +1,6 @@
-﻿namespace Giger.Models.Obscured
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.Obscured
 {
     public class ObscuredCodesMap
     {

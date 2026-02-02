@@ -1,4 +1,6 @@
-﻿namespace Giger.Models.Hacking
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.Hacking
 {
     public class ProgramCodes
     {

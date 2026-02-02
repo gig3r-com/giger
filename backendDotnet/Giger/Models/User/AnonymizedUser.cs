@@ -1,4 +1,6 @@
-﻿namespace Giger.Models.User
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.User
 {
     public class AnonymizedUser
     {
