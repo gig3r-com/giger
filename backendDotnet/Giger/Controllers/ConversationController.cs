@@ -82,8 +82,13 @@ namespace Giger.Controllers
         }
             
         [HttpPost("create")]
-        public async Task<IActionResult> Create(Conversation newConversation, bool isAnonymizedHandle)
+        public async Task<IActionResult> Create([FromBody] Conversation newConversation, bool isAnonymizedHandle)
         {
+            Console.WriteLine($"[DEBUG] Create conversation called");
+            Console.WriteLine($"[DEBUG] Participants count: {newConversation?.Participants?.Count ?? -1}");
+            Console.WriteLine($"[DEBUG] Participants: {string.Join(", ", newConversation?.Participants ?? new List<string>())}");
+            Console.WriteLine($"[DEBUG] GigConversation: {newConversation?.GigConversation}");
+            
             if (string.IsNullOrEmpty(newConversation.Id))
             {
                 newConversation.Id = Guid.NewGuid().ToString();
@@ -98,9 +103,13 @@ namespace Giger.Controllers
                 }
                 newConversation.AnonymizedUsers.Add(sender);
             }
+            
             await _conversationService.CreateAsync(newConversation);
 
-            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, newConversation);
+            // Reload from database to get properly serialized data
+            var saved = await _conversationService.GetAsync(newConversation.Id);
+            
+            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, saved ?? newConversation);
         }
 
         [HttpPost("{conversationId}/message")]
