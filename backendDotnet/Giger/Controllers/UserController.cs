@@ -215,7 +215,7 @@ namespace Giger.Controllers
 
         #region PublicUser
         [HttpGet("public/all")]
-        public async Task<List<UserPublic>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserPublic>().OrderBy(u => u.Name ?? u.Handle).ToList());
+        public async Task<List<UserPublic>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserPublic>().OrderBy(u => string.IsNullOrWhiteSpace(u.Name) ? u.Handle : u.Name, StringComparer.OrdinalIgnoreCase).ToList());
 
         [HttpGet("public/byId")]
         public async Task<ActionResult<UserPublic>> GetPublicById(string id)
