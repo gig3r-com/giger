@@ -2,8 +2,8 @@
 {
     public class HackConfig
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
-        public required string Config { get; set; }
+        public string Config { get; set; } = string.Empty;
     }
 }

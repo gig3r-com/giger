@@ -4,19 +4,19 @@ namespace Giger.Models.BankingModels
 {
     public class Account
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string Owner { get; set; }
+        public string Owner { get; set; } = string.Empty;
 
-        public required string OwnerId { get; set; }
+        public string OwnerId { get; set; } = string.Empty;
 
         public List<Transaction> Transactions { get; set; } = [];
         
-        public required AccountType Type { get; set; }
+        public AccountType Type { get; set; }
 
-        public required decimal Balance { get; set; }
+        public decimal Balance { get; set; }
         
-        public required string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
 
         public bool IsActive { get; set; }
 

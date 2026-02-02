@@ -4,7 +4,7 @@ namespace Giger.Models.BankingModels
 {
     public class Transaction
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         public string? From { get; set; } // AccountNumber
 
@@ -14,10 +14,10 @@ namespace Giger.Models.BankingModels
 
         public string? ToUser { get; set; } // Handle / Anonymized
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         private decimal _amount;
-        public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
+        public decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
         public DateTime? Timestamp { get; set; }
 

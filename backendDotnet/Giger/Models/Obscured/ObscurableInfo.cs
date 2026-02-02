@@ -2,7 +2,7 @@
 {
     public abstract class ObscurableInfo
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         public bool IsRevealed { get; set; } = true;
 

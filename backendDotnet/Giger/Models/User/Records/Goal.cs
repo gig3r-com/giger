@@ -2,7 +2,7 @@
 {
     public class Goal : UserRecord
     {
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public Goal()
         {

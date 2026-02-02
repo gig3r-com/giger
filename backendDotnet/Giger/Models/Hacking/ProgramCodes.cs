@@ -2,10 +2,10 @@
 {
     public class ProgramCodes
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string ProgramCode { get; set; }
+        public string ProgramCode { get; set; } = string.Empty;
 
-        public required bool IsUsed { get; set; }
+        public bool IsUsed { get; set; }
     }
 }

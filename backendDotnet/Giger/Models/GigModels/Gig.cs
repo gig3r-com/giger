@@ -4,27 +4,27 @@ namespace Giger.Models.GigModels
 {
     public class Gig : ObscurableInfo
     {
-        public required decimal Payout { get; set; }
+        public decimal Payout { get; set; }
 
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public string? Description { get; set; }
 
         public string? ConversationId { get; set; }
 
-        public required GigCategoryNames Category { get; set; }
+        public GigCategoryNames Category { get; set; }
 
-        public required GigSubcategoryNames Subcategory { get; set; }
+        public GigSubcategoryNames Subcategory { get; set; }
 
-        public required GigRepuationLevels ReputationRequired { get; set; }
+        public GigRepuationLevels ReputationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
 
         public GigStatus Status { get; set; }
 
-        public required string AuthorId { get; set; }
+        public string AuthorId { get; set; } = string.Empty;
 
-        public required string AuthorName { get; set; }
+        public string AuthorName { get; set; } = string.Empty;
 
         public string? TakenById { get; set; }
 
@@ -36,11 +36,11 @@ namespace Giger.Models.GigModels
 
         public string? ComplaintReason { get; set; }
 
-        public required DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public DateTime? AcceptedAt { get; set; }
 
-        public required GigModes Mode { get; set; }
+        public GigModes Mode { get; set; }
 
         public bool IsRevealedByClient { get; set; } = true;
 

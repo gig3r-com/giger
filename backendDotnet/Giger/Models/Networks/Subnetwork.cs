@@ -4,13 +4,13 @@ namespace Giger.Models.Networks
 {
     public class Subnetwork
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public required string NetworkId { get; set; }
+        public string NetworkId { get; set; } = string.Empty;
 
-        public required string[] Users { get; set; } = [];
+        public string[] Users { get; set; } = [];
 
         public Firewall? Firewall { get; set; }
         

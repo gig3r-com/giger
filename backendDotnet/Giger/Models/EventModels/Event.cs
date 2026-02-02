@@ -5,11 +5,11 @@ namespace Giger.Models.EventModels
 {
     public abstract class Event : ObscurableInfo
     {
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public required string EventDescription { get; set; }
+        public string EventDescription { get; set; } = string.Empty;
 
-        public required EventStatus Status { get; set; }
+        public EventStatus Status { get; set; }
         
         public DateTime? TimeStamp { get; set; }
         

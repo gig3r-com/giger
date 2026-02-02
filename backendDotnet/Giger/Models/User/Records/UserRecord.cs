@@ -5,7 +5,7 @@ namespace Giger.Models.User.Records
 {
     public abstract class UserRecord : ObscurableInfo
     {
-        public required string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         public UserRecordTypes RecordType { get; set; }
 

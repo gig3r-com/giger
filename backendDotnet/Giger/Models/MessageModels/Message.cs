@@ -4,13 +4,13 @@ namespace Giger.Models.MessageModels
 {
     public class Message
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
-        public required string Sender { get; set; } // UserName
+        public string Sender { get; set; } = string.Empty; // UserName
 
-        public required string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         
         public Message() { }
 

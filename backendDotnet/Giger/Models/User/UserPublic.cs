@@ -5,11 +5,11 @@ namespace Giger.Models.User
 {
     public class UserPublic
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         public string? Name { get; set; }
 
-        public required string Handle { get; set; } // username
+        public string Handle { get; set; } = string.Empty; // username
 
         public UserRoles[] Roles { get; set; } = [];
 
@@ -19,15 +19,15 @@ namespace Giger.Models.User
 
         public bool Active { get; set; }
 
-        public required UserTypes TypePublic { get; set; }
+        public UserTypes TypePublic { get; set; }
 
         public string? FactionRankPublic { get; set; }
 
-        public required string Surname { get; set; }
+        public string Surname { get; set; } = string.Empty;
 
-        public required Vibe Vibe { get; set; }
+        public Vibe Vibe { get; set; }
 
-        public required WealthLevels WealthLevel { get; set; }
+        public WealthLevels WealthLevel { get; set; }
 
         public string NetworkId { get; set; }
 

@@ -30,6 +30,7 @@ namespace Giger.Data
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never,
                     Converters = { 
                         new UtcDateTimeConverter(),
                         new FlattenStringListConverter(),

@@ -2,13 +2,13 @@
 {
     public class Auth
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string Username { get; set; } // UserPublic.Handle
+        public string Username { get; set; } = string.Empty; // UserPublic.Handle
 
         public string? HackerName { get; set; } // UserPrivate.HackerName
 
-        public required string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         
         public string? AuthToken { get; set; }
     }

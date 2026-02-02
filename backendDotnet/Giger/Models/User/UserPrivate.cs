@@ -7,35 +7,35 @@ namespace Giger.Models.User
 {
     public class UserPrivate : UserPublic
     {
-        public required CyberwareLevel CyberwareLevel { get; set; }
+        public CyberwareLevel CyberwareLevel { get; set; }
 
-        public required UserTypes TypeActual { get; set; }
+        public UserTypes TypeActual { get; set; }
 
         public string? FactionRankActual { get; set; }
         
         public string[] Assets { get; set; } = []; //TODO: DELETE?
 
-        public required SkillStat HackingSkills { get; set; }
+        public SkillStat HackingSkills { get; set; }
 
-        public required CharStat ConfrontationistVsAgreeable { get; set; }
+        public CharStat ConfrontationistVsAgreeable { get; set; }
 
-        public required CharStat CowardVsBrave { get; set; }
+        public CharStat CowardVsBrave { get; set; }
 
-        public required CharStat TalkativeVsSilent { get; set; }
+        public CharStat TalkativeVsSilent { get; set; }
 
-        public required CharStat ThinkerVsDoer { get; set; }
+        public CharStat ThinkerVsDoer { get; set; }
 
-        public required SkillStat CombatSkill { get; set; }
+        public SkillStat CombatSkill { get; set; }
 
         public string? VibeFunction { get; set; }
 
         public string? VibeOpinions { get; set; }
 
-        public required VibeEngagement VibeEngagement { get; set; }
+        public VibeEngagement VibeEngagement { get; set; }
 
         public string[] FavoriteUserIds { get; set; } = [];
 
-        public required Factions Faction { get; set; }
+        public Factions Faction { get; set; }
 
         public int InsuredAmount { get; set; }
 
@@ -61,7 +61,7 @@ namespace Giger.Models.User
         // hacker only
         public string[] Exploits { get; set; } = [];
 
-        public required MindHacks MindHack { get; set; }
+        public MindHacks MindHack { get; set; }
 
         public string[] MindHackEnabledFor { get; set; } = []; 
 

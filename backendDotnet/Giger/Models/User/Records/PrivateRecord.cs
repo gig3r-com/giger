@@ -2,7 +2,7 @@
 {
     public class PrivateRecord : UserRecord
     {
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public PrivateRecord()
         {

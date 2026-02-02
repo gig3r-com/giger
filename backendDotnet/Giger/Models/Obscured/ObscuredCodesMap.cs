@@ -2,11 +2,11 @@
 {
     public class ObscuredCodesMap
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string ObscurableId { get; set; }
+        public string ObscurableId { get; set; } = string.Empty;
 
-        public required string ExpectedRevealCode { get; set; }
+        public string ExpectedRevealCode { get; set; } = string.Empty;
 
         public string? Username { get; set; }
 
