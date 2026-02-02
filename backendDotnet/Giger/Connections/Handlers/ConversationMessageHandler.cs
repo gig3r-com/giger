@@ -87,30 +87,43 @@ namespace Giger.Connections.Handlers
 
         private async void LogMessage(Message message, string conversationId, ConversationService? conversationService = null)
         {
-            LogMessage(message, conversationId,
-                conversationService ?? ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider),
-                ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider),
-                ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider));
+            // Don't await - fire and forget logging (it will create its own scope)
+            _ = Task.Run(() => LogMessage(message, conversationId));
         }
-        private async void LogMessage(Message message, string conversationId, ConversationService conversationService, LogService logService, UserService userService)
+        
+        private async Task LogMessage(Message message, string conversationId)
         {
-            var user = await userService.GetByUserNameAsync(message.Sender);
-            var conversation = await conversationService.GetAsync(conversationId);
-            var log = new Log()
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUserId = user.Id,
-                SourceUserName = user.Handle,
-                TargetUserId = conversation.Id,
-                TargetUserName = string.Join(',', conversation.Participants),
-                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
-                LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
-                SubnetworkId = user.SubnetworkId,
-                SubnetworkName = user.SubnetworkName,
-            };
+                // Create a new scope for database access since this runs async after the request
+                using var scope = _serviceProvider.CreateScope();
+                var conversationService = scope.ServiceProvider.GetRequiredService<ConversationService>();
+                var logService = scope.ServiceProvider.GetRequiredService<LogService>();
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+                
+                var user = await userService.GetByUserNameAsync(message.Sender);
+                var conversation = await conversationService.GetAsync(conversationId);
+                var log = new Log()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = GigerDateTime.Now,
+                    SourceUserId = user.Id,
+                    SourceUserName = user.Handle,
+                    TargetUserId = conversation.Id,
+                    TargetUserName = string.Join(',', conversation.Participants),
+                    LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
+                    LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
+                    SubnetworkId = user.SubnetworkId,
+                    SubnetworkName = user.SubnetworkName,
+                };
 
-            logService.CreateAsync(log);
+                await logService.CreateAsync(log);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't crash the app
+                Console.WriteLine($"Error logging message: {ex.Message}");
+            }
         }
     }
 }
