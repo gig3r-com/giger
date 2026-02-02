@@ -6,7 +6,7 @@
 
         public string ObscurableId { get; set; } = string.Empty;
 
-        public string ExpectedRevealCode { get; set; } = string.Empty;
+        public string? ExpectedRevealCode { get; set; }
 
         public string? Username { get; set; }
 

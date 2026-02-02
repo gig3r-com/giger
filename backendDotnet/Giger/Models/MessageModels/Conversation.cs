@@ -1,4 +1,6 @@
-﻿
+﻿using Giger.Data;
+using System.Text.Json.Serialization;
+
 namespace Giger.Models.MessageModels
 {
     public class Conversation
@@ -7,8 +9,10 @@ namespace Giger.Models.MessageModels
 
         public List<Message> Messages { get; set; } = [];
 
+        [JsonConverter(typeof(FlexibleStringArrayConverter))]
         public List<string> Participants { get; set; } = []; // UserNames
 
+        [JsonConverter(typeof(FlexibleStringArrayConverter))]
         public List<string> AnonymizedUsers { get; set; } = []; // UserNames
 
         public bool GigConversation { get; set; }

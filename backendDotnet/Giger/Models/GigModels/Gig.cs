@@ -22,7 +22,7 @@ namespace Giger.Models.GigModels
 
         public GigStatus Status { get; set; }
 
-        public string AuthorId { get; set; } = string.Empty;
+        public string? AuthorId { get; set; }
 
         public string AuthorName { get; set; } = string.Empty;
 

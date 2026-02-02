@@ -8,7 +8,8 @@ namespace Giger.Models.BankingModels
 
         public string Owner { get; set; } = string.Empty;
 
-        public string OwnerId { get; set; } = string.Empty;
+        [JsonPropertyName("OwnerId")]
+        public string? OwnerId { get; set; }
 
         public List<Transaction> Transactions { get; set; } = [];
         

@@ -1,9 +1,13 @@
-﻿namespace Giger.Models.Obscured
+﻿using Giger.Data;
+using System.Text.Json.Serialization;
+
+namespace Giger.Models.Obscured
 {
     public abstract class ObscurableInfo
     {
         public string Id { get; set; } = string.Empty;
 
+        [JsonConverter(typeof(FlexibleBooleanConverter))]
         public bool IsRevealed { get; set; } = true;
 
         protected const string REDACTED = "********REDACTED********";

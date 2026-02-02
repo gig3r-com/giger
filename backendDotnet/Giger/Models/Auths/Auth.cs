@@ -1,7 +1,10 @@
-﻿namespace Giger.Models.Auths
+﻿using System.Text.Json.Serialization;
+
+namespace Giger.Models.Auths
 {
     public class Auth
     {
+        [JsonPropertyName("_id")]
         public string Id { get; set; } = string.Empty;
 
         public string Username { get; set; } = string.Empty; // UserPublic.Handle

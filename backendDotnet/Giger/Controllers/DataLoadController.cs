@@ -46,28 +46,22 @@ namespace Giger.Controllers
         {
             try
             {
-                int added = 0;
-                foreach (var item in data)
+                // Get existing IDs without tracking
+                var existingIds = new HashSet<string>(
+                    await _context.Auths.AsNoTracking().Select(a => a.Id).ToListAsync()
+                );
+                
+                // Filter out duplicates
+                var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
+                
+                if (toAdd.Any())
                 {
-                    try
-                    {
-                        var exists = await _context.Auths.AnyAsync(a => a.Id == item.Id);
-                        if (!exists)
-                        {
-                            _context.Auths.Add(item);
-                            await _context.SaveChangesAsync();
-                            added++;
-                        }
-                    }
-                    catch (DbUpdateException)
-                    {
-                        // Skip duplicates
-                        _context.Entry(item).State = EntityState.Detached;
-                    }
+                    _context.Auths.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
                 }
                 
-                _logger.LogInformation($"Loaded {added} new auth records out of {data.Length} total");
-                return Ok(new { count = added, message = "Auths loaded successfully" });
+                _logger.LogInformation($"Loaded {toAdd.Count} new auth records out of {data.Length} total");
+                return Ok(new { count = toAdd.Count, message = "Auths loaded successfully" });
             }
             catch (Exception ex)
             {
@@ -82,12 +76,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Users.Select(u => u.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Users.AsNoTracking().Select(u => u.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Users.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new users out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Users.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new users out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Users loaded successfully" });
             }
             catch (Exception ex)
@@ -103,12 +103,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Accounts.Select(a => a.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Accounts.AsNoTracking().Select(a => a.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Accounts.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new accounts out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Accounts.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new accounts out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Accounts loaded successfully" });
             }
             catch (Exception ex)
@@ -124,12 +130,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Gigs.Select(g => g.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Gigs.AsNoTracking().Select(g => g.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Gigs.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new gigs out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Gigs.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new gigs out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Gigs loaded successfully" });
             }
             catch (Exception ex)
@@ -145,12 +157,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Networks.Select(n => n.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Networks.AsNoTracking().Select(n => n.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Networks.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new networks out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Networks.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new networks out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Networks loaded successfully" });
             }
             catch (Exception ex)
@@ -166,12 +184,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Subnetworks.Select(s => s.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Subnetworks.AsNoTracking().Select(s => s.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Subnetworks.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new subnetworks out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Subnetworks.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new subnetworks out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Subnetworks loaded successfully" });
             }
             catch (Exception ex)
@@ -187,12 +211,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.HackConfig.Select(h => h.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.HackConfig.AsNoTracking().Select(h => h.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.HackConfig.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new hack configs out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.HackConfig.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new hack configs out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Hack configs loaded successfully" });
             }
             catch (Exception ex)
@@ -208,12 +238,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.ProgramCodes.Select(p => p.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.ProgramCodes.AsNoTracking().Select(p => p.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.ProgramCodes.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new program codes out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.ProgramCodes.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new program codes out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Program codes loaded successfully" });
             }
             catch (Exception ex)
@@ -229,12 +265,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.ObscuredCodesMap.Select(o => o.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.ObscuredCodesMap.AsNoTracking().Select(o => o.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.ObscuredCodesMap.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new obscured codes out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.ObscuredCodesMap.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new obscured codes out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Obscured codes loaded successfully" });
             }
             catch (Exception ex)
@@ -250,12 +292,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Conversations.Select(c => c.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Conversations.AsNoTracking().Select(c => c.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Conversations.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new conversations out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Conversations.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new conversations out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Conversations loaded successfully" });
             }
             catch (Exception ex)
@@ -271,12 +319,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.AnonymizedUsers.Select(a => a.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.AnonymizedUsers.AsNoTracking().Select(a => a.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.AnonymizedUsers.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new anonymized users out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.AnonymizedUsers.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new anonymized users out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Anonymized users loaded successfully" });
             }
             catch (Exception ex)
@@ -292,12 +346,18 @@ namespace Giger.Controllers
         {
             try
             {
-                var existingIds = await _context.Logs.Select(l => l.Id).ToListAsync();
+                var existingIds = new HashSet<string>(
+                    await _context.Logs.AsNoTracking().Select(l => l.Id).ToListAsync()
+                );
                 var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
-                _context.Logs.AddRange(toAdd);
-                var count = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Loaded {count} new logs out of {data.Length} total");
+                if (toAdd.Any())
+                {
+                    _context.Logs.AddRange(toAdd);
+                    await _context.SaveChangesAsync();
+                }
+                
+                _logger.LogInformation($"Loaded {toAdd.Count} new logs out of {data.Length} total");
                 return Ok(new { count = toAdd.Count, message = "Logs loaded successfully" });
             }
             catch (Exception ex)
