@@ -16,14 +16,14 @@ on:
       HELM_FRONTEND_IMAGE:
         type: string
         required: false
-        default: mivalsten/gig3r-frontend
+        default: ghcr.io/${{ github.repository_owner }}/gig3r-frontend
       HELM_FRONTEND_TAG:
         type: string
         required: true
       HELM_BACKEND_IMAGE:
         type: string
         required: false
-        default: mivalsten/gig3r-backend
+        default: ghcr.io/${{ github.repository_owner }}/gig3r-backend
       HELM_BACKEND_TAG:
         type: string
         required: true
@@ -33,7 +33,7 @@ on:
       HELM_DATABASE_IMAGE:
         type: string
         required: false
-        default: mivalsten/gig3r-postgres
+        default: ghcr.io/${{ github.repository_owner }}/gig3r-postgres
     secrets:
       KUBECONFIG:
         required: true

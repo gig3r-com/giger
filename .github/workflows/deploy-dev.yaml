@@ -14,9 +14,12 @@ on:
     branches:
       - main
 
+permissions:
+  packages: write
+
 jobs:
   build-frontend:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./frontend
       DOCKERFILE_NAME: ./frontend/Dockerfile
@@ -25,7 +28,7 @@ jobs:
     secrets: inherit
 
   build-backend:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./backendDotnet/Giger
       DOCKERFILE_NAME: ./backendDotnet/Dockerfile
@@ -34,7 +37,7 @@ jobs:
     secrets: inherit
 
   build-postgres:
-    uses: gig3r-com/giger/.github/workflows/build-docker-image.yaml@main
+    uses: ./.github/workflows/build-docker-image.yaml
     with:
       DOCKER_CONTEXT: ./data/
       DOCKERFILE_NAME: ./data/Dockerfile.postgres
@@ -43,18 +46,18 @@ jobs:
     secrets: inherit
   
   deploy-helm-chart:
-    uses: gig3r-com/giger/.github/workflows/deploy-helm-chart.yaml@main
+    uses: ./.github/workflows/deploy-helm-chart.yaml
     needs:
       - build-frontend
       - build-backend
       - build-postgres
     with:
       HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
-      HELM_FRONTEND_IMAGE: "mivalsten/gig3r-frontend"
+      HELM_FRONTEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ github.sha }}
-      HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
+      HELM_BACKEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-backend"
       HELM_BACKEND_TAG: ${{ github.sha }}
-      HELM_DATABASE_IMAGE: "mivalsten/gig3r-postgres"
+      HELM_DATABASE_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-postgres"
       HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 

@@ -13,7 +13,7 @@ services:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
   frontend:
-    # image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
+    image: ghcr.io/gig3r-com/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./frontend
       args:
@@ -23,7 +23,7 @@ services:
       - 8080
 
   backend:
-    # image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}  # Commented out to always build locally
+    image: ghcr.io/gig3r-com/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
     deploy:
       replicas: 1
     build:
