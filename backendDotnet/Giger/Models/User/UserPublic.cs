@@ -6,8 +6,6 @@ namespace Giger.Models.User
 {
     public class UserPublic
     {
-        [JsonPropertyName("_id")]
-
         public string? Id { get; set; }
 
         public string? Name { get; set; }

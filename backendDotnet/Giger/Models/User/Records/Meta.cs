@@ -5,8 +5,6 @@ namespace Giger.Models.User.Records
 {
     public class Meta
     {
-        [JsonPropertyName("_id")]
-
         public string Id { get; set; } = string.Empty;
 
         public string? Title { get; set; }

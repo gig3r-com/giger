@@ -6,8 +6,6 @@ namespace Giger.Models.Logs
 {
     public class Log
     {
-        [JsonPropertyName("_id")]
-
         public string Id { get; set; } = string.Empty;
 
         public DateTime Timestamp { get; set; }

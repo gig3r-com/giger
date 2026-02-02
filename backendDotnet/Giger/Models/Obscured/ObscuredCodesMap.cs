@@ -4,8 +4,6 @@ namespace Giger.Models.Obscured
 {
     public class ObscuredCodesMap
     {
-        [JsonPropertyName("_id")]
-
         public string Id { get; set; } = string.Empty;
 
         public string ObscurableId { get; set; } = string.Empty;

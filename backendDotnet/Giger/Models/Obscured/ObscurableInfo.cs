@@ -5,8 +5,6 @@ namespace Giger.Models.Obscured
 {
     public abstract class ObscurableInfo
     {
-        [JsonPropertyName("_id")]
-
         public string Id { get; set; } = string.Empty;
 
         [JsonConverter(typeof(FlexibleBooleanConverter))]

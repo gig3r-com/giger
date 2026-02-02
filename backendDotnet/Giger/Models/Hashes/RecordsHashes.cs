@@ -49,10 +49,6 @@ namespace Giger.Models.Hashes
             }
             MedicalEventsHash = medicalEventsHashCode;
         }
-
-        [JsonPropertyName("_id")]
-
-
         public string Id { get; set; }
 
         public int RelationsHash { get; set; }
