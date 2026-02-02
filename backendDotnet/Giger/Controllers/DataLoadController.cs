@@ -431,6 +431,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "AnonymizedUser");
+
                 var existingIds = new HashSet<string>(
                     await _context.AnonymizedUsers.AsNoTracking().Select(a => a.Id).ToListAsync()
                 );
