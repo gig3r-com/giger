@@ -40,19 +40,57 @@ namespace Giger.Controllers
             }
         };
 
+        // Helper to deduplicate and handle null IDs
+        private T[] PreprocessData<T>(T[] data, Func<T, string?> getId, Func<T, string, T> setId, string entityName)
+        {
+            // First pass: generate IDs for null entries
+            var withIds = data.Select(item =>
+            {
+                var id = getId(item);
+                if (string.IsNullOrEmpty(id))
+                {
+                    var newId = Guid.NewGuid().ToString();
+                    _logger.LogWarning($"Generated ID {newId} for {entityName}");
+                    return setId(item, newId);
+                }
+                return item;
+            }).ToArray();
+
+            // Second pass: deduplicate by ID (keep last occurrence)
+            var deduped = withIds
+                .GroupBy(getId)
+                .Select(group =>
+                {
+                    if (group.Count() > 1)
+                    {
+                        _logger.LogWarning($"Duplicate ID {group.Key} in {entityName} found {group.Count()} times, keeping last occurrence");
+                    }
+                    return group.Last();
+                })
+                .ToArray();
+
+            return deduped;
+        }
+
         [AllowAnonymous]
         [HttpPost("load-auths")]
         public async Task<IActionResult> LoadAuths([FromBody] Auth[] data)
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data, 
+                    item => item.Id, 
+                    (item, id) => { item.Id = id; return item; },
+                    "Auth");
+
                 // Get existing IDs without tracking
                 var existingIds = new HashSet<string>(
                     await _context.Auths.AsNoTracking().Select(a => a.Id).ToListAsync()
                 );
                 
                 // Filter out duplicates
-                var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
+                var toAdd = processed.Where(item => !existingIds.Contains(item.Id)).ToList();
                 
                 if (toAdd.Any())
                 {
@@ -60,7 +98,7 @@ namespace Giger.Controllers
                     await _context.SaveChangesAsync();
                 }
                 
-                _logger.LogInformation($"Loaded {toAdd.Count} new auth records out of {data.Length} total");
+                _logger.LogInformation($"Loaded {toAdd.Count} new auth records out of {data.Length} total (after preprocessing: {processed.Length})");
                 return Ok(new { count = toAdd.Count, message = "Auths loaded successfully" });
             }
             catch (Exception ex)
@@ -76,21 +114,16 @@ namespace Giger.Controllers
         {
             try
             {
-                // Filter out records with null IDs and generate IDs for them
-                var validData = data.Select(item =>
-                {
-                    if (string.IsNullOrEmpty(item.Id))
-                    {
-                        item.Id = Guid.NewGuid().ToString();
-                        _logger.LogWarning($"Generated ID {item.Id} for user {item.Handle}");
-                    }
-                    return item;
-                }).ToArray();
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "User");
 
                 var existingIds = new HashSet<string>(
                     await _context.Users.AsNoTracking().Select(u => u.Id).ToListAsync()
                 );
-                var toAdd = validData.Where(item => !existingIds.Contains(item.Id!)).ToList();
+                var toAdd = processed.Where(item => !existingIds.Contains(item.Id!)).ToList();
                 
                 if (toAdd.Any())
                 {
@@ -98,7 +131,7 @@ namespace Giger.Controllers
                     await _context.SaveChangesAsync();
                 }
                 
-                _logger.LogInformation($"Loaded {toAdd.Count} new users out of {data.Length} total");
+                _logger.LogInformation($"Loaded {toAdd.Count} new users out of {data.Length} total (after preprocessing: {processed.Length})");
                 return Ok(new { count = toAdd.Count, message = "Users loaded successfully" });
             }
             catch (Exception ex)
