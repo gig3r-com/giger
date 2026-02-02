@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.BankingModels
 {
     public class Transaction
     {
+        [JsonPropertyName("_id")]
+
         public string Id { get; set; } = string.Empty;
         
         public string? From { get; set; } // AccountNumber

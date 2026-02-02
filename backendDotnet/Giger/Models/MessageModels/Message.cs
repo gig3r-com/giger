@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.MessageModels
 {
     public class Message
     {
+        [JsonPropertyName("_id")]
+
         public string Id { get; set; } = string.Empty;
 
         public DateTime Date { get; set; }

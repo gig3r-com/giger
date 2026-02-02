@@ -1,9 +1,12 @@
 ﻿using static Giger.Models.User.Records.UserRecord;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.User.Records
 {
     public class Meta
     {
+        [JsonPropertyName("_id")]
+
         public string Id { get; set; } = string.Empty;
 
         public string? Title { get; set; }

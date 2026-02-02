@@ -1,4 +1,5 @@
 ﻿using Giger.Models.User;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.Hashes
 {
@@ -48,6 +49,9 @@ namespace Giger.Models.Hashes
             }
             MedicalEventsHash = medicalEventsHashCode;
         }
+
+        [JsonPropertyName("_id")]
+
 
         public string Id { get; set; }
 

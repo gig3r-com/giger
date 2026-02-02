@@ -1,10 +1,13 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.User
 {
     public class UserPublic
     {
+        [JsonPropertyName("_id")]
+
         public string Id { get; set; } = string.Empty;
 
         public string? Name { get; set; }
