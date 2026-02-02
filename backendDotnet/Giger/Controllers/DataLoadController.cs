@@ -147,6 +147,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Account");
+
                 var existingIds = new HashSet<string>(
                     await _context.Accounts.AsNoTracking().Select(a => a.Id).ToListAsync()
                 );
@@ -174,6 +180,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Gig");
+
                 var existingIds = new HashSet<string>(
                     await _context.Gigs.AsNoTracking().Select(g => g.Id).ToListAsync()
                 );
@@ -201,6 +213,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Network");
+
                 var existingIds = new HashSet<string>(
                     await _context.Networks.AsNoTracking().Select(n => n.Id).ToListAsync()
                 );
@@ -228,6 +246,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Subnetwork");
+
                 var existingIds = new HashSet<string>(
                     await _context.Subnetworks.AsNoTracking().Select(s => s.Id).ToListAsync()
                 );
@@ -255,6 +279,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "HackConfig");
+
                 var existingIds = new HashSet<string>(
                     await _context.HackConfig.AsNoTracking().Select(h => h.Id).ToListAsync()
                 );
@@ -282,6 +312,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "ProgramCodes");
+
                 var existingIds = new HashSet<string>(
                     await _context.ProgramCodes.AsNoTracking().Select(p => p.Id).ToListAsync()
                 );
@@ -309,6 +345,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "ObscuredCodesMap");
+
                 var existingIds = new HashSet<string>(
                     await _context.ObscuredCodesMap.AsNoTracking().Select(o => o.Id).ToListAsync()
                 );
@@ -336,6 +378,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Conversation");
+
                 var existingIds = new HashSet<string>(
                     await _context.Conversations.AsNoTracking().Select(c => c.Id).ToListAsync()
                 );
@@ -390,6 +438,12 @@ namespace Giger.Controllers
         {
             try
             {
+                // Preprocess data: handle nulls and duplicates
+                var processed = PreprocessData(data,
+                    item => item.Id,
+                    (item, id) => { item.Id = id; return item; },
+                    "Log");
+
                 var existingIds = new HashSet<string>(
                     await _context.Logs.AsNoTracking().Select(l => l.Id).ToListAsync()
                 );

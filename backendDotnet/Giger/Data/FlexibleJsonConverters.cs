@@ -114,4 +114,52 @@ namespace Giger.Data
             writer.WriteEndArray();
         }
     }
+
+    // Converter for List<string> (similar to array but returns List)
+    public class FlexibleStringListConverter : JsonConverter<List<string>>
+    {
+        public override List<string> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartArray)
+                return new List<string>();
+
+            var list = new List<string>();
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndArray)
+                    break;
+
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    var value = reader.GetString();
+                    if (!string.IsNullOrEmpty(value))
+                        list.Add(value);
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    // Skip the entire object
+                    var depth = 1;
+                    while (depth > 0 && reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.StartObject)
+                            depth++;
+                        else if (reader.TokenType == JsonTokenType.EndObject)
+                            depth--;
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public override void Write(Utf8JsonWriter writer, List<string> value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            foreach (var item in value)
+            {
+                writer.WriteStringValue(item);
+            }
+            writer.WriteEndArray();
+        }
+    }
 }
