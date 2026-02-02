@@ -65,8 +65,8 @@ using (var scope = app.Services.CreateScope())
             dbContext.Database.EnsureCreated();
             logger.LogInformation("Database schema created successfully.");
             
-            // Seed initial data
-            DatabaseSeeder.SeedDatabase(dbContext, logger);
+            // Skip automatic seeding - data will be loaded via API
+            logger.LogInformation("Automatic data seeding disabled. Use /api/DataLoad endpoints to load data.");
             break; // Success, exit retry loop
         }
         catch (Exception ex) when (i < maxRetries - 1)

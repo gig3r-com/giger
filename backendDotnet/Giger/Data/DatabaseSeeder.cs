@@ -92,7 +92,7 @@ namespace Giger.Data
             }
         }
 
-        private static void CreateMissingAccounts(GigerDbContext context, ILogger logger)
+        public static void CreateMissingAccounts(GigerDbContext context, ILogger logger)
         {
             try
             {
