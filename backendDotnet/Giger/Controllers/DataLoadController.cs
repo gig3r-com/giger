@@ -76,10 +76,21 @@ namespace Giger.Controllers
         {
             try
             {
+                // Filter out records with null IDs and generate IDs for them
+                var validData = data.Select(item =>
+                {
+                    if (string.IsNullOrEmpty(item.Id))
+                    {
+                        item.Id = Guid.NewGuid().ToString();
+                        _logger.LogWarning($"Generated ID {item.Id} for user {item.Handle}");
+                    }
+                    return item;
+                }).ToArray();
+
                 var existingIds = new HashSet<string>(
                     await _context.Users.AsNoTracking().Select(u => u.Id).ToListAsync()
                 );
-                var toAdd = data.Where(item => !existingIds.Contains(item.Id)).ToList();
+                var toAdd = validData.Where(item => !existingIds.Contains(item.Id!)).ToList();
                 
                 if (toAdd.Any())
                 {

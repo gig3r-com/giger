@@ -8,7 +8,7 @@ namespace Giger.Models.User
     {
         [JsonPropertyName("_id")]
 
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
 
         public string? Name { get; set; }
 
@@ -26,7 +26,7 @@ namespace Giger.Models.User
 
         public string? FactionRankPublic { get; set; }
 
-        public string Surname { get; set; } = string.Empty;
+        public string? Surname { get; set; }
 
         public Vibe Vibe { get; set; }
 
