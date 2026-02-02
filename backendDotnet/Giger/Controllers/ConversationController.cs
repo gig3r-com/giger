@@ -104,8 +104,11 @@ namespace Giger.Controllers
         }
 
         [HttpPost("{conversationId}/message")]
-        public async Task<IActionResult> PostMessage(string conversationId, Message newMessage)
+        public async Task<IActionResult> PostMessage(string conversationId, [FromBody] Message newMessage)
         {
+            Console.WriteLine($"[DEBUG] PostMessage called with conversationId: {conversationId}");
+            Console.WriteLine($"[DEBUG] newMessage: Sender='{newMessage?.Sender}', Text='{newMessage?.Text}', Id='{newMessage?.Id}'");
+            
             var conversation = await _conversationService.GetAsync(conversationId);
             if (conversation is null)
             {
