@@ -15,22 +15,55 @@ namespace Giger.Services
         public async Task<List<Conversation>> GetAllAsync() =>
             await _dbContext.Conversations.ToListAsync();
 
-        public async Task<Conversation?> GetAsync(string id) =>
-            await _dbContext.Conversations
+        public async Task<Conversation?> GetAsync(string id)
+        {
+            var conversation = await _dbContext.Conversations
                 .Include(c => c.Messages)
                 .FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (conversation != null && conversation.Messages != null)
+            {
+                conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+            }
+            
+            return conversation;
+        }
 
-        public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
-            await _dbContext.Conversations
+        public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant)
+        {
+            var conversations = await _dbContext.Conversations
                 .Include(c => c.Messages)
                 .Where(x => x.Participants.Contains(participant) && !x.GigConversation)
                 .ToListAsync();
+            
+            foreach (var conversation in conversations)
+            {
+                if (conversation.Messages != null)
+                {
+                    conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+                }
+            }
+            
+            return conversations;
+        }
 
-        public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
-            await _dbContext.Conversations
+        public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant)
+        {
+            var conversations = await _dbContext.Conversations
                 .Include(c => c.Messages)
                 .Where(x => x.Participants.Contains(participant) && x.GigConversation)
                 .ToListAsync();
+            
+            foreach (var conversation in conversations)
+            {
+                if (conversation.Messages != null)
+                {
+                    conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+                }
+            }
+            
+            return conversations;
+        }
 
         public async Task CreateAsync(Conversation newConversation)
         {
