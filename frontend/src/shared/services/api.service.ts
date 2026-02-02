@@ -44,6 +44,22 @@ export function useApiService() {
             });
     };
 
+    const validateToken = async (authToken: string): Promise<{ valid: boolean; username?: string; userId?: string }> => {
+        try {
+            const result = await wretch(endpointBase, {
+                mode: 'cors'
+            })
+                .addon(QueryStringAddon)
+                .query({ authToken })
+                .get('Login/validateToken')
+                .json<{ valid: boolean; username?: string; userId?: string; message?: string }>();
+            
+            return result;
+        } catch (error) {
+            return { valid: false };
+        }
+    };
+
     const api = useMemo(() => {
         const updatedInstance = wretch(endpointBase, {
             mode: 'cors'
@@ -53,5 +69,5 @@ export function useApiService() {
         return updatedInstance;
     }, [token, endpointBase]);
 
-    return { loginCall, logout, api };
+    return { loginCall, logout, validateToken, api };
 }

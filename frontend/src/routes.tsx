@@ -11,6 +11,7 @@ import { useToastService } from './shared/services/toast.service';
 import { Toaster } from 'react-hot-toast';
 import { ToastItem } from './shared/components/toast/toast';
 import { useVersionService } from './shared/services/version.service';
+import { useAuthValidation } from './shared/services/auth-validation.service';
 import { Contacts } from './apps/myId/contacts/contacts';
 import { Details } from './apps/myId/details/details';
 import { Vibe } from './apps/myId/vibe/vibe';
@@ -28,6 +29,10 @@ export const Router = () => {
     const intl = useIntl();
     const { test } = useToastService();
     const { versionCheck } = useVersionService();
+    
+    // Validate auth token on app load
+    useAuthValidation();
+    
     useEffect(() => {
         console.warn(intl.formatMessage({ id: 'DEVTOOLS_WARNING' }));
         versionCheck();

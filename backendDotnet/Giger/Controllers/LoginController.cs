@@ -158,5 +158,35 @@ namespace Giger.Controllers
             Response.StatusCode = StatusCodes.Status200OK;
             return "Password changed.";
         }
+
+        [AllowAnonymous]
+        [HttpGet("validateToken")]
+        public async Task<IActionResult> ValidateToken([FromQuery] string authToken)
+        {
+            if (string.IsNullOrEmpty(authToken))
+            {
+                return BadRequest(new { valid = false, message = "Token is required" });
+            }
+
+            var auth = await _loginService.GetByAuthTokenAsync(authToken);
+            if (auth == null)
+            {
+                return Ok(new { valid = false, message = "Invalid token" });
+            }
+
+            // Token is valid, return user info
+            var user = await _userService.GetByUserNameAsync(auth.Username);
+            if (user == null)
+            {
+                return Ok(new { valid = false, message = "User not found" });
+            }
+
+            return Ok(new 
+            { 
+                valid = true, 
+                username = auth.Username,
+                userId = user.Id
+            });
+        }
     }
 }
