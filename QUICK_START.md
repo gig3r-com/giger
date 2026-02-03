@@ -1,134 +1,170 @@
-# Quick Start Guide - Data Loading 🚀
+# Getting Started - New Developer Guide
 
-## TL;DR
+Welcome! This guide will get you up and running in minutes.
+
+## Quick Start (< 2 minutes)
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Git with submodules support
+
+### Steps
+
+1. **Clone the repository with data submodule:**
+   ```bash
+   git clone --recurse-submodules https://github.com/gig3r-com/giger.git
+   cd giger
+   
+   # If you already cloned without --recurse-submodules:
+   git submodule update --init --recursive
+   ```
+
+2. **Start everything:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Wait for data to load (~30 seconds):**
+   ```bash
+   # Watch the backend logs to see data loading
+   docker-compose logs -f backend
+   
+   # You'll see:
+   # "Database schema created successfully."
+   # "AUTO_LOAD_DATA=true and database is empty. Loading data..."
+   # "Data loaded successfully via AUTO_LOAD_DATA."
+   ```
+
+4. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3000/api
+   - Swagger docs: http://localhost:3000/swagger
+
+5. **Login:**
+   - Use any user from the loaded data
+   - Check data files for usernames/passwords
+
+**That's it!** 🎉 The database is automatically loaded with test data.
+
+---
+
+## What Just Happened?
+
+When you ran `docker-compose up -d`:
+
+1. PostgreSQL started with an empty database
+2. Backend detected the empty database
+3. Backend saw `AUTO_LOAD_DATA=true` (default for development)
+4. Backend automatically loaded all data from `./data/mongo/` directory
+5. Frontend started and connected to the backend
+
+**The data includes:**
+- ~200 users
+- ~225 bank accounts with transactions
+- ~259 gigs (jobs)
+- ~590 conversations with ~5000 messages
+- Networks, hack configs, logs, and more
+
+---
+
+## Common Commands
 
 ```bash
-# Start everything (data loads automatically on first startup)
+# View logs
+docker-compose logs -f backend
+
+# Restart services
+docker-compose restart backend
+
+# Stop everything
+docker-compose down
+
+# Complete reset (deletes all data and reloads)
+docker-compose down
+rm -rf ./volumes/postgres
 docker-compose up -d
-
-# Check what was loaded
-./check-data.sh
-
-# Reload data (development)
-./reload-data.sh
-
-# Complete fresh start
-./fresh-start.sh
+# Data will reload automatically
 ```
 
-## What Happens Automatically
-
-✅ **On first `docker-compose up`:**
-1. PostgreSQL starts
-2. Backend connects (with 15 retries if needed)
-3. Database schema auto-created (17 tables)
-4. JSON files loaded from `data/mongo/`
-5. ~195 auth records + networks, etc. imported
-
-✅ **Data is loaded ONCE per database**
-- Won't reload on restart (data persists)
-- Set `FORCE_DATA_RELOAD=true` to reload
-
-## Data Files (Auto-Loaded)
-
-From `data/mongo/`:
-- ✅ Auths.json → 195 records
-- ✅ Networks.json → 7 networks  
-- ✅ Subnetworks.json
-- ✅ HackConfigs.json
-- ✅ ProgramCodesMap.json
-- ✅ ObscuredCodesMap.json
-- ✅ Accounts.json
-- ✅ Logs.json
-- ✅ Conversations.json (1.2MB)
-- ✅ Gigs.json
-- ✅ Anonymized.json
+---
 
 ## Helper Scripts
 
-### `check-data.sh` - See what's loaded
 ```bash
+# Check what's loaded
 ./check-data.sh
-```
-Shows table counts and sample data.
 
-### `reload-data.sh` - Reload from JSON
-```bash
+# Reload data manually
 ./reload-data.sh
-```
-Clears and reloads all data.
 
-### `fresh-start.sh` - Complete reset
-```bash
+# Fresh start (wipes everything)
 ./fresh-start.sh
 ```
-⚠️ Removes everything and starts fresh.
 
-## Manual Control
+---
 
-### Reload Data
+## Disabling Auto-Load
+
+If you want manual control over data loading:
+
 ```bash
-FORCE_DATA_RELOAD=true docker-compose up -d --force-recreate backend
+# Start without auto-loading
+AUTO_LOAD_DATA=false docker-compose up -d
+
+# Then manually load data
+./load-data.sh
 ```
 
-### Check Database
+Or create a `.env` file:
 ```bash
-# Connect to DB
-docker exec -it giger-postgres-1 psql -U giger -d giger
-
-# Count records
-SELECT COUNT(*) FROM "Auths";
-
-# View data
-SELECT * FROM "Auths" LIMIT 5;
+echo "AUTO_LOAD_DATA=false" > .env
+docker-compose up -d
 ```
 
-### View Logs
-```bash
-# See data loading
-docker-compose logs backend | grep Loading
-
-# Watch live
-docker-compose logs -f backend
-```
-
-## Environment Variables
-
-In `docker-compose.yaml`:
-```yaml
-environment:
-  - FORCE_DATA_RELOAD=false  # Set to 'true' to reload every time
-```
-
-Or create `.env` file:
-```bash
-FORCE_DATA_RELOAD=false
-```
+---
 
 ## Troubleshooting
 
-### No data loaded?
+### "Database is empty, no data loaded"
+
+Check if auto-load failed:
 ```bash
-# Check data files exist
-ls -lh data/mongo/
-
-# Check volume is mounted
-docker exec giger-backend-1 ls /data/
-
-# Check logs
-docker-compose logs backend | grep "Loading data"
+docker-compose logs backend | grep -i "data"
 ```
 
-### Want to reload?
+Load manually:
 ```bash
-./reload-data.sh
+./load-data.sh
 ```
 
-### Start fresh?
+### "Submodule 'data' is empty"
+
+Initialize the submodule:
 ```bash
-./fresh-start.sh
+git submodule update --init --recursive
+docker-compose restart backend
 ```
 
-## Full Documentation
+---
 
-See `DATA_LOADING_GUIDE.md` for complete details.
+## Next Steps
+
+- Read [DATA_LOADING_QUICK_REFERENCE.md](./DATA_LOADING_QUICK_REFERENCE.md) for data management
+- Check [DATA_LOADING_CI_CD.md](./DATA_LOADING_CI_CD.md) for deployment guides
+- Explore the API at http://localhost:3000/swagger
+
+---
+
+## For Production Deployments
+
+**IMPORTANT:** Disable auto-loading in production!
+
+```bash
+# Use the production compose file
+docker-compose -f docker-compose.yml -f docker-compose.prod.yaml up -d
+
+# Then manually load data with authentication
+./load-data.sh
+```
+
+See [DATA_LOADING_CI_CD.md](./DATA_LOADING_CI_CD.md) for complete production setup.

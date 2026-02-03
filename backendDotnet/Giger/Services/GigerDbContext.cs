@@ -67,6 +67,16 @@ namespace Giger.Services
         {
             modelBuilder.Entity<Auth>();
 
+            // Configure Gig to use its own table (Table-per-Type inheritance)
+            modelBuilder.Entity<Gig>().ToTable("Gigs");
+            
+            modelBuilder.Entity<Gig>()
+                .Property(g => g.ReputationRequired)
+                .HasConversion(
+                    v => v.Level, // Convert struct to short for storage
+                    v => new GigRepuationLevels(v) // Convert short from db to struct
+                );
+
             modelBuilder.Entity<UserPrivate>(entity =>
             {
                 entity.Property(g => g.CyberwareLevel).HasConversion(
@@ -102,13 +112,6 @@ namespace Giger.Services
                     v => new CharStat(v) 
                 );
             });
-
-            modelBuilder.Entity<Gig>()
-                .Property(g => g.ReputationRequired)
-                .HasConversion(
-                    v => v.Level, // Convert struct to short for storage
-                    v => new GigRepuationLevels(v) // Convert short from db to struct
-                );
         }
     }
 }

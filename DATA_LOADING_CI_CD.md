@@ -2,13 +2,16 @@
 
 ## Overview
 
-The data loading system is designed to **NOT load data automatically on startup**. This is intentional for production safety and to avoid accidental data reloads.
+The data loading system supports two modes:
+
+1. **Automatic Mode (Development)**: Data loads automatically on first startup via `AUTO_LOAD_DATA=true`
+2. **Manual Mode (Production)**: Data must be loaded explicitly via API or script with `AUTO_LOAD_DATA=false`
 
 ## Startup Behavior
 
-### 1. Initial Docker Compose Startup (Empty Database)
+### 1. Initial Docker Compose Startup (Empty Database) - DEVELOPMENT MODE
 
-When you run `docker-compose up` for the first time:
+When you run `docker-compose up` for the first time **with AUTO_LOAD_DATA=true (default)**:
 
 ```bash
 docker-compose up -d
@@ -18,18 +21,31 @@ docker-compose up -d
 1. ✅ PostgreSQL container starts and creates an empty database
 2. ✅ Backend container waits for PostgreSQL health check
 3. ✅ Backend connects to database and runs `EnsureCreated()` - creates all tables/schema
-4. ✅ Backend logs: "Automatic data seeding disabled. Use /api/DataLoad endpoints to load data."
+4. ✅ Backend detects `AUTO_LOAD_DATA=true` and empty database
+5. ✅ Backend automatically loads data from `/data` directory (mounted volume)
+6. ✅ Backend logs: "Data loaded successfully via AUTO_LOAD_DATA."
+7. ✅ **Database has tables AND data - ready to use!**
+
+**No additional steps needed** - just wait ~30 seconds for data to load.
+
+### 1b. Initial Startup - PRODUCTION MODE
+
+When you run with `AUTO_LOAD_DATA=false`:
+
+```bash
+AUTO_LOAD_DATA=false docker-compose up -d
+```
+
+**What happens:**
+1. ✅ PostgreSQL container starts and creates an empty database
+2. ✅ Backend container waits for PostgreSQL health check
+3. ✅ Backend connects to database and runs `EnsureCreated()` - creates all tables/schema
+4. ✅ Backend logs: "Automatic data loading disabled. Use /api/DataLoad endpoints to load data manually."
 5. ⚠️ **Database has tables but NO DATA**
 
 **Next step - Manual data loading:**
 ```bash
-# Load data using the script
 ./load-data.sh
-
-# Or manually using curl
-curl -u admin:changeme -X POST http://localhost:8080/api/DataLoad/load-auths \
-  -H "Content-Type: application/json" \
-  -d @./data/mongo/Auths.json
 ```
 
 ### 2. Subsequent Restarts (With Existing Data)
@@ -87,11 +103,14 @@ environment:
   - GigerDB__Password=${GIGER_PASSWORD:-giger}
   - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
   
-  # Data loading authentication
+  # Auto-load data on first startup (default: true for development)
+  - AUTO_LOAD_DATA=${AUTO_LOAD_DATA:-true}
+  
+  # Data loading API authentication (for manual loading)
   - DataLoad__Username=${DATALOAD_USERNAME:-admin}
   - DataLoad__Password=${DATALOAD_PASSWORD:-changeme}
   
-  # Legacy: FORCE_DATA_RELOAD (not used anymore, kept for compatibility)
+  # Legacy: FORCE_DATA_RELOAD (deprecated, use AUTO_LOAD_DATA instead)
   - FORCE_DATA_RELOAD=${FORCE_DATA_RELOAD:-false}
 ```
 
@@ -100,6 +119,9 @@ environment:
 Create `.env` file in project root to customize:
 
 ```bash
+# Auto-load behavior
+AUTO_LOAD_DATA=true  # true for dev, false for production
+
 # Database credentials
 GIGER_USERNAME=giger
 GIGER_PASSWORD=giger

@@ -69,7 +69,10 @@ using (var scope = app.Services.CreateScope())
             logger.LogInformation("Database schema created successfully.");
             
             // Skip automatic seeding - data will be loaded via API
-            logger.LogInformation("Automatic data seeding disabled. Use /api/DataLoad endpoints to load data.");
+            logger.LogInformation("Automatic data seeding disabled.");
+            logger.LogInformation("To load data: Run './load-data.sh' script after startup.");
+            logger.LogInformation("This ensures proper data quality handling and deduplication.");
+            
             break; // Success, exit retry loop
         }
         catch (Exception ex) when (i < maxRetries - 1)

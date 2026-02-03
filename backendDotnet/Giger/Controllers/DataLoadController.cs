@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Giger.Models.Auths;
 using Giger.Models.BankingModels;
+using Giger.Models.EventModels;
 using Giger.Models.GigModels;
 using Giger.Models.Hacking;
 using Giger.Models.Logs;
@@ -13,6 +14,7 @@ using Giger.Models.MessageModels;
 using Giger.Models.Networks;
 using Giger.Models.Obscured;
 using Giger.Models.User;
+using Giger.Models.User.Records;
 using System.Text;
 
 namespace Giger.Controllers
@@ -160,11 +162,64 @@ namespace Giger.Controllers
             
             try
             {
-                // Preprocess data: handle nulls and duplicates
-                var processed = PreprocessData(data,
-                    item => item.Id,
-                    (item, id) => { item.Id = id; return item; },
-                    "User");
+                // Preprocess data: deduplicate by Handle (not ID) since Handle is the unique identifier
+                var processed = data
+                    .GroupBy(u => u.Handle ?? u.Id) // Group by Handle, fall back to ID if Handle is null
+                    .Select(g => g.Last()) // Keep last occurrence
+                    .ToArray();
+                
+                _logger.LogInformation($"Preprocessing users: {data.Length} raw -> {processed.Length} after Handle deduplication");
+
+                // Generate IDs for users without IDs
+                foreach (var user in processed)
+                {
+                    if (string.IsNullOrEmpty(user.Id))
+                    {
+                        user.Id = Guid.NewGuid().ToString();
+                        _logger.LogWarning($"Generated ID {user.Id} for User {user.Handle}");
+                    }
+                }
+
+                // Deduplicate all nested entities globally across all users to avoid EF Core tracking conflicts
+                var seenIds = new Dictionary<string, HashSet<string>>
+                {
+                    ["MedicalEvent"] = new HashSet<string>(),
+                    ["CriminalEvent"] = new HashSet<string>(),
+                    ["PrivateRecord"] = new HashSet<string>(),
+                    ["Relation"] = new HashSet<string>(),
+                    ["Goal"] = new HashSet<string>(),
+                    ["Meta"] = new HashSet<string>()
+                };
+                
+                foreach (var user in processed)
+                {
+                    // Helper to deduplicate a collection
+                    void DeduplicateCollection<T>(List<T>? collection, string typeName, Action<List<T>> setter) where T : class
+                    {
+                        if (collection != null && collection.Any())
+                        {
+                            var uniqueItems = new List<T>();
+                            foreach (var item in collection)
+                            {
+                                var idProp = item.GetType().GetProperty("Id");
+                                var id = idProp?.GetValue(item) as string;
+                                if (!string.IsNullOrEmpty(id) && !seenIds[typeName].Contains(id))
+                                {
+                                    uniqueItems.Add(item);
+                                    seenIds[typeName].Add(id);
+                                }
+                            }
+                            setter(uniqueItems);
+                        }
+                    }
+                    
+                    DeduplicateCollection(user.MedicalEvents, "MedicalEvent", list => user.MedicalEvents = list);
+                    DeduplicateCollection(user.CriminalEvents, "CriminalEvent", list => user.CriminalEvents = list);
+                    DeduplicateCollection(user.PrivateRecords, "PrivateRecord", list => user.PrivateRecords = list);
+                    DeduplicateCollection(user.Relations, "Relation", list => user.Relations = list);
+                    DeduplicateCollection(user.Goals, "Goal", list => user.Goals = list);
+                    DeduplicateCollection(user.Meta, "Meta", list => user.Meta = list);
+                }
 
                 var existingIds = new HashSet<string>(
                     await _context.Users.AsNoTracking().Select(u => u.Id).ToListAsync()
@@ -173,12 +228,26 @@ namespace Giger.Controllers
                 
                 if (toAdd.Any())
                 {
-                    _context.Users.AddRange(toAdd);
-                    await _context.SaveChangesAsync();
+                    // Process in smaller batches to avoid tracking conflicts
+                    int batchSize = 10;
+                    int totalAdded = 0;
+                    for (int i = 0; i < toAdd.Count; i += batchSize)
+                    {
+                        var batch = toAdd.Skip(i).Take(batchSize).ToList();
+                        _context.Users.AddRange(batch);
+                        await _context.SaveChangesAsync();
+                        _context.ChangeTracker.Clear(); // Clear tracker to avoid conflicts
+                        totalAdded += batch.Count;
+                    }
+                    
+                    _logger.LogInformation($"Loaded {totalAdded} new users out of {data.Length} total (after preprocessing: {processed.Length})");
+                    return Ok(new { count = totalAdded, message = "Users loaded successfully" });
                 }
-                
-                _logger.LogInformation($"Loaded {toAdd.Count} new users out of {data.Length} total (after preprocessing: {processed.Length}) (after preprocessing: {processed.Length})");
-                return Ok(new { count = toAdd.Count, message = "Users loaded successfully" });
+                else
+                {
+                    _logger.LogInformation($"No new users to load (all {processed.Length} already exist)");
+                    return Ok(new { count = 0, message = "No new users to load" });
+                }
             }
             catch (Exception ex)
             {
@@ -200,7 +269,7 @@ namespace Giger.Controllers
                     (item, id) => { item.Id = id; return item; },
                     "Account");
 
-                // GLOBAL transaction deduplication across all accounts
+                // GLOBAL transaction deduplication across all accounts and generate IDs for nulls
                 var seenTransactions = new HashSet<string>();
                 foreach (var account in processed)
                 {
@@ -209,6 +278,12 @@ namespace Giger.Controllers
                         var uniqueTransactions = new List<Transaction>();
                         foreach (var tx in account.Transactions)
                         {
+                            // Generate ID for null transactions
+                            if (string.IsNullOrEmpty(tx.Id))
+                            {
+                                tx.Id = Guid.NewGuid().ToString();
+                            }
+                            
                             if (!seenTransactions.Contains(tx.Id))
                             {
                                 seenTransactions.Add(tx.Id);
@@ -230,12 +305,26 @@ namespace Giger.Controllers
                 
                 if (toAdd.Any())
                 {
-                    _context.Accounts.AddRange(toAdd);
-                    await _context.SaveChangesAsync();
+                    // Process in batches to avoid tracking conflicts
+                    int batchSize = 20;
+                    int totalAdded = 0;
+                    for (int i = 0; i < toAdd.Count; i += batchSize)
+                    {
+                        var batch = toAdd.Skip(i).Take(batchSize).ToList();
+                        _context.Accounts.AddRange(batch);
+                        await _context.SaveChangesAsync();
+                        _context.ChangeTracker.Clear();
+                        totalAdded += batch.Count;
+                    }
+                    
+                    _logger.LogInformation($"Loaded {totalAdded} new accounts out of {data.Length} total (after preprocessing: {processed.Length})");
+                    return Ok(new { count = totalAdded, message = "Accounts loaded successfully" });
                 }
-                
-                _logger.LogInformation($"Loaded {toAdd.Count} new accounts out of {data.Length} total (after preprocessing: {processed.Length})");
-                return Ok(new { count = toAdd.Count, message = "Accounts loaded successfully" });
+                else
+                {
+                    _logger.LogInformation($"No new accounts to load (all {processed.Length} already exist)");
+                    return Ok(new { count = 0, message = "No new accounts to load" });
+                }
             }
             catch (Exception ex)
             {
@@ -461,6 +550,31 @@ namespace Giger.Controllers
                     (item, id) => { item.Id = id; return item; },
                     "Conversation");
 
+                // Deduplicate Messages globally and generate IDs for null messages
+                var seenMessageIds = new HashSet<string>();
+                foreach (var conversation in processed)
+                {
+                    if (conversation.Messages != null && conversation.Messages.Any())
+                    {
+                        var uniqueMessages = new List<Message>();
+                        foreach (var msg in conversation.Messages)
+                        {
+                            // Generate ID for null messages
+                            if (string.IsNullOrEmpty(msg.Id))
+                            {
+                                msg.Id = Guid.NewGuid().ToString();
+                            }
+                            
+                            if (!seenMessageIds.Contains(msg.Id))
+                            {
+                                uniqueMessages.Add(msg);
+                                seenMessageIds.Add(msg.Id);
+                            }
+                        }
+                        conversation.Messages = uniqueMessages;
+                    }
+                }
+
                 var existingIds = new HashSet<string>(
                     await _context.Conversations.AsNoTracking().Select(c => c.Id).ToListAsync()
                 );
@@ -468,12 +582,26 @@ namespace Giger.Controllers
                 
                 if (toAdd.Any())
                 {
-                    _context.Conversations.AddRange(toAdd);
-                    await _context.SaveChangesAsync();
+                    // Process in batches to avoid tracking conflicts
+                    int batchSize = 20;
+                    int totalAdded = 0;
+                    for (int i = 0; i < toAdd.Count; i += batchSize)
+                    {
+                        var batch = toAdd.Skip(i).Take(batchSize).ToList();
+                        _context.Conversations.AddRange(batch);
+                        await _context.SaveChangesAsync();
+                        _context.ChangeTracker.Clear();
+                        totalAdded += batch.Count;
+                    }
+                    
+                    _logger.LogInformation($"Loaded {totalAdded} new conversations out of {data.Length} total (after preprocessing: {processed.Length})");
+                    return Ok(new { count = totalAdded, message = "Conversations loaded successfully" });
                 }
-                
-                _logger.LogInformation($"Loaded {toAdd.Count} new conversations out of {data.Length} total (after preprocessing: {processed.Length})");
-                return Ok(new { count = toAdd.Count, message = "Conversations loaded successfully" });
+                else
+                {
+                    _logger.LogInformation($"No new conversations to load (all {processed.Length} already exist)");
+                    return Ok(new { count = 0, message = "No new conversations to load" });
+                }
             }
             catch (Exception ex)
             {

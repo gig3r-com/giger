@@ -45,7 +45,6 @@ services:
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
       - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
-      - FORCE_DATA_RELOAD=${FORCE_DATA_RELOAD:-false}
       - ASPNETCORE_ENVIRONMENT=Development
       - DataLoad__Username=${DATALOAD_USERNAME:-admin}
       - DataLoad__Password=${DATALOAD_PASSWORD:-changeme}

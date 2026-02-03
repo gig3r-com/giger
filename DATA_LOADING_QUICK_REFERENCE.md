@@ -2,32 +2,44 @@
 
 ## TL;DR
 
+**For Development (Easy Mode):**
 ```bash
-# Fresh start (first time)
+# Just start - data loads automatically!
 docker-compose up -d
-./load-data.sh
+# Wait ~30 seconds for data to load, then ready to use
+```
 
-# Reload data (wipe and reload)
+**For Production (Manual Control):**
+```bash
+# Start without auto-loading
+AUTO_LOAD_DATA=false docker-compose up -d
+# Then manually load data
+./load-data.sh
+```
+
+**To Reload Data:**
+```bash
 docker-compose down
 rm -rf ./volumes/postgres
 docker-compose up -d
-./load-data.sh
-
-# Normal restart (keeps data)
-docker-compose restart
+# Data loads automatically if AUTO_LOAD_DATA=true (default)
 ```
 
 ## How It Works Now
 
 ### Startup Behavior
 
-| Scenario | What Happens | Data State |
-|----------|--------------|------------|
-| **First start** | Creates tables only | ❌ No data |
-| **Normal restart** | Uses existing DB | ✅ Data preserved |
-| **After `rm -rf volumes/postgres`** | Fresh DB, empty tables | ❌ No data |
+| Scenario | AUTO_LOAD_DATA | What Happens | Data State |
+|----------|----------------|--------------|------------|
+| **First start (dev)** | `true` (default) | Creates tables + loads data | ✅ Data loaded |
+| **First start (prod)** | `false` | Creates tables only | ❌ No data |
+| **Restart (any)** | any | Uses existing DB | ✅ Data preserved |
+| **After `rm -rf volumes/postgres`** | `true` | Fresh DB + auto-loads | ✅ Data loaded |
+| **After `rm -rf volumes/postgres`** | `false` | Fresh DB, empty | ❌ No data |
 
-**Key Point:** Data is **NEVER** loaded automatically. You must run `./load-data.sh` manually.
+**Key Point:** 
+- Development default: Data loads **automatically** on first startup
+- Production: Set `AUTO_LOAD_DATA=false` for manual control
 
 ## Environment Variables
 
@@ -35,12 +47,26 @@ docker-compose restart
 
 ```yaml
 environment:
-  # Data loading API credentials (CHANGE IN PRODUCTION!)
+  # Data loading API credentials
   - DataLoad__Username=${DATALOAD_USERNAME:-admin}
   - DataLoad__Password=${DATALOAD_PASSWORD:-changeme}
 ```
 
-### For load-data.sh
+### For load-data.sh Script
+
+```bash
+# Set before running script (optional, defaults work)
+export DATALOAD_USERNAME=admin
+export DATALOAD_PASSWORD=changeme
+export API_BASE=http://localhost:8080/api/DataLoad
+
+# Then run
+./load-data.sh
+```
+
+### For load-data.sh (Manual Loading)
+
+Only needed if `AUTO_LOAD_DATA=false` or you want to reload:
 
 ```bash
 # Set before running script
@@ -87,6 +113,14 @@ curl -X POST -u admin:changeme http://localhost:8080/api/DataLoad/load-users \
 ```
 
 ## Common Issues
+
+### "Database is empty"
+- Run: `./load-data.sh`
+- Check logs: `docker-compose logs backend`
+
+### "API not accessible"
+- Backend not started yet → wait 10-20 seconds
+- Check: `docker-compose ps backend`
 
 ### "API is not accessible"
 - Backend not started yet → wait 30 seconds

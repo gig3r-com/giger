@@ -39,9 +39,34 @@ namespace Giger.Models.User
 
         public int InsuredAmount { get; set; }
 
-        [NotMapped]
+        // Gig Reputation split into queryable columns
+        public decimal GigReputationFixer { get; set; }
+        public decimal GigReputationKiller { get; set; }
+        public decimal GigReputationHacking { get; set; }
+        public decimal GigReputationWellbeing { get; set; }
 
-        public Dictionary<string, decimal> GigReputation { get; set; } = [];
+        // Property for API compatibility - maps to the separate columns
+        [NotMapped]
+        public Dictionary<string, decimal> GigReputation
+        {
+            get => new Dictionary<string, decimal>
+            {
+                ["FIXER"] = GigReputationFixer,
+                ["KILLER"] = GigReputationKiller,
+                ["HACKING"] = GigReputationHacking,
+                ["WELLBEING"] = GigReputationWellbeing
+            };
+            set
+            {
+                if (value != null)
+                {
+                    GigReputationFixer = value.ContainsKey("FIXER") ? value["FIXER"] : 0;
+                    GigReputationKiller = value.ContainsKey("KILLER") ? value["KILLER"] : 0;
+                    GigReputationHacking = value.ContainsKey("HACKING") ? value["HACKING"] : 0;
+                    GigReputationWellbeing = value.ContainsKey("WELLBEING") ? value["WELLBEING"] : 0;
+                }
+            }
+        }
 
         public string NetworkAdminName { get; set; }
 
