@@ -208,6 +208,7 @@ export const {
     pages: { signIn: '/login' },
     session: { strategy: 'jwt' },
     providers,
+    trustHost: true,
     callbacks: {
         async jwt({ token, user, trigger, session }) {
             // First sign-in: copy fields from user → token
