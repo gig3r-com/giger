@@ -14,7 +14,7 @@ docker-compose up -d
 # Start without auto-loading
 AUTO_LOAD_DATA=false docker-compose up -d
 # Then manually load data
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 **To Reload Data:**
@@ -61,7 +61,7 @@ export DATALOAD_PASSWORD=changeme
 export API_BASE=http://localhost:8080/api/DataLoad
 
 # Then run
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ### For load-data.sh (Manual Loading)
@@ -75,7 +75,7 @@ export DATALOAD_PASSWORD=changeme
 export API_BASE=http://localhost:8080/api/DataLoad
 
 # Then run
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ## CI/CD Integration

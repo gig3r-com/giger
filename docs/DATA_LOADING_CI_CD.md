@@ -45,7 +45,7 @@ AUTO_LOAD_DATA=false docker-compose up -d
 
 **Next step - Manual data loading:**
 ```bash
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ### 2. Subsequent Restarts (With Existing Data)
@@ -85,7 +85,7 @@ docker-compose up -d
 sleep 10
 
 # Load data
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ## Environment Variables
@@ -280,7 +280,7 @@ export DATALOAD_PASSWORD=$(aws secretsmanager get-secret-value --secret-id prod/
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 # Load data (one-time or on deploy)
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ## Troubleshooting
@@ -311,7 +311,7 @@ If you want to reload data:
 curl -X POST -u admin:changeme http://localhost:8080/api/DataLoad/clear-all
 
 # Then reload
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ### CI/CD Authentication Failing
@@ -345,7 +345,7 @@ curl -v -u "$DATALOAD_USERNAME:$DATALOAD_PASSWORD" http://localhost:8080/api/Dat
 **For CI/CD:**
 1. Set `DATALOAD_USERNAME` and `DATALOAD_PASSWORD` secrets
 2. Build and start containers
-3. Run `./load-data.sh` in non-interactive mode
+3. Run `./scripts/load-data.sh` in non-interactive mode
 4. Verify with `/api/DataLoad/status`
 
 **For Production:**

@@ -48,7 +48,7 @@ environment:
 The easiest way to load data is using the provided script:
 
 ```bash
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 This script will:

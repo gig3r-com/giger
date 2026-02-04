@@ -110,7 +110,7 @@ The data loader now automatically handles various data quality issues found in t
 
 ```bash
 # Load all data
-./load-data.sh
+./scripts/load-data.sh
 
 # Or load individual types via API
 curl -X POST http://localhost:8080/api/DataLoad/load-users \

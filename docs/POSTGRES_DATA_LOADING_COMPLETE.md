@@ -21,7 +21,7 @@ Data loading has been successfully converted to an API-based approach.
 
 ```bash
 # Load all data
-./load-data.sh
+./scripts/load-data.sh
 
 # Or manually
 curl -X POST http://localhost:8080/api/DataLoad/clear-all
