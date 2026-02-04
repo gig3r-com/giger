@@ -58,7 +58,7 @@ services:
       context: ./docker/data-loader
     restart: "no"  # Only run once, don't restart
     environment:
-      - AUTO_LOAD_DATA=${AUTO_LOAD_DATA:-false}
+      - AUTO_LOAD_DATA=${AUTO_LOAD_DATA:-true}
       - DATALOAD_USERNAME=${DATALOAD_USERNAME:-admin}
       - DATALOAD_PASSWORD=${DATALOAD_PASSWORD:-changeme}
     volumes:
@@ -66,8 +66,6 @@ services:
     depends_on:
       backend:
         condition: service_started
-    profiles:
-      - auto-load  # Only start when this profile is active
 
   postgres:
     image: postgres:16
