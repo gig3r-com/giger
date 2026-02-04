@@ -131,7 +131,7 @@ App should be now available on localhost:8080. If you don't like the port, creat
    sleep 10
    
    # Load data via API
-   ./load-data.sh
+   ./scripts/load-data.sh
    ```
    
    The script will:
@@ -184,7 +184,7 @@ If you prefer to control when data is loaded:
 AUTO_LOAD_DATA=false docker-compose up -d
 
 # Then manually load data
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ### Troubleshooting
@@ -195,7 +195,7 @@ AUTO_LOAD_DATA=false docker-compose up -d
 docker-compose logs backend | grep -i "data"
 
 # Manually load if needed
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 **Problem: Submodule 'data' is empty**
@@ -227,7 +227,7 @@ For more detailed information:
 docker-compose -f docker-compose.yml -f docker-compose.prod.yaml up -d
 
 # Then manually load data with authentication
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 See [DATA_LOADING_CI_CD.md](./DATA_LOADING_CI_CD.md) for complete production setup instructions.

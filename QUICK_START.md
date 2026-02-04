@@ -92,13 +92,13 @@ docker-compose up -d
 
 ```bash
 # Check what's loaded
-./check-data.sh
+./scripts/check-data.sh
 
 # Reload data manually
-./reload-data.sh
+./scripts/reload-data.sh
 
 # Fresh start (wipes everything)
-./fresh-start.sh
+./scripts/fresh-start.sh
 ```
 
 ---
@@ -112,7 +112,7 @@ If you want manual control over data loading:
 AUTO_LOAD_DATA=false docker-compose up -d
 
 # Then manually load data
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 Or create a `.env` file:
@@ -134,7 +134,7 @@ docker-compose logs backend | grep -i "data"
 
 Load manually:
 ```bash
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 ### "Submodule 'data' is empty"
@@ -164,7 +164,7 @@ docker-compose restart backend
 docker-compose -f docker-compose.yml -f docker-compose.prod.yaml up -d
 
 # Then manually load data with authentication
-./load-data.sh
+./scripts/load-data.sh
 ```
 
 See [DATA_LOADING_CI_CD.md](./DATA_LOADING_CI_CD.md) for complete production setup.
