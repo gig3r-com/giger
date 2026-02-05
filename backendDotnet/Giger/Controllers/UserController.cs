@@ -24,10 +24,6 @@ namespace Giger.Controllers
         [HttpGet("simple/all")]
         public async Task<ActionResult<List<UserSimple>>> GetAllSimpleUsers()
         {
-            if (!IsGodUser())
-            {
-                return Unauthorized();
-            }
             var allUsers = await _userService.GetAllPrivateUsersAsync();
             allUsers = FilterOutAllGodUsers(allUsers);
             return allUsers.Select(u => new UserSimple(u)).ToList();
