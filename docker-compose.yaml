@@ -34,14 +34,13 @@ services:
       - 8080
     volumes:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
-      - ./data/postgres/01-data.sql:/app/seed-data.sql
     environment:
       #- GigerDB__ConnectionString=mongodb://mongo:27017
       - GigerDB__Host=postgres
       - GigerDB__Port=5432
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
-      - GigerDB__DatabaseName=${GIGER_DATABASE:-admin}
+      - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - postgres
