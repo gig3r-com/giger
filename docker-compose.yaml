@@ -50,6 +50,27 @@ services:
       postgres:
         condition: service_healthy
 
+  # Data loader - runs once on startup to load initial data
+  data-loader:
+    build:
+      context: .
+      dockerfile: docker/data-loader/Dockerfile
+    restart: "no"  # Only run once, don't restart
+    environment:
+      - AUTO_LOAD_DATA=${AUTO_LOAD_DATA:-true}
+      - CLEANUP_DATABASE=${CLEANUP_DATABASE:-false}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${GIGER_DATABASE:-giger}
+      - POSTGRES_USER=${GIGER_USERNAME:-giger}
+      - POSTGRES_PASSWORD=${GIGER_PASSWORD:-giger}
+      - DATA_DIR=/data
+    volumes:
+      - ./data/mongo:/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:16
     restart: unless-stopped
