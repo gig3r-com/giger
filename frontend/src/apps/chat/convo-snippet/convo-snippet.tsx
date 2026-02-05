@@ -12,6 +12,7 @@ import { useStandardizedAnimation } from '../../../shared/services/standardizedA
 import { useUserService } from '../../../shared/services/user.service';
 import { useMessagesService } from '../../../shared/services/messages.service';
 import MemoizedFormattedMessage from 'react-intl/src/components/message';
+import { debugLog } from '../../../shared/utils/debug';
 
 import './convo-snippet.scss';
 
@@ -24,6 +25,14 @@ export const ConvoSnippet: FC<{
     const { generateAnimation } = useStandardizedAnimation();
     const { convoHasUnreadMessages } = useMessagesService();
     const { currentUser } = useUserService();
+    
+    debugLog('ConvoSnippet rendering:', {
+        convoId: convo.id,
+        participants: convo.participants,
+        messageCount: convo.messages?.length,
+        lastMessage: convo.messages[convo.messages.length - 1]
+    });
+    
     const msgToDisplayAsSnippet = convo.messages[convo.messages.length - 1];
     const isConversationExpanded = !!chatId;
     const convoSnippetClassnames = classNames({

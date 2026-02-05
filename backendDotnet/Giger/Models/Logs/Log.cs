@@ -1,6 +1,4 @@
 ﻿using Giger.Models.Networks;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -8,15 +6,13 @@ namespace Giger.Models.Logs
 {
     public class Log
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         public DateTime Timestamp { get; set; }
 
-        public required string SourceUserId { get; set; }
+        public string SourceUserId { get; set; } = string.Empty;
 
-        public required string SourceUserName { get; set; }
+        public string SourceUserName { get; set; } = string.Empty;
 
         public string? SourceHackerName { get; set; }
 
@@ -24,14 +20,18 @@ namespace Giger.Models.Logs
 
         public string? TargetUserName { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public required LogType LogType { get; set; }
+        public LogType LogType { get; set; }
 
-        public required string LogData { get; set; }
+        public string LogData { get; set; } = string.Empty;
 
-        public required string SubnetworkId { get; set; }
+        public string SubnetworkId { get; set; } = string.Empty;
 
-        public required string SubnetworkName { get; set; }
+        public string SubnetworkName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Additional hack-related data stored as key-value pairs
+        /// </summary>
+        public Dictionary<string, string>? HackData { get; set; }
 
         public Log() { }
 

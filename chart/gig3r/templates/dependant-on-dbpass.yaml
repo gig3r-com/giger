@@ -10,8 +10,8 @@ metadata:
     helm.sh/hook-weight: "-1000"
 data:
   
-  MONGO_INITDB_ROOT_USERNAME: {{ .Values.database.user | b64enc | quote }}
-  MONGO_INITDB_ROOT_PASSWORD: {{ $dbpass | b64enc | quote }}
-  MONGO_INITDB_DATABASE: {{ "admin" | b64enc | quote }}
+  POSTGRES_USER: {{ .Values.database.user | b64enc | quote }}
+  POSTGRES_PASSWORD: {{ $dbpass | b64enc | quote }}
+  POSTGRES_DB: {{ .Values.database.name | b64enc | quote }}
 
   {{- end -}}

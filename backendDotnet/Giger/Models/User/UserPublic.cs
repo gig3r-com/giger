@@ -1,37 +1,34 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.User
 {
     public class UserPublic
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string? Id { get; set; }
 
         public string? Name { get; set; }
 
-        public required string Handle { get; set; } // username
+        public string Handle { get; set; } = string.Empty; // username
 
-        [BsonRepresentation(BsonType.String)]
         public UserRoles[] Roles { get; set; } = [];
+
+        [NotMapped]
 
         public Dictionary<string, decimal> AliasMap { get; set; } = [];
 
         public bool Active { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public required UserTypes TypePublic { get; set; }
+        public UserTypes TypePublic { get; set; }
 
-        public string? FactionRankPublic { get; set; }
+        public string? FactionRankPublic { get; set; } = string.Empty;
 
-        public required string Surname { get; set; }
+        public string? Surname { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public required Vibe Vibe { get; set; }
+        public Vibe Vibe { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
-        public required WealthLevels WealthLevel { get; set; }
+        public WealthLevels WealthLevel { get; set; }
 
         public string NetworkId { get; set; }
 
@@ -45,6 +42,6 @@ namespace Giger.Models.User
 
         public bool HighSecurity { get; set; }
 
-        public string? ReputationDescription { get; set; }
+        public string? ReputationDescription { get; set; } = string.Empty;
     }
 }

@@ -8,6 +8,7 @@ import { setMessagesAsRead } from '../../../../store/messages.slice';
 import { IWebsocketContext } from '../../../providers/websocket.model';
 import { useWebSocketContext } from '../../../providers/websocket.provider';
 import { useUserService } from '../../../services/user.service';
+import { debugLog } from '../../../utils/debug';
 
 import './conversation.scss';
 
@@ -20,6 +21,13 @@ export const Conversation: FC<{ convo: IConversation; className?: string }> = ({
     const convoWrapper = useRef<HTMLDivElement>(null);
     const { lastMessage } = useWebSocketContext() as IWebsocketContext;
     const { chatId, gigId } = useParams();
+    
+    debugLog('Conversation component rendering:', {
+        convoId: convo.id,
+        participants: convo.participants,
+        messageCount: convo.messages?.length,
+        messages: convo.messages
+    });
 
     useEffect(() => {
         setTimeout(() => {

@@ -6,18 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : Controller
+    public class LoginController(UserService _userService, LoginService _loginService)
+        : Controller
     {
-        private readonly UserService _userService;  
-        private readonly LoginService _loginService;
-
-        public LoginController(UserService userService, LoginService loginService)
-        {
-            _loginService = loginService;
-            _userService = userService;
-        }
-
-// TODO: For testing purposes only, remove in production
+        // TODO: For testing purposes only, remove in production
 #if DEBUG
         [HttpGet("disableAuth")]
         public async Task<string> DisableAuth()
@@ -50,15 +42,15 @@ namespace Giger.Controllers
                 return "Wrong password";
             }
 
-            var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
-            {
-                if (userLoginData.AuthToken != null)
-                {
-                    Response.StatusCode = StatusCodes.Status200OK;
-                    return userLoginData.AuthToken;
-                }
-            }
+            //var user = await _userService.GetByUserNameAsync(userName);
+            //if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
+            //{
+            //    if (userLoginData.AuthToken != null)
+            //    {
+            //        Response.StatusCode = StatusCodes.Status200OK;
+            //        return userLoginData.AuthToken;
+            //    }
+            //}
 
             var newAuthToken = Guid.NewGuid().ToString();
             while (_loginService.GetByAuthTokenAsync(newAuthToken).Result != null)
@@ -165,6 +157,36 @@ namespace Giger.Controllers
             await _loginService.UpdateAsync(userLoginData);
             Response.StatusCode = StatusCodes.Status200OK;
             return "Password changed.";
+        }
+
+        [AllowAnonymous]
+        [HttpGet("validateToken")]
+        public async Task<IActionResult> ValidateToken([FromQuery] string authToken)
+        {
+            if (string.IsNullOrEmpty(authToken))
+            {
+                return BadRequest(new { valid = false, message = "Token is required" });
+            }
+
+            var auth = await _loginService.GetByAuthTokenAsync(authToken);
+            if (auth == null)
+            {
+                return Ok(new { valid = false, message = "Invalid token" });
+            }
+
+            // Token is valid, return user info
+            var user = await _userService.GetByUserNameAsync(auth.Username);
+            if (user == null)
+            {
+                return Ok(new { valid = false, message = "User not found" });
+            }
+
+            return Ok(new 
+            { 
+                valid = true, 
+                username = auth.Username,
+                userId = user.Id
+            });
         }
     }
 }

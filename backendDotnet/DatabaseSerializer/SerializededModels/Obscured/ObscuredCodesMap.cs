@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace Giger.SerializededModels.Obscured
+﻿namespace Giger.SerializededModels.Obscured
 {
     public class ObscuredCodesMap
     {

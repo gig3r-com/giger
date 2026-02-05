@@ -1,39 +1,49 @@
-﻿using Giger.Models;
-using Giger.Models.User;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class AnonymizedService : AbstractService
+    public class AnonymizedService : IGigerService
     {
-        private readonly IMongoCollection<AnonymizedUser> _anonymizedCollection;
+        private readonly GigerDbContext _dbContext;
 
-        public AnonymizedService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public AnonymizedService(GigerDbContext dbContext)
         {
-            _anonymizedCollection = _mongoDatabase.GetCollection<AnonymizedUser>(
-                gigerDatabaseSettings.Value.AnonymizedCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<AnonymizedUser>> GetAllAsync() =>
-            await _anonymizedCollection.Find(_ => true).ToListAsync();
+            await _dbContext.AnonymizedUsers.ToListAsync();
 
         public async Task<List<AnonymizedUser>> GetAllOfSameUserAsync(string userId) =>
-            await _anonymizedCollection.Find(x => x.UserId == userId).ToListAsync();
+            await _dbContext.AnonymizedUsers.Where(x => x.UserId == userId).ToListAsync();
 
-        public async Task<AnonymizedUser> GetByAnonymizedNameIdAsync(string displayedAs) =>
-            await _anonymizedCollection.Find(x => x.DisplyedAs == displayedAs).FirstOrDefaultAsync();
+        public async Task<AnonymizedUser?> GetByAnonymizedNameIdAsync(string displayedAs) =>
+            await _dbContext.AnonymizedUsers.FirstOrDefaultAsync(x => x.DisplyedAs == displayedAs);
 
-        public async Task<AnonymizedUser> GetByIdAsync(string id) =>
-            await _anonymizedCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<AnonymizedUser?> GetByIdAsync(string id) =>
+            await _dbContext.AnonymizedUsers.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task CreateAsync(AnonymizedUser newAnonymizedUser) =>
-            await _anonymizedCollection.InsertOneAsync(newAnonymizedUser);
+        public async Task CreateAsync(AnonymizedUser newAnonymizedUser)
+        {
+            _dbContext.AnonymizedUsers.Add(newAnonymizedUser);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(AnonymizedUser newAnonymizedUser) =>
-            await _anonymizedCollection.ReplaceOneAsync(x => x.Id == newAnonymizedUser.Id, newAnonymizedUser);
+        public async Task UpdateAsync(AnonymizedUser newAnonymizedUser)
+        {
+            _dbContext.AnonymizedUsers.Update(newAnonymizedUser);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _anonymizedCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var anonymizedUser = await GetByIdAsync(id);
+            if (anonymizedUser != null)
+            {
+                _dbContext.AnonymizedUsers.Remove(anonymizedUser);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

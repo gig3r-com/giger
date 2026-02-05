@@ -1,20 +1,31 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Giger.Data;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.MessageModels
 {
     public class Conversation
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Optional title for the conversation
+        /// </summary>
+        public string? Title { get; set; }
 
         public List<Message> Messages { get; set; } = [];
 
+        [JsonConverter(typeof(FlexibleStringListConverter))]
         public List<string> Participants { get; set; } = []; // UserNames
 
+        [JsonConverter(typeof(FlexibleStringListConverter))]
         public List<string> AnonymizedUsers { get; set; } = []; // UserNames
 
-        public required bool GigConversation { get; set; }
+        /// <summary>
+        /// List of hacker handles who have access to this conversation
+        /// </summary>
+        public List<string> Hackers { get; set; } = [];
+
+        public bool GigConversation { get; set; }
 
         public override int GetHashCode()
         {

@@ -1,13 +1,11 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.BankingModels
 {
     public class Transaction
     {
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         public string? From { get; set; } // AccountNumber
 
@@ -17,15 +15,19 @@ namespace Giger.Models.BankingModels
 
         public string? ToUser { get; set; } // Handle / Anonymized
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        [BsonIgnore]
         private decimal _amount;
-        public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
+        public decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
         public DateTime? Timestamp { get; set; }
 
         public string? OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
+
+        /// <summary>
+        /// Optional hack data associated with this transaction
+        /// </summary>
+        public string? HackData { get; set; }
 
         public Transaction() { }
 

@@ -11,15 +11,26 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserService userService, LoginService loginService, AccountService accountService,
-        LogService logService, NetworksService networksService, NotificationsSocketHandler notificationsHandler)
-        : AuthController(userService, loginService)
+    public class AccountController(
+        UserService _userService, LoginService _loginService, AccountService _accountService,        LogService _logService, NetworksService _networksService, 
+        NotificationsSocketHandler _notificationsHandler)
+        : AuthController(_userService, _loginService)
+        //: AuthController//(serviceProvider)
     {
-        private readonly AccountService _accountService = accountService;
-        private readonly LogService _logService = logService;
-        private readonly NetworksService _networksService = networksService;
-
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+        //public AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService,
+        //NotificationsSocketHandler notificationsHandler) : base(userService, loginService)
+        //{
+        //    _accountService = accountService;
+        //    _logService = logService;
+        //    _networksService = networksService;
+        //    _notificationsHandler = notificationsHandler;
+        //}
+        //
+        //private readonly AccountService _accountService;// = (AccountService)ScopedServiceProvider.CreateScopedGigerService<AccountService>(serviceProvider);
+        //private readonly LogService _logService;// = (LogService)ScopedServiceProvider.CreateScopedGigerService<LogService>(serviceProvider);
+        //private readonly NetworksService _networksService;// = (NetworksService)ScopedServiceProvider.CreateScopedGigerService<NetworksService>(serviceProvider);
+        //
+        //private readonly NotificationsSocketHandler _notificationsHandler;// = notificationsHandler;
 
         //TODO put it into config
         private readonly Dictionary<WealthLevels, decimal> _transferLimits = new()
@@ -78,7 +89,7 @@ namespace Giger.Controllers
             {
                 Unauthorized();
             }
-            var account = await _accountService.GetByAccountNameAsync(owner);
+            var account = await _accountService.GetByAccountNameWithTransactionsAsync(owner);
             if (account is null)
             {
                 return NotFound();
@@ -89,7 +100,7 @@ namespace Giger.Controllers
             var user = await _userService.GetByUserNameAsync(owner);
             if (user is not null)
             {
-                var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
+                var businessAccount = await _accountService.GetByAccountNameWithTransactionsAsync(user.Faction.ToString());
                 if (businessAccount is not null)
                 {
                     retValue.Add(businessAccount);
@@ -289,6 +300,7 @@ namespace Giger.Controllers
             //}
 
             var clone = new Transaction(newTransaction);
+            clone.Id = Guid.NewGuid().ToString(); // Generate new ID for clone to avoid duplicate key tracking
             receiverAcc.Transactions.Add(clone);
             receiverAcc.Balance += clone.Amount;
             await _accountService.UpdateAsync(receiverAcc);
@@ -299,7 +311,8 @@ namespace Giger.Controllers
 
             
             NotifyTransaction(receiverAcc, clone);
-            LogTransaction(clone, giverAcc, receiverAcc);
+            // Fire and forget logging - don't block response
+            _ = LogTransaction(clone, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
@@ -359,19 +372,19 @@ namespace Giger.Controllers
             }
         }
 
-        private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
+        private async Task LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {
             var giverUser = await _userService.GetByUserNameAsync(senderAccount.Owner);
             var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
-            Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
+            await Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
           
             if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
             {
-                Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
+                await Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
             }
 
-            void Log(string subnetworkId, string subnetworkName)
+            async Task Log(string subnetworkId, string subnetworkName)
             {
                 var log = new Log
                 {
@@ -387,7 +400,7 @@ namespace Giger.Controllers
                     SubnetworkName = subnetworkName
                 };
 
-                _logService.CreateAsync(log);
+                await _logService.CreateAsync(log);
             }
         }
 

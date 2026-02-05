@@ -1,18 +1,17 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models.Auths
 {
     public class Auth
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        [JsonPropertyName("_id")]
+        public string Id { get; set; } = string.Empty;
 
-        public required string Username { get; set; } // UserPublic.Handle
+        public string Username { get; set; } = string.Empty; // UserPublic.Handle
 
         public string? HackerName { get; set; } // UserPrivate.HackerName
 
-        public required string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         
         public string? AuthToken { get; set; }
     }

@@ -1,11 +1,23 @@
 ﻿using Giger.Models.BankingModels;
-using Giger.Models.MessageModels;
 using Giger.Models.GigModels;
+using Giger.Models.MessageModels;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.Hashes
 {
+    [Keyless]
     public class UpdateHashes
     {
+        public UpdateHashes() 
+        {
+            PrivateAccountTransactionsHashes = new Dictionary<string, int>();
+            BusinessAccountTransactionsHashes = new Dictionary<string, int>();
+            CoversationHashes = new Dictionary<string, int>();
+            GigConversationHashes = new Dictionary<string, int>();
+            GigStatusHashes = new Dictionary<string, int>();
+        }
+
         public UpdateHashes(Account privateAccount, Account businessAccount,
             List<Conversation> userConversations, List<Conversation> gigConversationHashes, List<Gig> gigStatusHashes)
         {
@@ -16,11 +28,15 @@ namespace Giger.Models.Hashes
             GigStatusHashes = CalculateGigStatuses(gigStatusHashes);
         }
 
-        
+        [NotMapped]
         public Dictionary<string, int> PrivateAccountTransactionsHashes { get; set; }
+        [NotMapped]
         public Dictionary<string, int> BusinessAccountTransactionsHashes { get; set; }
+        [NotMapped]
         public Dictionary<string, int> CoversationHashes { get; set; }
+        [NotMapped]
         public Dictionary<string, int> GigConversationHashes { get; set; }
+        [NotMapped]
         public Dictionary<string, int> GigStatusHashes { get; set; }
 
         private Dictionary<string, int> CalculateTransactionsHashes(List<Transaction> transactions)

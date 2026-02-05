@@ -25,9 +25,9 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- $len := 24 | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
 {{- if $obj }}
-{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" | b64dec -}}
+{{- index $obj "POSTGRES_PASSWORD" | b64dec -}}
 {{- else -}}
-{{- randAlphaNum $len | b64enc -}}
+{{- default "giger" .Values.database.password -}}
 {{- end -}}
 {{- end }}
 
@@ -48,14 +48,10 @@ false
   {{- end -}}
 {{- end -}}
 
-{{- define "gig3r.mongodb.app" -}}
-gig3r-{{ default "app" .Values.environment }}-mongodb
+{{- define "gig3r.postgres.app" -}}
+gig3r-{{ default "app" .Values.environment }}-postgres
 {{- end }}
 
-{{- define "gig3r.mongodb.image" -}}
+{{- define "gig3r.postgres.image" -}}
 {{ .Values.database.image | default "ghcr.io/gig3r-com/gig3r-mongo" }}:{{ default "latest" .Values.database.tag }}
-{{- end }}
-
-{{- define "gig3r.mongo-express.app" -}}
-gig3r-{{ default "app" .Values.environment }}-mongo-express
 {{- end }}

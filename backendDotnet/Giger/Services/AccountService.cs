@@ -1,48 +1,63 @@
-﻿using Giger.Models;
-using Giger.Models.BankingModels;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.BankingModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class AccountService : AbstractService
-    { 
-        private readonly IMongoCollection<Account> _accountsCollection;
+    public class AccountService : IGigerService
+    {
+        private readonly GigerDbContext _dbContext;
 
-        public AccountService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public AccountService(GigerDbContext dbContext)
         {
-            _accountsCollection = _mongoDatabase.GetCollection<Account>(
-                gigerDatabaseSettings.Value.AccountsCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<Account>> GetAllAsync() =>
-            await _accountsCollection.Find(_ => true).ToListAsync();
+            await _dbContext.Accounts.ToListAsync();
 
         public async Task<List<Account>> GetAllActiveAsync() =>
-            await _accountsCollection.Find(x => x.IsActive).ToListAsync();
+            await _dbContext.Accounts.Where(x => x.IsActive).ToListAsync();
 
         public async Task<Account?> GetSystemAccountAsync() =>
-            await _accountsCollection.Find(x => x.Owner == "SYSTEM").FirstOrDefaultAsync();
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner == "SYSTEM");
 
         public async Task<Account?> GetByIdAsync(string id) =>
-            await _accountsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<Account?> GetByAccountNameAsync(string owner) =>
-            await _accountsCollection.Find(x => x.Owner.Equals(owner, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner.ToLower() == owner.ToLower());
+
+        public async Task<Account?> GetByAccountNameWithTransactionsAsync(string owner) =>
+            await _dbContext.Accounts
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(x => x.Owner.ToLower() == owner.ToLower());
 
         public async Task<Account?> GetByUserIdAsync(string ownerId) =>
-            await _accountsCollection.Find(x => x.OwnerId == ownerId).FirstOrDefaultAsync();
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.OwnerId == ownerId);
 
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
-            await _accountsCollection.Find(x => x.AccountNumber == accountNumber).FirstOrDefaultAsync();
+            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
 
-        public async Task CreateAsync(Account newAccount) =>
-            await _accountsCollection.InsertOneAsync(newAccount);
+        public async Task CreateAsync(Account newAccount)
+        {
+            _dbContext.Accounts.Add(newAccount);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Account updatedAccount) =>
-            await _accountsCollection.ReplaceOneAsync(x => x.Id == updatedAccount.Id, updatedAccount);
+        public async Task UpdateAsync(Account updatedAccount)
+        {
+            _dbContext.Accounts.Update(updatedAccount);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _accountsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var account = await GetByIdAsync(id);
+            if (account != null)
+            {
+                _dbContext.Accounts.Remove(account);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

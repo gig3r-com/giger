@@ -23,6 +23,8 @@ spec:
         ports:
         - containerPort: 8080
           protocol: TCP
+      imagePullSecrets:
+      - name: regcred
       restartPolicy: Always
 
 ---
@@ -54,85 +56,34 @@ spec:
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "1"
         - name: GigerDB__Host
-          value: {{ include "gig3r.mongodb.app" . }}
+          value: {{ include "gig3r.postgres.app" . }}
         - name: GigerDB__Port
-          value: "27017"
+          value: "5432"
         - name: GigerDB__Username
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
+              key: POSTGRES_USER
         - name: GigerDB__Password
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
+              key: POSTGRES_PASSWORD
         - name: GigerDB__DatabaseName
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
+              key: POSTGRES_DB
+        - name: ConnectionStrings__DefaultConnection
+          value: "Host=$(GigerDB__Host);Port=$(GigerDB__Port);Database=$(GigerDB__DatabaseName);Username=$(GigerDB__Username);Password=$(GigerDB__Password);"
         - name: ASPNETCORE_ENVIRONMENT
           value: {{ include "gig3r.backend.environment" .}}
       volumes:
       - name: config
         secret:
           secretName: gig3r-secret
+      imagePullSecrets:
+      - name: regcred
       restartPolicy: Always
 
 ---
-
-# mongoexpress deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "gig3r.mongo-express.app" . }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: {{ include "gig3r.mongo-express.app" . }}
-  template:
-    metadata:
-      labels:
-        app: {{ include "gig3r.mongo-express.app" . }}
-        randstr: {{ randAlphaNum 20 }}
-    spec:
-      containers:
-      - image: mongo-express:latest
-        name: {{ include "gig3r.mongo-express.app" . }}
-        ports:
-        - containerPort: 8081
-          protocol: TCP
-        env:
-        - name: ME_CONFIG_MONGODB_SERVER
-          value: {{ include "gig3r.mongodb.app" . }}
-        - name: ME_CONFIG_MONGODB_AUTH_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
-        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
-        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
-        - name: ME_CONFIG_MONGODB_URL
-          value: mongodb://$(ME_CONFIG_MONGODB_ADMINUSERNAME):$(ME_CONFIG_MONGODB_ADMINPASSWORD)@$(ME_CONFIG_MONGODB_SERVER):27017
-        - name: ME_CONFIG_BASICAUTH_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-express-secret
-              key: ME_CONFIG_BASICAUTH_USERNAME
-        - name: ME_CONFIG_BASICAUTH_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-express-secret
-              key: ME_CONFIG_BASICAUTH_PASSWORD
-      restartPolicy: Always
-

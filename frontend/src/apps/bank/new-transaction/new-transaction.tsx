@@ -20,21 +20,25 @@ export const NewTransaction: FC = () => {
     const [selectedAccount, setSelectedAccount] = useState<AccountType>(
         (state?.defaultAccountType as AccountType) ?? AccountType.PRIVATE
     );
-    const { accounts, sendTransfer, fetchAccounts } = useBankingService();
+    const { accounts, sendTransfer } = useBankingService();
 
     const onTransfer = async () => {
         if (!selectedHandle || !selectedHandle.length) return;
 
         setLockButton(true);
-        await sendTransfer(
-            selectedHandle[0],
-            amount,
-            transferTitle,
-            selectedAccount
-        );
-        fetchAccounts();
-        setLockButton(false);
-        navigate('/bank');
+        try {
+            await sendTransfer(
+                selectedHandle[0],
+                amount,
+                transferTitle,
+                selectedAccount
+            );
+            navigate('/bank');
+        } catch (error) {
+            console.error('Transfer failed:', error);
+        } finally {
+            setLockButton(false);
+        }
     };
 
     const onAmountChanged = (val: string): void => {

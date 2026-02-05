@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 5, "column": 0}, "map": {"version":3,"sources":["file:///Users/zefir/projects/giger/epsilon/src/app/page.tsx"],"sourcesContent":["'use client'\nimport { redirect } from \"next/navigation\"\n\nexport default function Page() {\n  redirect(\"/dashboard\");\n}\n"],"names":[],"mappings":";;;AACA;AADA;;AAGe,SAAS;IACtB,CAAA,GAAA,kIAAA,CAAA,WAAQ,AAAD,EAAE;AACX","debugId":null}}]
+}

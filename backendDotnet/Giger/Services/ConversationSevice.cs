@@ -1,42 +1,100 @@
-﻿using Giger.Models;
-using Giger.Models.MessageModels;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.MessageModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class ConversationService : AbstractService
-    { 
-        private readonly IMongoCollection<Conversation> _conversationsCollection;
+    public class ConversationService : IGigerService
+    {
+        private readonly GigerDbContext _dbContext;
 
-        public ConversationService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public ConversationService(GigerDbContext dbContext)
         {
-            _conversationsCollection = _mongoDatabase.GetCollection<Conversation>(
-                gigerDatabaseSettings.Value.ConversationsCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<Conversation>> GetAllAsync() =>
-            await _conversationsCollection.Find(_ => true).ToListAsync();
+            await _dbContext.Conversations.ToListAsync();
 
-        public async Task<Conversation?> GetAsync(string id) =>
-            await _conversationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Conversation?> GetAsync(string id)
+        {
+            var conversation = await _dbContext.Conversations
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (conversation != null && conversation.Messages != null)
+            {
+                conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+            }
+            
+            return conversation;
+        }
 
-        public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
-            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && !x.GigConversation).ToListAsync();
+        public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant)
+        {
+            var conversations = await _dbContext.Conversations
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Contains(participant) && !x.GigConversation)
+                .ToListAsync();
+            
+            foreach (var conversation in conversations)
+            {
+                if (conversation.Messages != null)
+                {
+                    conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+                }
+            }
+            
+            return conversations;
+        }
 
-        public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
-            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && x.GigConversation).ToListAsync();
+        public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant)
+        {
+            var conversations = await _dbContext.Conversations
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Contains(participant) && x.GigConversation)
+                .ToListAsync();
+            
+            foreach (var conversation in conversations)
+            {
+                if (conversation.Messages != null)
+                {
+                    conversation.Messages = conversation.Messages.OrderBy(m => m.Date).ToList();
+                }
+            }
+            
+            return conversations;
+        }
 
-        public async Task CreateAsync(Conversation newConversation) =>
-            await _conversationsCollection.InsertOneAsync(newConversation);
+        public async Task CreateAsync(Conversation newConversation)
+        {
+            _dbContext.Conversations.Add(newConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation);
+        public async Task UpdateAsync(Conversation updatedConversation)
+        {
+            _dbContext.Conversations.Update(updatedConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpsertAsync(Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpsertAsync(Conversation updatedConversation)
+        {
+            var existing = await GetAsync(updatedConversation.Id);
+            if (existing == null)
+                _dbContext.Conversations.Add(updatedConversation);
+            else
+                _dbContext.Conversations.Update(updatedConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _conversationsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var conversation = await GetAsync(id);
+            if (conversation != null)
+            {
+                _dbContext.Conversations.Remove(conversation);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

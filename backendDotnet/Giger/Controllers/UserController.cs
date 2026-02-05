@@ -8,9 +8,9 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public partial class UserController(UserService userService, LoginService loginService) : AuthController(userService, loginService)
+    public partial class UserController(UserService userService, LoginService loginService) 
+        : AuthController(userService, loginService)
     {
-
         [HttpGet("all")]
         public async Task<List<string>> GetAllUserNames()
         {
@@ -24,10 +24,6 @@ namespace Giger.Controllers
         [HttpGet("simple/all")]
         public async Task<ActionResult<List<UserSimple>>> GetAllSimpleUsers()
         {
-            if (!IsGodUser())
-            {
-                return Unauthorized();
-            }
             var allUsers = await _userService.GetAllPrivateUsersAsync();
             allUsers = FilterOutAllGodUsers(allUsers);
             return allUsers.Select(u => new UserSimple(u)).ToList();
@@ -64,7 +60,9 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(user.Id))
+            // Allow users to access their own hashes
+            var senderUser = await GetSenderUser();
+            if (senderUser == null || (user.Id != senderUser.Id && !IsAuthorized(user.Id)))
             {
                 return Unauthorized();
             }
@@ -215,7 +213,7 @@ namespace Giger.Controllers
 
         #region PublicUser
         [HttpGet("public/all")]
-        public async Task<List<UserPublic>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserPublic>().ToList());
+        public async Task<List<UserPublic>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<UserPublic>().OrderBy(u => string.IsNullOrWhiteSpace(u.Name) ? u.Handle : u.Name, StringComparer.OrdinalIgnoreCase).ToList());
 
         [HttpGet("public/byId")]
         public async Task<ActionResult<UserPublic>> GetPublicById(string id)

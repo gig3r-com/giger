@@ -5,13 +5,23 @@ using Giger.Models;
 using Giger.Controllers;
 using System.Net;
 using Giger.Services.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Giger.Services;
+using Giger.Data;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.Converters.Add(new FlexibleBooleanConverter());
+        options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(config =>
@@ -21,6 +31,8 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
 builder.Services.AddMvc().AddControllersAsServices();
+
+builder.Services.AddDbContext<GigerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();
@@ -35,6 +47,53 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Configure AuthEnabled from appsettings
+#if DEBUG
+var authEnabled = builder.Configuration.GetValue<bool>("Auth:Enabled", true);
+AuthController.AuthEnabled = authEnabled;
+app.Logger.LogInformation($"Auth enabled: {authEnabled}");
+#endif
+
+// Apply migrations automatically on startup with retry logic
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<GigerDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    var maxRetries = 15;
+    var delay = TimeSpan.FromSeconds(5);
+    
+    for (int i = 0; i < maxRetries; i++)
+    {
+        try
+        {
+            logger.LogInformation($"Attempting to connect to database (attempt {i + 1}/{maxRetries})...");
+            
+            // Use EnsureCreated to create database schema automatically
+            // This creates all tables based on the DbContext model
+            dbContext.Database.EnsureCreated();
+            logger.LogInformation("Database schema created successfully.");
+            
+            // Skip automatic seeding - data will be loaded via API
+            logger.LogInformation("Automatic data seeding disabled.");
+            logger.LogInformation("To load data: Run './load-data.sh' script after startup.");
+            logger.LogInformation("This ensures proper data quality handling and deduplication.");
+            
+            break; // Success, exit retry loop
+        }
+        catch (Exception ex) when (i < maxRetries - 1)
+        {
+            logger.LogWarning(ex, $"Failed to connect to database. Retrying in {delay.TotalSeconds} seconds...");
+            Thread.Sleep(delay);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while creating the database after all retries.");
+            throw;
+        }
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

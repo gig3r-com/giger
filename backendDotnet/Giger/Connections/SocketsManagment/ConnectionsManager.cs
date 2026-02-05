@@ -1,4 +1,5 @@
 ﻿using Giger.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 
@@ -7,11 +8,11 @@ namespace Giger.Connections.SocketsManagment
     public class ConnectionsManager
     {
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
-        private LoginService _auths{ get; }
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public ConnectionsManager(LoginService loginService)
+        public ConnectionsManager(IServiceScopeFactory scopeFactory)
         {
-            _auths = loginService;
+            _scopeFactory = scopeFactory;
         }
 
         public WebSocket GetSocketByUser(string username)
@@ -29,16 +30,26 @@ namespace Giger.Connections.SocketsManagment
             return _connections.FirstOrDefault(conn => conn.Value == socket).Key;
         }
 
-        public async void AddSocket(WebSocket socket, string authToken)
+        public async Task AddSocket(WebSocket socket, string authToken)
         {
-            var auth =  await _auths.GetByAuthTokenAsync(authToken);
+            DebugLogger.Log($"[ConnectionsManager] AddSocket called with authToken: {authToken?.Substring(0, 8)}...");
+            using var scope = _scopeFactory.CreateScope();
+            var loginService = scope.ServiceProvider.GetRequiredService<LoginService>();
+            var auth = await loginService.GetByAuthTokenAsync(authToken);
             if (auth != null)
             {
+                DebugLogger.Log($"[ConnectionsManager] Found auth for username: {auth.Username}");
                 if (_connections.ContainsKey(auth.Username))
                 {
+                    DebugLogger.Log($"[ConnectionsManager] Removing existing connection for {auth.Username}");
                     await RemoveConnectionAsync(auth.Username);
                 }
                 _connections.TryAdd(auth.Username, socket);
+                DebugLogger.Log($"[ConnectionsManager] Added socket for {auth.Username}. Total connections: {_connections.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"[ConnectionsManager] ERROR: No auth found for token");
             }
         }   
 

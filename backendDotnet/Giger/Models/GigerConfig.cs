@@ -1,12 +1,10 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models
 {
     public class GigerConfig
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         public int MaxGigsPerUser { get; set; }
 

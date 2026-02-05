@@ -1,30 +1,35 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using Giger.Models.Logs;
 using System.Text.Json.Serialization;
 
 namespace Giger.Models.Networks
 {
     public class Subnetwork
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public required string NetworkId { get; set; }
+        public string NetworkId { get; set; } = string.Empty;
 
-        public required string[] Users { get; set; } = [];
+        public string[] Users { get; set; } = [];
 
-        [BsonRepresentation(BsonType.String)]
         public Firewall? Firewall { get; set; }
         
-        [BsonRepresentation(BsonType.String)]
         public OperatingSystem? OperatingSystem { get; set; }
 
         public string[] Ice { get; set; } = [];
 
+        /// <summary>
+        /// Optional access point identifier for this subnetwork
+        /// </summary>
+        public string? AccessPoint { get; set; }
+
         public string[] PastHacks { get; set; } = [];
+
+        /// <summary>
+        /// Collection of logs associated with this subnetwork
+        /// </summary>
+        public List<Log>? Logs { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]

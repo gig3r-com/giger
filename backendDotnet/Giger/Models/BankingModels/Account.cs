@@ -1,28 +1,46 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models.BankingModels
 {
     public class Account
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string Owner { get; set; }
+        /// <summary>
+        /// List of user handles who own this account
+        /// </summary>
+        public List<string> Owners { get; set; } = [];
 
-        public required string OwnerId { get; set; }
+        /// <summary>
+        /// Legacy single owner field - kept for backwards compatibility
+        /// </summary>
+        public string Owner
+        {
+            get => Owners.FirstOrDefault() ?? string.Empty;
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && !Owners.Contains(value))
+                {
+                    Owners.Add(value);
+                }
+            }
+        }
+
+        [JsonPropertyName("OwnerId")]
+        public string? OwnerId { get; set; }
+
+        /// <summary>
+        /// Optional name for business accounts
+        /// </summary>
+        public string? Name { get; set; }
 
         public List<Transaction> Transactions { get; set; } = [];
         
-        [BsonRepresentation(BsonType.String)]
-        public required AccountType Type { get; set; }
+        public AccountType Type { get; set; }
 
-        [BsonRepresentation(BsonType.Decimal128)]
-        public required decimal Balance { get; set; }
+        public decimal Balance { get; set; }
         
-        public required string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
 
         public bool IsActive { get; set; }
 

@@ -11,6 +11,7 @@ import { ConvoSnippet } from './convo-snippet/convo-snippet';
 import { StartNewConvo } from './start-new/start-new-convo';
 import { BigButton } from '../../shared/components/big-button/big-button';
 import { useUserService } from '../../shared/services/user.service';
+import { debugLog } from '../../shared/utils/debug';
 
 import './chat.scss';
 import dayjs from 'dayjs';
@@ -25,6 +26,12 @@ export const Chat: FC = () => {
     const conversations = useSelector(
         (state: RootState) => state.conversations.conversations
     );
+    
+    debugLog('Chat component:', {
+        conversationsCount: conversations.length,
+        chatId,
+        currentUser: currentUser?.handle
+    });
 
     const sortedConvos = useMemo(() => {
         return [...conversations].sort((a, b) => {

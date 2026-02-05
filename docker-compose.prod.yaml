@@ -1,0 +1,10 @@
+# Production Docker Compose Configuration
+
+services:
+  backend:
+    environment:
+      # Production environment
+      - ASPNETCORE_ENVIRONMENT=Production
+      
+      # Disable debug logging
+      - GIGER_DEBUG_LOGGING=false

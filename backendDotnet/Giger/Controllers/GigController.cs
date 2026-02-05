@@ -2,31 +2,33 @@
 using Giger.Models.GigModels;
 using Giger.Models.User;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Giger.Models.BankingModels;
 using Giger.Models.MessageModels;
-using System.ComponentModel;
 using Giger.Connections.Handlers;
-using Microsoft.VisualBasic;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GigController(GigService gigService, UserService userService, LoginService loginService,
-        AnonymizedService anonymizedService, AccountService accountService, ConversationService conversationService,
-        GigerConfigService gigerConfigService, AccountController accountController, NotificationsSocketHandler notificationsHandler)
+    public class GigController(UserService userService, LoginService loginService,
+        GigService _gigService,
+        AnonymizedService _anonymizedService,
+        AccountService _accountService,
+        ConversationService _conversationService,
+        GigerConfigService _gigerConfigService,
+        AccountController _accountController, 
+        NotificationsSocketHandler _notificationsHandler)
         : AuthController(userService, loginService)
     {
-        private readonly AccountService _accountService = accountService;
-        private readonly ConversationService _conversationService = conversationService;
-        private readonly GigerConfigService _gigerConfigService = gigerConfigService;
-        private readonly AnonymizedService _anonymizedService = anonymizedService;
-        private readonly GigService _gigService = gigService;
-
-        private readonly AccountController _accountController = accountController;
-
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+       //private readonly AccountService _accountService = accountService;
+       //private readonly ConversationService _conversationService = conversationService;
+       //private readonly GigerConfigService _gigerConfigService = gigerConfigService;
+       //private readonly AnonymizedService _anonymizedService = anonymizedService;
+       //private readonly GigService _gigService = gigService;
+       //
+       //private readonly AccountController _accountController = accountController;
+       //
+       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
         #region Endpoints
 

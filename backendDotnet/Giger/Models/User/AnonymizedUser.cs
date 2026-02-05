@@ -1,15 +1,13 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models.User
 {
     public class AnonymizedUser
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string UserId {  get; set; }
+        public string UserId { get; set; } = string.Empty;
 
-        public required string DisplyedAs { get; set; }
+        public string DisplyedAs { get; set; } = string.Empty;
     }
 }

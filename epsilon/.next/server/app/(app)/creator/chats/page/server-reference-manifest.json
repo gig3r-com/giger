@@ -1,0 +1,16 @@
+{
+  "node": {
+    "401f8e4d88a5c05dc9e4682473926bea2878131c50": {
+      "workers": {
+        "app/(app)/creator/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/creator/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/actions/auth.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(app)/creator/chats/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}

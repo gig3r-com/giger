@@ -1,16 +1,14 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Giger.Models.Obscured
 {
     public class ObscuredCodesMap
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required string ObscurableId { get; set; }
+        public string ObscurableId { get; set; } = string.Empty;
 
-        public required string ExpectedRevealCode { get; set; }
+        public string? ExpectedRevealCode { get; set; }
 
         public string? Username { get; set; }
 

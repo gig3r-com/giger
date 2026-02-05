@@ -21,6 +21,7 @@ import {
 import dayjs from 'dayjs';
 import { useWebSocketContext } from '../providers/websocket.provider';
 import { IWebsocketContext } from '../providers/websocket.model';
+import { debugLog } from '../utils/debug';
 
 /**
  *  Service for sending messages. Relies on AuthorizationService to get the current user.
@@ -66,15 +67,22 @@ export function useMessagesService() {
                 messages: [...createInitialMessages(participants, anonymize)]
             };
 
+            debugLog('[CreateConvo] Creating conversation with:', JSON.stringify(convo, null, 2));
+
             api.url('Conversation')
                 .post(convo)
                 .json<IConversation>()
-                .catch(() => reject())
+                .catch((error) => {
+                    debugLog('[CreateConvo] POST failed:', error);
+                    reject(error);
+                })
                 .then((conversation) => {
                     if (!conversation) {
+                        debugLog('[CreateConvo] No conversation returned');
                         reject();
                         return;
                     }
+                    debugLog('[CreateConvo] POST succeeded, adding to Redux:', conversation.id);
                     dispatch(addConversation(conversation));
                     resolve(conversation.id);
                 });
@@ -140,9 +148,20 @@ export function useMessagesService() {
     ) => void = (messageText, convoId, isGigConversation = false) => {
         if (messageText.trim() === '') {
             console.error('Message text cannot be empty');
+            return;
         }
 
         const message = createMessage(messageText);
+        
+        debugLog('Sending message:', {
+            convoId,
+            messageId: message.id,
+            text: message.text,
+            date: message.date,
+            sender: message.sender
+        });
+        
+        debugLog('sendMessage function:', typeof sendMessage, sendMessage);
 
         sendMessage({
             ConversationId: convoId,
@@ -154,6 +173,8 @@ export function useMessagesService() {
             },
             IsGigConveration: isGigConversation
         });
+        
+        debugLog('sendMessage called');
     };
 
     const isMessageUnread = (convoId: string, messageId: string): boolean => {

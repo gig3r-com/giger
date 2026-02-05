@@ -4,10 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    public abstract class AuthController(UserService userService, LoginService loginService) : Controller
+    public abstract class AuthController//(IServiceProvider serviceProvider
+        //(UserService _userService, LoginService _loginService)
+        //)
+        : Controller
     {
-        protected readonly LoginService _loginService = loginService;
-        protected readonly UserService _userService = userService;
+        public AuthController(UserService userService, LoginService loginService)// : this(null)
+        {
+            _loginService = loginService;
+            _userService = userService;
+        }
+        protected LoginService _loginService;//=> ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider) as LoginService;
+        protected UserService _userService;// => ScopedServiceProvider.CreateScopedGigerService<UserService>(serviceProvider) as UserService;
 
 #if DEBUG
         public static bool AuthEnabled { get; set; } = false;
@@ -151,6 +159,11 @@ namespace Giger.Controllers
 
         protected bool IsGodUser()
         {
+#if DEBUG
+            if (!AuthEnabled)
+                return true;
+#endif
+
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
                 return false;

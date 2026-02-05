@@ -242,25 +242,36 @@ export const eventsSlice = createSlice({
             state,
             action: PayloadAction<{ type: RecordHashTypes; hash: number }>
         ) => {
-            state.hashes[action.payload.type].lastSeen = action.payload.hash;
+            if (state.hashes[action.payload.type]) {
+                state.hashes[action.payload.type].lastSeen = action.payload.hash;
+            }
         },
         setCurrentHash: (
             state,
             action: PayloadAction<{ type: RecordHashTypes; hash: number }>
         ) => {
-            state.hashes[action.payload.type].current = action.payload.hash;
+            if (!state.hashes[action.payload.type]) {
+                state.hashes[action.payload.type] = { current: action.payload.hash, lastSeen: 0 };
+            } else {
+                state.hashes[action.payload.type].current = action.payload.hash;
+            }
         },
         setAllHashes: (
             state,
             action: PayloadAction<Record<RecordHashTypes, number>>
         ) => {
             Object.entries(action.payload).forEach(([hashType, hash]) => {
-                const lastSeen =
-                    state.hashes[hashType as RecordHashTypes].lastSeen;
-                state.hashes[hashType as RecordHashTypes].current = hash;
-
-                if (lastSeen === 0) {
-                    state.hashes[hashType as RecordHashTypes].lastSeen = hash;
+                const hashKey = hashType as RecordHashTypes;
+                
+                if (!state.hashes[hashKey]) {
+                    state.hashes[hashKey] = { current: hash, lastSeen: hash };
+                } else {
+                    const lastSeen = state.hashes[hashKey].lastSeen;
+                    state.hashes[hashKey].current = hash;
+                    
+                    if (lastSeen === 0) {
+                        state.hashes[hashKey].lastSeen = hash;
+                    }
                 }
             });
         }

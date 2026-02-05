@@ -6,12 +6,11 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ImplantsController(UserService userService, LoginService loginService, ImplantsService implantsService, ObscuredDataService obscuredDataService) 
+    public class ImplantsController(UserService userService, LoginService loginService, 
+        ImplantsService _gigerImplantsService, 
+        ObscuredDataService _obscuredDataService) 
         : AuthController(userService, loginService)
     {
-        private readonly ImplantsService _gigerImplantsService = implantsService;
-        private readonly ObscuredDataService _obscuredDataService = obscuredDataService;
-
         [HttpGet]
         public async Task<List<MedicalEvent>> Get() => await _gigerImplantsService.GetAllAsync();
 

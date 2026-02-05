@@ -9,20 +9,8 @@ using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class ConversationMessageHandler : SocketHandler
+    public class ConversationMessageHandler(ConnectionsManager connections, IServiceProvider _serviceProvider) : SocketHandler(connections)
     {
-        ConversationService _conversationService;
-        LogService _logService;
-        UserService _userService;
-
-        public ConversationMessageHandler(ConnectionsManager connections, ConversationService conversationService, 
-            LogService logService, UserService userService) : base(connections)
-        {
-            _conversationService = conversationService;
-            _logService = logService;
-            _userService = userService;
-        }
-
         public async Task SendMessageAsync(IEnumerable<string> participants, string converasationId, Message message)
         {
             try
@@ -54,42 +42,88 @@ namespace Giger.Connections.Handlers
             try
             {
                 var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                DebugLogger.Log($"[WebSocket] Received message: {msg}");
+                
+                // Create a scope that lives for the entire operation
+                using var scope = _serviceProvider.CreateScope();
+                var conversationService = scope.ServiceProvider.GetRequiredService<ConversationService>();
+                
                 var payload = JsonSerializer.Deserialize<MessagePayload>(msg);
-                var conversation = await _conversationService.GetAsync(payload.ConversationId);
+                
+                // Handle ping messages
+                if (payload?.ConversationId == null)
+                {
+                    return;
+                }
+                
+                DebugLogger.Log($"[WebSocket] Parsed payload - ConvoId: {payload.ConversationId}, Sender: {payload.Message.Sender}");
+                
+                var conversation = await conversationService.GetAsync(payload.ConversationId);
                 if (conversation != null)
                 {
+                    DebugLogger.Log($"[WebSocket] Found conversation with {conversation.Messages.Count} existing messages");
                     conversation.Messages.Add(payload.Message);
-                    await _conversationService.UpdateAsync(conversation);
+                    await conversationService.UpdateAsync(conversation);
+                    DebugLogger.Log($"[WebSocket] Message saved successfully");
+                    
                     var message = JsonSerializer.Serialize(payload);
+                    var participantSockets = Connections.GetParticipants(conversation.Participants).ToList();
+                    DebugLogger.Log($"[WebSocket] Found {participantSockets.Count} connected sockets for {conversation.Participants.Count()} participants");
+                    
                     await SendMessageToParticipantsAsync(message, conversation.Participants);
-                    LogMessage(payload.Message, payload.ConversationId);
+                    DebugLogger.Log($"[WebSocket] Message sent to participants");
+                }
+                else
+                {
+                    Console.WriteLine($"[WebSocket] ERROR: Conversation {payload.ConversationId} not found");
                 }
             } 
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"[WebSocket] ERROR: {ex.Message}");
+                Console.WriteLine($"[WebSocket] Stack trace: {ex.StackTrace}");
             }
         }
 
-        private async void LogMessage(Message message, string conversationId)
+        private async void LogMessage(Message message, string conversationId, ConversationService? conversationService = null)
         {
-            var user = await _userService.GetByUserNameAsync(message.Sender);
-            var conversation = await _conversationService.GetAsync(conversationId);
-            var log = new Log()
+            // Don't await - fire and forget logging (it will create its own scope)
+            _ = Task.Run(() => LogMessage(message, conversationId));
+        }
+        
+        private async Task LogMessage(Message message, string conversationId)
+        {
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUserId = user.Id,
-                SourceUserName = user.Handle,
-                TargetUserId = conversation.Id,
-                TargetUserName = string.Join(',', conversation.Participants),
-                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
-                LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
-                SubnetworkId = user.SubnetworkId,
-                SubnetworkName = user.SubnetworkName,
-            };
+                // Create a new scope for database access since this runs async after the request
+                using var scope = _serviceProvider.CreateScope();
+                var conversationService = scope.ServiceProvider.GetRequiredService<ConversationService>();
+                var logService = scope.ServiceProvider.GetRequiredService<LogService>();
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+                
+                var user = await userService.GetByUserNameAsync(message.Sender);
+                var conversation = await conversationService.GetAsync(conversationId);
+                var log = new Log()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = GigerDateTime.Now,
+                    SourceUserId = user.Id,
+                    SourceUserName = user.Handle,
+                    TargetUserId = conversation.Id,
+                    TargetUserName = string.Join(',', conversation.Participants),
+                    LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
+                    LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
+                    SubnetworkId = user.SubnetworkId,
+                    SubnetworkName = user.SubnetworkName,
+                };
 
-            _logService.CreateAsync(log);
+                await logService.CreateAsync(log);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't crash the app
+                Console.WriteLine($"Error logging message: {ex.Message}");
+            }
         }
     }
 }

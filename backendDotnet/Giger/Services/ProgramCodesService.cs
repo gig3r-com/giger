@@ -1,36 +1,46 @@
 ﻿using Giger.Models.Hacking;
-using Giger.Models;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class ProgramCodesService : AbstractService
+    public class ProgramCodesService : IGigerService
     {
-        private readonly IMongoCollection<ProgramCodes> _programCodesCollection;
+        private readonly GigerDbContext _dbContext;
 
-        public ProgramCodesService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public ProgramCodesService(GigerDbContext dbContext)
         {
-            _programCodesCollection = _mongoDatabase.GetCollection<ProgramCodes>(
-                gigerDatabaseSettings.Value.ProgramCodesMapCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<ProgramCodes>> GetAll() =>
-            await _programCodesCollection.Find(_ => true).ToListAsync();
+            await _dbContext.ProgramCodes.ToListAsync();
 
         public async Task<ProgramCodes?> GetById(string id) =>
-            await _programCodesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            await _dbContext.ProgramCodes.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<ProgramCodes?> GetByCode(string code) =>
-            await _programCodesCollection.Find(x => x.ProgramCode == code).FirstOrDefaultAsync();
+            await _dbContext.ProgramCodes.FirstOrDefaultAsync(x => x.ProgramCode == code);
 
-        public async Task CreateAsync(ProgramCodes newAuth) =>
-            await _programCodesCollection.InsertOneAsync(newAuth);
+        public async Task CreateAsync(ProgramCodes newCode)
+        {
+            _dbContext.ProgramCodes.Add(newCode);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(ProgramCodes newAuth) =>
-            await _programCodesCollection.ReplaceOneAsync(x => x.Id == newAuth.Id, newAuth);
+        public async Task UpdateAsync(ProgramCodes updatedCode)
+        {
+            _dbContext.ProgramCodes.Update(updatedCode);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _programCodesCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var code = await GetById(id);
+            if (code != null)
+            {
+                _dbContext.ProgramCodes.Remove(code);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

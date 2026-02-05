@@ -1,5 +1,4 @@
 ﻿using Giger.Models.EventModels;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.EventModels
 {

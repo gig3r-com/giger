@@ -1,19 +1,42 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.MessageModels
 {
     public class Message
     {
-        [BsonElement("_id")]
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public required DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
-        public required string Sender { get; set; } // UserName
+        public string Sender { get; set; } = string.Empty; // UserName
 
-        public required string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Type of message (for future use)
+        /// </summary>
+        public string? Type { get; set; }
+
+        /// <summary>
+        /// Message data payload (alternative to Text field)
+        /// </summary>
+        public string? Data { get; set; }
+
+        /// <summary>
+        /// List of user handles who have read this message
+        /// </summary>
+        public List<string> ReadBy { get; set; } = [];
+
+        /// <summary>
+        /// Handle of hacker who intercepted this message
+        /// </summary>
+        public string? Hacker { get; set; }
+
+        /// <summary>
+        /// Epsilon notes about this message
+        /// </summary>
+        public string? EpsilonNote { get; set; }
         
         public Message() { }
 

@@ -2,7 +2,6 @@
 using Giger.Models.User;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using OperatingSystem = Giger.Models.Networks.OperatingSystem;
 
 namespace Giger.Controllers
@@ -10,10 +9,9 @@ namespace Giger.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class NetworksController(UserService userService, LoginService loginService,
-        NetworksService networkService) : AuthController(userService, loginService)
+        NetworksService _networkService) 
+        : AuthController(userService, loginService)
     {
-        private readonly NetworksService _networkService = networkService;
-
         #region Networks
         [HttpGet("network")]
         public async Task<ActionResult<Network>> GetNetwork(string id)

@@ -7,14 +7,12 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RevealController(UserService userService, LoginService loginService, GigService gigService, ObscuredDataService obscuredDataService, ImplantsController implantsController)
+    public class RevealController(UserService userService, LoginService loginService,
+        GigService _gigService,
+        ObscuredDataService _obscuredDataService, 
+        ImplantsController _implantsController)
         : AuthController(userService, loginService)
     {
-        private readonly GigService _gigService = gigService;
-        private readonly ObscuredDataService _obscuredDataService = obscuredDataService;
-
-        private readonly ImplantsController _implantsController = implantsController;
-
         [HttpPatch("code")]
         public async Task<IActionResult> RevealData(string revealCode)
         {
@@ -106,7 +104,7 @@ namespace Giger.Controllers
 
             return returnData;
 
-            ObscurableInfo? CheckCollection(ObscurableInfo[] records)
+            ObscurableInfo? CheckCollection<T>(List<T> records) where T : ObscurableInfo
             {
                 return records.FirstOrDefault(e => e.Id == obscurableId);
             }

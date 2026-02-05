@@ -2,19 +2,20 @@
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Connections.Handlers;
+using System.Text.Json;
 
 namespace Giger.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
-    public class ConversationController(UserService userService, LoginService loginService,
-        ConversationService conversationService, NotificationsSocketHandler notificationsHandler, ConversationMessageHandler conversationSocketHandler)
-        : AuthController(userService, loginService)
+    public class ConversationController(UserService _userService, LoginService _loginService,
+        ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
+        : AuthController(_userService, _loginService)
     {
-        private readonly ConversationService _conversationService = conversationService;
-
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
-        private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
+       //private readonly ConversationService _conversationService = conversationService;
+       //
+       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+       //private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)
@@ -60,19 +61,34 @@ namespace Giger.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post(Conversation newConversation)
+        public async Task<IActionResult> Post([FromBody] JsonElement requestBody)
         {
-            if (string.IsNullOrEmpty(newConversation.Id))
+            DebugLogger.Log($"[ConversationController] POST called - Raw JSON:\n{requestBody.GetRawText()}");
+            
+            var newConversation = JsonSerializer.Deserialize<Conversation>(requestBody.GetRawText(), new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+            
+            DebugLogger.Log($"[ConversationController] Deserialized - Id: {newConversation?.Id ?? "null"}, Participants: {newConversation?.Participants?.Count ?? 0}");
+            
+            if (string.IsNullOrEmpty(newConversation?.Id))
             {
-                newConversation.Id = Guid.NewGuid().ToString();
+                newConversation!.Id = Guid.NewGuid().ToString();
             }
             await _conversationService.CreateAsync(newConversation);
+            DebugLogger.Log($"[ConversationController] Created conversation {newConversation.Id} with {newConversation.Participants.Count} participants");
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
         }
             
         [HttpPost("create")]
-        public async Task<IActionResult> Create(Conversation newConversation, bool isAnonymizedHandle)
+        public async Task<IActionResult> Create([FromBody] Conversation newConversation, bool isAnonymizedHandle)
         {
+            Console.WriteLine($"[DEBUG] Create conversation called");
+            Console.WriteLine($"[DEBUG] Participants count: {newConversation?.Participants?.Count ?? -1}");
+            Console.WriteLine($"[DEBUG] Participants: {string.Join(", ", newConversation?.Participants ?? new List<string>())}");
+            Console.WriteLine($"[DEBUG] GigConversation: {newConversation?.GigConversation}");
+            
             if (string.IsNullOrEmpty(newConversation.Id))
             {
                 newConversation.Id = Guid.NewGuid().ToString();
@@ -87,14 +103,21 @@ namespace Giger.Controllers
                 }
                 newConversation.AnonymizedUsers.Add(sender);
             }
+            
             await _conversationService.CreateAsync(newConversation);
 
-            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, newConversation);
+            // Reload from database to get properly serialized data
+            var saved = await _conversationService.GetAsync(newConversation.Id);
+            
+            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, saved ?? newConversation);
         }
 
         [HttpPost("{conversationId}/message")]
-        public async Task<IActionResult> PostMessage(string conversationId, Message newMessage)
+        public async Task<IActionResult> PostMessage(string conversationId, [FromBody] Message newMessage)
         {
+            Console.WriteLine($"[DEBUG] PostMessage called with conversationId: {conversationId}");
+            Console.WriteLine($"[DEBUG] newMessage: Sender='{newMessage?.Sender}', Text='{newMessage?.Text}', Id='{newMessage?.Id}'");
+            
             var conversation = await _conversationService.GetAsync(conversationId);
             if (conversation is null)
             {
@@ -104,7 +127,7 @@ namespace Giger.Controllers
             if (string.IsNullOrEmpty(newMessage.Id))
             {
                 newMessage = new Message(newMessage.Sender, newMessage.Text);
-                newMessage.Date = DateTime.Now;
+                newMessage.Date = GigerDateTime.Now;
             }
 
             conversation.Messages.Add(newMessage);

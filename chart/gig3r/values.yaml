@@ -10,11 +10,8 @@ backend:
   tag: 0.2.0
 
 database:
-  name: admin
-  user: gig3r
-  image: ghcr.io/gig3r-com/gig3r-mongo
+  name: giger
+  user: giger
+  password: giger
+  image: ghcr.io/gig3r-com/gig3r-postgres
   tag: 0.2.0
-
-mongoexpress:
-  user: changeme
-  password: changeaswell
