@@ -32,6 +32,8 @@ services:
       args:
         - ASPNETCORE_CONFIGURATION=Debug
     restart: unless-stopped
+    ports:
+      - 8081:8080
     expose:
       - 8080
     volumes:
