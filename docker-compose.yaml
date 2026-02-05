@@ -68,6 +68,8 @@ services:
     volumes:
       - ./data/mongo:/data:ro
     depends_on:
+      backend:
+        condition: service_started
       postgres:
         condition: service_healthy
 

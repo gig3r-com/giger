@@ -41,6 +41,10 @@ if [ "$AUTO_LOAD_DATA" != "true" ]; then
     exit 0
 fi
 
+# Wait for backend to create schema (EF Core migrations)
+log_info "Waiting for backend to initialize database schema..."
+sleep 5
+
 # Wait for PostgreSQL to be ready
 log_info "Waiting for PostgreSQL to be ready..."
 max_attempts=30
