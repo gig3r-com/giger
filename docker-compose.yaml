@@ -46,26 +46,9 @@ services:
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
       - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
       - ASPNETCORE_ENVIRONMENT=Development
-      - DataLoad__Username=${DATALOAD_USERNAME:-admin}
-      - DataLoad__Password=${DATALOAD_PASSWORD:-changeme}
     depends_on:
       postgres:
         condition: service_healthy
-
-  # Data loader - runs once on startup to load initial data
-  data-loader:
-    build:
-      context: ./docker/data-loader
-    restart: "no"  # Only run once, don't restart
-    environment:
-      - AUTO_LOAD_DATA=${AUTO_LOAD_DATA:-true}
-      - DATALOAD_USERNAME=${DATALOAD_USERNAME:-admin}
-      - DATALOAD_PASSWORD=${DATALOAD_PASSWORD:-changeme}
-    volumes:
-      - ./data/mongo:/data:ro
-    depends_on:
-      backend:
-        condition: service_started
 
   postgres:
     image: postgres:16

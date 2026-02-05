@@ -1,16 +1,8 @@
 # Production Docker Compose Configuration
-# Use this for production deployments where you want manual control over data loading
 
 services:
   backend:
     environment:
-      # DISABLE automatic data loading in production
-      - AUTO_LOAD_DATA=false
-      
-      # Use strong credentials from secrets manager
-      - DataLoad__Username=${DATALOAD_USERNAME}
-      - DataLoad__Password=${DATALOAD_PASSWORD}
-      
       # Production environment
       - ASPNETCORE_ENVIRONMENT=Production
       
