@@ -1,4 +1,4 @@
-﻿using Giger.Models.GigModels;
+using Giger.Models.GigModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -13,32 +13,44 @@ namespace Giger.Services
         }
 
         public async Task<List<Gig>> GetAllAsync() =>
-            await _dbContext.Gigs.ToListAsync();
+            await _dbContext.Gigs
+                .Include(g => g.IsRevealedTo)
+                .Include(g => g.Updates)
+                .ToListAsync();
 
         public async Task<List<Gig>> GetAllVisibleToUserAsync(string requestSenderId) =>
             await _dbContext.Gigs
-                .Where(g => g.Status == GigStatus.AVAILABLE ||
-                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .Include(g => g.IsRevealedTo)
+                .Include(g => g.Updates)
+                .Where(g => g.Status == "AVAILABLE" ||
+                            g.WorkerId == requestSenderId || g.AuthorId == requestSenderId)
                 .ToListAsync();
 
         public async Task<List<Gig>> GetAllVisibleToModeratorAsync(string requestSenderId) =>
             await _dbContext.Gigs
-                .Where(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
-                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .Include(g => g.IsRevealedTo)
+                .Include(g => g.Updates)
+                .Where(g => g.Status == "AVAILABLE" || g.Status == "DISPUTE" ||
+                            g.WorkerId == requestSenderId || g.AuthorId == requestSenderId)
                 .ToListAsync();
 
         public async Task<List<Gig>> GetAllOwnAsync(string userId) =>
             await _dbContext.Gigs
-                .Where(g => g.TakenById == userId || g.AuthorId == userId)
+                .Include(g => g.IsRevealedTo)
+                .Include(g => g.Updates)
+                .Where(g => g.WorkerId == userId || g.AuthorId == userId)
                 .ToListAsync();
 
         public async Task<Gig?> GetAsync(string id) =>
-            await _dbContext.Gigs.FirstOrDefaultAsync(x => x.Id == id);
-
-        public async Task<long> GetLimitedUserGigsCountAsync(string takenBy) =>
             await _dbContext.Gigs
-                .Where(x => x.TakenById == takenBy && x.Mode == GigModes.CLIENT &&
-                    (x.Status == GigStatus.IN_PROGRESS || x.Status == GigStatus.DISPUTE))
+                .Include(g => g.IsRevealedTo)
+                .Include(g => g.Updates)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<long> GetLimitedUserGigsCountAsync(string workerId) =>
+            await _dbContext.Gigs
+                .Where(x => x.WorkerId == workerId && x.Mode == "authorIsHiring" &&
+                    (x.Status == "IN_PROGRESS" || x.Status == "DISPUTE"))
                 .LongCountAsync();
 
         public async Task<Gig?> GetByFirstNameAsync(string title) =>

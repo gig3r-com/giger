@@ -3,6 +3,7 @@ using Giger.Connections.SocketsManagment;
 using Giger.Models.Logs;
 using Giger.Models.MessageModels;
 using Giger.Services;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -50,7 +51,7 @@ namespace Giger.Connections.Handlers
                     conversation.Messages.Add(payload.Message);
                     await conversationService.UpdateAsync(conversation);
                     var message = JsonSerializer.Serialize(payload);
-                    await SendMessageToParticipantsAsync(message, conversation.Participants);
+                    await SendMessageToParticipantsAsync(message, conversation.Participants.Select(p => p.UserHandle));
                     LogMessage(payload.Message, payload.ConversationId, conversationService);
                 }
             } 
@@ -71,18 +72,16 @@ namespace Giger.Connections.Handlers
         {
             var user = await userService.GetByUserNameAsync(message.Sender);
             var conversation = await conversationService.GetAsync(conversationId);
+            var participantHandles = string.Join(',', conversation.Participants.Select(p => p.UserHandle));
             var log = new Log()
             {
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = GigerDateTime.Now,
-                SourceUserId = user.Id,
-                SourceUserName = user.Handle,
-                TargetUserId = conversation.Id,
-                TargetUserName = string.Join(',', conversation.Participants),
-                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
-                LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
-                SubnetworkId = user.SubnetworkId,
-                SubnetworkName = user.SubnetworkName,
+                SourceUser = user.Handle,
+                TargetUser = participantHandles,
+                LogType = conversation.GigConversation ? "GIG_MESSAGESENT" : "MESSAGE",
+                LogData = $"Message has been sent by {user.Handle} to {participantHandles} user(s).",
+                Subnetwork = user.Subnetwork,
             };
 
             logService.CreateAsync(log);

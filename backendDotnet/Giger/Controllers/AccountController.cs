@@ -1,53 +1,22 @@
-﻿using Giger.Services;
+using Giger.Services;
 using Giger.Models.BankingModels;
 using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
-using Giger.Extensions;
 using Giger.Models.User;
 using Giger.Connections.Handlers;
-using System.Linq.Expressions;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController(
-        UserService _userService, LoginService _loginService, AccountService _accountService,        LogService _logService, NetworksService _networksService, 
+        UserService _userService, LoginService _loginService, AccountService _accountService,
+        LogService _logService, NetworksService _networksService,
         NotificationsSocketHandler _notificationsHandler)
         : AuthController(_userService, _loginService)
-        //: AuthController//(serviceProvider)
     {
-        //public AccountController(UserService userService, LoginService loginService, AccountService accountService, LogService logService, NetworksService networksService,
-        //NotificationsSocketHandler notificationsHandler) : base(userService, loginService)
-        //{
-        //    _accountService = accountService;
-        //    _logService = logService;
-        //    _networksService = networksService;
-        //    _notificationsHandler = notificationsHandler;
-        //}
-        //
-        //private readonly AccountService _accountService;// = (AccountService)ScopedServiceProvider.CreateScopedGigerService<AccountService>(serviceProvider);
-        //private readonly LogService _logService;// = (LogService)ScopedServiceProvider.CreateScopedGigerService<LogService>(serviceProvider);
-        //private readonly NetworksService _networksService;// = (NetworksService)ScopedServiceProvider.CreateScopedGigerService<NetworksService>(serviceProvider);
-        //
-        //private readonly NotificationsSocketHandler _notificationsHandler;// = notificationsHandler;
-
-        //TODO put it into config
-        private readonly Dictionary<WealthLevels, decimal> _transferLimits = new()
-        {
-            { WealthLevels.BROKE, 200 },
-            { WealthLevels.IMPOVERISHED, 500 },
-            { WealthLevels.STRUGGLING, 1000 },
-            { WealthLevels.MODEST, 1000 },
-            { WealthLevels.STABLE, 1500 },
-            { WealthLevels.COMFORTABLE, 2000 },
-            { WealthLevels.AFFLUENT, 2500 },
-            { WealthLevels.ELITE, 5000 }
-        };
-
         #region Account
 
-        [Obsolete]
         [HttpGet("byId")]
         public async Task<ActionResult<Account>> Get(string id)
         {
@@ -57,16 +26,17 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (account.Type == AccountType.BUSINESS)
+            var firstOwner = account.Owners.FirstOrDefault()?.UserHandle;
+            if (account.Type == "BUSINESS")
             {
-                if (!HasAccessToFactionAccount(await GetSenderUser(), account.Owner))
+                if (!HasAccessToFactionAccount(await GetSenderUser(), firstOwner))
                 {
                     return Unauthorized();
                 }
             }
             else
             {
-                if (!IsAuthorized(account.Owner))
+                if (firstOwner != null && !IsAuthorized(firstOwner))
                 {
                     return Unauthorized();
                 }
@@ -78,8 +48,8 @@ namespace Giger.Controllers
         [HttpGet("allAccounts")]
         public async Task<List<string>> GetAllAccountNames()
         {
-            var allActiveAccounts = await _accountService.GetAllActiveAsync();
-            return allActiveAccounts.Select(a => a.Owner).ToList();
+            var allAccounts = await _accountService.GetAllAsync();
+            return allAccounts.Select(a => a.Owners.FirstOrDefault()?.UserHandle ?? a.Name ?? "").ToList();
         }
 
         [HttpGet("byOwner")]
@@ -89,7 +59,7 @@ namespace Giger.Controllers
             {
                 Unauthorized();
             }
-            var account = await _accountService.GetByAccountNameAsync(owner);
+            var account = await _accountService.GetByOwnerHandleAsync(owner);
             if (account is null)
             {
                 return NotFound();
@@ -98,9 +68,9 @@ namespace Giger.Controllers
             var retValue = new List<Account>() { account };
 
             var user = await _userService.GetByUserNameAsync(owner);
-            if (user is not null)
+            if (user is not null && user.Faction != null)
             {
-                var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
+                var businessAccount = await _accountService.GetByOwnerHandleAsync(user.Faction);
                 if (businessAccount is not null)
                 {
                     retValue.Add(businessAccount);
@@ -119,7 +89,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            var firstOwner = account.Owners.FirstOrDefault()?.UserHandle;
+            if (firstOwner != null && !IsAuthorized(firstOwner))
             {
                 Unauthorized();
             }
@@ -195,7 +166,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
             account.Balance -= value;
-            await _accountService.UpdateAsync(account); 
+            await _accountService.UpdateAsync(account);
             NotifyAccount(account);
             return NoContent();
         }
@@ -218,7 +189,7 @@ namespace Giger.Controllers
         }
         #endregion
 
-        #region Transation
+        #region Transaction
         [HttpGet("{accountNo}/transaction/all")]
         public async Task<ActionResult<List<Transaction>>> GetAll(string accountNo)
         {
@@ -228,7 +199,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            var firstOwner = account.Owners.FirstOrDefault()?.UserHandle;
+            if (firstOwner != null && !IsAuthorized(firstOwner))
             {
                 return Unauthorized();
             }
@@ -238,11 +210,6 @@ namespace Giger.Controllers
         [HttpPost("transaction")]
         public async Task<IActionResult> CreateTransaction(Transaction newTransaction, bool isGigTransfer = false)
         {
-            if (!IsAuthorized(newTransaction.FromUser))
-            {
-                return Unauthorized();
-            }
-            
             if (string.IsNullOrEmpty(newTransaction.Id))
             {
                 newTransaction.Id = Guid.NewGuid().ToString();
@@ -253,18 +220,7 @@ namespace Giger.Controllers
             }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
-            if (giverAcc is null)
-            {
-                giverAcc = await _accountService.GetByAccountNameAsync(newTransaction.FromUser);
-                newTransaction.From = giverAcc?.AccountNumber ?? newTransaction.From;
-            }
-
             var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
-            if (receiverAcc is null)
-            {
-                receiverAcc = await _accountService.GetByAccountNameAsync(newTransaction.ToUser);
-                newTransaction.To = receiverAcc?.AccountNumber ?? newTransaction.To;
-            }
 
             if (giverAcc is null || receiverAcc is null)
             {
@@ -281,34 +237,27 @@ namespace Giger.Controllers
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
 
-            // limits for gig transfers are not checked
-            // if (!isGigTransfer)
-            // {
-            //     var user = await _userService.GetByUserNameAsync(giverAcc.Owner);
-            //     if (user != null)
-            //     {
-            //         if (newTransaction.Amount > _transferLimits[user.WealthLevel])
-            //         {
-            //             return BadRequest(Messages.ACCOUNT_TRANSFER_LIMIT_EXCEEDED);
-            //         }
-            //     }
-            // }
+            var clone = new Transaction
+            {
+                Id = Guid.NewGuid().ToString(),
+                From = newTransaction.From,
+                To = newTransaction.To,
+                Title = newTransaction.Title,
+                Amount = newTransaction.Amount,
+                Timestamp = newTransaction.Timestamp,
+                OrderingUser = newTransaction.OrderingUser,
+                AccountId = receiverAcc.Id
+            };
 
-            //if (isGigTransfer)
-            //{
-                
-            //}
-
-            var clone = new Transaction(newTransaction);
             receiverAcc.Transactions.Add(clone);
             receiverAcc.Balance += clone.Amount;
             await _accountService.UpdateAsync(receiverAcc);
 
+            newTransaction.AccountId = giverAcc.Id;
             giverAcc.Transactions.Add(newTransaction);
             giverAcc.Balance -= newTransaction.Amount;
             await _accountService.UpdateAsync(giverAcc);
 
-            
             NotifyTransaction(receiverAcc, clone);
             LogTransaction(clone, giverAcc, receiverAcc);
 
@@ -318,96 +267,87 @@ namespace Giger.Controllers
 
         private async Task NotifyTransaction(Account account, Transaction transaction)
         {
-            switch (account.Type)
+            var firstOwner = account.Owners.FirstOrDefault()?.UserHandle;
+            if (account.Type == "PRIVATE")
             {
-                case AccountType.PRIVATE:
+                if (firstOwner != null && firstOwner != "SYSTEM")
                 {
-                    if (account.Owner != "SYSTEM")
-                    {
-                        await _notificationsHandler.NotifyTransaction(account.Owner, account, transaction);
-                    }
-                    break;
+                    await _notificationsHandler.NotifyTransaction(firstOwner, account, transaction);
                 }
-                case AccountType.BUSINESS:
+            }
+            else if (account.Type == "BUSINESS")
+            {
+                if (firstOwner != null)
                 {
-                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    var allFactionUsers = await _userService.GetAllFactionUser(firstOwner);
+                    foreach (var user in allFactionUsers)
                     {
-                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
-                        foreach (var user in allFactionUsers)
-                        {
-                            await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
-                        }
+                        await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
                     }
-                    break;
                 }
             }
         }
 
         private async Task NotifyAccount(Account account)
         {
-            switch (account.Type)
+            var firstOwner = account.Owners.FirstOrDefault()?.UserHandle;
+            if (account.Type == "PRIVATE")
             {
-                case AccountType.PRIVATE:
+                if (firstOwner != null && firstOwner != "SYSTEM")
                 {
-                    if (account.Owner != "SYSTEM")
-                    {
-                        await _notificationsHandler.NotifyAccount(account.Owner, account);
-                    }
-                    break;
+                    await _notificationsHandler.NotifyAccount(firstOwner, account);
                 }
-                case AccountType.BUSINESS:
+            }
+            else if (account.Type == "BUSINESS")
+            {
+                if (firstOwner != null)
                 {
-                    if (Enum.TryParse(account.Owner, out Factions faction))
+                    var allFactionUsers = await _userService.GetAllFactionUser(firstOwner);
+                    foreach (var user in allFactionUsers)
                     {
-                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
-                        foreach (var user in allFactionUsers)
-                        {
-                            await _notificationsHandler.NotifyAccount(user.Handle, account);
-                        }
+                        await _notificationsHandler.NotifyAccount(user.Handle, account);
                     }
-                    break;
                 }
             }
         }
 
         private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {
-            var giverUser = await _userService.GetByUserNameAsync(senderAccount.Owner);
-            var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
+            var senderOwner = senderAccount.Owners.FirstOrDefault()?.UserHandle ?? "SYSTEM";
+            var receiverOwner = receiverAccount.Owners.FirstOrDefault()?.UserHandle ?? "SYSTEM";
+            var giverUser = await _userService.GetByUserNameAsync(senderOwner);
+            var receiverUser = await _userService.GetByUserNameAsync(receiverOwner);
 
-            Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
-          
-            if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
+            LogToSubnetwork(giverUser?.Subnetwork);
+
+            if (giverUser?.Subnetwork != receiverUser?.Subnetwork)
             {
-                Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
+                LogToSubnetwork(receiverUser?.Subnetwork);
             }
 
-            void Log(string subnetworkId, string subnetworkName)
+            void LogToSubnetwork(string subnetworkName)
             {
                 var log = new Log
                 {
                     Id = Guid.NewGuid().ToString(),
                     Timestamp = GigerDateTime.Now,
-                    SourceUserId = senderAccount.OwnerId,
-                    SourceUserName = senderAccount.Owner,
-                    TargetUserId = receiverAccount.OwnerId,
-                    TargetUserName = receiverAccount.Owner,
-                    LogType = LogType.TRANSFER,
+                    SourceUser = senderOwner,
+                    TargetUser = receiverOwner,
+                    LogType = "TRANSFER",
                     LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                    SubnetworkId = subnetworkId,
-                    SubnetworkName = subnetworkName
+                    Subnetwork = subnetworkName
                 };
 
                 _logService.CreateAsync(log);
             }
         }
 
-        private bool HasAccessToFactionAccount(UserPrivate sender, string accountName)
+        private bool HasAccessToFactionAccount(User sender, string accountOwner)
         {
             if (sender is null)
                 return false;
 
-            if (sender.Faction.ToString() == accountName)
+            if (sender.Faction != null && sender.Faction == accountOwner)
                 return true;
 
             return false;

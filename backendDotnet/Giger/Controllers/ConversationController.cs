@@ -1,21 +1,15 @@
-﻿using Giger.Services;
+using Giger.Services;
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
 {
-    //[ApiController]
     [Route("api/[controller]")]
     public class ConversationController(UserService _userService, LoginService _loginService,
         ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
         : AuthController(_userService, _loginService)
     {
-       //private readonly ConversationService _conversationService = conversationService;
-       //
-       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
-       //private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
-
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)
         {
@@ -28,7 +22,7 @@ namespace Giger.Controllers
             bool isAuthorized = false;
             foreach (var participant in conversation.Participants)
             {
-                if (IsAuthorizedNotHacker(participant))
+                if (IsAuthorizedNotHacker(participant.UserHandle))
                 {
                     isAuthorized = true;
                     break;
@@ -69,7 +63,7 @@ namespace Giger.Controllers
             await _conversationService.CreateAsync(newConversation);
             return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
         }
-            
+
         [HttpPost("create")]
         public async Task<IActionResult> Create(Conversation newConversation, bool isAnonymizedHandle)
         {
@@ -85,7 +79,11 @@ namespace Giger.Controllers
                 {
                     return BadRequest(Messages.UNKNOWN_SENDER_USER_NOT_FOUND);
                 }
-                newConversation.AnonymizedUsers.Add(sender);
+                newConversation.AnonymizedUsers.Add(new ConversationAnonymizedUser
+                {
+                    ConversationId = newConversation.Id,
+                    UserHandle = sender
+                });
             }
             await _conversationService.CreateAsync(newConversation);
 
@@ -103,14 +101,16 @@ namespace Giger.Controllers
 
             if (string.IsNullOrEmpty(newMessage.Id))
             {
-                newMessage = new Message(newMessage.Sender, newMessage.Text);
-                newMessage.Date = GigerDateTime.Now;
+                newMessage.Id = Guid.NewGuid().ToString();
+                newMessage.Timestamp = GigerDateTime.Now;
+                newMessage.ConversationId = conversationId;
             }
 
             conversation.Messages.Add(newMessage);
             await _conversationService.UpdateAsync(conversation);
-            _conversationSocketHandler.SendMessageAsync(conversation.Participants, conversation.Id, newMessage);
-            foreach (var participant in conversation.Participants)
+            var participantHandles = conversation.Participants.Select(p => p.UserHandle).ToList();
+            _conversationSocketHandler.SendMessageAsync(participantHandles, conversation.Id, newMessage);
+            foreach (var participant in participantHandles)
             {
                 _notificationsHandler.NotifyConversationId(participant, conversation);
             }
@@ -132,13 +132,18 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!conversation.Participants.Contains(userName))
+            if (!conversation.Participants.Any(p => p.UserHandle == userName))
             {
-                foreach (var participant in conversation.Participants)
+                var participantHandles = conversation.Participants.Select(p => p.UserHandle).ToList();
+                foreach (var participant in participantHandles)
                 {
                     _notificationsHandler.NotifyConversationId(participant, conversation);
                 }
-                conversation.Participants.Add(userName);
+                conversation.Participants.Add(new ConversationParticipant
+                {
+                    ConversationId = id,
+                    UserHandle = userName
+                });
                 await _conversationService.UpdateAsync(conversation);
             }
 

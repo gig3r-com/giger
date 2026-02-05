@@ -1,45 +1,24 @@
-﻿using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.BankingModels
 {
     public class Account
     {
+        [Key]
         public required string Id { get; set; }
 
-        public required string Owner { get; set; }
+        public required string Type { get; set; } // PRIVATE, BUSINESS
 
-        public required string OwnerId { get; set; }
+        public string? Name { get; set; }
 
-        public List<Transaction> Transactions { get; set; } = [];
-        
-        public required AccountType Type { get; set; }
-
-        public required decimal Balance { get; set; }
-        
         public required string AccountNumber { get; set; }
 
-        public bool IsActive { get; set; }
+        public required decimal Balance { get; set; }
 
-        public override int GetHashCode()
-        {
-            int hash = 19;
-            hash += 3 * Id.GetHashCode();
-            foreach (var trx in Transactions)
-            {
-                hash += 5 * trx.GetHashCode();
-            }
-            hash += 7 * Type.GetHashCode();
-            hash += 11 * Balance.GetHashCode();
-            hash += 13 * IsActive.GetHashCode();
+        // Navigation: owners via junction table
+        public List<AccountOwner> Owners { get; set; } = [];
 
-            return hash;
-        }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]
-    public enum AccountType
-    {
-        PRIVATE,
-        BUSINESS
+        public List<Transaction> Transactions { get; set; } = [];
     }
 }

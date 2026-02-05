@@ -1,7 +1,6 @@
 using Giger;
 using Giger.Connections.Handlers;
 using Giger.Connections.SocketsManagment;
-using Giger.Models;
 using Giger.Controllers;
 using System.Net;
 using Giger.Services.Extensions;
@@ -21,7 +20,6 @@ builder.Services.AddSwaggerGen(config =>
     config.OperationFilter<SwaggerHeaderFilter>();
 });
 
-builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
 builder.Services.AddMvc().AddControllersAsServices();
 
 builder.Services.AddDbContext<GigerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -39,6 +37,30 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<GigerDbContext>();
+    db.Database.EnsureCreated();
+
+    if (!db.Users.Any())
+    {
+        var seedPath = Path.Combine(AppContext.BaseDirectory, "seed-data.sql");
+        if (!File.Exists(seedPath))
+            seedPath = "/app/seed-data.sql";
+        if (File.Exists(seedPath))
+        {
+            Console.WriteLine("Database is empty, seeding data from " + seedPath);
+            var sql = File.ReadAllText(seedPath);
+            db.Database.ExecuteSqlRaw(sql);
+            Console.WriteLine("Database seeded successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Database is empty but no seed file found.");
+        }
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -80,8 +80,8 @@ namespace Giger.Controllers
             }
 
             var user = await _userService.GetByUserNameAsync(hackerLoginData.Username);
-            if (user != null && (user.Roles.Contains(Models.User.UserRoles.ADMIN) ||
-                user.HackingSkills.Stat >= 1))
+            if (user != null && (user.Roles.Contains("ADMIN") ||
+                user.HackerSkill >= 1))
             {
                 if (hackerLoginData.AuthToken != null)
                 {
@@ -109,7 +109,7 @@ namespace Giger.Controllers
             }
 
             var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && !user.Roles.Contains(Models.User.UserRoles.GOD))
+            if (user != null && !user.Roles.Contains("GOD"))
             {
                 userLoginData.AuthToken = null;
                 await _loginService.UpdateAsync(userLoginData);

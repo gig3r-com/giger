@@ -1,4 +1,4 @@
-﻿using Giger.Models.Hacking;
+using Giger.Models.Hacking;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,8 +6,8 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProgramCodesController(UserService userService, LoginService loginService, 
-        ProgramCodesService _programCodesService) 
+    public class ProgramCodesController(UserService userService, LoginService loginService,
+        ProgramCodesService _programCodesService)
         : AuthController(userService, loginService)
     {
         [HttpGet("get/all")]
@@ -29,9 +29,9 @@ namespace Giger.Controllers
         }
 
         [HttpGet("get/code")]
-        public async Task<ProgramCodes> GetByCode(string program)
+        public async Task<ProgramCodes> GetByCode(string code)
         {
-            return await _programCodesService.GetByCode(program);
+            return await _programCodesService.GetByCode(code);
         }
 
         [HttpPost("create")]

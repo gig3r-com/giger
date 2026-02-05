@@ -34,6 +34,7 @@ services:
       - 8080
     volumes:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
+      - ./data/postgres/01-data.sql:/app/seed-data.sql
     environment:
       #- GigerDB__ConnectionString=mongodb://mongo:27017
       - GigerDB__Host=postgres
@@ -51,7 +52,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=giger
       - POSTGRES_PASSWORD=giger

@@ -1,4 +1,4 @@
-﻿using Giger.Models.Networks;
+using Giger.Models.Networks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -20,7 +20,7 @@ namespace Giger.Services
             await _dbContext.Networks.FirstOrDefaultAsync(network => network.Id == id);
 
         public async Task<Network?> GetNetworkByNameAsync(string name) =>
-            await _dbContext.Networks.FirstOrDefaultAsync(network => network.Name.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Networks.FirstOrDefaultAsync(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         public async Task CreateNetworkAsync(Network newNetwork)
         {
@@ -28,22 +28,22 @@ namespace Giger.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task AddSubnetwork(string networkId, string subnetworkId)
+        public async Task AddSubnetwork(string networkId, string subnetworkName)
         {
             var network = await GetNetworkByIdAsync(networkId);
             if (network != null)
             {
-                network.Subnetworks = [ .. network.Subnetworks, subnetworkId];
+                network.Subnetworks = [.. network.Subnetworks, subnetworkName];
                 await UpdateNetworkAsync(network);
             }
         }
 
-        public async Task RemoveSubnetwork(string networkId, string subnetworkId)
+        public async Task RemoveSubnetwork(string networkId, string subnetworkName)
         {
             var network = await GetNetworkByIdAsync(networkId);
             if (network != null)
             {
-                network.Subnetworks = network.Subnetworks.Except([subnetworkId]).ToArray();
+                network.Subnetworks = network.Subnetworks.Except([subnetworkName]).ToArray();
                 await UpdateNetworkAsync(network);
             }
         }
@@ -67,13 +67,13 @@ namespace Giger.Services
 
         #region Subnetwork
         public async Task<List<Subnetwork>> GetAllSubnetworksAsync() =>
-            await _dbContext.Subnetworks.ToListAsync();
+            await _dbContext.Subnetworks.Include(s => s.Users).ToListAsync();
 
         public async Task<Subnetwork?> GetSubnetworkByIdAsync(string id) =>
-            await _dbContext.Subnetworks.FirstOrDefaultAsync(network => network.Id == id);
+            await _dbContext.Subnetworks.Include(s => s.Users).FirstOrDefaultAsync(network => network.Id == id);
 
         public async Task<Subnetwork?> GetSubnetworkByFirstNameAsync(string name) =>
-            await _dbContext.Subnetworks.FirstOrDefaultAsync(network => network.Name.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Subnetworks.Include(s => s.Users).FirstOrDefaultAsync(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         public async Task CreateSubnetworkAsync(Subnetwork newSubnetwork)
         {
