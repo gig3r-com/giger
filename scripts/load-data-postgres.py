@@ -289,26 +289,48 @@ def load_users(conn, data):
 def load_accounts(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    transaction_count = 0
     # Map account type strings to integers
     type_map = {'PERSONAL': 0, 'BUSINESS': 1, 'SAVINGS': 2}
     
     for item in data:
         try:
+            account_id = convert_id(item.get('_id'))
             acc_type = type_map.get(item.get('Type', 'PERSONAL'), 0)
             cursor.execute("""
                 INSERT INTO "Accounts" 
                 ("Id", "Owners", "Owner", "OwnerId", "Name", "Type", "Balance", 
                  "AccountNumber", "IsActive")
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (convert_id(item.get('_id')), [item.get('UserId', '')],
+            """, (account_id, [item.get('UserId', '')],
                  item.get('UserId', ''), item.get('UserId', ''), 
                  item.get('Name', ''), acc_type, item.get('Balance', 0),
                  item.get('AccountNumber', ''), True))
+            
+            # Load nested transactions
+            for trans in item.get('Transactions', []):
+                try:
+                    trans_id = convert_id(trans.get('_id'))
+                    cursor.execute("""
+                        INSERT INTO "Transactions" 
+                        ("Id", "From", "FromUser", "To", "ToUser", "Title", 
+                         "Amount", "Timestamp", "AccountId")
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                        ON CONFLICT ("Id") DO NOTHING
+                    """, (trans_id, trans.get('From', ''), trans.get('FromUser', ''),
+                         trans.get('To', ''), trans.get('ToUser', ''),
+                         trans.get('Title', ''), trans.get('Amount', 0),
+                         trans.get('Timestamp'), account_id))
+                    transaction_count += 1
+                except Exception as e:
+                    log_error(f"Transaction for account {item.get('AccountNumber')}: {e}")
+            
             success += 1
         except Exception as e:
             log_error(f"Account {item.get('AccountNumber')}: {e}")
             failed += 1
     conn.commit()
+    log_info(f"  ↳ Also loaded {transaction_count} transactions")
     return success, failed
 
 def load_hack_configs(conn, data):
