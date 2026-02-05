@@ -67,10 +67,11 @@ def load_networks(conn, data):
     for item in data:
         try:
             cursor.execute("""
-                INSERT INTO "Networks" ("Id", "Name", "Tier", "Faction", "Type")
+                INSERT INTO "Networks" ("Id", "Name", "Subnetworks", "AdminId", "Admin")
                 VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
             """, (convert_id(item.get('_id')), item.get('Name', ''),
-                 item.get('Tier', 0), item.get('Faction', ''), item.get('Type', '')))
+                 item.get('Subnetworks', []), item.get('AdminId', ''), 
+                 item.get('Admin', '')))
             success += 1
         except Exception as e:
             log_error(f"Network {item.get('Name')}: {e}")
@@ -81,16 +82,24 @@ def load_networks(conn, data):
 def load_subnetworks(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    # Map firewall/OS strings to integers
+    firewall_map = {'ENCRYPT_GUARD': 0, 'FIREWALL_X': 1, 'VIRTUAL_VAULT': 2}
+    os_map = {'FORCE_FIELD': 0, 'EVIL_TWIN': 1, 'JOAN_OF_ARC': 2}
+    
     for item in data:
         try:
+            firewall = firewall_map.get(item.get('Firewall', ''), None)
+            os_val = os_map.get(item.get('OperatingSystem', ''), None)
+            
             cursor.execute("""
                 INSERT INTO "Subnetworks" 
-                ("Id", "Name", "NetworkId", "Users", "Firewall", "OperatingSystem", "Ice", "PastHacks")
+                ("Id", "Name", "NetworkId", "Users", "Firewall", "OperatingSystem", 
+                 "Ice", "PastHacks")
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
             """, (convert_id(item.get('_id')), item.get('Name', ''),
-                 item.get('NetworkId', ''), json.dumps(item.get('Users', [])),
-                 item.get('Firewall', ''), item.get('OperatingSystem', ''),
-                 json.dumps(item.get('Ice', [])), json.dumps(item.get('PastHacks', []))))
+                 item.get('NetworkId', ''), item.get('Users', []),
+                 firewall, os_val,
+                 item.get('Ice', []), item.get('PastHacks', [])))
             success += 1
         except Exception as e:
             log_error(f"Subnetwork {item.get('Name')}: {e}")
@@ -101,19 +110,49 @@ def load_subnetworks(conn, data):
 def load_users(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    # Map enum strings to integers
+    type_map = {'AI': 0, 'HUMAN': 1, 'CYBORG': 2}
+    vibe_map = {'OVERSEERS': 0, 'ELITES': 1, 'WORKERS': 2, 'OUTCASTS': 3}
+    wealth_map = {'POOR': 0, 'STABLE': 1, 'COMFORTABLE': 2, 'WEALTHY': 3, 'RICH': 4}
+    engagement_map = {'HYPED': 0, 'ENGAGED': 1, 'NEUTRAL': 2, 'DISENGAGED': 3}
+    faction_map = {'NO_FACTION': 0, 'HEDIN': 1, 'KLAN': 2, 'MEGACORP': 3}
+    
     for user in data:
         try:
             user_id = convert_id(user.get('_id'))
+            type_pub = type_map.get(user.get('TypePublic', 'HUMAN'), 1)
+            type_act = type_map.get(user.get('TypeActual', 'HUMAN'), 1)
+            vibe = vibe_map.get(user.get('Vibe', 'WORKERS'), 2)
+            wealth = wealth_map.get(user.get('WealthLevel', 'STABLE'), 1)
+            engagement = engagement_map.get(user.get('VibeEngagement', 'NEUTRAL'), 2)
+            faction = faction_map.get(user.get('Faction', 'NO_FACTION'), 0)
+            
+            # Extract stat values from nested objects
+            cyberware = user.get('CyberwareLevel', {}).get('Stat', 0)
+            hacking = user.get('HackingSkills', {}).get('Stat', 0)
+            confront = user.get('ConfrontationistVsAgreeable', {}).get('Stat', 0)
+            brave = user.get('CowardVsBrave', {}).get('Stat', 0)
+            talkative = user.get('TalkativeVsSilent', {}).get('Stat', 0)
+            thinker = user.get('ThinkerVsDoer', {}).get('Stat', 0)
+            combat = user.get('CombatSkill', {}).get('Stat', 0)
+            
             cursor.execute("""
                 INSERT INTO "UsersPublic" 
-                ("Id", "Handle", "HackerName", "Name", "Surname", "TypePublic", "TypeActual",
-                 "WealthLevel", "Vibe", "Faction")
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                ("Id", "Handle", "Name", "Surname", "TypePublic", "TypeActual",
+                 "WealthLevel", "Vibe", "Faction", "Roles", "Active",
+                 "NetworkId", "NetworkName", "SubnetworkId", "SubnetworkName",
+                 "HasPlatinumPass", "HighSecurity", "Discriminator",
+                 "CyberwareLevel", "HackingSkills", "ConfrontationistVsAgreeable",
+                 "CowardVsBrave", "TalkativeVsSilent", "ThinkerVsDoer", "CombatSkill",
+                 "VibeFunction", "VibeEngagement")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s, %s) 
                 ON CONFLICT ("Id") DO NOTHING
-            """, (user_id, user.get('Handle', ''), user.get('HackerName', ''),
-                 user.get('Name', ''), user.get('Surname', ''), user.get('TypePublic', ''),
-                 user.get('TypeActual', ''), user.get('WealthLevel', ''),
-                 user.get('Vibe', ''), user.get('Faction', '')))
+            """, (user_id, user.get('Handle', ''), user.get('Name', ''),
+                 user.get('Surname', ''), type_pub, type_act, wealth, vibe, faction,
+                 [], True, '', '', '', '', False, False, 'UserPrivate',
+                 cyberware, hacking, confront, brave, talkative, thinker, combat,
+                 user.get('VibeFunction', ''), engagement))
             success += 1
         except Exception as e:
             log_error(f"User {user.get('Handle')}: {e}")
@@ -124,15 +163,21 @@ def load_users(conn, data):
 def load_accounts(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    # Map account type strings to integers
+    type_map = {'PERSONAL': 0, 'BUSINESS': 1, 'SAVINGS': 2}
+    
     for item in data:
         try:
+            acc_type = type_map.get(item.get('Type', 'PERSONAL'), 0)
             cursor.execute("""
                 INSERT INTO "Accounts" 
-                ("Id", "UserId", "AccountNumber", "Balance", "Type")
-                VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (convert_id(item.get('_id')), item.get('UserId', ''),
-                 item.get('AccountNumber', ''), item.get('Balance', 0),
-                 item.get('Type', '')))
+                ("Id", "Owners", "Owner", "OwnerId", "Name", "Type", "Balance", 
+                 "AccountNumber", "IsActive")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+            """, (convert_id(item.get('_id')), [item.get('UserId', '')],
+                 item.get('UserId', ''), item.get('UserId', ''), 
+                 item.get('Name', ''), acc_type, item.get('Balance', 0),
+                 item.get('AccountNumber', ''), True))
             success += 1
         except Exception as e:
             log_error(f"Account {item.get('AccountNumber')}: {e}")
@@ -195,16 +240,32 @@ def load_obscured_codes(conn, data):
 def load_gigs(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
-    # Map string enum values to integers
-    category_map = {'KILLER': 0, 'CORPO': 1, 'RIPPERDOC': 2, 'FIXER': 3, 'NETRUNNER': 4, 'TECH': 5}
-    status_map = {'AVAILABLE': 0, 'TAKEN': 1, 'COMPLETED': 2, 'CANCELLED': 3}
+    # Map string enum values to integers (matching GigEnums.cs)
+    category_map = {'REDACTED': 0, 'FIXER': 1, 'KILLER': 2, 'HACKING': 3, 'WELLBEING': 4}
+    status_map = {'AVAILABLE': 0, 'IN_PROGRESS': 1, 'COMPLETED': 2, 'PENDING_CONFIRMATION': 3, 'DISPUTE': 4, 'EXPIRED': 5}
+    subcategory_map = {
+        'REDACTED': 0, 'TECH': 1, 'DELIVERY': 2, 'GUNS_AND_AMMO': 3, 'DRUGS': 4,
+        'OTHER_MERCH': 5, 'ITEM_ACQUISITION': 6, 'ANDROID_ACQUISITION': 7,
+        'DEBT_COLLECTION': 8, 'INTIMIDATION': 9, 'KIDNAPPING': 10, 'BODYGUARD': 11,
+        'HIT': 12, 'LOVER_EXPERIENCE': 13, 'ENTERTAINMENT': 14, 'SEX_DOLL': 15,
+        'QUICKIE': 16, 'FIRST_AID': 17, 'CYBERWARE': 18, 'MEDEVAC': 19,
+        'RENTING_LOCATION': 20, 'INTEL': 21, 'BANK_ACCOUNT_MANIPULATION': 22,
+        'SPOOFING': 23, 'SECURITY': 24, 'ANDROID_HIJACK': 25, 'MINDEXPLOIT': 26
+    }
     
     for item in data:
         try:
             rep_level = item.get('ReputationRequired', {}).get('Level', 0)
-            category = category_map.get(item.get('Category', 'KILLER'), 0)
-            subcategory = 0  # Default, would need subcategory mapping
+            category = category_map.get(item.get('Category', 'REDACTED'), 0)
+            subcategory = subcategory_map.get(item.get('Subcategory', 'REDACTED'), 0)
             status = status_map.get(item.get('Status', 'AVAILABLE'), 0)
+            
+            # First insert into ObscurableInfos parent table
+            gig_id = convert_id(item.get('_id'))
+            cursor.execute("""
+                INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
+                VALUES (%s, false) ON CONFLICT ("Id") DO NOTHING
+            """, (gig_id,))
             
             cursor.execute("""
                 INSERT INTO "Gigs" 
@@ -216,7 +277,7 @@ def load_gigs(conn, data):
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                         CURRENT_TIMESTAMP, 0, false)
                 ON CONFLICT ("Id") DO NOTHING
-            """, (convert_id(item.get('_id')), item.get('Payout', 0),
+            """, (gig_id, item.get('Payout', 0),
                  item.get('Title', ''), item.get('Description', ''),
                  item.get('DescriptionDetailed', ''), item.get('ConversationId'),
                  category, subcategory, rep_level,
@@ -287,6 +348,16 @@ def load_logs(conn, data):
     for item in data:
         try:
             log_type = log_type_map.get(item.get('LogType', 'System'), 3)
+            subnetwork_id = item.get('SubnetworkId', '')
+            
+            # Skip if subnetwork doesn't exist (e.g., test data like "SN999")
+            if subnetwork_id:
+                cursor.execute('SELECT 1 FROM "Subnetworks" WHERE "Id" = %s', (subnetwork_id,))
+                if not cursor.fetchone():
+                    log_warn(f"Skipping log - Subnetwork {subnetwork_id} doesn't exist")
+                    failed += 1
+                    continue
+            
             cursor.execute("""
                 INSERT INTO "Logs" 
                 ("Id", "Timestamp", "SourceUserId", "SourceUserName", "SourceHackerName",
@@ -298,7 +369,7 @@ def load_logs(conn, data):
                  item.get('SourceUserId', ''), item.get('SourceUserName', ''),
                  item.get('SourceHackerName'), item.get('TargetUserId', ''),
                  item.get('TargetUserName', ''), log_type,
-                 item.get('LogData', ''), item.get('SubnetworkId', ''),
+                 item.get('LogData', ''), subnetwork_id,
                  item.get('SubnetworkName', '')))
             success += 1
         except Exception as e:
