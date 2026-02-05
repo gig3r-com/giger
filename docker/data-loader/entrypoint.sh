@@ -43,7 +43,7 @@ fi
 
 # Wait for backend to create schema (EF Core migrations)
 log_info "Waiting for backend to initialize database schema..."
-sleep 5
+sleep 10
 
 # Wait for PostgreSQL to be ready
 log_info "Waiting for PostgreSQL to be ready..."
@@ -64,9 +64,10 @@ try:
     )
     conn.close()
     exit(0)
-except:
+except Exception as e:
+    print(f'Connection error: {e}', flush=True)
     exit(1)
-" 2>/dev/null; then
+" 2>&1; then
         log_info "PostgreSQL is ready!"
         break
     fi
