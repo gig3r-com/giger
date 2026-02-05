@@ -1,4 +1,5 @@
 ﻿using Giger.Models.EventModels;
+using Giger.Models.PlotModels;
 using Giger.Models.User.Records;
 using Giger.Models.User.Stats;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -91,5 +92,35 @@ namespace Giger.Models.User
         public string[] MindHackEnabledFor { get; set; } = []; 
 
         public string? HackerName { get; set; }
+
+        /// <summary>
+        /// Player's profession
+        /// </summary>
+        public string? Profession { get; set; }
+
+        /// <summary>
+        /// Player's affiliation
+        /// </summary>
+        public string? Affiliation { get; set; }
+
+        /// <summary>
+        /// Account number of the main account
+        /// </summary>
+        public string? MainAccount { get; set; }
+
+        /// <summary>
+        /// Personal ICE level
+        /// </summary>
+        public int? PersonalIce { get; set; }
+
+        /// <summary>
+        /// Epsilon-specific data stored as key-value pairs
+        /// </summary>
+        public Dictionary<string, string>? EpsilonData { get; set; }
+
+        /// <summary>
+        /// Plots this user is involved in (many-to-many relationship)
+        /// </summary>
+        public List<Plot>? Plots { get; set; }
     }
 }

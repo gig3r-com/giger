@@ -6,10 +6,33 @@ namespace Giger.Models.BankingModels
     {
         public string Id { get; set; } = string.Empty;
 
-        public string Owner { get; set; } = string.Empty;
+        /// <summary>
+        /// List of user handles who own this account
+        /// </summary>
+        public List<string> Owners { get; set; } = [];
+
+        /// <summary>
+        /// Legacy single owner field - kept for backwards compatibility
+        /// </summary>
+        public string Owner
+        {
+            get => Owners.FirstOrDefault() ?? string.Empty;
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && !Owners.Contains(value))
+                {
+                    Owners.Add(value);
+                }
+            }
+        }
 
         [JsonPropertyName("OwnerId")]
         public string? OwnerId { get; set; }
+
+        /// <summary>
+        /// Optional name for business accounts
+        /// </summary>
+        public string? Name { get; set; }
 
         public List<Transaction> Transactions { get; set; } = [];
         

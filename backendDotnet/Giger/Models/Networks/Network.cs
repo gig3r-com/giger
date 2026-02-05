@@ -8,5 +8,25 @@ namespace Giger.Models.Networks
         public string Name { get; set; } = string.Empty;
         public string[] Subnetworks { get; set; } = [];
         public string? AdminId { get; set; }
+
+        /// <summary>
+        /// Handle of the network administrator
+        /// </summary>
+        public string? Admin { get; set; }
+
+        /// <summary>
+        /// Network nodes stored as key-value pairs
+        /// </summary>
+        public Dictionary<string, string>? Nodes { get; set; }
+
+        /// <summary>
+        /// Network data stored as key-value pairs
+        /// </summary>
+        public Dictionary<string, string>? Data { get; set; }
+
+        /// <summary>
+        /// Description used by Epsilon system
+        /// </summary>
+        public string? EpsilonDescription { get; set; }
     }
 }

@@ -24,6 +24,11 @@ namespace Giger.Models.BankingModels
 
         public string? OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
 
+        /// <summary>
+        /// Optional hack data associated with this transaction
+        /// </summary>
+        public string? HackData { get; set; }
+
         public Transaction() { }
 
         [SetsRequiredMembers]

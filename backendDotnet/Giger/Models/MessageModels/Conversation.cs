@@ -7,6 +7,11 @@ namespace Giger.Models.MessageModels
     {
         public string Id { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Optional title for the conversation
+        /// </summary>
+        public string? Title { get; set; }
+
         public List<Message> Messages { get; set; } = [];
 
         [JsonConverter(typeof(FlexibleStringListConverter))]
@@ -14,6 +19,11 @@ namespace Giger.Models.MessageModels
 
         [JsonConverter(typeof(FlexibleStringListConverter))]
         public List<string> AnonymizedUsers { get; set; } = []; // UserNames
+
+        /// <summary>
+        /// List of hacker handles who have access to this conversation
+        /// </summary>
+        public List<string> Hackers { get; set; } = [];
 
         public bool GigConversation { get; set; }
 

@@ -28,6 +28,11 @@ namespace Giger.Models.GigModels
 
         public string? TakenById { get; set; }
 
+        /// <summary>
+        /// Handle of the worker who took this gig
+        /// </summary>
+        public string? WorkerHandle { get; set; }
+
         public string? ClientAccountNumber { get; set; }
 
         public string? ProviderAccountNumber { get; set; }
@@ -44,7 +49,17 @@ namespace Giger.Models.GigModels
 
         public bool IsRevealedByClient { get; set; } = true;
 
+        /// <summary>
+        /// List of user handles that this gig is revealed to
+        /// </summary>
+        public List<string>? IsRevealedTo { get; set; }
+
         public string? DescriptionDetailed { get; set; }
+
+        /// <summary>
+        /// Collection of status updates for this gig
+        /// </summary>
+        public List<GigUpdate>? Updates { get; set; }
 
         public override void Obscure()
         {

@@ -28,6 +28,11 @@ namespace Giger.Models.Logs
 
         public string SubnetworkName { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Additional hack-related data stored as key-value pairs
+        /// </summary>
+        public Dictionary<string, string>? HackData { get; set; }
+
         public Log() { }
 
         [SetsRequiredMembers]

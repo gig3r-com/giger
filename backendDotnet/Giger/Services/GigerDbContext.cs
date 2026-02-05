@@ -8,6 +8,7 @@ using Giger.Models.Logs;
 using Giger.Models.MessageModels;
 using Giger.Models.Networks;
 using Giger.Models.Obscured;
+using Giger.Models.PlotModels;
 using Giger.Models.User;
 using Giger.Models.User.Stats;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Giger.Services
 
         // Gig Models
         public DbSet<Gig> Gigs { get; set; }
+        public DbSet<GigUpdate> GigUpdates { get; set; }
         public DbSet<CriminalEvent> CriminalEvents { get; set; }
         public DbSet<MedicalEvent> MedicalEvents { get; set; }
 
@@ -56,6 +58,10 @@ namespace Giger.Services
         public DbSet<UserPrivate> Users { get; set; }
         public DbSet<UserPublic> UsersPublic { get; set; }
         public DbSet<UserSimple> UsersSimple { get; set; }
+
+        // Plot Models
+        public DbSet<Plot> Plots { get; set; }
+        
         // Add other DbSet<T> as needed
 
         public GigerDbContext(DbContextOptions<GigerDbContext> options) : base(options) 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Giger.Models.Logs;
+using System.Text.Json.Serialization;
 
 namespace Giger.Models.Networks
 {
@@ -18,7 +19,17 @@ namespace Giger.Models.Networks
 
         public string[] Ice { get; set; } = [];
 
+        /// <summary>
+        /// Optional access point identifier for this subnetwork
+        /// </summary>
+        public string? AccessPoint { get; set; }
+
         public string[] PastHacks { get; set; } = [];
+
+        /// <summary>
+        /// Collection of logs associated with this subnetwork
+        /// </summary>
+        public List<Log>? Logs { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter<Firewall>))]
