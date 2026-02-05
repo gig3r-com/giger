@@ -297,13 +297,15 @@ def load_accounts(conn, data):
         try:
             account_id = convert_id(item.get('_id'))
             acc_type = type_map.get(item.get('Type', 'PERSONAL'), 0)
+            owner = item.get('Owner', '')
+            owner_id = item.get('OwnerId', '')
             cursor.execute("""
                 INSERT INTO "Accounts" 
                 ("Id", "Owners", "Owner", "OwnerId", "Name", "Type", "Balance", 
                  "AccountNumber", "IsActive")
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (account_id, [item.get('UserId', '')],
-                 item.get('UserId', ''), item.get('UserId', ''), 
+            """, (account_id, [owner_id] if owner_id else [],
+                 owner, owner_id, 
                  item.get('Name', ''), acc_type, item.get('Balance', 0),
                  item.get('AccountNumber', ''), True))
             
@@ -410,10 +412,11 @@ def load_gigs(conn, data):
             
             # First insert into ObscurableInfos parent table
             gig_id = convert_id(item.get('_id'))
+            is_revealed = item.get('IsRevealed', False)
             cursor.execute("""
                 INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
-                VALUES (%s, false) ON CONFLICT ("Id") DO NOTHING
-            """, (gig_id,))
+                VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
+            """, (gig_id, is_revealed if is_revealed is not None else False))
             
             cursor.execute("""
                 INSERT INTO "Gigs" 
