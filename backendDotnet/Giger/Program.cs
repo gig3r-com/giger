@@ -48,6 +48,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Configure AuthEnabled from appsettings
+#if DEBUG
+var authEnabled = builder.Configuration.GetValue<bool>("Auth:Enabled", true);
+AuthController.AuthEnabled = authEnabled;
+app.Logger.LogInformation($"Auth enabled: {authEnabled}");
+#endif
+
 // Apply migrations automatically on startup with retry logic
 using (var scope = app.Services.CreateScope())
 {

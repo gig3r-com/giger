@@ -313,6 +313,8 @@ def load_accounts(conn, data):
             for trans in item.get('Transactions', []):
                 try:
                     trans_id = convert_id(trans.get('_id'))
+                    # Store amounts as absolute values - frontend will determine sign
+                    amount = abs(trans.get('Amount', 0))
                     cursor.execute("""
                         INSERT INTO "Transactions" 
                         ("Id", "From", "FromUser", "To", "ToUser", "Title", 
@@ -321,7 +323,7 @@ def load_accounts(conn, data):
                         ON CONFLICT ("Id") DO NOTHING
                     """, (trans_id, trans.get('From', ''), trans.get('FromUser', ''),
                          trans.get('To', ''), trans.get('ToUser', ''),
-                         trans.get('Title', ''), trans.get('Amount', 0),
+                         trans.get('Title', ''), amount,
                          trans.get('Timestamp'), account_id))
                     transaction_count += 1
                 except Exception as e:
@@ -426,7 +428,7 @@ def load_gigs(conn, data):
                  "TakenById", "ClientAccountNumber", "ProviderAccountNumber",
                  "CreatedAt", "Mode", "IsRevealedByClient")
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                        CURRENT_TIMESTAMP, 0, false)
+                        CURRENT_TIMESTAMP, 0, %s)
                 ON CONFLICT ("Id") DO NOTHING
             """, (gig_id, item.get('Payout', 0),
                  item.get('Title', ''), item.get('Description', ''),
@@ -435,7 +437,8 @@ def load_gigs(conn, data):
                  item.get('IsAnonymizedAuthor', False), status,
                  item.get('AuthorId', ''), item.get('AuthorName', ''),
                  item.get('TakenById'), item.get('ClientAccountNumber'),
-                 item.get('ProviderAccountNumber')))
+                 item.get('ProviderAccountNumber'),
+                 item.get('IsRevealedByClient', False)))
             success += 1
         except Exception as e:
             log_error(f"Gig {item.get('Title')}: {e}")
