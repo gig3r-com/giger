@@ -197,6 +197,85 @@ def load_users(conn, data):
                 except Exception as e:
                     log_error(f"CriminalEvent for {user.get('Handle')}: {e}")
             
+            # Load nested Meta records
+            for record in user.get('Meta', []):
+                try:
+                    record_id = convert_id(record.get('_id'))
+                    is_revealed = record.get('IsRevealed', False)
+                    # Insert into ObscurableInfos parent first
+                    cursor.execute("""
+                        INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
+                        VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, is_revealed if is_revealed is not None else False))
+                    # Then insert into Meta table (RecordType enum: META=2)
+                    cursor.execute("""
+                        INSERT INTO "Meta" 
+                        ("Id", "Title", "Description", "RecordType", "UserPrivateId")
+                        VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, record.get('Title', ''), record.get('Description', ''),
+                         2, user_id))
+                    medical_count += 1  # Reuse counter for simplicity
+                except Exception as e:
+                    log_error(f"Meta for {user.get('Handle')}: {e}")
+            
+            # Load nested Goals
+            for record in user.get('Goals', []):
+                try:
+                    record_id = convert_id(record.get('_id'))
+                    is_revealed = record.get('IsRevealed', False)
+                    cursor.execute("""
+                        INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
+                        VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, is_revealed if is_revealed is not None else False))
+                    # RecordType enum: GOAL=1
+                    cursor.execute("""
+                        INSERT INTO "Goal" 
+                        ("Id", "Title", "Description", "RecordType", "UserPrivateId")
+                        VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, record.get('Title', ''), record.get('Description', ''),
+                         1, user_id))
+                    criminal_count += 1  # Reuse counter
+                except Exception as e:
+                    log_error(f"Goal for {user.get('Handle')}: {e}")
+            
+            # Load nested PrivateRecords
+            for record in user.get('PrivateRecords', []):
+                try:
+                    record_id = convert_id(record.get('_id'))
+                    is_revealed = record.get('IsRevealed', False)
+                    cursor.execute("""
+                        INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
+                        VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, is_revealed if is_revealed is not None else False))
+                    # RecordType enum: PRIVATE_RECORD=3
+                    cursor.execute("""
+                        INSERT INTO "PrivateRecord" 
+                        ("Id", "Title", "Description", "RecordType", "UserPrivateId")
+                        VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, record.get('Title', ''), record.get('Description', ''),
+                         3, user_id))
+                except Exception as e:
+                    log_error(f"PrivateRecord for {user.get('Handle')}: {e}")
+            
+            # Load nested Relations
+            for record in user.get('Relations', []):
+                try:
+                    record_id = convert_id(record.get('_id'))
+                    is_revealed = record.get('IsRevealed', False)
+                    cursor.execute("""
+                        INSERT INTO "ObscurableInfos" ("Id", "IsRevealed")
+                        VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, is_revealed if is_revealed is not None else False))
+                    # RecordType enum: RELATION=0
+                    cursor.execute("""
+                        INSERT INTO "Relation" 
+                        ("Id", "UserName", "Description", "RecordType", "UserPrivateId")
+                        VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (record_id, record.get('UserName', ''), record.get('Description', ''),
+                         0, user_id))
+                except Exception as e:
+                    log_error(f"Relation for {user.get('Handle')}: {e}")
+            
             success += 1
         except Exception as e:
             log_error(f"User {user.get('Handle')}: {e}")
@@ -204,6 +283,7 @@ def load_users(conn, data):
     
     conn.commit()
     log_info(f"  ↳ Also loaded {medical_count} medical events and {criminal_count} criminal events")
+    log_info(f"  ↳ Plus user records (Meta, Goals, PrivateRecords, Relations)")
     return success, failed
 
 def load_accounts(conn, data):
