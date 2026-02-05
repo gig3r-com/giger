@@ -110,12 +110,19 @@ def load_subnetworks(conn, data):
 def load_users(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    medical_count, criminal_count = 0, 0
+    
     # Map enum strings to integers
     type_map = {'AI': 0, 'HUMAN': 1, 'CYBORG': 2}
     vibe_map = {'OVERSEERS': 0, 'ELITES': 1, 'WORKERS': 2, 'OUTCASTS': 3}
     wealth_map = {'POOR': 0, 'STABLE': 1, 'COMFORTABLE': 2, 'WEALTHY': 3, 'RICH': 4}
     engagement_map = {'HYPED': 0, 'ENGAGED': 1, 'NEUTRAL': 2, 'DISENGAGED': 3}
     faction_map = {'NO_FACTION': 0, 'HEDIN': 1, 'KLAN': 2, 'MEGACORP': 3}
+    
+    # Medical and criminal event enums
+    medical_type_map = {'CYBERWARE': 0, 'MEDICAL_DRUG': 1, 'MEDICAL_PROCEDURE': 2, 'SYMPTOM': 3}
+    criminal_type_map = {'VICTIM': 0, 'SUSPECT': 1, 'WANTED': 2, 'WITNESS': 3, 'PUNISHMENT': 4}
+    event_status_map = {'CURRENT': 0, 'HISTORICAL': 1}
     
     for user in data:
         try:
@@ -153,11 +160,50 @@ def load_users(conn, data):
                  [], True, '', '', '', '', False, False, 'UserPrivate',
                  cyberware, hacking, confront, brave, talkative, thinker, combat,
                  user.get('VibeFunction', ''), engagement))
+            
+            # Load nested medical events
+            for event in user.get('MedicalEvents', []):
+                try:
+                    event_id = convert_id(event.get('_id'))
+                    event_type = medical_type_map.get(event.get('Type', 'CYBERWARE'), 0)
+                    event_status = event_status_map.get(event.get('Status', 'CURRENT'), 0)
+                    cursor.execute("""
+                        INSERT INTO "MedicalEvents" 
+                        ("Id", "Type", "UserPrivateId", "Name", "EventDescription", 
+                         "Status", "TimeStamp")
+                        VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (event_id, event_type, user_id, event.get('Name', ''),
+                         event.get('EventDescription', ''), event_status, 
+                         event.get('TimeStamp')))
+                    medical_count += 1
+                except Exception as e:
+                    log_error(f"MedicalEvent for {user.get('Handle')}: {e}")
+            
+            # Load nested criminal events
+            for event in user.get('CriminalEvents', []):
+                try:
+                    event_id = convert_id(event.get('_id'))
+                    event_type = criminal_type_map.get(event.get('Type', 'VICTIM'), 0)
+                    event_status = event_status_map.get(event.get('Status', 'CURRENT'), 0)
+                    cursor.execute("""
+                        INSERT INTO "CriminalEvents" 
+                        ("Id", "Type", "UserPrivateId", "Name", "EventDescription", 
+                         "Status", "TimeStamp")
+                        VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    """, (event_id, event_type, user_id, event.get('Name', ''),
+                         event.get('EventDescription', ''), event_status,
+                         event.get('TimeStamp')))
+                    criminal_count += 1
+                except Exception as e:
+                    log_error(f"CriminalEvent for {user.get('Handle')}: {e}")
+            
             success += 1
         except Exception as e:
             log_error(f"User {user.get('Handle')}: {e}")
             failed += 1
+    
     conn.commit()
+    log_info(f"  ↳ Also loaded {medical_count} medical events and {criminal_count} criminal events")
     return success, failed
 
 def load_accounts(conn, data):
