@@ -50,13 +50,13 @@ def load_auths(conn, data):
     for item in data:
         try:
             cursor.execute("""
-                INSERT INTO "Auths" ("Id", "Name", "AccessLevel", "UserId")
-                VALUES (%s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (convert_id(item.get('_id')), item.get('Name', ''),
-                 item.get('AccessLevel', 0), item.get('UserId', '')))
+                INSERT INTO "Auths" ("Id", "Username", "HackerName", "Password", "AuthToken")
+                VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+            """, (convert_id(item.get('_id')), item.get('Username', ''),
+                 item.get('HackerName'), item.get('Password', ''), item.get('AuthToken')))
             success += 1
         except Exception as e:
-            log_error(f"Auth {item.get('Name')}: {e}")
+            log_error(f"Auth {item.get('Username')}: {e}")
             failed += 1
     conn.commit()
     return success, failed
@@ -195,22 +195,32 @@ def load_obscured_codes(conn, data):
 def load_gigs(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    # Map string enum values to integers
+    category_map = {'KILLER': 0, 'CORPO': 1, 'RIPPERDOC': 2, 'FIXER': 3, 'NETRUNNER': 4, 'TECH': 5}
+    status_map = {'AVAILABLE': 0, 'TAKEN': 1, 'COMPLETED': 2, 'CANCELLED': 3}
+    
     for item in data:
         try:
+            rep_level = item.get('ReputationRequired', {}).get('Level', 0)
+            category = category_map.get(item.get('Category', 'KILLER'), 0)
+            subcategory = 0  # Default, would need subcategory mapping
+            status = status_map.get(item.get('Status', 'AVAILABLE'), 0)
+            
             cursor.execute("""
                 INSERT INTO "Gigs" 
                 ("Id", "Payout", "Title", "Description", "DescriptionDetailed", 
                  "ConversationId", "Category", "Subcategory", "ReputationRequired",
                  "IsAnonymizedAuthor", "Status", "AuthorId", "AuthorName", 
-                 "TakenById", "ClientAccountNumber", "ProviderAccountNumber")
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                 "TakenById", "ClientAccountNumber", "ProviderAccountNumber",
+                 "CreatedAt", "Mode", "IsRevealedByClient")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                        CURRENT_TIMESTAMP, 0, false)
                 ON CONFLICT ("Id") DO NOTHING
             """, (convert_id(item.get('_id')), item.get('Payout', 0),
                  item.get('Title', ''), item.get('Description', ''),
                  item.get('DescriptionDetailed', ''), item.get('ConversationId'),
-                 item.get('Category', ''), item.get('Subcategory', ''),
-                 json.dumps(item.get('ReputationRequired', {})),
-                 item.get('IsAnonymizedAuthor', False), item.get('Status', ''),
+                 category, subcategory, rep_level,
+                 item.get('IsAnonymizedAuthor', False), status,
                  item.get('AuthorId', ''), item.get('AuthorName', ''),
                  item.get('TakenById'), item.get('ClientAccountNumber'),
                  item.get('ProviderAccountNumber')))
@@ -227,22 +237,22 @@ def load_conversations(conn, data):
     for item in data:
         try:
             conv_id = convert_id(item.get('_id'))
+            participants = item.get('Participants', [])
             cursor.execute("""
                 INSERT INTO "Conversations" 
-                ("Id", "Participants", "GigConversation")
-                VALUES (%s, %s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (conv_id, json.dumps(item.get('Participants', [])),
-                 item.get('GigConversation', False)))
+                ("Id", "Participants", "AnonymizedUsers", "Hackers", "GigConversation")
+                VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+            """, (conv_id, participants, [], [], item.get('GigConversation', False)))
             
             # Load messages for this conversation
             for msg in item.get('Messages', []):
                 msg_id = convert_id(msg.get('_id'))
                 cursor.execute("""
                     INSERT INTO "Messages" 
-                    ("Id", "ConversationId", "Date", "Sender", "Text")
-                    VALUES (%s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+                    ("Id", "ConversationId", "Date", "Sender", "Text", "ReadBy")
+                    VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT ("Id") DO NOTHING
                 """, (msg_id, conv_id, msg.get('Date'), msg.get('Sender', ''),
-                     msg.get('Text', '')))
+                     msg.get('Text', ''), []))
             
             success += 1
         except Exception as e:
@@ -257,9 +267,10 @@ def load_anonymized(conn, data):
     for item in data:
         try:
             cursor.execute("""
-                INSERT INTO "AnonymizedUsers" ("Id", "Handle")
-                VALUES (%s, %s) ON CONFLICT ("Id") DO NOTHING
-            """, (convert_id(item.get('_id')), item.get('Handle', '')))
+                INSERT INTO "AnonymizedUsers" ("Id", "UserId", "DisplyedAs")
+                VALUES (%s, %s, %s) ON CONFLICT ("Id") DO NOTHING
+            """, (convert_id(item.get('_id')), item.get('UserId', ''),
+                 item.get('DisplyedAs', '')))
             success += 1
         except Exception as e:
             log_error(f"AnonymizedUser: {e}")
@@ -270,8 +281,12 @@ def load_anonymized(conn, data):
 def load_logs(conn, data):
     cursor = conn.cursor()
     success, failed = 0, 0
+    # Map log type strings to integers
+    log_type_map = {'Transfer': 0, 'Hack': 1, 'Access': 2, 'System': 3}
+    
     for item in data:
         try:
+            log_type = log_type_map.get(item.get('LogType', 'System'), 3)
             cursor.execute("""
                 INSERT INTO "Logs" 
                 ("Id", "Timestamp", "SourceUserId", "SourceUserName", "SourceHackerName",
@@ -282,7 +297,7 @@ def load_logs(conn, data):
             """, (convert_id(item.get('_id')), item.get('Timestamp'),
                  item.get('SourceUserId', ''), item.get('SourceUserName', ''),
                  item.get('SourceHackerName'), item.get('TargetUserId', ''),
-                 item.get('TargetUserName', ''), item.get('LogType', ''),
+                 item.get('TargetUserName', ''), log_type,
                  item.get('LogData', ''), item.get('SubnetworkId', ''),
                  item.get('SubnetworkName', '')))
             success += 1
