@@ -151,16 +151,18 @@ def load_users(conn, data):
                  "HasPlatinumPass", "HighSecurity", "Discriminator",
                  "CyberwareLevel", "HackingSkills", "ConfrontationistVsAgreeable",
                  "CowardVsBrave", "TalkativeVsSilent", "ThinkerVsDoer", "CombatSkill",
-                 "VibeFunction", "VibeEngagement", "FactionRankPublic", "ReputationDescription")
+                 "VibeFunction", "VibeEngagement", "FactionRankPublic", "ReputationDescription",
+                 "FavoriteUserIds", "Assets", "Exploits", "MindHackEnabledFor")
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
                 ON CONFLICT ("Id") DO NOTHING
             """, (user_id, user.get('Handle', ''), user.get('Name', ''),
                  user.get('Surname', ''), type_pub, type_act, wealth, vibe, faction,
                  [], True, '', '', '', '', False, False, 'UserPrivate',
                  cyberware, hacking, confront, brave, talkative, thinker, combat,
                  user.get('VibeFunction', ''), engagement, 
-                 user.get('FactionRankPublic', ''), user.get('ReputationDescription', '')))
+                 user.get('FactionRankPublic', ''), user.get('ReputationDescription', ''),
+                 [], [], [], []))
             
             # Load nested medical events
             for event in user.get('MedicalEvents', []):
