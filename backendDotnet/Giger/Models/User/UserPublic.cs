@@ -22,7 +22,7 @@ namespace Giger.Models.User
 
         public UserTypes TypePublic { get; set; }
 
-        public string? FactionRankPublic { get; set; }
+        public string? FactionRankPublic { get; set; } = string.Empty;
 
         public string? Surname { get; set; }
 
@@ -42,6 +42,6 @@ namespace Giger.Models.User
 
         public bool HighSecurity { get; set; }
 
-        public string? ReputationDescription { get; set; }
+        public string? ReputationDescription { get; set; } = string.Empty;
     }
 }
