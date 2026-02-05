@@ -4,25 +4,29 @@ import { useField } from 'formik';
 import {
     HACKER_STAT,
 } from '@/configs/UserSelectFields';
+// import {
+    // RECORD_TYPES_OPTIONS,
+    // HARD_RECORD_CATEGORIES,
+    // HARD_RECORD_CATEGORIES_OPTIONS,
+    // RECORD_CATEGORIES_DEFINITIONS
+// } from '@/configs/Record';
 import {
-    RECORD_TYPES_OPTIONS,
-    HARD_RECORD_CATEGORIES,
-    HARD_RECORD_CATEGORIES_OPTIONS,
-    RECORD_CATEGORIES_DEFINITIONS
-} from '@/configs/Record';
+    RECORD_HARD_CATEGORIES
+} from '@/constants';
 import { BOOL } from "@/configs/BaseSelectFields";
 
 import Card from '@/components/forms/Card';
 import Input from '@/components/forms/Input';
 import Select from '@/components/forms/Select';
 import { Grid, Stack, Divider } from '@mui/material';
-import type { HardRecord } from '@/types/Record';
+import type { HardRecord } from '@/types';
+import { RECORD_TYPES_OPTIONS } from "@/constants";
 
 function HardRecord({ index, MoveUpIcon, MoveDownIcon, RemoveIcon }) {
     const name = `criminalHardRecords[${index}]`;
     const [field, meta, helpers] = useField<HardRecord>(name);
     const { title, id, type, category, subCategory } = field.value;
-    const catDef = RECORD_CATEGORIES_DEFINITIONS[category];
+    const catDef = {}[category];
     const CatIcon = catDef?.icon;
 
     const header =
@@ -32,7 +36,7 @@ function HardRecord({ index, MoveUpIcon, MoveDownIcon, RemoveIcon }) {
             {/*{ MoveUpIcon }*/}
             {/*{ MoveDownIcon }*/}
             {/*{ RemoveIcon }*/}
-        </Stack>
+        </Stack>;
 
     return (
         <Grid size={12}>
@@ -40,7 +44,7 @@ function HardRecord({ index, MoveUpIcon, MoveDownIcon, RemoveIcon }) {
                 <Stack direction="row" gap={2} alignItems="flex-start">
                     <Grid container spacing={2} flex={5}>
                         <Grid size={6}>
-                            <Select name={`${name}.category`} label={'Cat'} options={HARD_RECORD_CATEGORIES_OPTIONS} />
+                            <Select name={`${name}.category`} label={'Cat'} options={[]} />
                         </Grid>
                         <Grid size={6}>
                             <Select name={`${name}.subCategory`} label={'Subcat'} options={catDef?.subcategoriesOptions || []} />

@@ -1,10 +1,19 @@
+import { QueryClient, dehydrate } from '@tanstack/react-query'
+import { fetchUsers } from '@/lib/api/users'
+import HydrationBoundary from '@/lib/queries/HydrationBoundary'
+import UsersClient from './UsersClient'
 
-function Page() {
+export default async function Page() {
+    const queryClient = new QueryClient()
+
+    await queryClient.prefetchQuery({
+        queryKey: ['users'],
+        queryFn: fetchUsers,
+    })
+
     return (
-        <div>
-            Dashboard
-        </div>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <UsersClient />
+        </HydrationBoundary>
     )
 }
-
-export default Page;

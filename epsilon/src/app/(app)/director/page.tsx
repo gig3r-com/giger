@@ -4,9 +4,11 @@ import React from 'react';
 import Main from "@/components/layout/Main";
 import LeftEdgePanel from "@/components/layout/LeftEdgePanel";
 import { Typography } from "@mui/material";
+import { RECORD_TYPES } from '@/constants';
 
 function Page() {
     const [open, setOpen] = React.useState(false);
+    const type = RECORD_TYPES[0];
 
     return (
         <>

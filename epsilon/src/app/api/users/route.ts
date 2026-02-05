@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Invalid response.' }, { status: 502 })
   }
   const users = data.map(mapUser);
-  return NextResponse.json({ users }, { status: 200 });
+  return NextResponse.json(users, { status: 200 });
 }
 
 export async function POST(req: NextRequest) {

@@ -68,7 +68,7 @@ const ConversationsTab: React.FC = () => {
                     />
                 </Grid>
 
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} sx={{ flex: 1 }}>
                     <ConversationMessages conversation={selectedConversation} />
                 </Grid>
             </Grid>

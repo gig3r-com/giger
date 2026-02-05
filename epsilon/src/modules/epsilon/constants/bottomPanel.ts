@@ -1,0 +1,1 @@
+export const BOTTOM_PANEL_MODE_OPTIONS = ['TERMINAL'] as const;

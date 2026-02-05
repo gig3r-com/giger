@@ -14,8 +14,8 @@ import {
 
 import type { Account } from '@/notes';
 import Card from '@/components/forms/Card';
-import BoxList from '@/components/forms/BoxList';
-import BoxListItem from '@/components/forms/BoxListItem';
+// import BoxList from '@/components/forms/BoxList';
+// import BoxListItem from '@/components/forms/BoxListItem';
 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';

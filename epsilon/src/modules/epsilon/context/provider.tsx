@@ -1,20 +1,41 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Box } from '@mui/material';
-import { keyframes } from '@mui/system';
+import { parseAsString, useQueryState } from 'nuqs';
+import { CyberLockOverlay, exitFullscreen, goFullscreen } from './utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { EpsilonContextType, AppModes } from '../types';
+import { AppModes, BottomPanelModes, EpsilonContextType, LeftPanelModes, RightPanelModes } from '../types';
 import AdminModal from '../components/AdminModal';
 import { redirect } from 'next/navigation';
 
 const initialValue: EpsilonContextType = {
-  appMode: 'full',
-  setAppMode: (mode) => { console.log(mode); },
+  appMode: 'FULL',
+  setAppMode: (mode) => console.log(mode),
+
   locked: false,
-  setLock: (lock) => { console.log(lock); },
-};
+  setLock: (lock) => console.log(lock),
+
+  isLeftPanelOpened: false,
+  setIsLeftPanelOpened: (value) => console.log(value),
+  leftPanelMode: 'FILES',
+  setLeftPanelMode: (mode) => console.log(mode),
+  leftPanelSearch: '',
+  setLeftPanelSearch: (value) => console.log(value),
+
+  isBottomPanelOpened: false,
+  setIsBottomPanelOpened: (value) => console.log(value),
+  bottomPanelMode: 'TERMINAL',
+  setBottomPanelMode: (mode) => console.log(mode),
+
+  isRightPanelOpened: false,
+  setIsRightPanelOpened: (value) => console.log(value),
+  rightPanelMode: 'OTHER',
+  setRightPanelMode: (mode) => console.log(mode),
+
+  isTopBarOpened: false,
+  setIsTopBarOpened: (value) => console.log(value),
+}
 
 export const EpsilonContext = createContext<EpsilonContextType>(initialValue);
 
@@ -24,46 +45,80 @@ export function useEpsilon() {
   return ctx;
 }
 
-const goFullscreen = async () => {
-  const el: any = document.documentElement;
-  if (!document.fullscreenElement) {
-    try { await (el.requestFullscreen?.() || el.webkitRequestFullscreen?.()); } catch {}
-  }
-};
-const exitFullscreen = async () => {
-  const d: any = document;
-  if (document.fullscreenElement) {
-    try { await (d.exitFullscreen?.() || d.webkitExitFullscreen?.()); } catch {}
-  }
-};
-
 export function EpsilonContextProvider({ children }: { children: ReactNode }) {
-  const [appMode, setAppMode] = useState<AppModes>('full');
+  const [appMode, setAppMode] = useState<AppModes>('FULL');
   const [locked, setLock] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState(false);
 
+  // Panels
+  const [isLeftPanelOpened, setIsLeftPanelOpened] = useState<boolean>(true);
+  const [leftPanelMode, setLeftPanelMode] = useState<LeftPanelModes>('FILES');
+
+  const [isBottomPanelOpened, setIsBottomPanelOpened] = useState<boolean>(true);
+  const [bottomPanelMode, setBottomPanelMode] = useState<BottomPanelModes>('TERMINAL');
+
+  const [isRightPanelOpened, setIsRightPanelOpened] = useState<boolean>(true);
+  const [rightPanelMode, setRightPanelMode] = useState<RightPanelModes>('OTHER');
+
+  // Bars
+  const [isTopBarOpened, setIsTopBarOpened] = useState<boolean>(true);
+
+  // Search query states
+  const [leftPanelSearch, setLeftPanelSearch] = useQueryState('search', parseAsString.withDefault(''));
+  const [bottomPanelSearch, setBottomPanelSearch] = useQueryState('search', parseAsString.withDefault(''));
+  const [rightPanelSearch, setRightPanelSearch] = useQueryState('search', parseAsString.withDefault(''));
+
+  // Restore from localStorage
   useEffect(() => {
     const storedMode = (localStorage.getItem('appMode') as AppModes) ?? 'full';
     const storedLocked = localStorage.getItem('locked') === 'true';
     setAppMode(storedMode);
     setLock(storedLocked);
+
+    const storedLeftOpen = localStorage.getItem('isLeftPanelOpened') === 'true';
+    const storedLeftMode = (localStorage.getItem('leftPanelMode') as LeftPanelModes) ?? 'FILES';
+    setIsLeftPanelOpened(storedLeftOpen);
+    setLeftPanelMode(storedLeftMode);
+
+    const storedBottomOpen = localStorage.getItem('isBottomPanelOpened') === 'true';
+    const storedBottomMode = (localStorage.getItem('bottomPanelMode') as BottomPanelModes) ?? 'TERMINAL';
+    setIsBottomPanelOpened(storedBottomOpen);
+    setBottomPanelMode(storedBottomMode);
+
+    const storedRightOpen = localStorage.getItem('isRightPanelOpened') === 'true';
+    const storedRightMode = (localStorage.getItem('rightPanelMode') as RightPanelModes) ?? 'OTHER';
+    setIsRightPanelOpened(storedRightOpen);
+    setRightPanelMode(storedRightMode);
+
     setHydrated(true);
   }, []);
 
+  // Persist to localStorage when state changes
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem('locked', locked ? 'true' : 'false');
-  }, [locked, hydrated]);
 
-  const changeMode = (appMode) => {
+    localStorage.setItem('locked', locked ? 'true' : 'false');
+
+    localStorage.setItem('isLeftPanelOpened', isLeftPanelOpened ? 'true' : 'false');
+    localStorage.setItem('leftPanelMode', leftPanelMode);
+
+    localStorage.setItem('isBottomPanelOpened', isBottomPanelOpened ? 'true' : 'false');
+    localStorage.setItem('bottomPanelMode', bottomPanelMode);
+
+    localStorage.setItem('isRightPanelOpened', isRightPanelOpened ? 'true' : 'false');
+    localStorage.setItem('rightPanelMode', rightPanelMode);
+
+  }, [locked, isLeftPanelOpened, leftPanelMode, isBottomPanelOpened, bottomPanelMode, isRightPanelOpened, rightPanelMode, hydrated]);
+
+  const changeMode = (appMode: AppModes) => {
     let moveLink = '';
     switch (appMode) {
-      case 'police': {
+      case 'POLICE': {
         goFullscreen();
         moveLink = '/sector/police';
         break;
       }
-      case 'full':
+      case 'FULL':
       default: {
         exitFullscreen();
         moveLink = '/';
@@ -74,87 +129,46 @@ export function EpsilonContextProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('appMode', appMode);
     redirect(moveLink);
   }
+
   const value = useMemo(() => ({
     appMode, setAppMode: changeMode,
-    locked, setLock
-  }), [appMode, locked]);
+    locked,
+    setLock,
+    isLeftPanelOpened,
+    setIsLeftPanelOpened,
+    leftPanelMode,
+    setLeftPanelMode,
+    leftPanelSearch,
+    setLeftPanelSearch,
+    isBottomPanelOpened,
+    setIsBottomPanelOpened,
+    bottomPanelMode,
+    setBottomPanelMode,
+    bottomPanelSearch,
+    setBottomPanelSearch,
+    isRightPanelOpened,
+    setIsRightPanelOpened,
+    rightPanelMode,
+    setRightPanelMode,
+    rightPanelSearch,
+    setRightPanelSearch,
+    isTopBarOpened,
+    setIsTopBarOpened,
+  }), [
+    appMode, locked,
+    isLeftPanelOpened, leftPanelMode, leftPanelSearch,
+    isBottomPanelOpened, bottomPanelMode, bottomPanelSearch,
+    isRightPanelOpened, rightPanelMode, rightPanelSearch,
+    isTopBarOpened,
+  ]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <EpsilonContext.Provider value={value}>
-        { locked && <CyberLockOverlay /> }
-        <AdminModal />
-        { children }
-      </EpsilonContext.Provider>
-    </LocalizationProvider>
-  );
-}
-
-function CyberLockOverlay() {
-// Animations
-  const pulse = keyframes`
-0%, 100% { box-shadow: 0 0 0px rgba(0,255,255,0.3), 0 0 10px rgba(0,255,255,0.5), 0 0 40px rgba(255,0,255,0.25); }
-50% { box-shadow: 0 0 2px rgba(0,255,255,0.6), 0 0 18px rgba(0,255,255,0.9), 0 0 60px rgba(255,0,255,0.4); }
-`;
-  const glowText = keyframes`
-0%, 100% { text-shadow: 0 0 2px #0ff, 0 0 6px #0ff, 0 0 14px #0ff, 0 0 32px #f0f; }
-50% { text-shadow: 0 0 4px #0ff, 0 0 12px #0ff, 0 0 28px #0ff, 0 0 48px #f0f; }
-`;
-  const glitch = keyframes`
-0% { clip-path: inset(0 0 0 0); transform: translate(0); }
-20% { clip-path: inset(0 0 85% 0); transform: translate(-2px, 1px); }
-40% { clip-path: inset(10% 0 0 0); transform: translate(1px, -1px); }
-60% { clip-path: inset(0 0 60% 0); transform: translate(-1px, 2px); }
-80% { clip-path: inset(40% 0 0 0); transform: translate(2px, 0); }
-100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-`;
-
-
-  return (
-    <Box
-      aria-hidden
-      sx={{
-        position: 'fixed', inset: 0, zIndex: 1300, pointerEvents: 'auto',
-        display: 'grid', placeItems: 'center',
-        background: `radial-gradient(60vw 60vh at 20% 20%, rgba(0,255,255,0.15), transparent 60%),
-radial-gradient(50vw 50vh at 80% 80%, rgba(255,0,255,0.15), transparent 60%),
-rgba(8,8,12,0.85)`,
-        backdropFilter: 'blur(3px) saturate(120%)',
-        '&::before': {
-          content: '""', position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: `repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 2px, transparent 4px)`,
-          mixBlendMode: 'overlay',
-        },
-        '&::after': {
-          content: '""', position: 'absolute', inset: 12, borderRadius: 12, pointerEvents: 'none',
-          border: '1px solid rgba(0,255,255,0.5)',
-          animation: `${pulse} 2s ease-in-out infinite`,
-        },
-        '@media (prefers-reduced-motion: reduce)': {
-          animation: 'none', '&::after': { animation: 'none' }
-        }
-      }}
-    >
-      <Box sx={{ position: 'relative', textAlign: 'center', px: 3 }}>
-        <Box
-          component="div"
-          sx={{
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-            fontSize: { xs: '28px', sm: '36px', md: '44px' },
-            letterSpacing: 6,
-            color: '#0ff',
-            animation: `${glowText} 2.8s ease-in-out infinite`,
-            position: 'relative',
-          }}
-        >
-          LOCKED
-          <Box aria-hidden sx={{ position: 'absolute', inset: 0, color: '#f0f', opacity: 0.6, mixBlendMode: 'screen', animation: `${glitch} 2.2s infinite steps(2)`, transform: 'translate(1px,0)' }}>LOCKED</Box>
-          <Box aria-hidden sx={{ position: 'absolute', inset: 0, color: '#0ff', opacity: 0.6, mixBlendMode: 'screen', animation: `${glitch} 1.7s infinite steps(2)`, transform: 'translate(-1px,0)' }}>LOCKED</Box>
-        </Box>
-        <Box sx={{ mt: 1, color: 'rgba(255,255,255,0.75)', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase' }}>
-          Game director required
-        </Box>
-      </Box>
-    </Box>
+      <LocalizationProvider dateAdapter={ AdapterDayjs }>
+        <EpsilonContext.Provider value={ value }>
+          { locked && <CyberLockOverlay/> }
+          <AdminModal/>
+          { children }
+        </EpsilonContext.Provider>
+      </LocalizationProvider>
   );
 }

@@ -12,16 +12,14 @@ import HackingTab from './tabs/HackingTab';
 import BankingTab from './tabs/BankingTab';
 import ConversationsTab from './tabs/ConversationsTab';
 import type { User } from '@/notes';
-import {
-    HARD_RECORD_CATEGORIES
-} from '@/configs/Record';
+// import {
+//     HARD_RECORD_CATEGORIES
+// } from '@/configs/Record';
 
 type UserFormProps = {
-    /** When provided (e.g. from /users/[handle]) the form will prefill with this user */
     initialUser?: Partial<User>;
 };
 
-/** Canonical, type-safe defaults for a new user */
 const BASE_USER = {
     id: '',
     active: false,
@@ -95,15 +93,15 @@ const mapUserToForm = (partial?: Partial<User>): User => {
         exploits: partial?.exploits ?? BASE_USER.exploits,
         gigReputation: partial?.gigReputation ?? BASE_USER.gigReputation,//
         // Records
-        criminalHardRecords: hardRecords
-            .filter(r => r.category === HARD_RECORD_CATEGORIES.CRIMINAL)
-            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
-        medicalHardRecords: hardRecords
-            .filter(r => r.category === HARD_RECORD_CATEGORIES.MEDICAL)
-            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
-        fileHardRecords: hardRecords
-            .filter(r => r.category === HARD_RECORD_CATEGORIES.FILE)
-            .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        // criminalHardRecords: hardRecords
+        //     .filter(r => r.category === HARD_RECORD_CATEGORIES.CRIMINAL)
+        //     .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        // medicalHardRecords: hardRecords
+        //     .filter(r => r.category === HARD_RECORD_CATEGORIES.MEDICAL)
+        //     .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
+        // fileHardRecords: hardRecords
+        //     .filter(r => r.category === HARD_RECORD_CATEGORIES.FILE)
+        //     .sort((r1, r2) => r1.timestamp.localeCompare(r2.timestamp)),
         memoryMindRecords: [],
         goalMindRecords: [],
         relationMindRecords: [],

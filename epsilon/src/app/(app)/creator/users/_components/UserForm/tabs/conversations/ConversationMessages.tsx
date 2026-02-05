@@ -20,6 +20,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 const MessagesCard = styled(Card)(({ theme }) => ({
     height: '100%',
+    flex: 1,
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: `0 0 10px ${alpha(theme.palette.primary.main, 0.22)}`,

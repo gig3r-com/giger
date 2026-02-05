@@ -7,7 +7,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Invalid response.' }, { status: 502 })
   }
   const items = data.map(mapSubnetwork);
-  return NextResponse.json({ items }, { status: 200 });
+  return NextResponse.json(items, { status: 200 });
 }
 
 export default function mapSubnetwork(data: ApiSubnetwork) {

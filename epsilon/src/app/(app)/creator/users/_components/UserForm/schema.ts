@@ -1,6 +1,7 @@
-// app/users/_components/schema.ts
+
 import * as Yup from 'yup';
 import type { User } from '@/notes';
+import { USER_ROLES } from '@/constants'
 
 const str = () => Yup.string().defined();
 const num = () => Yup.number().defined();
@@ -9,12 +10,15 @@ const strArr = () => Yup.array().of(Yup.string().defined()).defined();
 
 export const userSchema: Yup.ObjectSchema<User> = Yup.object({
         id: str().required(),
-        active: bool().required(),
-        roles: strArr().required(),
-        handle: str().required(),
 
-        name: str().required(),
-        surname: str().required(),
+        // Main Tab
+        active: bool().required(),
+        handle: Yup.string().required(),
+        name: Yup.string(),
+        surname: Yup.string(),
+        summary: Yup.string(),
+        roles: Yup.array().of(Yup.string().oneOf(USER_ROLES)),
+
         species: str().required(),
         cyberwareLevel: num().min(0).required(),
 

@@ -1,0 +1,1 @@
+export const RIGHT_PANEL_MODE_OPTIONS = ['OTHER'] as const;

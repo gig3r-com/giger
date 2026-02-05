@@ -1,4 +1,4 @@
-import user from './user';
+import user from './entities/user';
 import { makeConst } from "@/configs/utils";
 import GavelIcon from '@mui/icons-material/Gavel';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
@@ -82,23 +82,23 @@ export const [
  * ***********************************************
  */
 
-export const RECORD_CATEGORIES_DEFINITIONS = {
-    [HARD_RECORD_CATEGORIES.CRIMINAL]: {
-        icon: GavelIcon,
-        subcategories: CRIMINAL_HARD_RECORD_SUBCATEGORIES,
-        subcategoriesLabels: CRIMINAL_HARD_RECORD_SUBCATEGORIES_LABELS,
-        subcategoriesOptions: CRIMINAL_HARD_RECORD_SUBCATEGORIES_OPTIONS,
-    },
-    [HARD_RECORD_CATEGORIES.MEDICAL]: {
-        icon: MedicalServicesIcon,
-        subcategories: MEDICAL_HARD_RECORD_SUBCATEGORIES,
-        subcategoriesLabels: MEDICAL_HARD_RECORD_SUBCATEGORIES_LABELS,
-        subcategoriesOptions: MEDICAL_HARD_RECORD_SUBCATEGORIES_OPTIONS,
-    },
-    [HARD_RECORD_CATEGORIES.FILE]: {
-        icon: DescriptionIcon,
-        subcategories: FILE_HARD_RECORD_SUBCATEGORIES,
-        subcategoriesLabels: FILE_HARD_RECORD_SUBCATEGORIES_LABELS,
-        subcategoriesOptions: FILE_HARD_RECORD_SUBCATEGORIES_OPTIONS,
-    },
-}
+// export const RECORD_CATEGORIES_DEFINITIONS = {
+//     [HARD_RECORD_CATEGORIES.CRIMINAL]: {
+//         icon: GavelIcon,
+//         subcategories: CRIMINAL_HARD_RECORD_SUBCATEGORIES,
+//         subcategoriesLabels: CRIMINAL_HARD_RECORD_SUBCATEGORIES_LABELS,
+//         subcategoriesOptions: CRIMINAL_HARD_RECORD_SUBCATEGORIES_OPTIONS,
+//     },
+//     [HARD_RECORD_CATEGORIES.MEDICAL]: {
+//         icon: MedicalServicesIcon,
+//         subcategories: MEDICAL_HARD_RECORD_SUBCATEGORIES,
+//         subcategoriesLabels: MEDICAL_HARD_RECORD_SUBCATEGORIES_LABELS,
+//         subcategoriesOptions: MEDICAL_HARD_RECORD_SUBCATEGORIES_OPTIONS,
+//     },
+//     [HARD_RECORD_CATEGORIES.FILE]: {
+//         icon: DescriptionIcon,
+//         subcategories: FILE_HARD_RECORD_SUBCATEGORIES,
+//         subcategoriesLabels: FILE_HARD_RECORD_SUBCATEGORIES_LABELS,
+//         subcategoriesOptions: FILE_HARD_RECORD_SUBCATEGORIES_OPTIONS,
+//     },
+// }

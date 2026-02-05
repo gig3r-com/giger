@@ -1,4 +1,4 @@
-import user from '@/configs/user';
+import user from "@/configs/user";
 
 export interface Record {
     id: string;
@@ -11,7 +11,7 @@ export interface Record {
     isReveled: boolean;
     revealCode?: RevealCode;
     isEncrypted: boolean;
-    encryptionLevel: EncryptionLevel;
+    encryption: Encryption;
     hackData?: RecordHackData;
 }
 
@@ -30,9 +30,14 @@ export interface OffGameRecord extends Record {
     subCategory?: AllOffGameRecordSubcategories;
 }
 
+/*
+ * ***********************************************
+ *                 OTHER
+ * ***********************************************
+ */
 export type RevealCode = string;
-export type EncryptionLevel = number;
-export type RecordHackData = string;
+export type Encryption = string;
+export type RecordHackData = { [key: string]: string }[];
 
 /*
  * ***********************************************

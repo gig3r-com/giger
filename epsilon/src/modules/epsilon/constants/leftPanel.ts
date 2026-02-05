@@ -1,0 +1,1 @@
+export const LEFT_PANEL_MODE_OPTIONS = ['FILES', 'NETWORKS'] as const;

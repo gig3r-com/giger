@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
 
     const conversations = data.map(mapConversation)
-    return NextResponse.json({ conversations }, { status: 200 })
+    return NextResponse.json(conversations, { status: 200 })
   } catch (err: any) {
     return NextResponse.json({ error: err?.message ?? 'Failed to fetch conversations' }, { status: 500 })
   }

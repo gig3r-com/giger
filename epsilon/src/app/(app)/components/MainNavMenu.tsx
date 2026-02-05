@@ -3,117 +3,167 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Stack, IconButton, Typography, Box } from "@mui/material";
+import {
+    IconButton,
+    Typography,
+    Box,
+    Menu,
+    MenuItem,
+} from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { MODES } from "./modesConfig";
 
 export default function NavMenu() {
     const pathname = usePathname() || "/";
-    const firstSegment = pathname.split("/")[1]; // "" | creator | director | player
+    const firstSegment = pathname.split("/")[1];
+
+    const activeMode =
+        MODES.find((mode) => mode.key === firstSegment) ?? MODES[0];
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleOpen = (e: React.MouseEvent<HTMLElement>) =>
+        setAnchorEl(e.currentTarget);
+    const handleClose = () => setAnchorEl(null);
 
     return (
-        <Stack direction="row" spacing={0.5}>
-            {MODES.map((mode) => {
-                const isActive = firstSegment === mode.key;
+        <>
+            <IconButton
+                disableRipple
+                onClick={handleOpen}
+                aria-label={activeMode.description}
+                sx={(theme) => ({
+                    borderRadius: 0,
+                    px: 1.75,
+                    py: 0.75,
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                    "&:hover": {
+                        backgroundColor: alpha(theme.palette.background.paper, 0.08),
+                    },
+                    "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        left: "18%",
+                        right: "18%",
+                        bottom: 0,
+                        height: 2,
+                        borderRadius: 999,
+                        backgroundImage: `linear-gradient(
+              to right,
+              ${alpha(theme.palette.primary.main, 0.25)},
+              ${alpha(theme.palette.primary.main, 0.95)},
+              ${alpha(theme.palette.primary.main, 0.25)}
+            )`,
+                        boxShadow: `0 0 6px ${alpha(
+                            theme.palette.primary.main,
+                            0.8
+                        )}`,
+                    },
+                })}
+            >
+                <Box
+                    sx={(theme) => ({
+                        height: '22px',
+                        "& .MuiSvgIcon-root": {
+                            fontSize: 22,
+                            color: theme.palette.primary.light,
+                        },
+                    })}
+                >
+                    {activeMode.icon}
+                </Box>
 
-                return (
-                    <IconButton
-                        key={mode.key}
-                        component={Link}
-                        href={mode.path}
-                        disableRipple
-                        aria-label={mode.description}
-                        sx={(theme) => ({
-                            // wtopione w AppBar – brak własnego „kafla”
-                            borderRadius: 0,
-                            height: "100%",
-                            padding: theme.spacing(0.5, 1.5),
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 0.25,
-                            textDecoration: "none",
-                            color: "inherit",
-                            backgroundColor: "transparent",
-                            position: "relative",
-                            overflow: "visible",
+                <Typography
+                    variant="caption"
+                    sx={(theme) => ({
+                        fontSize: 10,
+                        letterSpacing: 0.08,
+                        textTransform: "uppercase",
+                        color: theme.palette.primary.light,
+                        whiteSpace: "nowrap",
+                    })}
+                >
+                    {activeMode.label}
+                </Typography>
+            </IconButton>
 
-                            // lekkie podświetlenie tła tylko przy hover, a nie stały box
-                            "&:hover": {
-                                backgroundColor: alpha(
-                                    theme.palette.background.paper,
-                                    0.08
-                                ),
-                            },
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
+                PaperProps={{
+                    elevation: 8,
+                    sx: (theme) => ({
+                        mt: 1,
+                        minWidth: 180,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.background.paper, 0.95),
+                        backdropFilter: "blur(12px)",
+                    }),
+                }}
+            >
+                {MODES.map((mode) => {
+                    const isActive = mode.key === activeMode.key;
 
-                            "&:active": {
-                                backgroundColor: alpha(
-                                    theme.palette.background.paper,
-                                    0.14
-                                ),
-                            },
-
-                            // cyfrowy underline dla aktywnego trybu – zamiast boxa
-                            "&::after": isActive
-                                ? {
-                                    content: '""',
-                                    position: "absolute",
-                                    left: "18%",
-                                    right: "18%",
-                                    bottom: 0,
-                                    height: 2,
-                                    borderRadius: 999,
-                                    backgroundImage: `linear-gradient(
-                      to right,
-                      ${alpha(theme.palette.primary.main, 0.2)},
-                      ${alpha(theme.palette.primary.main, 0.9)},
-                      ${alpha(theme.palette.primary.main, 0.2)}
-                    )`,
-                                    boxShadow: `0 0 6px ${alpha(
-                                        theme.palette.primary.main,
-                                        0.8
-                                    )}`,
-                                }
-                                : undefined,
-                        })}
-                    >
-                        <Box
+                    return (
+                        <MenuItem
+                            key={mode.key}
+                            component={isActive ? "div" : Link}
+                            href={isActive ? undefined : mode.path}
+                            disabled={isActive}
+                            onClick={handleClose}
                             sx={(theme) => ({
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                gap: 1.25,
+                                py: 1,
+                                opacity: isActive ? 1 : 0.9,
+                                cursor: isActive ? "default" : "pointer",
+
                                 "& .MuiSvgIcon-root": {
-                                    fontSize: 22,
+                                    fontSize: 20,
                                     color: isActive
                                         ? theme.palette.primary.light
-                                        : alpha(theme.palette.text.secondary, 0.9),
-                                    opacity: isActive ? 1 : 0.7,
-                                    transition: "color 0.15s ease, opacity 0.15s ease",
+                                        : alpha(theme.palette.text.primary, 0.85),
                                 },
+
+                                ...(isActive && {
+                                    backgroundColor: alpha(
+                                        theme.palette.primary.main,
+                                        0.12
+                                    ),
+                                }),
+
+                                "&:hover": !isActive
+                                    ? {
+                                        backgroundColor: alpha(
+                                            theme.palette.primary.main,
+                                            0.08
+                                        ),
+                                    }
+                                    : undefined,
                             })}
                         >
                             {mode.icon}
-                        </Box>
 
-                        <Typography
-                            variant="caption"
-                            sx={(theme) => ({
-                                fontSize: 10,
-                                lineHeight: 1.2,
-                                letterSpacing: 0.08,
-                                textTransform: "uppercase",
-                                color: isActive
-                                    ? theme.palette.primary.light
-                                    : alpha(theme.palette.text.secondary, 0.8),
-                                whiteSpace: "nowrap",
-                            })}
-                        >
-                            {mode.label}
-                        </Typography>
-                    </IconButton>
-                );
-            })}
-        </Stack>
+                            <Typography
+                                variant="body2"
+                                sx={(theme) => ({
+                                    fontWeight: isActive ? 600 : 400,
+                                    color: isActive
+                                        ? theme.palette.primary.light
+                                        : theme.palette.text.primary,
+                                })}
+                            >
+                                {mode.label}
+                            </Typography>
+                        </MenuItem>
+                    );
+                })}
+            </Menu>
+        </>
     );
 }

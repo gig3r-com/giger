@@ -1,6 +1,6 @@
-'use client'
-import { redirect } from "next/navigation"
+'use client';
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-  redirect("/dashboard");
+    redirect('/dashboard');
 }

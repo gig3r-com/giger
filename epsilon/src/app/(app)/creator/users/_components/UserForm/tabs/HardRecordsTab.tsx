@@ -10,9 +10,9 @@ function HardRecordsTab() {
     const { values } = useFormikContext();
 
     const list = useMemo(() => {
-        if (category === 'criminal') return values.criminalHardRecords;
-        if (category === 'medical') return values.medicalHardRecords;
-        if (category === 'assets') return values.fileHardRecords;
+        if (category === 'criminal') return values.criminalHardRecords || [];
+        if (category === 'medical') return values.medicalHardRecords || [];
+        if (category === 'assets') return values.fileHardRecords || [];
         return [];
     }, [category, values]);
 

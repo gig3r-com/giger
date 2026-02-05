@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import { useField } from 'formik';
 import { styled } from '@mui/material/styles';
 
@@ -7,11 +7,12 @@ import {
     CHAR_STAT,
     HACKER_STAT,
     COMBAT_STAT,
-    ROLES,
 } from '@/configs/UserSelectFields';
+import { USER_ROLES_OPTIONS } from '@/constants'
 import labels from '../labels';
 
 import Input from '@/components/forms/Input';
+import RichTextInput from '@/components/forms/RichTextInput';
 import Select from '@/components/forms/Select';
 import ArrayInput from '@/components/forms/ArrayInput';
 import ArraySelect from '@/components/forms/ArraySelect';
@@ -71,21 +72,24 @@ function MainTab() {
                             <Select name="speciesActual" label={labels.speciesActual} options={SPECIES} />
                         </Grid>
                         <Grid size={12}>
-                            <ArraySelect name="roles" label={labels.roles} options={ROLES} />
+                            <ArraySelect name="roles" label={labels.roles} options={USER_ROLES_OPTIONS} />
+                        </Grid>
+                        <Grid size={12}>
+                            <RichTextInput name="summary" />
                         </Grid>
                     </Grid>
                 </Card>
 
-                <Card variant={cardColor} icon={<GroupsIcon />} title="COMMUNITY">
+                <Card variant={cardColor} icon={<GroupsIcon/>} title="COMMUNITY">
                     <Grid container spacing={2}>
                         <Grid size={6}>
-                            <Input name="vibe" label={labels.vibe} />
+                            <Input name="vibe" label={labels.vibe}/>
                         </Grid>
                         <Grid size={6}>
-                            <Input name="vibeLevel" label={labels.vibeLevel} />
+                            <Input name="vibeLevel" label={labels.vibeLevel}/>
                         </Grid>
                         <Grid size={6}>
-                            <Input name="profession" label={labels.profession} />
+                            <Input name="profession" label={labels.profession}/>
                         </Grid>
                         <Grid size={6}>
                             <Input name="faction" label={labels.faction} />

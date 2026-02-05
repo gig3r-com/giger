@@ -63,7 +63,7 @@ export type Log = {
     logType: string; // a lot of logs will be created by api, on sending message, transfer etc. so if you really need enum you can use one (check public enum LogType) but if possible add a possibility to add a random string :) if you dont need enum just use string
     logData: string;
     subnetwork: string // subnetwork name
-    // todo hack data
+    hackData: Record<string, string>; // { [string]: [string] }
 }
 
 export type Subnetwork = {
@@ -100,12 +100,25 @@ export type ProgramCodes = {
 
 /*
  ************************************************
+ * PLOTING
+ ************************************************
+ */
+
+export type Plot = {
+    id: string;
+    name: string;
+    description: string;
+    users: string[] // user handles
+}
+
+/*
+ ************************************************
  * USER
  ************************************************
  */
 export type RecordType = {
     id: string;
-    type: string; // info how to read data like TEXT or FLAG, can be more in future
+    type: string;
     category?: string;
     subCategory?: string;
     title: string;
@@ -114,7 +127,7 @@ export type RecordType = {
     isReveled: boolean;
     revealCode?: string;
     isEncrypted: boolean;
-    encryptionLevel: number;
+    encryptionCode: string;
     hackData?: string;
 }
 
@@ -123,6 +136,7 @@ export type User = {
     roles: string[];
 
     handle: string;
+    summary: string;
     active: boolean;
     name: string;
     surname: string;
@@ -170,10 +184,53 @@ export type User = {
     hackerName: string;
     exploits: string[];
 
+    plots: Plot[]; // connection to Plots, many to many
+
     epsilonNotes: string;
     epsilonBankingNotes: string;
     epsilonConversationNotes: string;
     epsilonConversationsNotes: { participants: string[], notes: string, }[];
     epsilonPlots: string;
     epsilonData: Record<string, string>; // { [string]: [string] }
+}
+
+/*
+ ************************************************
+ * Gigs
+ ************************************************
+ */
+
+export type GigUpdate = {
+    from: string; // previous status
+    to: string; // next status
+    date: timestamp;
+    sourceHandle: string; // handle of a user that initiated changing of a status
+}
+
+export type Gig = {
+    title: string;
+    description: string;
+    descriptionDetailed: string;
+
+    status: string;
+    category: string;
+    subCategory: string;
+    reputationRequired: number;
+
+    isAnonymizedAuthor: boolean;
+    mode: 'authorIsHiring' | 'authorWantsToBeHired';
+    isRevealedTo: string[]; // user handles, author is here from start
+
+    authorId: string;
+    authorHandle: string;
+    authorAccountNumber: string;
+
+    workerId: string;
+    workerHandle: string;
+    workerAccountNumber: string;
+
+    conversationId: string; // conversation Id
+    createdAt: timestamp;
+    updates: GigUpdate[];
+    complaintReason: string;
 }

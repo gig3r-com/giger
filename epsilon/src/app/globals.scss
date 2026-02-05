@@ -41,10 +41,11 @@ body::before {
           linear-gradient(var(--g0, var(--bg-base)), var(--g0, var(--bg-base)));
   background-blend-mode: screen, screen, normal, normal, normal;
 
-  /* tiny halo for a glowier vibe */
   filter: drop-shadow(0 0 8px rgba(0,255,170,.08));
   will-change: transform;
-  transform: translateZ(0); /* GPU hint */
+  transform: translateZ(0);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 body::after {

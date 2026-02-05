@@ -45,12 +45,10 @@ export const SUBNETWORKS = subnetworks.map(sunbnet => ({
 }))
 
 export const ROLES = [
-    { value: 'ADMIN', label: 'Admin' },
+    { value: 'CREATOR', label: 'Creator' },
+    { value: 'DIRECTOR', label: 'Director' },
     { value: 'NPC', label: 'NPC' },
-    { value: 'MODERATOR', label: 'Moderator' },
-    { value: 'INFLUENCER', label: 'Influencer' },
-    { value: 'GOD', label: 'GOD' },
-    { value: 'BOSS', label: 'Boss' },
+    { value: 'GOD', label: 'God' },
     { value: 'PLAYER', label: 'Player' },
 ]
 
