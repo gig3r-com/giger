@@ -60,7 +60,9 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(user.Id))
+            // Allow users to access their own hashes
+            var senderUser = await GetSenderUser();
+            if (senderUser == null || (user.Id != senderUser.Id && !IsAuthorized(user.Id)))
             {
                 return Unauthorized();
             }
