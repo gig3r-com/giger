@@ -18,6 +18,8 @@ builder.Services.AddControllers()
     {
         // Convert null strings to empty strings in API responses
         options.JsonSerializerOptions.Converters.Add(new NullToEmptyStringConverter());
+        // Handle circular references in navigation properties
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -15,7 +15,7 @@ namespace Giger.Controllers
         protected UserService _userService;
 
 #if DEBUG
-        public static bool AuthEnabled { get; set; } = false;
+        public static bool AuthEnabled { get; set; } = true;
 #endif
 
         protected async Task<User> GetSenderUser()

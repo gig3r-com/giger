@@ -20,7 +20,7 @@ namespace Giger.Services
             await _dbContext.Networks.FirstOrDefaultAsync(network => network.Id == id);
 
         public async Task<Network?> GetNetworkByNameAsync(string name) =>
-            await _dbContext.Networks.FirstOrDefaultAsync(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Networks.FirstOrDefaultAsync(network => network.Name.ToLower() == name.ToLower());
 
         public async Task CreateNetworkAsync(Network newNetwork)
         {
@@ -73,7 +73,7 @@ namespace Giger.Services
             await _dbContext.Subnetworks.Include(s => s.Users).FirstOrDefaultAsync(network => network.Id == id);
 
         public async Task<Subnetwork?> GetSubnetworkByFirstNameAsync(string name) =>
-            await _dbContext.Subnetworks.Include(s => s.Users).FirstOrDefaultAsync(network => network.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            await _dbContext.Subnetworks.Include(s => s.Users).FirstOrDefaultAsync(network => network.Name.ToLower() == name.ToLower());
 
         public async Task CreateSubnetworkAsync(Subnetwork newSubnetwork)
         {

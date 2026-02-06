@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Giger.Models.BankingModels;
 using Giger.Models.MessageModels;
 using Giger.Connections.Handlers;
+using Giger.DTOs;
 
 namespace Giger.Controllers
 {
@@ -33,35 +34,44 @@ namespace Giger.Controllers
         }
 
         [HttpGet("get/all")]
-        public async Task<List<Gig>> GetAll()
+        public async Task<List<GigDTO>> GetAll()
         {
+            List<Gig> gigs;
+            string? currentUserHandle = null;
+            
             if (IsGodUser())
             {
-                return await _gigService.GetAllAsync();
-            }
-            Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
-            var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
-            if (userName == null)
-            {
-                Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
-                return Enumerable.Empty<Gig>().ToList();
-            }
-            var requestSender = await _userService.GetByUserNameAsync(userName);
-            if (requestSender is null)
-            {
-                BadRequest(Messages.USER_NOT_FOUND);
-                return Enumerable.Empty<Gig>().ToList();
-            }
-            List<Gig> gigs;
-            if (IsRole("MODERATOR"))
-            {
-                gigs = await _gigService.GetAllVisibleToModeratorAsync(requestSender.Id);
+                gigs = await _gigService.GetAllAsync();
             }
             else
             {
-                gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+                Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
+                var userName = _loginService.GetByAuthTokenAsync(senderAuthToken)?.Result?.Username;
+                if (userName == null)
+                {
+                    Unauthorized(Messages.AUTH_TOKEN_EXPIRED);
+                    return new List<GigDTO>();
+                }
+                var requestSender = await _userService.GetByUserNameAsync(userName);
+                if (requestSender is null)
+                {
+                    BadRequest(Messages.USER_NOT_FOUND);
+                    return new List<GigDTO>();
+                }
+                
+                currentUserHandle = requestSender.Handle;
+                
+                if (IsRole("MODERATOR"))
+                {
+                    gigs = await _gigService.GetAllVisibleToModeratorAsync(requestSender.Id);
+                }
+                else
+                {
+                    gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
+                }
             }
-            return gigs;
+            
+            return gigs.Select(g => GigDTO.FromModel(g, currentUserHandle)).ToList();
         }
 
         [HttpGet("get/{id}")]

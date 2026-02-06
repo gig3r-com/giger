@@ -2,16 +2,17 @@ using Giger.Services;
 using Giger.Models.MessageModels;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Connections.Handlers;
+using Giger.DTOs;
 
 namespace Giger.Controllers
 {
     [Route("api/[controller]")]
     public class ConversationController(UserService _userService, LoginService _loginService,
-        ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
+        ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler, GigerDbContext _dbContext)
         : AuthController(_userService, _loginService)
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<Conversation>> Get(string id)
+        public async Task<ActionResult<ConversationDTO>> Get(string id)
         {
             var conversation = await _conversationService.GetAsync(id);
             if (conversation is null)
@@ -34,34 +35,94 @@ namespace Giger.Controllers
                 Unauthorized();
             }
 
-            return conversation;
+            return ConversationDTO.FromModel(conversation);
         }
 
         [HttpGet("byParticipant")]
-        public async Task<ActionResult<List<Conversation>>> GetAllConversationOfParticipant(string participant)
+        public async Task<ActionResult<List<ConversationDTO>>> GetAllConversationOfParticipant(string participant)
         {
             if (!IsAuthorizedNotHacker(participant))
             {
                 Unauthorized();
             }
 
-            var conversation = await _conversationService.GetAllWithParticipantAsync(participant);
-            if (conversation is null)
+            var conversations = await _conversationService.GetAllWithParticipantAsync(participant);
+            if (conversations is null)
             {
                 return NotFound();
             }
-            return conversation;
+            return conversations.Select(ConversationDTO.FromModel).ToList();
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post(Conversation newConversation)
+        public async Task<IActionResult> Post([FromBody] CreateConversationRequest request)
         {
-            if (string.IsNullOrEmpty(newConversation.Id))
+            Console.WriteLine($"[ConversationController] Received request: Participants={string.Join(",", request.Participants)}, Count={request.Participants.Count}");
+            
+            var conversationId = string.IsNullOrEmpty(request.Id) ? Guid.NewGuid().ToString() : request.Id;
+            
+            Console.WriteLine($"[ConversationController] Creating conversation {conversationId} with {request.Participants.Count} participants");
+            
+            // Create conversation first
+            var newConversation = new Conversation
             {
-                newConversation.Id = Guid.NewGuid().ToString();
-            }
+                Id = conversationId,
+                GigConversation = request.GigConversation
+            };
+            
             await _conversationService.CreateAsync(newConversation);
-            return CreatedAtAction(nameof(Post), new { id = newConversation.Id }, newConversation);
+            Console.WriteLine($"[ConversationController] Conversation created, adding participants...");
+            
+            // Then add participants
+            foreach (var participantHandle in request.Participants)
+            {
+                Console.WriteLine($"[ConversationController] Adding participant: {participantHandle}");
+                _dbContext.ConversationParticipants.Add(new ConversationParticipant
+                {
+                    ConversationId = conversationId,
+                    UserHandle = participantHandle
+                });
+            }
+            
+            // Add anonymized users
+            foreach (var anonymizedHandle in request.AnonymizedUsers)
+            {
+                Console.WriteLine($"[ConversationController] Adding anonymized user: {anonymizedHandle}");
+                _dbContext.ConversationAnonymizedUsers.Add(new ConversationAnonymizedUser
+                {
+                    ConversationId = conversationId,
+                    UserHandle = anonymizedHandle
+                });
+            }
+            
+            // Add initial messages
+            foreach (var msg in request.Messages ?? new())
+            {
+                var messageId = string.IsNullOrEmpty(msg.Id) ? Guid.NewGuid().ToString() : msg.Id;
+                Console.WriteLine($"[ConversationController] Adding message: {messageId}");
+                _dbContext.Messages.Add(new Message
+                {
+                    Id = messageId,
+                    ConversationId = conversationId,
+                    Timestamp = DateTime.TryParse(msg.Date, out var parsedDate) 
+                        ? DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc)
+                        : DateTime.UtcNow,
+                    Sender = msg.Sender ?? "",
+                    Data = msg.Text ?? "",
+                    Type = "TEXT",
+                    Hacker = "",
+                    EpsilonNote = ""
+                });
+            }
+            
+            Console.WriteLine($"[ConversationController] Saving changes...");
+            await _dbContext.SaveChangesAsync();
+            Console.WriteLine($"[ConversationController] Changes saved, fetching conversation...");
+            
+            // Return DTO with all related data
+            var createdConvo = await _conversationService.GetAsync(conversationId);
+            Console.WriteLine($"[ConversationController] Returning conversation with {createdConvo.Participants.Count} participants");
+            return CreatedAtAction(nameof(Post), new { id = conversationId }, ConversationDTO.FromModel(createdConvo));
         }
 
         [HttpPost("create")]
@@ -87,7 +148,9 @@ namespace Giger.Controllers
             }
             await _conversationService.CreateAsync(newConversation);
 
-            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, newConversation);
+            // Return DTO instead of raw entity
+            var createdConvo = await _conversationService.GetAsync(newConversation.Id);
+            return CreatedAtAction(nameof(Create), new { id = newConversation.Id }, ConversationDTO.FromModel(createdConvo));
         }
 
         [HttpPost("{conversationId}/message")]

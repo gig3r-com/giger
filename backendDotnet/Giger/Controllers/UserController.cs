@@ -1,3 +1,4 @@
+using Giger.DTOs;
 using Giger.Models.User;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,27 @@ namespace Giger.Controllers
             return user;
         }
 
+        [HttpGet("simple/byId")]
+        public async Task<ActionResult<UserDTO>> GetSimpleById(string id)
+        {
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(user.Id))
+            {
+                return Unauthorized();
+            }
+            user = FilterOutGodUser(user);
+            if (user is null)
+            {
+                return NoContent();
+            }
+            return UserDTO.FromModel(user);
+        }
+
         [HttpGet("byUsername")]
         public async Task<ActionResult<User>> GetByUserName(string userName)
         {
@@ -68,6 +90,31 @@ namespace Giger.Controllers
             }
 
             return FilterOutGodUser(user);
+        }
+
+        [HttpGet("simple/byUsername")]
+        public async Task<ActionResult<UserDTO>> GetSimpleByUserName(string userName)
+        {
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(user.Id))
+            {
+                return Unauthorized();
+            }
+
+            return UserDTO.FromModel(FilterOutGodUser(user));
+        }
+
+        [HttpGet("public/all")]
+        public async Task<List<UserDTO>> GetAllPublicUsers()
+        {
+            var allUsers = await _userService.GetAllUsersAsync();
+            var filteredUsers = FilterOutAllGodUsers(allUsers);
+            return filteredUsers.Select(UserDTO.FromModel).ToList();
         }
 
         [HttpPost()]

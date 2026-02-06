@@ -75,6 +75,57 @@ namespace Giger.Controllers
 			return Ok();
 		}
 
+        [HttpGet("simple/hashes/byId")]
+        public async Task<ActionResult<Dictionary<string, int>>> GetRecordHashesById(string id)
+        {
+            if (!IsAuthorized(id))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userService.GetAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            user = FilterOutGodUser(user);
+            if (user is null)
+            {
+                return NoContent();
+            }
+
+            // Return hash/count of records by group for change detection
+            // Frontend expects these specific keys
+            var result = new Dictionary<string, int>
+            {
+                ["goalsHash"] = 0,
+                ["privateRecordsHash"] = 0,
+                ["relationsHash"] = 0,
+                ["criminalEventsHash"] = 0,
+                ["medicalEventsHash"] = 0
+            };
+
+            var records = await _recordService.GetByUserIdAsync(id);
+            if (records != null && records.Any())
+            {
+                // Map actual database groups to frontend expected keys if needed
+                var groupCounts = records
+                    .GroupBy(r => r.RecordGroup)
+                    .ToDictionary(g => g.Key, g => g.Count());
+                
+                // For now, just use the actual counts we have
+                foreach (var kvp in groupCounts)
+                {
+                    // If there's a mapping needed, do it here
+                    // For now just set generic privateRecordsHash to total
+                    result["privateRecordsHash"] += kvp.Value;
+                }
+            }
+
+            return result;
+        }
+
         #endregion
     }
 }

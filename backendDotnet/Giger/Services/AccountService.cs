@@ -30,7 +30,7 @@ namespace Giger.Services
             await _dbContext.Accounts
                 .Include(a => a.Owners)
                 .Include(a => a.Transactions)
-                .FirstOrDefaultAsync(x => x.Owners.Any(o => o.UserHandle.Equals(ownerHandle, StringComparison.OrdinalIgnoreCase)));
+                .FirstOrDefaultAsync(x => x.Owners.Any(o => o.UserHandle.ToLower() == ownerHandle.ToLower()));
 
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
             await _dbContext.Accounts
