@@ -44,7 +44,7 @@ namespace Giger.DTOs
         public string EpsilonConversationNotes { get; set; }
         public string EpsilonPlots { get; set; }
         public Dictionary<string, string> EpsilonData { get; set; }
-        public List<UserFavoriteUser> FavoriteUsers { get; set; }
+        public string[] FavoriteUserIds { get; set; }
         public RecordType[] Records { get; set; }
         public List<UserEpsilonConversationNote> EpsilonConversationsNotes { get; set; }
 
@@ -92,7 +92,7 @@ namespace Giger.DTOs
                 EpsilonConversationNotes = user.EpsilonConversationNotes ?? "",
                 EpsilonPlots = user.EpsilonPlots ?? "",
                 EpsilonData = user.EpsilonData ?? new Dictionary<string, string>(),
-                FavoriteUsers = user.FavoriteUsers,
+                FavoriteUserIds = user.FavoriteUsers?.Select(f => f.FavoriteUserHandle).ToArray() ?? Array.Empty<string>(),
                 Records = user.Records?.ToArray() ?? Array.Empty<RecordType>(),
                 EpsilonConversationsNotes = user.EpsilonConversationsNotes
             };

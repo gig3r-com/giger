@@ -23,7 +23,7 @@ namespace Giger.Connections.Handlers
                 };
                 var serializedMessage = JsonSerializer.Serialize(payload);
                 await base.SendMessageToParticipantsAsync(serializedMessage, participants);
-                LogMessage(message, converasationId);
+                _ = LogMessageAsync(message, converasationId);
             }
             catch (Exception ex)
             {
@@ -115,7 +115,7 @@ namespace Giger.Connections.Handlers
                     
                     Console.WriteLine($"[WebSocket] Message broadcast complete");
                     
-                    LogMessage(message, incomingPayload.ConversationId, conversationService);
+                    _ = LogMessageAsync(message, incomingPayload.ConversationId);
                 }
                 else
                 {
@@ -134,30 +134,35 @@ namespace Giger.Connections.Handlers
             }
         }
 
-        private async void LogMessage(Message message, string conversationId, ConversationService? conversationService = null)
+        private async Task LogMessageAsync(Message message, string conversationId)
         {
-            LogMessage(message, conversationId,
-                conversationService ?? ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider),
-                ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider),
-                ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider));
-        }
-        private async void LogMessage(Message message, string conversationId, ConversationService conversationService, LogService logService, UserService userService)
-        {
-            var user = await userService.GetByUserNameAsync(message.Sender);
-            var conversation = await conversationService.GetAsync(conversationId);
-            var participantHandles = string.Join(',', conversation.Participants.Select(p => p.UserHandle));
-            var log = new Log()
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUser = user.Handle,
-                TargetUser = participantHandles,
-                LogType = conversation.GigConversation ? "GIG_MESSAGESENT" : "MESSAGE",
-                LogData = $"Message has been sent by {user.Handle} to {participantHandles} user(s).",
-                Subnetwork = user.Subnetwork,
-            };
+                using var scope = _serviceProvider.CreateScope();
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+                var conversationService = scope.ServiceProvider.GetRequiredService<ConversationService>();
+                var logService = scope.ServiceProvider.GetRequiredService<LogService>();
 
-            logService.CreateAsync(log);
+                var user = await userService.GetByUserNameAsync(message.Sender);
+                var conversation = await conversationService.GetAsync(conversationId);
+                var participantHandles = string.Join(',', conversation.Participants.Select(p => p.UserHandle));
+                var log = new Log()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = GigerDateTime.Now,
+                    SourceUser = user.Handle,
+                    TargetUser = participantHandles,
+                    LogType = conversation.GigConversation ? "GIG_MESSAGESENT" : "MESSAGE",
+                    LogData = $"Message has been sent by {user.Handle} to {participantHandles} user(s).",
+                    Subnetwork = user.Subnetwork,
+                };
+
+                await logService.CreateAsync(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LogMessage] Error logging message: {ex.Message}");
+            }
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Giger.Connections.Handlers
                 await SendMessageAsync(username, message);
                 if (payload.GigIdStatus != null)
                 {
-                    LogGigStatusChanged(payload.GigIdStatus);
+                    _ = LogGigStatusChangedAsync(payload.GigIdStatus);
                 }
             }
             catch (Exception ex)
@@ -73,82 +73,90 @@ namespace Giger.Connections.Handlers
             }
         }
 
-        private async void LogGigStatusChanged(string gigId)
+        private async Task LogGigStatusChangedAsync(string gigId)
         {
-            var gigService = ScopedServiceProvider.CreateScopedGigerService<GigService>(_serviceProvider);
-            var userService = ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider);
-            var logService = ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider);
-
-            var gig = await gigService.GetAsync(gigId);
-            if (gig is null) return;
-
-            var taker = gig.WorkerId != null ? await userService.GetAsync(gig.WorkerId) : null;
-            var author = await userService.GetAsync(gig.AuthorId);
-
-            var authorHandle = gig.IsAnonymizedAuthor ? Gig.ANONIMIZED : gig.AuthorHandle;
-            string sourceUser, targetUser, subnetwork;
-            string logType;
-            switch (gig.Status)
+            try
             {
-                case "AVAILABLE":
-                    sourceUser = authorHandle;
-                    subnetwork = author?.Subnetwork;
-                    targetUser = null;
-                    logType = "GIG_CREATED";
-                    break;
-                case "IN_PROGRESS":
-                    sourceUser = taker?.Handle;
-                    subnetwork = taker?.Subnetwork;
-                    targetUser = authorHandle;
-                    logType = "GIG_ACCEPTED";
-                    break;
-                case "PENDING_CONFIRMATION":
-                    if (gig.Mode == "authorWantsToBeHired")
-                    {
+                using var scope = _serviceProvider.CreateScope();
+                var gigService = scope.ServiceProvider.GetRequiredService<GigService>();
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+                var logService = scope.ServiceProvider.GetRequiredService<LogService>();
+
+                var gig = await gigService.GetAsync(gigId);
+                if (gig is null) return;
+
+                var taker = gig.WorkerId != null ? await userService.GetAsync(gig.WorkerId) : null;
+                var author = await userService.GetAsync(gig.AuthorId);
+
+                var authorHandle = gig.IsAnonymizedAuthor ? Gig.ANONIMIZED : gig.AuthorHandle;
+                string sourceUser, targetUser, subnetwork;
+                string logType;
+                switch (gig.Status)
+                {
+                    case "AVAILABLE":
                         sourceUser = authorHandle;
                         subnetwork = author?.Subnetwork;
-                        targetUser = taker?.Handle;
-                    }
-                    else
-                    {
+                        targetUser = null;
+                        logType = "GIG_CREATED";
+                        break;
+                    case "IN_PROGRESS":
                         sourceUser = taker?.Handle;
                         subnetwork = taker?.Subnetwork;
                         targetUser = authorHandle;
-                    }
-                    logType = "GIG_UPDATED";
-                    break;
-                case "DISPUTE":
-                case "COMPLETED":
-                    if (gig.Mode == "authorIsHiring")
-                    {
-                        sourceUser = authorHandle;
-                        subnetwork = author?.Subnetwork;
-                        targetUser = taker?.Handle;
-                    }
-                    else
-                    {
-                        sourceUser = taker?.Handle;
-                        subnetwork = taker?.Subnetwork;
-                        targetUser = authorHandle;
-                    }
-                    logType = "GIG_UPDATED";
-                    break;
-                default:
-                    return;
+                        logType = "GIG_ACCEPTED";
+                        break;
+                    case "PENDING_CONFIRMATION":
+                        if (gig.Mode == "authorWantsToBeHired")
+                        {
+                            sourceUser = authorHandle;
+                            subnetwork = author?.Subnetwork;
+                            targetUser = taker?.Handle;
+                        }
+                        else
+                        {
+                            sourceUser = taker?.Handle;
+                            subnetwork = taker?.Subnetwork;
+                            targetUser = authorHandle;
+                        }
+                        logType = "GIG_UPDATED";
+                        break;
+                    case "DISPUTE":
+                    case "COMPLETED":
+                        if (gig.Mode == "authorIsHiring")
+                        {
+                            sourceUser = authorHandle;
+                            subnetwork = author?.Subnetwork;
+                            targetUser = taker?.Handle;
+                        }
+                        else
+                        {
+                            sourceUser = taker?.Handle;
+                            subnetwork = taker?.Subnetwork;
+                            targetUser = authorHandle;
+                        }
+                        logType = "GIG_UPDATED";
+                        break;
+                    default:
+                        return;
+                }
+
+                var log = new Log()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = GigerDateTime.Now,
+                    SourceUser = sourceUser,
+                    TargetUser = targetUser,
+                    LogType = logType,
+                    LogData = $"Gig {gig.Title} status has been changed to '{gig.Status}' by {sourceUser}.",
+                    Subnetwork = subnetwork,
+                };
+
+                await logService.CreateAsync(log);
             }
-
-            var log = new Log()
+            catch (Exception ex)
             {
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = GigerDateTime.Now,
-                SourceUser = sourceUser,
-                TargetUser = targetUser,
-                LogType = logType,
-                LogData = $"Gig {gig.Title} status has been changed to '{gig.Status}' by {sourceUser}.",
-                Subnetwork = subnetwork,
-            };
-
-            logService.CreateAsync(log);
+                Console.WriteLine($"[LogGigStatusChanged] Error logging gig status: {ex.Message}");
+            }
         }
     }
 }
