@@ -180,6 +180,47 @@ Merged latest `main` (epsilon features, CI/CD registry switch to ghcr.io).
 - **`Program.cs`** — Added `NullToEmptyStringConverter` and `ReferenceHandler.IgnoreCycles` to JSON options; connection string built from env vars; removed broken in-app SQL seeding (handled by docker-entrypoint-initdb.d)
 - **`docker-compose.yaml`** — Scaled to 1 backend replica
 
+## Fixes Not Yet Documented Above
+
+### PUT /api/User rewrite — field-name mapping for admin edits
+
+**Fixed admin field editing not persisting.** The `PUT /api/User` endpoint previously accepted a raw `User` model, but the frontend sends DTO field names (`typePublic`, `wealthLevel`, `hackingSkills: {stat: N}`, etc.). Unrecognized fields were silently ignored and the entity was overwritten with nulls.
+
+Key changes in **`UserController.cs`**:
+- Changed `Update` to accept `[FromBody] JsonElement body` instead of `User`
+- Fetches the existing entity via `_userService.GetAsync(id)` (already tracked by EF Core)
+- Iterates over JSON properties with a `switch` mapping DTO field names → model properties
+- Handles `{stat: N}` object unwrapping for `cyberwareLevel`, `combatSkill`, `hackingSkills`, `confrontationistVsAgreeable`, `cowardVsBrave`, `talkativeVsSilent`, `thinkerVsDoer`
+- Uses `_dbContext.SaveChangesAsync()` directly on the tracked entity (avoids double-tracking from `_userService.UpdateAsync()`)
+- Injected `GigerDbContext` into the `UserController` constructor
+
+### Record write endpoints — 405 Method Not Allowed fix
+
+**Fixed 405 errors when creating/updating/deleting records from MyID.** The frontend calls type-specific PUT/PATCH/DELETE endpoints but only GET endpoints existed for type-specific paths.
+
+Key changes in **`UserController.Records.cs`**:
+- Added 6 **PUT** endpoints for creating records: `{id}/goals`, `{id}/metas`, `{id}/privateRecords`, `{id}/relations`, `{id}/medicalEvents`, `{id}/criminalEvents`
+- Added 6 **PATCH** endpoints for updating records (same paths)
+- Added 2 **DELETE** endpoints for removing events: `{id}/medicalEvents/{eventId}`, `{id}/criminalEvents/{eventId}`
+- Helper methods map frontend field names to `RecordType` model:
+  - Records: `title`/`description` → `Title`/`Data`, `recordType` → `Type`
+  - Relations: `userName` → `Title`
+  - Events: `name`/`eventDescription`/`type`/`status` → `Title`/`Data`/`Type`/`SubCategory`
+- `RecordGroup` defaults to `"offgame"` for records, `"hard"` for events
+
+### God mode endpoints
+
+**Fixed god mode (admin impersonation) not working.** The frontend calls 4 endpoints that didn't exist on this branch.
+
+Added to **`UserController.cs`**:
+- `GET private/byId` — returns `UserDTO`, used by frontend to fetch impersonated user data
+- `GET public/byId` — returns `UserDTO`, used for public user lookups
+- `GET private/byName/{name}` — returns `UserDTO`, user lookup by handle (authorized)
+- `GET public/byName/{name}` — returns `UserDTO`, public user lookup by handle
+- `GET public/all` — returns `List<UserDTO>`, already existed but now returns DTOs
+
+---
+
 ## Known Remaining Issues
 
-- **Admin field editing**: The `PUT /api/User` endpoint accepts raw `User` model objects, but the frontend sends DTO field names (`typePublic`, `wealthLevel`, etc.). Admin edits for renamed fields will silently fail. Fix would require either a dedicated update DTO or field-name mapping in the PUT handler.
+- **Bank balance in god mode (frontend bug):** `banking.service.ts` uses `state.users.currentUser` (direct Redux state access) instead of the `selectCurrentUser` selector. In god mode, `currentUser` is the god user (hedin), not the impersonated user, so `fetchAccounts` queries `Account/byOwner?owner=hedin` and shows the god user's balance (99999) instead of the impersonated user's. Fix: change `banking.service.ts` line 40-42 to use `selectCurrentUser` from `users.selectors.ts`. This bug likely exists on both branches since no frontend code was modified.
