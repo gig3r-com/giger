@@ -18,6 +18,9 @@ namespace Giger.DTOs
         public string SpeciesActual { get; set; }
         public string Vibe { get; set; }
         public int VibeLevel { get; set; }
+        public string VibeEngagement { get; set; }
+        public string VibeFunction { get; set; }
+        public string VibeOpinions { get; set; }
         public int ConfrontationistVsAgreeable { get; set; }
         public int CowardVsBrave { get; set; }
         public int TalkativeVsSilent { get; set; }
@@ -66,6 +69,9 @@ namespace Giger.DTOs
                 SpeciesActual = user.SpeciesActual ?? "",
                 Vibe = user.Vibe ?? "",
                 VibeLevel = user.VibeLevel,
+                VibeEngagement = user.VibeEngagement ?? "",
+                VibeFunction = user.VibeFunction ?? "",
+                VibeOpinions = user.VibeOpinions ?? "",
                 ConfrontationistVsAgreeable = user.ConfrontationistVsAgreeable,
                 CowardVsBrave = user.CowardVsBrave,
                 TalkativeVsSilent = user.TalkativeVsSilent,

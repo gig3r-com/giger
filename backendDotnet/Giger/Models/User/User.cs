@@ -34,6 +34,12 @@ namespace Giger.Models.User
 
         public int VibeLevel { get; set; }
 
+        public string? VibeEngagement { get; set; }
+
+        public string? VibeFunction { get; set; }
+
+        public string? VibeOpinions { get; set; }
+
         public int ConfrontationistVsAgreeable { get; set; }
 
         public int CowardVsBrave { get; set; }
