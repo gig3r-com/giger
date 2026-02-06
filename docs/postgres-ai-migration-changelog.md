@@ -1,14 +1,53 @@
 # PostgreSQL Migration Branch Changelog
 
-Changes on `haluny_postgres_newmodel` since commit `65398c8` (rework by claude, ale dalej nie działa ładowanie danych).
+Full changelog for `haluny_postgres_newmodel` — migrating the Giger backend from MongoDB to PostgreSQL.
 
-## Summary
+## Branch Summary
 
-This series of commits fixes the major issues that remained after the initial MongoDB-to-PostgreSQL migration. The backend now correctly serves data through DTOs that match the frontend's expected field names and structures, and all core features (chat, bank, gigs, MyID) are functional.
+This branch replaces the entire MongoDB-based persistence layer with PostgreSQL using Entity Framework Core 9 + Npgsql. The work was done in two phases:
+
+**Phase 1 (JZielnik, Jul–Nov 2025):** Core migration — swapped MongoDB driver for EF Core + Npgsql, created `GigerDbContext` with all `DbSet`s, restructured models from MongoDB document-style to relational (junction tables, normalized schema), replaced all service classes to use EF Core queries, and set up PostgreSQL in Docker Compose with init scripts.
+
+**Phase 2 (Claude AI + zefir, Feb 2026):** Bug fixing and frontend compatibility — the app booted but most features were broken due to data model mismatches between the new relational backend and the frontend's expectations. Fixed chat, banking, gigs, and MyID by introducing a DTO layer that maps EF Core entities to the JSON shapes the frontend expects. Created the data conversion pipeline (`scenario.xlsx` → Python script → SQL seed data). No frontend code was modified.
+
+### Key architectural decisions made across both phases:
+- **Single User class** replacing `UserPublic` → `UserPrivate` → `UserFull` inheritance chain
+- **Junction tables** (`AccountOwners`, `ConversationParticipants`, `SubnetworkUsers`, `GigRevealedTo`, etc.) replacing embedded arrays
+- **JSONB columns** for `GigReputation`, `EpsilonData`, `Network.Nodes`, `Network.Data`, `Log.HackData`
+- **`text[]` arrays** for `Roles`, `Exploits`, `Subnetworks`, `Ice`, `PastHacks`
+- **String enums** — all enums stored as plain strings instead of numeric values
+- **DTO layer** — controllers return DTOs (not raw EF entities) to handle field renames, stat wrapping (`int` → `{stat: N}`), and navigation property flattening
+- **Seed data via docker-entrypoint-initdb.d** — PostgreSQL runs `00-schema.sql` + `01-data.sql` on first init; EF Core `EnsureCreated()` is a no-op on existing tables
 
 ---
 
-## Commits (oldest first)
+## Phase 1: Core Migration (JZielnik)
+
+### fd0e6d8 — Moved DB from Mongo to Postgres
+
+Initial migration: replaced `MongoDB.Driver` NuGet package with `Microsoft.EntityFrameworkCore` 9.0.7 + `Npgsql.EntityFrameworkCore.PostgreSQL` 9.0.4. Created `GigerDbContext` with DbSets for all entities. Rewrote all service classes (previously using `IMongoCollection<T>`) to use EF Core LINQ queries. Removed the Next.js-based epsilon admin panel (replaced later on `main`). Updated `docker-compose.yaml` to use PostgreSQL 16 instead of MongoDB.
+
+### 09a82c4 — Updated DataSerializers
+
+Cleaned up `DatabaseSerializer` project — removed MongoDB-specific attributes (`BsonId`, `BsonElement`, etc.) from serialization models.
+
+### b4bf180 — First migration attempt
+
+Expanded the EF Core setup: built out `GigerDbContext.OnModelCreating()` with entity configurations for junction tables (composite keys, foreign keys), added `ScopedServiceProvider` helper for DI in WebSocket handlers, configured PostgreSQL connection string in `appsettings.json`, restructured `docker-compose.yaml` with init script mounts. Added `LoginService` query methods adapted for EF Core. Created `docs/newTypesBackend.txt` documenting the new type system.
+
+### ce023ab — Improvements
+
+Standardized all controller implementations to work with EF Core services. Improved `GigerDbContext` entity configurations. Fixed service registration.
+
+### 65398c8 — rework by claude, ale dalej nie działa ładowanie danych
+
+Major model rework: consolidated `UserPublic`/`UserPrivate`/`UserSimple` into a single `User` class. Replaced stat structs (`CharStat`, `SkillStat`, `CyberwareLevel` with custom JSON converters) with plain `int` fields. Removed enum types (`UserEnums.cs`) — all enums stored as strings. Created `UserFavoriteUser`, `UserEpsilonConversationNote`, `RecordType` as separate entities with FK to User. Deleted obsolete services (`AnonymizedService`, `ObscuredDataService`, `HackConfigService`, `ImplantsService`). Added `RecordService` and `PlotService`. Reworked `GigerDbContext` with Include-based eager loading and proper navigation property configuration. Updated data submodule and `docker-compose.yaml`.
+
+At this point the app started but data loading and most features were still broken.
+
+---
+
+## Phase 2: Bug Fixes and Frontend Compatibility (Claude AI)
 
 ### eb11d8d — jakby działa
 ### e801229 — trochę więcej fixów halunomaszyny
@@ -123,7 +162,7 @@ Merged latest `main` (epsilon features, CI/CD registry switch to ghcr.io).
 
 ---
 
-## New Files Added
+## New Files Added (Phase 2)
 
 | File | Purpose |
 |------|---------|
