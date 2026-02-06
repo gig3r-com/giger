@@ -1,42 +1,79 @@
-﻿using Giger.Models;
 using Giger.Models.MessageModels;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class ConversationService : AbstractService
-    { 
-        private readonly IMongoCollection<Conversation> _conversationsCollection;
+    public class ConversationService : IGigerService
+    {
+        private readonly GigerDbContext _dbContext;
 
-        public ConversationService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public ConversationService(GigerDbContext dbContext)
         {
-            _conversationsCollection = _mongoDatabase.GetCollection<Conversation>(
-                gigerDatabaseSettings.Value.ConversationsCollectionName);
+            _dbContext = dbContext;
         }
 
         public async Task<List<Conversation>> GetAllAsync() =>
-            await _conversationsCollection.Find(_ => true).ToListAsync();
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .ToListAsync();
 
         public async Task<Conversation?> GetAsync(string id) =>
-            await _conversationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
-            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && !x.GigConversation).ToListAsync();
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Any(p => p.UserHandle == participant) && !x.GigConversation)
+                .ToListAsync();
 
         public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
-            await _conversationsCollection.Find(x => x.Participants.Contains(participant) && x.GigConversation).ToListAsync();
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Any(p => p.UserHandle == participant) && x.GigConversation)
+                .ToListAsync();
 
-        public async Task CreateAsync(Conversation newConversation) =>
-            await _conversationsCollection.InsertOneAsync(newConversation);
+        public async Task CreateAsync(Conversation newConversation)
+        {
+            _dbContext.Conversations.Add(newConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation);
+        public async Task UpdateAsync(Conversation updatedConversation)
+        {
+            _dbContext.Conversations.Update(updatedConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpsertAsync(Conversation updatedConversation) =>
-            await _conversationsCollection.ReplaceOneAsync(x => x.Id == updatedConversation.Id, updatedConversation, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpsertAsync(Conversation updatedConversation)
+        {
+            var existing = await GetAsync(updatedConversation.Id);
+            if (existing == null)
+                _dbContext.Conversations.Add(updatedConversation);
+            else
+                _dbContext.Conversations.Update(updatedConversation);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _conversationsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var conversation = await GetAsync(id);
+            if (conversation != null)
+            {
+                _dbContext.Conversations.Remove(conversation);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

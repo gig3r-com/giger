@@ -1,38 +1,30 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.MessageModels
 {
     public class Message
     {
-        [BsonElement("_id")]
+        [Key]
         public required string Id { get; set; }
 
-        public required DateTime Date { get; set; }
+        public required string ConversationId { get; set; }
+        [ForeignKey("ConversationId")]
+        public Conversation? Conversation { get; set; }
 
-        public required string Sender { get; set; } // UserName
+        public required DateTime Timestamp { get; set; }
 
-        public required string Text { get; set; }
-        
-        public Message() { }
+        public required string Sender { get; set; } // user handle
 
-        [SetsRequiredMembers]
-        public Message(string sender, string text)
-        {
-            Id = Guid.NewGuid().ToString();
-            Date = GigerDateTime.Now;
-            Sender = sender;
-            Text = text;
-        }
+        public required string Type { get; set; }
 
-        public override int GetHashCode()
-        {
-            int hash = 3;
-            hash += 5 * Date.GetHashCode();
-            hash += 7 * Sender.GetHashCode();
-            hash += 11 * Text.GetHashCode();
-            return hash;
-        }
+        public required string Data { get; set; }
+
+        public string? Hacker { get; set; } // user handle
+
+        public string? EpsilonNote { get; set; }
+
+        // Navigation: readBy via junction
+        public List<MessageReadBy> ReadBy { get; set; } = [];
     }
 }

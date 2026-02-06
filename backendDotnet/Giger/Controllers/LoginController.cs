@@ -6,18 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : Controller
+    public class LoginController(UserService _userService, LoginService _loginService)
+        : Controller
     {
-        private readonly UserService _userService;  
-        private readonly LoginService _loginService;
-
-        public LoginController(UserService userService, LoginService loginService)
-        {
-            _loginService = loginService;
-            _userService = userService;
-        }
-
-// TODO: For testing purposes only, remove in production
+        // TODO: For testing purposes only, remove in production
 #if DEBUG
         [HttpGet("disableAuth")]
         public async Task<string> DisableAuth()
@@ -50,15 +42,15 @@ namespace Giger.Controllers
                 return "Wrong password";
             }
 
-            var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
-            {
-                if (userLoginData.AuthToken != null)
-                {
-                    Response.StatusCode = StatusCodes.Status200OK;
-                    return userLoginData.AuthToken;
-                }
-            }
+            //var user = await _userService.GetByUserNameAsync(userName);
+            //if (user != null && user.Roles.Contains(Models.User.UserRoles.GOD))
+            //{
+            //    if (userLoginData.AuthToken != null)
+            //    {
+            //        Response.StatusCode = StatusCodes.Status200OK;
+            //        return userLoginData.AuthToken;
+            //    }
+            //}
 
             var newAuthToken = Guid.NewGuid().ToString();
             while (_loginService.GetByAuthTokenAsync(newAuthToken).Result != null)
@@ -88,8 +80,8 @@ namespace Giger.Controllers
             }
 
             var user = await _userService.GetByUserNameAsync(hackerLoginData.Username);
-            if (user != null && (user.Roles.Contains(Models.User.UserRoles.ADMIN) ||
-                user.HackingSkills.Stat >= 1))
+            if (user != null && (user.Roles.Contains("ADMIN") ||
+                user.HackerSkill >= 1))
             {
                 if (hackerLoginData.AuthToken != null)
                 {
@@ -117,7 +109,7 @@ namespace Giger.Controllers
             }
 
             var user = await _userService.GetByUserNameAsync(userName);
-            if (user != null && !user.Roles.Contains(Models.User.UserRoles.GOD))
+            if (user != null && !user.Roles.Contains("GOD"))
             {
                 userLoginData.AuthToken = null;
                 await _loginService.UpdateAsync(userLoginData);

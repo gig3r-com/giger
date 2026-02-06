@@ -1,23 +1,24 @@
 ﻿using Giger.Models;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class GigerConfigService : AbstractService
+    public class GigerConfigService : IGigerService
     {
-        private readonly IMongoCollection<GigerConfig> _gigerConfig;
+        private readonly GigerDbContext _dbContext;
 
-        public GigerConfigService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public GigerConfigService(GigerDbContext dbContext)
         {
-            _gigerConfig = _mongoDatabase.GetCollection<GigerConfig>(
-                gigerDatabaseSettings.Value.GigerConfigCollectionName);
+            _dbContext = dbContext;
         }
 
-        public async Task<GigerConfig> Get() =>
-            await _gigerConfig.Find(_ => true).FirstOrDefaultAsync();
+        public async Task<GigerConfig?> Get() =>
+            await _dbContext.Set<GigerConfig>().FirstOrDefaultAsync();
 
-        public async Task UpdateAsync(GigerConfig config) =>
-            await _gigerConfig.ReplaceOneAsync(x => x.Id == config.Id, config);
+        public async Task UpdateAsync(GigerConfig config)
+        {
+            _dbContext.Set<GigerConfig>().Update(config);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

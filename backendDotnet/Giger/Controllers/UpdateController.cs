@@ -6,11 +6,10 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UpdateController(UserService userService, LoginService loginService, NotificationsSocketHandler notificationsSocketHandler) 
+    public class UpdateController(UserService userService, LoginService loginService, 
+        NotificationsSocketHandler _notificationsSocketHandler) 
         : AuthController(userService, loginService)
     {
-        private NotificationsSocketHandler _notificationsSocketHandler = notificationsSocketHandler;
-
         [HttpGet]
         public async Task<ActionResult> Get()
         {

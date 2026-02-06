@@ -1,36 +1,48 @@
-﻿using Giger.Models;
-using Giger.Models.Auths;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using Giger.Models.Auths;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class LoginService : AbstractService
+    public class LoginService : IGigerService
     {
-        private readonly IMongoCollection<Auth> _authsCollection;
+        private readonly GigerDbContext _dbContext;
 
-        public LoginService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public LoginService(GigerDbContext dbContext)
         {
-            _authsCollection = _mongoDatabase.GetCollection<Auth>(
-                gigerDatabaseSettings.Value.AuthsCollectionName);
+            _dbContext = dbContext;
         }
 
-        public async Task<Auth?> GetByUserNameAsync(string userName) =>
-            await _authsCollection.Find(x => x.Username.Equals(userName, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+        public async Task<Auth?> GetByUserNameAsync(string userName)
+        {
+            return await _dbContext.Auths.FirstOrDefaultAsync(x => x.Username.ToLower() == userName.ToLower());// .Equals(userName, System.StringComparison.OrdinalIgnoreCase));
+        }
 
         public async Task<Auth?> GetByHackerNameAsync(string hackerName) =>
-            await _authsCollection.Find(x => x.HackerName.Equals(hackerName, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
+            await _dbContext.Auths.FirstOrDefaultAsync(x => x.HackerName != null && x.HackerName.ToLower() == hackerName.ToLower());
 
         public async Task<Auth?> GetByAuthTokenAsync(string authToken) =>
-            await _authsCollection.Find(x => x.AuthToken == authToken).FirstOrDefaultAsync();
+            await _dbContext.Auths.FirstOrDefaultAsync(x => x.AuthToken == authToken);
 
-        public async Task CreateAsync(Auth newAuth) =>
-            await _authsCollection.InsertOneAsync(newAuth);
+        public async Task CreateAsync(Auth newAuth)
+        {
+            _dbContext.Auths.Add(newAuth);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Auth newAuth) =>
-            await _authsCollection.ReplaceOneAsync(x => x.Id == newAuth.Id, newAuth);
+        public async Task UpdateAsync(Auth updatedAuth)
+        {
+            _dbContext.Auths.Update(updatedAuth);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _authsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var auth = await _dbContext.Auths.FirstOrDefaultAsync(x => x.Id == id);
+            if (auth != null)
+            {
+                _dbContext.Auths.Remove(auth);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Giger.Connections.SocketsManagment
                 await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "No token", CancellationToken.None);
                 return;
             }
-            await Task.Run(() => { Connections.AddSocket(socket, token); });
+            await Connections.AddSocket(socket, token);
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
