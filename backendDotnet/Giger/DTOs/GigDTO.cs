@@ -54,15 +54,6 @@ namespace Giger.DTOs
                 IsRevealedByClient = true
             };
 
-            // Calculate IsRevealed flags if we have the data
-            // Access the collection once to avoid multiple enumerations
-            var revealedToList = gig.IsRevealedTo;
-            if (currentUserHandle != null && revealedToList != null && revealedToList.Any())
-            {
-                dto.IsRevealed = revealedToList.Any(r => r.UserHandle == currentUserHandle);
-                dto.IsRevealedByClient = revealedToList.Any(r => r.UserHandle == gig.AuthorHandle);
-            }
-
             return dto;
         }
     }

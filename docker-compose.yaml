@@ -41,7 +41,7 @@ services:
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
       - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
-      - ASPNETCORE_ENVIRONMENT=Development
+      # - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - postgres
 
