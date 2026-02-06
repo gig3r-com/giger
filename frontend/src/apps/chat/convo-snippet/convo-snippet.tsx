@@ -49,7 +49,7 @@ export const ConvoSnippet: FC<{
         const others = convo.participants
             .filter((participant) => participant !== currentUser?.handle)
             .map((participant) =>
-                (convo.anonymizedUsers || []).includes(participant)
+                convo.anonymizedUsers.includes(participant)
                     ? intl.formatMessage({ id: 'ANONYMOUS' })
                     : participant
             );
