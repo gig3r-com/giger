@@ -1,7 +1,9 @@
 using Giger.Services;
 using Giger.Models.BankingModels;
 using Giger.Models.Logs;
+using Giger.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Giger.Models.User;
 using Giger.Connections.Handlers;
 
@@ -12,7 +14,7 @@ namespace Giger.Controllers
     public class AccountController(
         UserService _userService, LoginService _loginService, AccountService _accountService,
         LogService _logService, NetworksService _networksService,
-        NotificationsSocketHandler _notificationsHandler)
+        NotificationsSocketHandler _notificationsHandler, GigerDbContext _dbContext)
         : AuthController(_userService, _loginService)
     {
         #region Account
@@ -53,7 +55,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("byOwner")]
-        public async Task<ActionResult<List<Account>>> GetByOwner(string owner)
+        public async Task<ActionResult<List<AccountDTO>>> GetByOwner(string owner)
         {
             if (!IsAuthorized(owner))
             {
@@ -65,7 +67,7 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            var retValue = new List<Account>() { account };
+            var accounts = new List<Account> { account };
 
             var user = await _userService.GetByUserNameAsync(owner);
             if (user is not null && user.Faction != null)
@@ -73,11 +75,64 @@ namespace Giger.Controllers
                 var businessAccount = await _accountService.GetByOwnerHandleAsync(user.Faction);
                 if (businessAccount is not null)
                 {
-                    retValue.Add(businessAccount);
+                    accounts.Add(businessAccount);
                 }
             }
 
-            return retValue;
+            var result = new List<AccountDTO>();
+            foreach (var acc in accounts)
+            {
+                result.Add(await MapAccountToDTO(acc));
+            }
+            return result;
+        }
+
+        private async Task<AccountDTO> MapAccountToDTO(Account account)
+        {
+            // Get all transactions for this account (both sent and received)
+            var accountNumber = account.AccountNumber;
+            var allTransactions = await _dbContext.Transactions
+                .Where(t => t.AccountId == account.Id || (t.To == accountNumber && t.AccountId != account.Id))
+                .ToListAsync();
+
+            // Collect all unique account numbers to resolve owner handles
+            var accountNumbers = allTransactions
+                .SelectMany(t => new[] { t.From, t.To })
+                .Where(n => !string.IsNullOrEmpty(n))
+                .Distinct()
+                .ToList();
+
+            // Build account number -> owner handle map
+            var accountOwnerMap = await _dbContext.Accounts
+                .Include(a => a.Owners)
+                .Where(a => accountNumbers.Contains(a.AccountNumber))
+                .ToDictionaryAsync(
+                    a => a.AccountNumber,
+                    a => a.Owners.FirstOrDefault()?.UserHandle ?? a.Name ?? ""
+                );
+
+            var transactionDtos = allTransactions.Select(t => new TransactionDTO
+            {
+                Id = t.Id,
+                From = t.From ?? "",
+                To = t.To ?? "",
+                FromUser = t.From != null && accountOwnerMap.TryGetValue(t.From, out var fromUser) ? fromUser : "",
+                ToUser = t.To != null && accountOwnerMap.TryGetValue(t.To, out var toUser) ? toUser : "",
+                Amount = t.Amount,
+                Timestamp = t.Timestamp?.ToString("o") ?? "",
+                Title = t.Title,
+                OrderingParty = t.OrderingUser
+            }).ToList();
+
+            return new AccountDTO
+            {
+                Id = account.Id,
+                Type = account.Type,
+                AccountNumber = account.AccountNumber,
+                Balance = account.Balance,
+                Owner = account.Owners.FirstOrDefault()?.UserHandle ?? account.Name ?? "",
+                Transactions = transactionDtos
+            };
         }
 
         [HttpGet("byAccountNumber")]
