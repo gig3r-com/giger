@@ -66,6 +66,12 @@ namespace Giger.Models.User
 
         public int HackerSkill { get; set; }
 
+        public bool HighSecurity { get; set; }
+
+        public bool HasPlatinumPass { get; set; }
+
+        public int InsuredAmount { get; set; }
+
         public string? MainAccount { get; set; } // accountNumber
 
         [Column(TypeName = "jsonb")]
