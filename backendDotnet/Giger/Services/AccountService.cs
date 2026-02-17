@@ -1,4 +1,4 @@
-﻿using Giger.Models.BankingModels;
+using Giger.Models.BankingModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -13,25 +13,30 @@ namespace Giger.Services
         }
 
         public async Task<List<Account>> GetAllAsync() =>
-            await _dbContext.Accounts.ToListAsync();
-
-        public async Task<List<Account>> GetAllActiveAsync() =>
-            await _dbContext.Accounts.Where(x => x.IsActive).ToListAsync();
+            await _dbContext.Accounts.Include(a => a.Owners).ToListAsync();
 
         public async Task<Account?> GetSystemAccountAsync() =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner == "SYSTEM");
+            await _dbContext.Accounts
+                .Include(a => a.Owners)
+                .FirstOrDefaultAsync(x => x.Owners.Any(o => o.UserHandle == "SYSTEM"));
 
         public async Task<Account?> GetByIdAsync(string id) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            await _dbContext.Accounts
+                .Include(a => a.Owners)
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<Account?> GetByAccountNameAsync(string owner) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner.Equals(owner, System.StringComparison.OrdinalIgnoreCase));
-
-        public async Task<Account?> GetByUserIdAsync(string ownerId) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.OwnerId == ownerId);
+        public async Task<Account?> GetByOwnerHandleAsync(string ownerHandle) =>
+            await _dbContext.Accounts
+                .Include(a => a.Owners)
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(x => x.Owners.Any(o => o.UserHandle.ToLower() == ownerHandle.ToLower()));
 
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+            await _dbContext.Accounts
+                .Include(a => a.Owners)
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
 
         public async Task CreateAsync(Account newAccount)
         {

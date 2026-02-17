@@ -1,34 +1,31 @@
-﻿using Giger.Models.User;
+using Giger.Models.User;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    public abstract class AuthController//(IServiceProvider serviceProvider
-        //(UserService _userService, LoginService _loginService)
-        //)
-        : Controller
+    public abstract class AuthController : Controller
     {
-        public AuthController(UserService userService, LoginService loginService)// : this(null)
+        public AuthController(UserService userService, LoginService loginService)
         {
             _loginService = loginService;
             _userService = userService;
         }
-        protected LoginService _loginService;//=> ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider) as LoginService;
-        protected UserService _userService;// => ScopedServiceProvider.CreateScopedGigerService<UserService>(serviceProvider) as UserService;
+        protected LoginService _loginService;
+        protected UserService _userService;
 
 #if DEBUG
-        public static bool AuthEnabled { get; set; } = false;
+        public static bool AuthEnabled { get; set; } = true;
 #endif
 
-        protected async Task<UserPrivate> GetSenderUser()
+        protected async Task<User> GetSenderUser()
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
                 return null;
 
             var senderHandle = await _loginService.GetByAuthTokenAsync(senderAuthToken);
-            if (senderHandle == null) 
+            if (senderHandle == null)
                 return null;
 
             return await _userService.GetByUserNameAsync(senderHandle.Username);
@@ -47,14 +44,12 @@ namespace Giger.Controllers
             return senderHandle.Username;
         }
 
-        // owner can be either User.Id or User.Handle (username)
         protected bool IsAuthorized(string owner = "", short minimumHackingLevel = 1)
         {
 #if DEBUG
             if (!AuthEnabled)
                 return true;
 #endif
-            // if Request is null, then it redirect from other controller which has authorised action
             if (Request == null)
             {
                 return true;
@@ -72,19 +67,19 @@ namespace Giger.Controllers
             if (senderUser != null && owner != null)
             {
                 if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
-                    owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))
+                    (senderUser.HackerName != null && owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase)))
                     return true;
 
-                if (owner == senderUser.Faction.ToString())
+                if (senderUser.Faction != null && owner == senderUser.Faction)
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains("GOD"))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                if (senderUser.Roles.Contains("ADMIN"))
                     return true;
 
-                if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
+                if (senderUser.HackerSkill >= minimumHackingLevel)
                     return true;
             }
 
@@ -97,7 +92,6 @@ namespace Giger.Controllers
             if (!AuthEnabled)
                 return true;
 #endif
-            // if Request is null, then it redirect from other controller which has authorised action
             if (Request == null)
             {
                 return true;
@@ -115,26 +109,23 @@ namespace Giger.Controllers
             if (senderUser != null && owner != null)
             {
                 if (owner == senderUser.Id || owner.Equals(senderUser.Handle, StringComparison.OrdinalIgnoreCase) ||
-                    owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase))
+                    (senderUser.HackerName != null && owner.Equals(senderUser.HackerName, StringComparison.OrdinalIgnoreCase)))
                     return true;
 
-                if (owner == senderUser.Faction.ToString())
+                if (senderUser.Faction != null && owner == senderUser.Faction)
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains("GOD"))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                if (senderUser.Roles.Contains("ADMIN"))
                     return true;
-
-                //if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
-                //    return true;
             }
 
             return false;
         }
 
-        protected bool IsRole(UserRoles allowedRole)
+        protected bool IsRole(string allowedRole)
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
@@ -150,7 +141,7 @@ namespace Giger.Controllers
                 if (senderUser.Roles.Contains(allowedRole))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains("GOD"))
                     return true;
             }
 
@@ -174,7 +165,7 @@ namespace Giger.Controllers
 
             var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
 
-            var isGodUser = senderUser?.Roles.Contains(UserRoles.GOD);
+            var isGodUser = senderUser?.Roles.Contains("GOD");
             if (isGodUser.HasValue && isGodUser.Value)
                 return true;
 

@@ -1,0 +1,81 @@
+html, body {
+  height:100%;
+}
+
+:root {
+  --bg-base: #06090b;
+  --grid-x: clamp(26px, 2.8vw, 44px);
+  --grid-y: clamp(26px, 2.8vh, 44px);
+  --glow-green: rgba(182, 255, 46, .08);
+  --glow-yellow: rgba(249, 240, 2, .08);
+  --grid-strong: rgba(110, 255, 90, .09);
+  --grid-soft:   rgba(110, 255, 90, .04);
+  --scanline: rgba(255,255,255,.03);
+}
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--g0, var(--bg-base));
+  color-scheme: dark;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image:
+          radial-gradient(ellipse 60vmax 40vmax at 20% 15%, var(--glow-green) 0, transparent 60%),
+          radial-gradient(ellipse 50vmax 40vmax at 85% 80%, var(--glow-yellow) 0, transparent 60%),
+
+          repeating-linear-gradient(0deg,  var(--grid-strong) 0 1px, transparent 1px var(--grid-y)),
+          repeating-linear-gradient(90deg, var(--grid-soft)   0 1px, transparent 1px var(--grid-x)),
+
+          linear-gradient(var(--g0, var(--bg-base)), var(--g0, var(--bg-base)));
+  background-blend-mode: screen, screen, normal, normal, normal;
+
+  /* tiny halo for a glowier vibe */
+  filter: drop-shadow(0 0 8px rgba(0,255,170,.08));
+  will-change: transform;
+  transform: translateZ(0); /* GPU hint */
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(180deg, var(--scanline) 0 1px, transparent 1px 3px);
+  mix-blend-mode: soft-light;
+  opacity: .6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after { opacity: .35; }
+}
+
+@media (min-resolution: 2dppx) {
+  body::before { filter: drop-shadow(0 0 6px rgba(0,255,170,.06)); }
+}
+
+::selection{ background: rgba(182,255,46,.35); color:#101510; }
+
+.glitch {
+  position:relative; text-shadow:
+        0 0 6px rgba(182,255,46,.35),
+        0 0 14px rgba(249,240,2,.25);
+}
+.glitch::before, .glitch::after {
+  content: attr(data-glitch);
+  position: absolute; left:0; top:0; z-index:-1; opacity:.25;
+}
+.glitch::before{ transform: translate(1px,0); color: var(--bio-acid); }
+.glitch::after{ transform: translate(-1px,0); color: var(--cp-yellow); }

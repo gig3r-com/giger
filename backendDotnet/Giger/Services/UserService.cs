@@ -1,4 +1,4 @@
-﻿using Giger.Models.User;
+using Giger.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -12,31 +12,31 @@ namespace Giger.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<UserPrivate>> GetAllPrivateUsersAsync() =>
+        public async Task<List<User>> GetAllUsersAsync() =>
             await _dbContext.Users.ToListAsync();
 
-        public async Task<UserPrivate?> GetAsync(string userId) =>
+        public async Task<User?> GetAsync(string userId) =>
             await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
-        public async Task<UserPrivate?> GetByUserNameAsync(string userHandle) =>
-            await _dbContext.Users.FirstOrDefaultAsync(x => x.Handle.Equals(userHandle, System.StringComparison.OrdinalIgnoreCase));
+        public async Task<User?> GetByUserNameAsync(string userHandle) =>
+            await _dbContext.Users.FirstOrDefaultAsync(x => x.Handle.ToLower() == userHandle.ToLower());
 
-        public async Task<List<UserPrivate>> GetAllFactionUser(Factions faction) =>
+        public async Task<List<User>> GetAllFactionUser(string faction) =>
             await _dbContext.Users.Where(x => x.Faction == faction).ToListAsync();
 
-        public async Task CreateAsync(UserPrivate newUser)
+        public async Task CreateAsync(User newUser)
         {
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(UserPrivate updatedUser)
+        public async Task UpdateAsync(User updatedUser)
         {
             _dbContext.Users.Update(updatedUser);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpsertAsync(UserPrivate updatedUser)
+        public async Task UpsertAsync(User updatedUser)
         {
             var existing = await GetAsync(updatedUser.Id);
             if (existing == null)

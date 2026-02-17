@@ -7,11 +7,11 @@ namespace Giger.Connections.SocketsManagment
     public class ConnectionsManager
     {
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
-        private readonly LoginService _auths;
+        private readonly IServiceProvider _serviceProvider;
 
         public ConnectionsManager(IServiceProvider serviceProvider)
         {
-            _auths = ScopedServiceProvider.CreateScopedGigerService<LoginService>(serviceProvider);
+            _serviceProvider = serviceProvider;
         }
 
         public WebSocket GetSocketByUser(string username)
@@ -29,9 +29,11 @@ namespace Giger.Connections.SocketsManagment
             return _connections.FirstOrDefault(conn => conn.Value == socket).Key;
         }
 
-        public async void AddSocket(WebSocket socket, string authToken)
+        public async Task AddSocket(WebSocket socket, string authToken)
         {
-            var auth =  await _auths.GetByAuthTokenAsync(authToken);
+            using var scope = _serviceProvider.CreateScope();
+            var loginService = scope.ServiceProvider.GetRequiredService<LoginService>();
+            var auth = await loginService.GetByAuthTokenAsync(authToken);
             if (auth != null)
             {
                 if (_connections.ContainsKey(auth.Username))

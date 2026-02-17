@@ -1,4 +1,4 @@
-﻿using Giger.Models.MessageModels;
+using Giger.Models.MessageModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -13,19 +13,35 @@ namespace Giger.Services
         }
 
         public async Task<List<Conversation>> GetAllAsync() =>
-            await _dbContext.Conversations.ToListAsync();
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .ToListAsync();
 
         public async Task<Conversation?> GetAsync(string id) =>
-            await _dbContext.Conversations.FirstOrDefaultAsync(x => x.Id == id);
+            await _dbContext.Conversations
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<List<Conversation>> GetAllWithParticipantAsync(string participant) =>
             await _dbContext.Conversations
-                .Where(x => x.Participants.Contains(participant) && !x.GigConversation)
+                .Include(c => c.Participants)
+                .Include(c => c.AnonymizedUsers)
+                .Include(c => c.Hackers)
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Any(p => p.UserHandle == participant) && !x.GigConversation)
                 .ToListAsync();
 
         public async Task<List<Conversation>> GetAllGigConversationsWithParticipantAsync(string participant) =>
             await _dbContext.Conversations
-                .Where(x => x.Participants.Contains(participant) && x.GigConversation)
+                .Include(c => c.Participants)
+                .Include(c => c.Messages)
+                .Where(x => x.Participants.Any(p => p.UserHandle == participant) && x.GigConversation)
                 .ToListAsync();
 
         public async Task CreateAsync(Conversation newConversation)

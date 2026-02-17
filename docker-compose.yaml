@@ -13,7 +13,7 @@ services:
       - ./docker/nginx/:/etc/nginx/conf.d/
 
   frontend:
-    image: mivalsten/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
+    image: ghcr.io/gig3r-com/gig3r-frontend:${GIGER_IMAGE_TAG:-latest}
     build:
       context: ./frontend
     restart: unless-stopped
@@ -21,9 +21,9 @@ services:
       - 8080
 
   backend:
-    image: mivalsten/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
+    image: ghcr.io/gig3r-com/gig3r-backend:${GIGER_IMAGE_TAG:-latest}
     deploy:
-      replicas: 3
+      replicas: 1
     build:
       context: ./backendDotnet/Giger
       dockerfile: ../Dockerfile
@@ -40,8 +40,8 @@ services:
       - GigerDB__Port=5432
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
-      - GigerDB__DatabaseName=${GIGER_DATABASE:-admin}
-      - ASPNETCORE_ENVIRONMENT=Development
+      - GigerDB__DatabaseName=${GIGER_DATABASE:-giger}
+      # - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - postgres
 
@@ -51,7 +51,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=giger
       - POSTGRES_PASSWORD=giger
