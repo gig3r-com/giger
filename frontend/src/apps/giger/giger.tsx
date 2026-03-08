@@ -5,6 +5,7 @@ import { GigListFilters } from './gigList/gig-list-filters/gig-list.filters';
 import { NewGig } from './new-gig/new-gig';
 import { AnimatePresence } from 'framer-motion';
 import { useGigsService } from '../../shared/services/gigs.service';
+import { useUserService } from '../../shared/services/user.service';
 import { LoadingBar } from '../../shared/components/loading-bar/loading-bar';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -21,6 +22,7 @@ export const Giger: FC = () => {
     const selectedGig = useSelector(selectSelectedGig);
     const [fetchingGigs, setFetchingGigs] = useState(true);
     const { fetchGigs, currentGigs } = useGigsService();
+    const { currentUser } = useUserService();
     const [menuState, setMenuState] = useState<'list' | 'filters' | 'newGig'>(
         'list'
     );
@@ -31,7 +33,7 @@ export const Giger: FC = () => {
             setFetchingGigs(false);
             setFetchingGigs(false);
         });
-    }, []);
+    }, [currentUser]);
 
     const toggleMenuState = () => {
         setMenuState(menuState === 'filters' ? 'list' : 'filters');
