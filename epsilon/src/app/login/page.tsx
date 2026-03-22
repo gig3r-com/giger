@@ -10,7 +10,12 @@ export default function LoginPage({ searchParams }: { searchParams?: { callbackU
         if (provider) formData.delete('provider')
         const targetProvider =
             provider && ['mock', 'police'].includes(provider) ? (provider as 'mock' | 'police') : 'credentials'
-        await signIn(targetProvider, formData)
+        try {
+            await signIn(targetProvider, formData)
+        } catch (error) {
+            console.error('----------------------------------------------', error);
+            throw error;
+        }
     }
 
     return <LoginForm action={login} redirectTo={redirectTo} error={searchParams?.error} />

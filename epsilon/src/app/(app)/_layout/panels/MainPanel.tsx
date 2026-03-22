@@ -6,6 +6,8 @@ import { Panel } from '@/app/(app)/_layout/Panel';
 import { FormMaker } from '@/app/(app)/_layout/forms/FormMaker';
 import { useFormsStore } from '@/store/formsStore';
 import TabChip from '@/app/(app)/_layout/components/TabChip';
+import IconButton from '@mui/material/IconButton';
+import MainPanelMenu from '@/app/(app)/_layout/panels/contents/MainPanelMenu';
 
 export function MainPanel() {
     const { tabs, activeTab } = useFormsStore();
@@ -28,8 +30,11 @@ export function MainPanel() {
                 disableTitlePadding
                 headerVariant="dark"
                 title={
-                    <Stack direction="row" spacing={1} p={1}>
+                    <Stack direction="row" spacing={1} p={1} width="100%">
                         { title }
+                        <Box sx={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
+                            <MainPanelMenu />
+                        </Box>
                     </Stack>
                 }
             >

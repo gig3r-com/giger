@@ -43,13 +43,17 @@ export async function loginWithCredentials(username: string, password: string): 
         const { data } = await api.get<string>('/Login/giger', {
             params: { username, password },
         });
+        console.log('----------data--------', data);
         if (typeof window !== 'undefined') {
             setAuthToken(data);
         }
-        const profileResponse = await axios.get(
-          `${baseURL}/User/private/byUsername`,
-          { params: { userName: username }, headers: { AuthToken: data } }
-        );
+        const profileResponse = await api.get<string>('/User/simple/byUsername', {
+            params: { userName: username }, headers: { AuthToken: data },
+        });
+        // const profileResponse = await axios.get(
+        //   `${baseURL}/User/private/byUsername`,
+        //   { params: { userName: username }, headers: { AuthToken: data } }
+        // );
         return { status: 'ok', user: profileResponse.data, token: data, };
     } catch (e) {
         return { status: 'error', message: e };

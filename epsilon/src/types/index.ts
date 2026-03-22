@@ -2,6 +2,7 @@ export * from './user';
 export * from './records';
 export * from './mui';
 export * from './conversations';
+export * from './plots';
 
 export type Option<T> = {
   label: string;

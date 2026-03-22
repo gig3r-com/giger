@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from 'formik';
-import { DenseInput, Input, Radio, Segment, Select } from '../../inputs';
+import { DenseInput, Input, Radio, Segment, Select, FormBox } from '../../inputs';
 import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { DisabledVisible, HideSource, Security, DeleteOutline, DriveFileMove } from '@mui/icons-material';
 import { CRIMINAL_HARD_RECORD_SUBCATEGORIES_OPTIONS } from '@/configs/Record';
@@ -66,6 +66,14 @@ function Record({ path, config, }: { path: string, config: object, }) {
     const [isReveledField] = useField(`${path}.subCategory`);
     const [isEncryptedField] = useField(`${path}.subCategory`);
     const Icon = config.icons[subCatField.value];
+
+    return (
+        <Box sx={{ marginLeft: 8 }}>
+            <FormBox>
+                Test
+            </FormBox>
+        </Box>
+    )
 console.log(path)
     return (
         <Segment cleanIcon labelWidth={ 0 }

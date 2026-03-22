@@ -4,3 +4,4 @@ export { DenseSelect } from './DenseSelect';
 export { Select } from './Select';
 export { Radio } from './Radio';
 export { Segment } from './Segment';
+export { FormBox } from './FormBox';

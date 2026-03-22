@@ -9,6 +9,8 @@ import { AppModes, BottomPanelModes, EpsilonContextType, LeftPanelModes, RightPa
 import AdminModal from '../components/AdminModal';
 import { redirect } from 'next/navigation';
 
+type AuthMode = 'real' | 'mock'
+
 const initialValue: EpsilonContextType = {
   appMode: 'FULL',
   setAppMode: (mode) => console.log(mode),
@@ -49,6 +51,10 @@ export function EpsilonContextProvider({ children }: { children: ReactNode }) {
   const [appMode, setAppMode] = useState<AppModes>('FULL');
   const [locked, setLock] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>(() => {
+    if (typeof window === 'undefined') return 'real';
+    return (localStorage.getItem('authMode') as AuthMode) ?? 'real';
+  });
 
   // Panels
   const [isLeftPanelOpened, setIsLeftPanelOpened] = useState<boolean>(true);
@@ -93,6 +99,10 @@ export function EpsilonContextProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('authMode', authMode);
+  }, [authMode]);
+
   // Persist to localStorage when state changes
   useEffect(() => {
     if (!hydrated) return;
@@ -131,9 +141,10 @@ export function EpsilonContextProvider({ children }: { children: ReactNode }) {
   }
 
   const value = useMemo(() => ({
+    locked, setLock,
+    authMode,
+    setAuthMode,
     appMode, setAppMode: changeMode,
-    locked,
-    setLock,
     isLeftPanelOpened,
     setIsLeftPanelOpened,
     leftPanelMode,
@@ -160,6 +171,9 @@ export function EpsilonContextProvider({ children }: { children: ReactNode }) {
     isBottomPanelOpened, bottomPanelMode, bottomPanelSearch,
     isRightPanelOpened, rightPanelMode, rightPanelSearch,
     isTopBarOpened,
+    locked, setLock,
+    authMode,
+    setAuthMode,
   ]);
 
   return (

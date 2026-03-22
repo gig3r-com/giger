@@ -1,5 +1,5 @@
 import type { HardRecordCategories, Options, } from '@/types';
-import userConfig from '@/configs/user';
+import userConfig from '@/configs/entities/user';
 import { capitalize } from '@/utils/clientUtils';
 
 export const RECORD_HARD_CATEGORIES = userConfig.hardRecordsCategories;

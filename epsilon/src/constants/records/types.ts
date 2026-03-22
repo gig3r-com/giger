@@ -1,5 +1,5 @@
 import type { RecordType, Options, } from '@/types';
-import userConfig from '@/configs/user';
+import userConfig from '@/configs/entities/user';
 import { capitalize } from '@/utils/clientUtils';
 
 export const RECORD_TYPES = userConfig.recordsTypes;

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
-export type TabTypes = 'user' | 'conversation' | 'account' | 'gig';
+export type TabTypes = 'user' | 'conversation' | 'account' | 'gig' | 'plot';
 
 export type TabType = {
     type: TabTypes;

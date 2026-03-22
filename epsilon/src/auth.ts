@@ -78,19 +78,21 @@ const providers = [
             password: { label: 'Password', type: 'password' },
         },
         async authorize(credentials) {
-            const username = credentials?.username?.trim();
-            const password = credentials?.password;
-
+            const username: string = credentials?.username?.trim();
+            const password: string = credentials?.password;
+console.log('1-------------------------------1', username, password);
             if (!username || !password) {
                 throw new Error('Missing username or password');
             }
 
+            console.log('2-------------------------------1')
             try {
                 const response = (await loginWithCredentials(
                       username,
                       password
                 )) as UpstreamLoginResp;
 
+                console.log('3-------------------------------1', username, password, response);
                 if (response && response.status === 'ok') {
                     // Return exactly what you want to copy into the JWT on first sign-in
                     const u = response.user;

@@ -21,7 +21,7 @@
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@tiptap/extension-placeholder": "^3.12.1",
-    "@tiptap/starter-kit": "^3.12.1",
+    "@tiptap/starter-kit": "^3.19.0",
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",

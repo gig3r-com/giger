@@ -64,7 +64,6 @@ export function LeftPanel() {
         >
             <Panel
                 fullWidth
-                bordered
                 hoverTitleRight
                 title={ title }
                 titleRight={ titleRight }

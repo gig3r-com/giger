@@ -1,6 +1,6 @@
 import { QueryClient, dehydrate } from '@tanstack/react-query'
-import { fetchUsers } from '@/lib/api/users'
-import HydrationBoundary from '@/lib/queries/HydrationBoundary'
+import { fetchUsers } from '@/lib/api'
+import { HydrationBoundary } from '@tanstack/react-query'
 import UsersClient from './UsersClient'
 
 export default async function Page() {

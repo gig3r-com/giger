@@ -60,7 +60,6 @@ export function RightPanel() {
         >
             <Panel
                 fullWidth
-                bordered
                 hoverTitleRight
                 title={title}
                 titleRight={titleRight}
