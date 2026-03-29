@@ -18,6 +18,46 @@ spec:
 
 ---
 
+{{- if .Values.pgadmin.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.pgadmin.app" . }}
+  name: {{ include "gig3r.pgadmin.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.pgadmin.app" . }}
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: {{ include "gig3r.pgadmin.app" . }}
+  sessionAffinity: None
+
+---
+{{- end }}
+
+{{- if .Values.metabase.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "gig3r.metabase.app" . }}
+  name: {{ include "gig3r.metabase.app" . }}
+spec:
+  ports:
+  - name: {{ include "gig3r.metabase.app" . }}
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: {{ include "gig3r.metabase.app" . }}
+  sessionAffinity: None
+
+---
+{{- end }}
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,34 +80,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ include "gig3r.mongodb.app" . }}
-  name: {{ include "gig3r.mongodb.app" . }}
+    app: {{ include "gig3r.postgres.app" . }}
+  name: {{ include "gig3r.postgres.app" . }}
 spec:
   ports:
-  - name: {{ include "gig3r.mongodb.app" . }}
-    port: 27017
+  - name: {{ include "gig3r.postgres.app" . }}
+    port: 5432
     protocol: TCP
-    targetPort: 27017
+    targetPort: 5432
   selector:
-    app: {{ include "gig3r.mongodb.app" . }}
-  sessionAffinity: None
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: {{ include "gig3r.mongo-express.app" . }}
-  name: {{ include "gig3r.mongo-express.app" . }}
-spec:
-  ports:
-  - name: {{ include "gig3r.mongo-express.app" . }}
-    port: 8080
-    protocol: TCP
-    targetPort: 8081
-  selector:
-    app: {{ include "gig3r.mongo-express.app" . }}
+    app: {{ include "gig3r.postgres.app" . }}
   sessionAffinity: None
 
 ---
