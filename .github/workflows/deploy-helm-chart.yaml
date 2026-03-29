@@ -27,13 +27,6 @@ on:
       HELM_BACKEND_TAG:
         type: string
         required: true
-      HELM_DATABASE_TAG:
-        type: string
-        required: true
-      HELM_DATABASE_IMAGE:
-        type: string
-        required: false
-        default: ghcr.io/${{ github.repository_owner }}/gig3r-mongo
     secrets:
       KUBECONFIG:
         required: true
@@ -63,6 +56,11 @@ jobs:
         with:
           prefix: CI_
 
+      - name: Build PostgreSQL init archive for Helm
+        run: |
+          mkdir -p chart/gig3r/files
+          tar -cJf chart/gig3r/files/postgres-init.tar.xz -C data/postgres .
+
       - name: Deploy
         uses: 'WyriHaximus/github-action-helm3@v3'
         with:
@@ -82,18 +80,13 @@ jobs:
             --set backend.image=${{ inputs.HELM_BACKEND_IMAGE }} \
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
-            --set database.user=${{ env.HELM_ENVIRONMENT }} \
-            --set database.image=${{ inputs.HELM_DATABASE_IMAGE }} \
-            --set database.tag=${{ env.HELM_DATABASE_TAG }} \
-            --set mongoexpress.user=${{ secrets.ME_USER }} \
-            --set mongoexpress.password=${{ secrets.ME_PASSWORD }}
+            --set database.user=${{ env.HELM_ENVIRONMENT }}
                     
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true
         env:
           HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
-          HELM_DATABASE_TAG: ${{ inputs.HELM_DATABASE_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
 
       - name: output address

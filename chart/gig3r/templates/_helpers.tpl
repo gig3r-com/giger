@@ -25,9 +25,9 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- $len := 24 | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace "gig3r-secret").data -}}
 {{- if $obj }}
-{{- index $obj "MONGO_INITDB_ROOT_PASSWORD" | b64dec -}}
+{{- index $obj "GIGER_DB_PASSWORD" | b64dec -}}
 {{- else -}}
-{{- randAlphaNum $len | b64enc -}}
+{{- randAlphaNum $len -}}
 {{- end -}}
 {{- end }}
 
@@ -48,14 +48,30 @@ false
   {{- end -}}
 {{- end -}}
 
-{{- define "gig3r.mongodb.app" -}}
-gig3r-{{ default "app" .Values.environment }}-mongodb
+{{- define "gig3r.postgres.app" -}}
+gig3r-{{ default "app" .Values.environment }}-postgres
 {{- end }}
 
-{{- define "gig3r.mongodb.image" -}}
-{{ .Values.database.image | default "ghcr.io/gig3r-com/gig3r-mongo" }}:{{ default "latest" .Values.database.tag }}
+{{- define "gig3r.postgres.image" -}}
+{{ .Values.database.image | default "postgres" }}:{{ default "16" .Values.database.tag }}
 {{- end }}
 
-{{- define "gig3r.mongo-express.app" -}}
-gig3r-{{ default "app" .Values.environment }}-mongo-express
+{{- define "gig3r.postgres.init.configmap" -}}
+gig3r-{{ default "app" .Values.environment }}-postgres-init
+{{- end }}
+
+{{- define "gig3r.pgadmin.app" -}}
+gig3r-{{ default "app" .Values.environment }}-pgadmin
+{{- end }}
+
+{{- define "gig3r.pgadmin.image" -}}
+{{ .Values.pgadmin.image | default "dpage/pgadmin4" }}:{{ default "8" .Values.pgadmin.tag }}
+{{- end }}
+
+{{- define "gig3r.metabase.app" -}}
+gig3r-{{ default "app" .Values.environment }}-metabase
+{{- end }}
+
+{{- define "gig3r.metabase.image" -}}
+{{ .Values.metabase.image | default "metabase/metabase" }}:{{ default "v0.56.1" .Values.metabase.tag }}
 {{- end }}

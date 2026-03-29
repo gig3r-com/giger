@@ -36,29 +36,17 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
 
-  build-mongo:
-    uses: ./.github/workflows/build-docker-image.yaml
-    with:
-      DOCKER_CONTEXT: ./data/
-      DOCKERFILE_NAME: ./data/Dockerfile
-      IMAGE_NAME: "gig3r-mongo"
-      IMAGE_TAG: ${{ github.sha }}
-    secrets: inherit
-  
   deploy-helm-chart:
     uses: ./.github/workflows/deploy-helm-chart.yaml
     needs:
       - build-frontend
       - build-backend
-      - build-mongo
     with:
       HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
       HELM_FRONTEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ github.sha }}
       HELM_BACKEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-backend"
       HELM_BACKEND_TAG: ${{ github.sha }}
-      HELM_DATABASE_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-mongo"
-      HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 
   tests_e2e:
