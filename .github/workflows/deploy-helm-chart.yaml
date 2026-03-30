@@ -61,17 +61,33 @@ jobs:
           mkdir -p chart/gig3r/files
           tar -cJf chart/gig3r/files/postgres-init.tar.xz -C data/postgres .
 
-      - name: Deploy
+      - name: kubectl apply
+        id: apply
+        run: |
+          cat << EOF > /tmp/kubeconfig
+          ${{ secrets.KUBECONFIG }}
+          EOF
+          kubectl create ns ${HELM_ENVIRONMENT} \
+            --dry-run=client -o yaml \
+            | kubectl apply -f -
+          kubectl create configmap postgres-init-archive \
+            --from-file=chart/gig3r/files/postgres-init.tar.xz \
+            -n ${HELM_ENVIRONMENT} \
+            --dry-run=client -o yaml \
+            | kubectl apply -f -
+        env:
+          KUBECONFIG: /tmp/kubeconfig
+          HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
+
+      - name: Template Helm chart
         uses: 'WyriHaximus/github-action-helm3@v3'
         with:
           exec: |
             helm upgrade --install \
             gig3r-${{ env.HELM_ENVIRONMENT }} \
             ./chart/gig3r \
-            --wait \
-            --atomic \
-            --namespace=${{ env.HELM_ENVIRONMENT }} \
             --create-namespace \
+            --namespace ${HELM_ENVIRONMENT} \
             --set environment=${{ env.HELM_ENVIRONMENT }} \
             --set base_url=${{ inputs.BASE_URL }} \
             --set dockerconfigjson=${{ secrets.REGCRED }} \
@@ -81,14 +97,9 @@ jobs:
             --set backend.tag=${{ env.HELM_BACKEND_TAG }} \
             --set database.name=${{ env.HELM_ENVIRONMENT }} \
             --set database.user=${{ env.HELM_ENVIRONMENT }}
-                    
           kubeconfig: ${{ secrets.KUBECONFIG }}
           overrule_existing_kubeconfig: true
         env:
           HELM_FRONTEND_TAG: ${{ inputs.HELM_FRONTEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_BACKEND_TAG: ${{ inputs.HELM_BACKEND_TAG }} #${{ inputs.IMAGE_TAG && inputs.IMAGE_TAG || env.CI_GITHUB_REF_NAME_SLUG_URL }}
           HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}
-
-      - name: output address
-        id: address
-        run: echo "address=${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}.${{ inputs.BASE_URL }}" >> $GITHUB_OUTPUT
