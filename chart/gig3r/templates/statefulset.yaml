@@ -2,13 +2,16 @@
 # postgresql deployment
 {{- $initArchivePath := .Values.database.initArchivePath | default "files/postgres-init.tar.xz" -}}
 {{- $hasInitArchive := gt (len (.Files.Glob $initArchivePath)) 0 -}}
-{{- $useConfigMapInit := and .Values.database.initFromConfigMap $hasInitArchive -}}
+{{- $useConfigMapInit := and .Values.database.initFromConfigMap $hasInitArchive }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "gig3r.postgres.app" . }}
 spec:
   replicas: 1
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: {{ if eq .Values.environment "prd" }}Retain{{ else }}Delete{{ end }}
+    whenScaled: Retain
   selector:
     matchLabels:
       app: {{ include "gig3r.postgres.app" . }}
@@ -46,17 +49,17 @@ spec:
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: POSTGRES_USER
+              key: GIGER_DB_USERNAME
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: POSTGRES_PASSWORD
+              key: GIGER_DB_PASSWORD
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: POSTGRES_DB
+              key: GIGER_DB_NAME
         volumeMounts:
         - name: postgres-persistent-storage
           mountPath: /var/lib/postgresql/data
@@ -69,17 +72,22 @@ spec:
       - name: regcred
       {{- end }}
       restartPolicy: Always
+      {{- if $useConfigMapInit }}
       volumes:
-        - name: postgres-persistent-storage
-          hostPath:
-            path: {{ .Values.database.hostPath }}/{{ .Values.environment }}
-            type: DirectoryOrCreate
-        {{- if $useConfigMapInit }}
         - name: postgres-init-archive
           configMap:
             name: {{ include "gig3r.postgres.init.configmap" . }}
         - name: postgres-init-sql
           emptyDir: {}
-        {{- end }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-persistent-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: {{ .Values.database.storage | default "500MiB" }}
 
 ---

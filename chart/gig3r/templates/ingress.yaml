@@ -59,26 +59,12 @@ spec:
             port:
               number: 80
   {{- end }}
-  {{- if .Values.metabase.enabled }}
-  - host: metabase.{{ include "gig3r.host" . }}
-    http:
-      paths:
-      - path: /(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "gig3r.metabase.app" . }}
-            port:
-              number: 3000
-  {{- end }}
+
   tls:
   - hosts:
     - {{ include "gig3r.host" . }}
     {{- if .Values.pgadmin.enabled }}
     - pgadmin.{{ include "gig3r.host" . }}
-    {{- end }}
-    {{- if .Values.metabase.enabled }}
-    - metabase.{{ include "gig3r.host" . }}
     {{- end }}
     secretName: tls-secret-gig3r-{{ default "app" .Values.environment }}
 {{- end }}

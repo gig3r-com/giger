@@ -16,3 +16,4 @@ yarn.lock
 /blob-report/
 /playwright/.cache/
 .aider*
+chart/gig3r/files/*
