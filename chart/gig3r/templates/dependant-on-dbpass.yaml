@@ -12,10 +12,8 @@ data:
   GIGER_DB_USERNAME: {{ .Values.database.user | b64enc | quote }}
   GIGER_DB_PASSWORD: {{ $dbpass | b64enc | quote }}
   GIGER_DB_NAME: {{ .Values.database.name | b64enc | quote }}
-  POSTGRES_USER: {{ .Values.database.user | b64enc | quote }}
-  POSTGRES_PASSWORD: {{ $dbpass | b64enc | quote }}
-  POSTGRES_DB: {{ .Values.database.name | b64enc | quote }}
   PGADMIN_DEFAULT_EMAIL: {{ .Values.pgadmin.email | b64enc | quote }}
   PGADMIN_DEFAULT_PASSWORD: {{ .Values.pgadmin.password | b64enc | quote }}
 
   {{- end -}}
+  

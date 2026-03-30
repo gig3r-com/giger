@@ -6,11 +6,11 @@ Expand the name of the chart.
 {{- end }}
 
 {{- define "gig3r.frontend.app" -}}
-gig3r-{{ default "app" .Values.environment }}-front
+front
 {{- end }}
 
 {{- define "gig3r.backend.app" -}}
-gig3r-{{ default "app" .Values.environment }}-api
+api
 {{- end }}
 
 {{- define "gig3r.frontend.image" -}}
@@ -49,7 +49,7 @@ false
 {{- end -}}
 
 {{- define "gig3r.postgres.app" -}}
-gig3r-{{ default "app" .Values.environment }}-postgres
+postgres
 {{- end }}
 
 {{- define "gig3r.postgres.image" -}}
@@ -61,17 +61,9 @@ gig3r-{{ default "app" .Values.environment }}-postgres-init
 {{- end }}
 
 {{- define "gig3r.pgadmin.app" -}}
-gig3r-{{ default "app" .Values.environment }}-pgadmin
+pgadmin
 {{- end }}
 
 {{- define "gig3r.pgadmin.image" -}}
 {{ .Values.pgadmin.image | default "dpage/pgadmin4" }}:{{ default "8" .Values.pgadmin.tag }}
-{{- end }}
-
-{{- define "gig3r.metabase.app" -}}
-gig3r-{{ default "app" .Values.environment }}-metabase
-{{- end }}
-
-{{- define "gig3r.metabase.image" -}}
-{{ .Values.metabase.image | default "metabase/metabase" }}:{{ default "v0.56.1" .Values.metabase.tag }}
 {{- end }}

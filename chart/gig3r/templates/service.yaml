@@ -38,26 +38,6 @@ spec:
 ---
 {{- end }}
 
-{{- if .Values.metabase.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: {{ include "gig3r.metabase.app" . }}
-  name: {{ include "gig3r.metabase.app" . }}
-spec:
-  ports:
-  - name: {{ include "gig3r.metabase.app" . }}
-    port: 3000
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app: {{ include "gig3r.metabase.app" . }}
-  sessionAffinity: None
-
----
-{{- end }}
-
 apiVersion: v1
 kind: Service
 metadata:

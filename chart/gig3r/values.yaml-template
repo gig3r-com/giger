@@ -17,7 +17,7 @@ database:
   user: giger
   image: postgres
   tag: "16"
-  hostPath: /opt/postgres
+  storage: 500MiB
   initFromConfigMap: true
   initArchivePath: files/postgres-init.tar.xz
 
@@ -28,12 +28,6 @@ pgadmin:
   replicas: 1
   email: admin@giger.local
   password: changeme
-
-metabase:
-  enabled: true
-  image: metabase/metabase
-  tag: "v0.56.1"
-  replicas: 1
 
 ingress:
   enabled: true
