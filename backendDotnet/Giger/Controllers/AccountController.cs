@@ -12,7 +12,7 @@ namespace Giger.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController(
-        UserService _userService, LoginService _loginService, AccountService _accountService,        LogService _logService, NetworksService _networksService, 
+        UserService _userService, LoginService _loginService, AccountService _accountService, LogService _logService, NetworksService _networksService, 
         NotificationsSocketHandler _notificationsHandler)
         : AuthController(_userService, _loginService)
         //: AuthController//(serviceProvider)
@@ -47,39 +47,39 @@ namespace Giger.Controllers
 
         #region Account
 
-        [Obsolete]
-        [HttpGet("byId")]
-        public async Task<ActionResult<Account>> Get(string id)
-        {
-            var account = await _accountService.GetByIdAsync(id);
-            if (account is null)
-            {
-                return NotFound();
-            }
+        //[Obsolete]
+        //[HttpGet("byId")]
+        //public async Task<ActionResult<Account>> Get(string id)
+        //{
+        //    var account = await _accountService.GetByIdAsync(id);
+        //    if (account is null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (account.Type == AccountType.BUSINESS)
-            {
-                if (!HasAccessToFactionAccount(await GetSenderUser(), account.Owner))
-                {
-                    return Unauthorized();
-                }
-            }
-            else
-            {
-                if (!IsAuthorized(account.Owner))
-                {
-                    return Unauthorized();
-                }
-            }
+        //    if (account.Type == AccountType.BUSINESS)
+        //    {
+        //        if (!HasAccessToFactionAccount(await GetSenderUser(), account.Owner))
+        //        {
+        //            return Unauthorized();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!IsAuthorized(account.Owner))
+        //        {
+        //            return Unauthorized();
+        //        }
+        //    }
 
-            return account;
-        }
+        //    return account;
+        //}
 
         [HttpGet("allAccounts")]
         public async Task<List<string>> GetAllAccountNames()
         {
-            var allActiveAccounts = await _accountService.GetAllActiveAsync();
-            return allActiveAccounts.Select(a => a.Owner).ToList();
+            var allActiveAccounts = await _accountService.GetAllAsync();
+            return allActiveAccounts.Select(a => a.Name).ToList();
         }
 
         [HttpGet("byOwner")]
@@ -89,23 +89,24 @@ namespace Giger.Controllers
             {
                 Unauthorized();
             }
-            var account = await _accountService.GetByAccountNameAsync(owner);
-            if (account is null)
+            var accounts = await _accountService.GetByOwnerAsync(owner);
+            if (!accounts.Any())
             {
                 return NotFound();
             }
 
-            var retValue = new List<Account>() { account };
+            var retValue = new List<Account>(accounts);
 
-            var user = await _userService.GetByUserNameAsync(owner);
-            if (user is not null)
-            {
-                var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
-                if (businessAccount is not null)
-                {
-                    retValue.Add(businessAccount);
-                }
-            }
+            // Uncomment if factions will have their own user handles
+            //var user = await _userService.GetByUserNameAsync(owner);
+            //if (user is not null)
+            //{
+            //    var businessAccount = await _accountService.GetByOwnerAsync(user.Faction.ToString());
+            //    if (businessAccount is not null)
+            //    {
+            //        retValue.Add(businessAccount);
+            //    }
+            //}
 
             return retValue;
         }
@@ -119,7 +120,17 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            bool isAuthorized = false;
+            foreach (var owner in account.Owners)
+            {
+                if (IsAuthorized(owner))
+                {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            if (!isAuthorized)
             {
                 Unauthorized();
             }
@@ -318,61 +329,70 @@ namespace Giger.Controllers
 
         private async Task NotifyTransaction(Account account, Transaction transaction)
         {
-            switch (account.Type)
+            foreach (var user in account.Owners)
             {
-                case AccountType.PRIVATE:
-                {
-                    if (account.Owner != "SYSTEM")
-                    {
-                        await _notificationsHandler.NotifyTransaction(account.Owner, account, transaction);
-                    }
-                    break;
-                }
-                case AccountType.BUSINESS:
-                {
-                    if (Enum.TryParse(account.Owner, out Factions faction))
-                    {
-                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
-                        foreach (var user in allFactionUsers)
-                        {
-                            await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
-                        }
-                    }
-                    break;
-                }
+                await _notificationsHandler.NotifyTransaction(user, account, transaction);
             }
+            //switch (account.Type)
+            //{
+            //    case Account.PRIVATE_ACCOUNT_TYPE:
+            //    {
+            //        if (!account.Owners.Contains("SYSTEM"))
+            //        {
+            //            await _notificationsHandler.NotifyTransaction(account.Owner, account, transaction);
+            //        }
+            //        break;
+            //    }
+            //    case Account.BUSINESS_ACCOUNT_TYPE:
+            //    {
+            //        if (Enum.TryParse(account.Owner, out Factions faction))
+            //        {
+            //            var allFactionUsers = await _userService.GetAllFactionUser(faction);
+            //            foreach (var user in allFactionUsers)
+            //            {
+            //                await _notificationsHandler.NotifyTransaction(user.Handle, account, transaction);
+            //            }
+            //        }
+            //        break;
+            //    }
+            //}
         }
 
         private async Task NotifyAccount(Account account)
         {
-            switch (account.Type)
+            foreach (var user in account.Owners)
             {
-                case AccountType.PRIVATE:
-                {
-                    if (account.Owner != "SYSTEM")
-                    {
-                        await _notificationsHandler.NotifyAccount(account.Owner, account);
-                    }
-                    break;
-                }
-                case AccountType.BUSINESS:
-                {
-                    if (Enum.TryParse(account.Owner, out Factions faction))
-                    {
-                        var allFactionUsers = await _userService.GetAllFactionUser(faction);
-                        foreach (var user in allFactionUsers)
-                        {
-                            await _notificationsHandler.NotifyAccount(user.Handle, account);
-                        }
-                    }
-                    break;
-                }
+                await _notificationsHandler.NotifyAccount(user, account);
             }
+
+            //switch (account.Type)
+            //{
+            //    case AccountType.PRIVATE:
+            //    {
+            //        if (account.Owner != "SYSTEM")
+            //        {
+            //            await _notificationsHandler.NotifyAccount(account.Owner, account);
+            //        }
+            //        break;
+            //    }
+            //    case AccountType.BUSINESS:
+            //    {
+            //        if (Enum.TryParse(account.Owner, out Factions faction))
+            //        {
+            //            var allFactionUsers = await _userService.GetAllFactionUser(faction);
+            //            foreach (var user in allFactionUsers)
+            //            {
+            //                await _notificationsHandler.NotifyAccount(user.Handle, account);
+            //            }
+            //        }
+            //        break;
+            //    }
+            //}
         }
 
         private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         {
-            var giverUser = await _userService.GetByUserNameAsync(senderAccount.Owner);
+            var giverUser = await _userService.GetByUserNameAsync(transaction.OrderingUser);
             var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
             Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);

@@ -103,8 +103,8 @@ namespace Giger.Controllers
 
             if (string.IsNullOrEmpty(newMessage.Id))
             {
-                newMessage = new Message(newMessage.Sender, newMessage.Text);
-                newMessage.Date = GigerDateTime.Now;
+                newMessage = new Message(newMessage.Sender, newMessage.Data);
+                newMessage.Timestamp = GigerDateTime.Now;
             }
 
             conversation.Messages.Add(newMessage);

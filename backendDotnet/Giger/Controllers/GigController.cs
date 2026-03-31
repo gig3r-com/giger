@@ -660,7 +660,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_RESERVE_FUNDS_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout,
-                OrderingParty = orderingParty
+                OrderingUser = orderingParty
             };
 
             await _accountController.CreateTransaction(reserve, true);
@@ -675,7 +675,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_TAX_TRANSACTION_TITLE, gig.Title),
                 Amount = gigFeeAmount,
-                OrderingParty = orderingParty
+                OrderingUser = orderingParty
             };
 
             await _accountController.CreateTransaction(socialTax, true);
@@ -713,7 +713,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_REFUND_TRANSACTION_TITLE, gig.Title),
                 Amount = gig.Payout,
-                OrderingParty = orderingParty
+                OrderingUser = orderingParty
             };
 
             await _accountController.CreateTransaction(reserve, true);
@@ -761,7 +761,7 @@ namespace Giger.Controllers
                 Timestamp = GigerDateTime.Now,
                 Title = string.Format(Messages.GIG_PAYMENT_TITLE, gig.Title),
                 Amount = gig.Payout,
-                OrderingParty = orderingParty
+                OrderingUser = orderingParty
             };
 
             await _accountController.CreateTransaction(trx, true);

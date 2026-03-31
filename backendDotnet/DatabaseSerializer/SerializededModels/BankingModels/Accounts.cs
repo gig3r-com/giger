@@ -18,8 +18,8 @@ namespace Giger.SerializededModels.BankingModels
                 new Account()
                 {
                     Id = "SYSTEM",
-                    Owner = "SYSTEM",
-                    OwnerId = "SYSTEM",
+                    Owners = ["SYSTEM"],
+                    Name = "SYSTEM",
                     Transactions = [
                         new()
                         {
@@ -31,10 +31,9 @@ namespace Giger.SerializededModels.BankingModels
                             Amount = 100,
                         }
                     ],
-                    Type = AccountType.BUSINESS,
-                    Balance = 100100,
+                    Type = "BUSINESS",
+                    Balance = 1001.50m,
                     AccountNumber = "SYSTEM",
-                    IsActive = true,
                 },
 
                 new Account()

@@ -15,20 +15,11 @@ namespace Giger.Services
         public async Task<List<Account>> GetAllAsync() =>
             await _dbContext.Accounts.ToListAsync();
 
-        public async Task<List<Account>> GetAllActiveAsync() =>
-            await _dbContext.Accounts.Where(x => x.IsActive).ToListAsync();
-
-        public async Task<Account?> GetSystemAccountAsync() =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner == "SYSTEM");
-
         public async Task<Account?> GetByIdAsync(string id) =>
             await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<Account?> GetByAccountNameAsync(string owner) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Owner.Equals(owner, System.StringComparison.OrdinalIgnoreCase));
-
-        public async Task<Account?> GetByUserIdAsync(string ownerId) =>
-            await _dbContext.Accounts.FirstOrDefaultAsync(x => x.OwnerId == ownerId);
+        public async Task<List<Account>> GetByOwnerAsync(string owner) =>
+            await _dbContext.Accounts.Where(x => x.Owners.Contains(owner)).ToListAsync();
 
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
             await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);

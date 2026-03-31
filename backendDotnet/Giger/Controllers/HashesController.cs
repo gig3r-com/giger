@@ -24,8 +24,8 @@ namespace Giger.Controllers
                 return NotFound();
             }
             var userName = user.Handle;
-            var account = await _accountService.GetByAccountNameAsync(userName);
-            var businessAccount = await _accountService.GetByAccountNameAsync(user.Faction.ToString());
+            var account = await _accountService.GetByOwnerAsync(userName);
+            var businessAccount = await _accountService.GetByOwnerAsync(user.Faction.ToString());
             var conversations = await _conversationService.GetAllWithParticipantAsync(userName);
             var gigConversations = await _conversationService.GetAllGigConversationsWithParticipantAsync(userName);
             var gigs = await _gigService.GetAllOwnAsync(user.Id);
