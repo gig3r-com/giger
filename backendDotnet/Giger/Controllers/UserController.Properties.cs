@@ -1,4 +1,4 @@
-﻿using Giger.Models.User;
+using Giger.Models.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
@@ -19,7 +19,7 @@ namespace Giger.Controllers
 			{
 				return NoContent();
 			}
-			return user.FavoriteUserIds;
+			return user.FavoriteUsers.Select(f => f.FavoriteUserHandle).ToArray();
 		}
 
 		[HttpPut("favorites/add")]
@@ -34,11 +34,11 @@ namespace Giger.Controllers
 			{
 				return NoContent();
 			}
-			if (user.FavoriteUserIds.Contains(newFavorite))
+			if (user.FavoriteUsers.Any(f => f.FavoriteUserHandle == newFavorite))
 			{
 				return Ok();
 			}
-			user.FavoriteUserIds = [.. user.FavoriteUserIds, newFavorite];
+			user.FavoriteUsers.Add(new UserFavoriteUser { UserId = userId, FavoriteUserHandle = newFavorite });
 			await _userService.UpdateAsync(user);
 			return Ok();
 		}
@@ -55,20 +55,11 @@ namespace Giger.Controllers
 			{
 				return NoContent();
 			}
-			user.FavoriteUserIds = user.FavoriteUserIds.Except([oldFavorite]).ToArray();
-			await _userService.UpdateAsync(user);
-			return Ok();
-		}
-
-		[HttpPut("favorites")]
-		public async Task<IActionResult> UpdateFavorites(string userId, string[] newFavorites)
-		{
-			var user = await _userService.GetAsync(userId);
-			if (user is null)
+			var fav = user.FavoriteUsers.FirstOrDefault(f => f.FavoriteUserHandle == oldFavorite);
+			if (fav != null)
 			{
-				return NoContent();
+				user.FavoriteUsers.Remove(fav);
 			}
-			user.FavoriteUserIds = newFavorites;
 			await _userService.UpdateAsync(user);
 			return Ok();
 		}
@@ -179,7 +170,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpGet("{id}/roles")]
-		public async Task<ActionResult<UserRoles[]>> GetUserRoles(string id)
+		public async Task<ActionResult<string[]>> GetUserRoles(string id)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -195,7 +186,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpPatch("{id}/roles")]
-		public async Task<IActionResult> PatchUserRoles(string id, UserRoles[] newRoles)
+		public async Task<IActionResult> PatchUserRoles(string id, string[] newRoles)
 		{
 			if (!IsGodUser())
 			{
@@ -229,7 +220,7 @@ namespace Giger.Controllers
 		}
 
 		[HttpPut("{id}/exploits")]
-		public async Task<IActionResult> PatchExploits(string id, string[] newExploits)
+		public async Task<IActionResult> PutExploits(string id, string[] newExploits)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -270,74 +261,6 @@ namespace Giger.Controllers
 			return Ok();
 		}
 
-		[HttpGet("{id}/mindHack")]
-		public async Task<ActionResult<MindHacks>> GetMindHacks(string id)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NotFound();
-			}
-			return user.MindHack;
-		}
-
-		[HttpPatch("{id}/mindHack")]
-		public async Task<IActionResult> PatchMindHacks(string id, MindHacks newMindHack)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NoContent();
-			}
-			user.MindHack = newMindHack;
-			await _userService.UpdateAsync(user);
-			return Ok();
-		}
-
-		[HttpGet("{id}/mindHack/enabledUsers")]
-		public async Task<ActionResult<List<string>>> GetMindHackEnabledUsers(string id)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NotFound();
-			}
-			return user.MindHackEnabledFor.ToList();
-		}
-
-		[HttpPut("{id}/mindHack/enabledUsers")]
-		public async Task<IActionResult> PatchMindHackEnabledUsers(string id, string[] enabledUsers)
-		{
-			if (!IsAuthorized())
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NoContent();
-			}
-			user.MindHackEnabledFor = enabledUsers;
-			await _userService.UpdateAsync(user);
-			return Ok();
-		}
-
         [HttpGet("{id}/factionRank")]
         public async Task<ActionResult<string>> GetFactionRank(string id)
         {
@@ -373,7 +296,7 @@ namespace Giger.Controllers
         }
 
         [HttpGet("{id}/faction")]
-		public async Task<ActionResult<string>> GetProfessionPublic(string id)
+		public async Task<ActionResult<string>> GetFaction(string id)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -385,11 +308,11 @@ namespace Giger.Controllers
 			{
 				return NotFound();
 			}
-			return user.FactionRankPublic;
+			return user.Faction;
 		}
 
 		[HttpPatch("{id}/faction")]
-		public async Task<IActionResult> PatchProfessionPublic(string id, Factions newFaction)
+		public async Task<IActionResult> PatchFaction(string id, string newFaction)
 		{
 			if (!IsAuthorized(id))
 			{
@@ -402,74 +325,6 @@ namespace Giger.Controllers
 				return NoContent();
 			}
 			user.Faction = newFaction;
-			await _userService.UpdateAsync(user);
-			return Ok();
-		}
-
-		[HttpGet("{id}/userTypes")]
-		public async Task<ActionResult<UserTypes>> GetUserTypes(string id)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NotFound();
-			}
-			return user.TypePublic;
-		}
-
-		[HttpPatch("{id}/userTypes")]
-		public async Task<IActionResult> PatchUserTypes(string id, UserTypes userTypes)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NoContent();
-			}
-			user.TypePublic = userTypes;
-			await _userService.UpdateAsync(user);
-			return Ok();
-		}
-
-		[HttpGet("{id}/hasPlatinumPass")]
-		public async Task<ActionResult<bool>> GetHasPlatinumPass(string id)
-		{
-			if (!IsAuthorized(id))
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NotFound();
-			}
-			return user.HasPlatinumPass;
-		}
-
-		[HttpPatch("{id}/hasPlatinumPass")]
-		public async Task<IActionResult> PatchHasPlatinumPass(string id, bool enabled)
-		{
-			if (!IsGodUser())
-			{
-				Unauthorized();
-			}
-
-			var user = await _userService.GetAsync(id);
-			if (user is null)
-			{
-				return NotFound();
-			}
-			user.HasPlatinumPass = enabled;
 			await _userService.UpdateAsync(user);
 			return Ok();
 		}

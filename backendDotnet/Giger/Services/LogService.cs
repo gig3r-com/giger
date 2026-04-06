@@ -1,34 +1,43 @@
-﻿using Giger.Models.BankingModels;
-using Giger.Models;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using Giger.Models.Logs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class LogService : AbstractService
+    public class LogService : IGigerService
     {
-        private readonly IMongoCollection<Log> _logsCollection;
+        private readonly GigerDbContext _dbContext;
 
-        public LogService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        public LogService(GigerDbContext dbContext)
         {
-            _logsCollection = _mongoDatabase.GetCollection<Log>(
-                gigerDatabaseSettings.Value.LogsCollectionName);
+            _dbContext = dbContext;
         }
 
-        public async Task<List<Log>> GetAllForSubnetworkAsync(string subnetworkId) =>
-            await _logsCollection.Find(x => x.SubnetworkId == subnetworkId).ToListAsync();
+        public async Task<List<Log>> GetAllForSubnetworkAsync(string subnetworkName) =>
+            await _dbContext.Logs.Where(x => x.Subnetwork == subnetworkName).ToListAsync();
 
-        public async Task<Log> GetByIdAsync(string id) =>
-            await _logsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Log?> GetByIdAsync(string id) =>
+            await _dbContext.Logs.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task CreateAsync(Log newAccount) =>
-            await _logsCollection.InsertOneAsync(newAccount);
+        public async Task CreateAsync(Log newLog)
+        {
+            _dbContext.Logs.Add(newLog);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpdateAsync(Log updatedAccount) =>
-            await _logsCollection.ReplaceOneAsync(x => x.Id == updatedAccount.Id, updatedAccount);
+        public async Task UpdateAsync(Log updatedLog)
+        {
+            _dbContext.Logs.Update(updatedLog);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string id) =>
-            await _logsCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            var log = await GetByIdAsync(id);
+            if (log != null)
+            {
+                _dbContext.Logs.Remove(log);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

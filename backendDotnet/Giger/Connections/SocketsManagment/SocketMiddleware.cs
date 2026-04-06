@@ -16,12 +16,20 @@ namespace Giger.Connections.SocketsManagment
 
         public async Task InvokeAsync(HttpContext context)
         {
+            Console.WriteLine($"[SocketMiddleware] Request received: {context.Request.Path}, IsWebSocketRequest: {context.WebSockets.IsWebSocketRequest}");
+            
             if (!context.WebSockets.IsWebSocketRequest)
+            {
+                Console.WriteLine("[SocketMiddleware] Not a WebSocket request, returning");
                 return;
+            }
 
+            Console.WriteLine("[SocketMiddleware] Accepting WebSocket...");
             var socket = await context.WebSockets.AcceptWebSocketAsync();
+            Console.WriteLine($"[SocketMiddleware] WebSocket accepted, state: {socket.State}");
 
             await Handler.OnConnected(socket, context);
+            Console.WriteLine("[SocketMiddleware] OnConnected completed");
             await Receive(socket, async (result, buffer) => 
             {
                 if (result.MessageType == WebSocketMessageType.Text)

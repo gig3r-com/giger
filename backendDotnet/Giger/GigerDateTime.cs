@@ -2,6 +2,6 @@
 {
     public struct GigerDateTime
     {
-        public static DateTime Now => DateTime.Now.AddYears(100);
+        public static DateTime Now => DateTime.UtcNow.AddYears(100);
     }
 }

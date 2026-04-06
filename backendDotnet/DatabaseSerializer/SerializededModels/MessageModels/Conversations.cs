@@ -1,5 +1,4 @@
 ﻿using Giger.Models.MessageModels;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.MessageModels
 {
@@ -81,14 +80,14 @@ namespace Giger.SerializededModels.MessageModels
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "ACCEPTED",
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
                             Text = "I will get back to you in a few hours",
@@ -103,7 +102,7 @@ namespace Giger.SerializededModels.MessageModels
                     Messages = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
+                            Id = Guid.NewGuid().ToString(),
                             Date = GigerDateTime.Now,
                             Sender = "triddle",
                             Text = "Please get me all you can on Takayama corporation",

@@ -1,42 +1,59 @@
-﻿using Giger.Models;
 using Giger.Models.User;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
 {
-    public class UserService : AbstractService
+    public class UserService : IGigerService
     {
-        private readonly IMongoCollection<UserPrivate> _usersCollection;
-        
-        public UserService(IOptions<GigerDbSettings> gigerDatabaseSettings) : base(gigerDatabaseSettings)
+        private readonly GigerDbContext _dbContext;
+
+        public UserService(GigerDbContext dbContext)
         {
-            _usersCollection = _mongoDatabase.GetCollection<UserPrivate>(
-                gigerDatabaseSettings.Value.UsersCollectionName);
+            _dbContext = dbContext;
         }
 
-        public async Task<List<UserPrivate>> GetAllPrivateUsersAsync() =>
-            await _usersCollection.Find(_ => true).ToListAsync();
+        public async Task<List<User>> GetAllUsersAsync() =>
+            await _dbContext.Users.ToListAsync();
 
-        public async Task<UserPrivate?> GetAsync(string userId) =>
-            await _usersCollection.Find(x => x.Id == userId).FirstOrDefaultAsync();
+        public async Task<User?> GetAsync(string userId) =>
+            await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
-        public async Task<UserPrivate?> GetByUserNameAsync(string userHandle) =>
-            await _usersCollection.Find(x => x.Handle.Equals(userHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefaultAsync();
-        
-        public async Task<List<UserPrivate>> GetAllFactionUser(Factions faction) =>
-            await _usersCollection.Find(x => x.Faction == faction).ToListAsync();
+        public async Task<User?> GetByUserNameAsync(string userHandle) =>
+            await _dbContext.Users.FirstOrDefaultAsync(x => x.Handle.ToLower() == userHandle.ToLower());
 
-        public async Task CreateAsync(UserPrivate newUser) =>
-            await _usersCollection.InsertOneAsync(newUser);
+        public async Task<List<User>> GetAllFactionUser(string faction) =>
+            await _dbContext.Users.Where(x => x.Faction == faction).ToListAsync();
 
-        public async Task UpdateAsync(UserPrivate updatedUser) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, updatedUser );
+        public async Task CreateAsync(User newUser)
+        {
+            _dbContext.Users.Add(newUser);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task UpsertAsync(UserPrivate updatedUser) =>
-            await _usersCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, updatedUser, new ReplaceOptions() { IsUpsert = true });
+        public async Task UpdateAsync(User updatedUser)
+        {
+            _dbContext.Users.Update(updatedUser);
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public async Task RemoveAsync(string userId) =>
-            await _usersCollection.DeleteOneAsync(x => x.Id == userId);
+        public async Task UpsertAsync(User updatedUser)
+        {
+            var existing = await GetAsync(updatedUser.Id);
+            if (existing == null)
+                _dbContext.Users.Add(updatedUser);
+            else
+                _dbContext.Users.Update(updatedUser);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveAsync(string userId)
+        {
+            var user = await GetAsync(userId);
+            if (user != null)
+            {
+                _dbContext.Users.Remove(user);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

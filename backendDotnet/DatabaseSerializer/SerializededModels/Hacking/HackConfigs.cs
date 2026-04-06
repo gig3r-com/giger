@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace Giger.SerializededModels.Hacking
+﻿namespace Giger.SerializededModels.Hacking
 {
     public class HackConfigs
     {
