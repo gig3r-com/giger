@@ -1,4 +1,4 @@
-﻿using Giger.Models.User;
+﻿using Giger.Models.Users;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +21,7 @@ namespace Giger.Controllers
         public static bool AuthEnabled { get; set; } = false;
 #endif
 
-        protected async Task<UserPrivate> GetSenderUser()
+        protected async Task<User> GetSenderUser()
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
@@ -78,13 +78,13 @@ namespace Giger.Controllers
                 if (owner == senderUser.Faction.ToString())
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains(Models.Users.User.ROLE_GOD))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                if (senderUser.Roles.Contains(Models.Users.User.ROLE_ADMIN)) // TODO perform additional checks
                     return true;
 
-                if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
+                if (senderUser.HackerSkill >= minimumHackingLevel)
                     return true;
             }
 
@@ -121,10 +121,10 @@ namespace Giger.Controllers
                 if (owner == senderUser.Faction.ToString())
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains(Models.Users.User.ROLE_GOD))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.ADMIN)) // TODO perform additional checks
+                if (senderUser.Roles.Contains(Models.Users.User.ROLE_ADMIN)) // TODO perform additional checks
                     return true;
 
                 //if (senderUser.HackingSkills.Stat >= minimumHackingLevel)
@@ -134,7 +134,7 @@ namespace Giger.Controllers
             return false;
         }
 
-        protected bool IsRole(UserRoles allowedRole)
+        protected bool IsRole(string allowedRole)
         {
             Request.Headers.TryGetValue("AuthToken", out var senderAuthToken);
             if (string.IsNullOrEmpty(senderAuthToken))
@@ -150,7 +150,7 @@ namespace Giger.Controllers
                 if (senderUser.Roles.Contains(allowedRole))
                     return true;
 
-                if (senderUser.Roles.Contains(UserRoles.GOD))
+                if (senderUser.Roles.Contains(Models.Users.User.ROLE_GOD))
                     return true;
             }
 
@@ -174,7 +174,7 @@ namespace Giger.Controllers
 
             var senderUser = _userService.GetByUserNameAsync(senderHandle).Result;
 
-            var isGodUser = senderUser?.Roles.Contains(UserRoles.GOD);
+            var isGodUser = senderUser?.Roles.Contains(Models.Users.User.ROLE_GOD);
             if (isGodUser.HasValue && isGodUser.Value)
                 return true;
 

@@ -8,16 +8,16 @@ namespace Giger.Models.MessageModels
 
         public string Title { get; set; }
 
-        [NotMapped]
-        public List<Message> Messages { get; set; } = [];
-
         public List<string> Participants { get; set; } = []; // user handles
 
         public List<string> AnonymizedUsers { get; set; } = []; // user handles
 
-        public List<string> Hackers { get; set; } = []; // user handles
-
         public required bool GigConversation { get; set; }
+
+        [NotMapped]
+        public List<Message> Messages { get; set; } = [];
+
+        public List<string> Hackers { get; set; } = []; // user handles
 
         public override int GetHashCode()
         {

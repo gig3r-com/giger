@@ -67,7 +67,7 @@ namespace Giger.Models.Hashes
             Dictionary<string, int> hashes = [];
             foreach (var gig in userGigs)
             {
-                hashes.Add(gig.Id, 41 + 43 * (int)gig.Status);
+                hashes.Add(gig.Id, 41 + 43 * gig.Status.GetHashCode());
             }
             return hashes;
         }

@@ -1,4 +1,5 @@
 ﻿using Giger.Models.Hacking;
+using Giger.Models.Networks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -19,7 +20,7 @@ namespace Giger.Services
             await _dbContext.ProgramCodes.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<ProgramCodes?> GetByCode(string code) =>
-            await _dbContext.ProgramCodes.FirstOrDefaultAsync(x => x.ProgramCode == code);
+            await _dbContext.ProgramCodes.FirstOrDefaultAsync(x => x.Code == code);
 
         public async Task CreateAsync(ProgramCodes newCode)
         {

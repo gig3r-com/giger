@@ -1,8 +1,7 @@
 ﻿using Giger.Models.Networks;
-using Giger.Models.User;
+using Giger.Models.Users;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
-using OperatingSystem = Giger.Models.Networks.OperatingSystem;
 
 namespace Giger.Controllers
 {
@@ -17,7 +16,7 @@ namespace Giger.Controllers
         public async Task<ActionResult<Network>> GetNetwork(string id)
         {
             var network = await _networkService.GetNetworkByIdAsync(id);
-            if (!IsAuthorized(network?.AdminId))
+            if (!IsAuthorized(network?.Admin))
             {
                 return Unauthorized();
             }
@@ -28,7 +27,7 @@ namespace Giger.Controllers
         public async Task<ActionResult<string>> GetNetworkName(string id)
         {
             var network = await _networkService.GetNetworkByIdAsync(id);
-            if (!IsAuthorized(network?.AdminId))
+            if (!IsAuthorized(network?.Admin))
             {
                 return Unauthorized();
             }
@@ -47,8 +46,8 @@ namespace Giger.Controllers
         [HttpPost("subnetwork")]
         public async Task<IActionResult> PostSubnetwork(Subnetwork newSubnetwork)
         {
-            var network = await _networkService.GetNetworkByIdAsync(newSubnetwork.NetworkId);
-            if (!IsAuthorized(network?.AdminId))
+            var network = await _networkService.GetNetworkByNameAsync(newSubnetwork.Network);
+            if (!IsAuthorized(network?.Admin))
             {
                 return Unauthorized();
             }
@@ -67,16 +66,9 @@ namespace Giger.Controllers
             }
 
             var subnetwork = result.Subnetwork;
-            if (Enum.TryParse<Firewall>(firewall, out var firewallEnum))
-            {
-                subnetwork.Firewall = firewallEnum;
-                await _networkService.UpdateSubnetworkAsync(subnetwork);
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            subnetwork.Firewall = firewall;
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
+            return Ok();
         }
 
         [HttpPatch("subnetwork/os")]
@@ -89,16 +81,9 @@ namespace Giger.Controllers
             }
 
             var subnetwork = result.Subnetwork;
-            if (Enum.TryParse<OperatingSystem>(os, out var osEnum))
-            {
-                subnetwork.OperatingSystem = osEnum;
-                await _networkService.UpdateSubnetworkAsync(subnetwork);
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            subnetwork.OperatingSystem = os;
+            await _networkService.UpdateSubnetworkAsync(subnetwork);
+            return Ok();
         }
 
         [HttpPut("subnetwork/ice")]
@@ -161,7 +146,7 @@ namespace Giger.Controllers
         }
         
         [HttpGet("subnetwork/user")]
-        public async Task<ActionResult<UserPrivate>> GetUser(string subnetworkId, string userId)
+        public async Task<ActionResult<User>> GetUser(string subnetworkId, string userId)
         {
             var result = await ValidateSubnetworkRequest(subnetworkId);
             switch (result.Result)
@@ -246,12 +231,12 @@ namespace Giger.Controllers
             {
                 return (NotFound(), null);
             }
-            var network = await _networkService.GetNetworkByIdAsync(subnetwork.NetworkId);
+            var network = await _networkService.GetNetworkByNameAsync(subnetwork.Network);
             if (network is null)
             {
                 return (BadRequest(), null);
             }
-            if (!IsAuthorized(network.AdminId))
+            if (!IsAuthorized(network.Admin))
             {
                 return (Unauthorized(), null);
             }

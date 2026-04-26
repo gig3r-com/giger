@@ -1,15 +1,13 @@
-﻿using Giger.Models.Auths;
+﻿using Giger.Models;
+using Giger.Models.Auths;
 using Giger.Models.BankingModels;
-using Giger.Models.EventModels;
 using Giger.Models.GigModels;
 using Giger.Models.Hacking;
 using Giger.Models.Hashes;
 using Giger.Models.Logs;
 using Giger.Models.MessageModels;
 using Giger.Models.Networks;
-using Giger.Models.Obscured;
-using Giger.Models.User;
-using Giger.Models.User.Stats;
+using Giger.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giger.Services
@@ -25,12 +23,9 @@ namespace Giger.Services
 
         // Gig Models
         public DbSet<Gig> Gigs { get; set; }
-        public DbSet<CriminalEvent> CriminalEvents { get; set; }
-        public DbSet<MedicalEvent> MedicalEvents { get; set; }
 
         // Hacking
         public DbSet<HackConfig> HackConfig { get; set; }
-        public DbSet<ProgramCodes> ProgramCodes { get; set; }
 
         // Hashes
         public DbSet<RecordsHashes> RecordsHashes { get; set; }
@@ -46,17 +41,14 @@ namespace Giger.Services
         // Networks
         public DbSet<Network> Networks { get; set; }
         public DbSet<Subnetwork> Subnetworks { get; set; }
+        public DbSet<ProgramCodes> ProgramCodes { get; set; }
 
-        // Obscured
-        public DbSet<ObscurableInfo> ObscurableInfos { get; set; }
-        public DbSet<ObscuredCodesMap> ObscuredCodesMap { get; set; }
+        // Users
+        public DbSet<User> Users { get; set; }
+        public DbSet<Plot> Plots { get; set; }
+        public DbSet<RecordType> RecordTypes { get; set; }
 
-        // User
-        public DbSet<AnonymizedUser> AnonymizedUsers { get; set; }
-        public DbSet<UserPrivate> Users { get; set; }
-        public DbSet<UserPublic> UsersPublic { get; set; }
-        public DbSet<UserSimple> UsersSimple { get; set; }
-        // Add other DbSet<T> as needed
+
 
         public GigerDbContext(DbContextOptions<GigerDbContext> options) : base(options) 
         {
@@ -65,50 +57,43 @@ namespace Giger.Services
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresExtension("hstore"); // Enable once per DB
+
             modelBuilder.Entity<Auth>();
-
-            modelBuilder.Entity<UserPrivate>(entity =>
+            modelBuilder.Entity<Account>(entity =>
             {
-                entity.Property(g => g.CyberwareLevel).HasConversion(
-                    v => v.Stat, 
-                    v => new CyberwareLevel(v) 
-                );
-                entity.Property(g => g.CombatSkill).HasConversion(
-                    v => v.Stat,
-                    v => new SkillStat(v)
-                );
-                entity.Property(g => g.HackingSkills).HasConversion(
-                    v => v.Stat,
-                    v => new SkillStat(v)
-                );
-                entity.Property(g => g.ConfrontationistVsAgreeable).HasConversion(
-                    v => v.Stat,
-                    v => new CharStat(v)
-                );
-                entity.Property(g => g.CowardVsBrave).HasConversion(
-                    v => v.Stat,
-                    v => new CharStat(v)
-                );
-                entity.Property(g => g.TalkativeVsSilent).HasConversion(
-                    v => v.Stat,
-                    v => new CharStat(v)
-                );
-                entity.Property(g => g.ThinkerVsDoer).HasConversion(
-                    v => v.Stat,
-                    v => new CharStat(v) 
-                );
-                entity.Property(e => e.CowardVsBrave).HasConversion(
-                    v => v.Stat, 
-                    v => new CharStat(v) 
-                );
+                entity.Ignore(a => a.Transactions); // Explicit ignore as extra safety
             });
-
-            modelBuilder.Entity<Gig>()
-                .Property(g => g.ReputationRequired)
-                .HasConversion(
-                    v => v.Level, // Convert struct to short for storage
-                    v => new GigRepuationLevels(v) // Convert short from db to struct
-                );
+            modelBuilder.Entity<Transaction>();
+            modelBuilder.Entity<Gig>(entity =>
+            {
+                entity.Ignore(a => a.Updates); // Explicit ignore as extra safety
+            });
+            modelBuilder.Entity<HackConfig>();
+            modelBuilder.Entity<RecordsHashes>();
+            modelBuilder.Entity<Log>();
+            modelBuilder.Entity<Conversation>(entity =>
+            {
+                entity.Ignore(a => a.Messages); // Explicit ignore as extra safety
+            });
+            modelBuilder.Entity<Message>();
+            modelBuilder.Entity<Network>(entity =>
+            {
+                entity.Property(n => n.Nodes).HasColumnType("hstore");
+                entity.Property(n => n.Data).HasColumnType("hstore");
+            });
+            modelBuilder.Entity<ProgramCodes>();
+            modelBuilder.Entity<Subnetwork>(entity =>
+            {
+                entity.Ignore(a => a.Logs); // Explicit ignore as extra safety
+            });
+            modelBuilder.Entity<Plot>();
+            modelBuilder.Entity<RecordType>();
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(n => n.EpsilonData).HasColumnType("hstore");
+            });
+            modelBuilder.Entity<GigerConfig>();
         }
     }
 }

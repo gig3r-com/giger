@@ -30,7 +30,7 @@ namespace Giger.Controllers
             var gigConversations = await _conversationService.GetAllGigConversationsWithParticipantAsync(userName);
             var gigs = await _gigService.GetAllOwnAsync(user.Id);
 
-            var hashes = new UpdateHashes(account, businessAccount, conversations, gigConversations, gigs);
+            var hashes = new UpdateHashes(account.First(), businessAccount.First(), conversations, gigConversations, gigs);
 
             return Ok(hashes);
         }

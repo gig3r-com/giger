@@ -17,19 +17,19 @@ namespace Giger.Services
 
         public async Task<List<Gig>> GetAllVisibleToUserAsync(string requestSenderId) =>
             await _dbContext.Gigs
-                .Where(g => g.Status == GigStatus.AVAILABLE ||
-                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .Where(g => g.Status == Gig.AVAILABLE ||
+                            g.WorkerId == requestSenderId || g.AuthorId == requestSenderId)
                 .ToListAsync();
 
         public async Task<List<Gig>> GetAllVisibleToModeratorAsync(string requestSenderId) =>
             await _dbContext.Gigs
-                .Where(g => g.Status == GigStatus.AVAILABLE || g.Status == GigStatus.DISPUTE ||
-                            g.TakenById == requestSenderId || g.AuthorId == requestSenderId)
+                .Where(g => g.Status == Gig.AVAILABLE || g.Status == Gig.DISPUTE ||
+                            g.WorkerId == requestSenderId || g.AuthorId == requestSenderId)
                 .ToListAsync();
 
         public async Task<List<Gig>> GetAllOwnAsync(string userId) =>
             await _dbContext.Gigs
-                .Where(g => g.TakenById == userId || g.AuthorId == userId)
+                .Where(g => g.WorkerId == userId || g.AuthorId == userId)
                 .ToListAsync();
 
         public async Task<Gig?> GetAsync(string id) =>
@@ -37,8 +37,8 @@ namespace Giger.Services
 
         public async Task<long> GetLimitedUserGigsCountAsync(string takenBy) =>
             await _dbContext.Gigs
-                .Where(x => x.TakenById == takenBy && x.Mode == GigModes.CLIENT &&
-                    (x.Status == GigStatus.IN_PROGRESS || x.Status == GigStatus.DISPUTE))
+                .Where(x => x.WorkerId == takenBy && x.Mode == Gig.MODE_CLIENT &&
+                    (x.Status == Gig.IN_PROGRESS || x.Status == Gig.DISPUTE))
                 .LongCountAsync();
 
         public async Task<Gig?> GetByFirstNameAsync(string title) =>

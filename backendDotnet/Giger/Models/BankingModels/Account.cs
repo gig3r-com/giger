@@ -6,18 +6,37 @@ namespace Giger.Models.BankingModels
     {
         public required string Id { get; set; }
 
-        public List<string> Owners { get; set; }
+        private string _type;
+        public string Type // PRIVATE or BUSINESS
+        { 
+            get { return _type; }
+            set
+            {
+                if (value.Equals(PRIVATE_ACCOUNT_TYPE, StringComparison.OrdinalIgnoreCase))
+                {
+                    _type = PRIVATE_ACCOUNT_TYPE;
+                }
+                if (value.Equals(BUSINESS_ACCOUNT_TYPE, StringComparison.OrdinalIgnoreCase))
+                {
+                    _type = BUSINESS_ACCOUNT_TYPE;
+                }
+                else
+                {
+                    _type = value;
+                }
+            }
+        } 
 
         public string Name { get; set; }
 
-        [NotMapped]
-        public List<Transaction> Transactions { get; set; }
-
-        public string Type { get; set; } // PRIVATE or BUSINESS
+        public string AccountNumber { get; set; }
 
         public decimal Balance { get; set; }
-        
-        public string AccountNumber { get; set; }
+
+        public List<string> Owners { get; set; }
+
+        [NotMapped] 
+        public List<Transaction> Transactions { get; set; }
 
         public override int GetHashCode()
         {

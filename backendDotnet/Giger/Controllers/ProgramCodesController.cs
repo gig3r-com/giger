@@ -1,4 +1,5 @@
 ﻿using Giger.Models.Hacking;
+using Giger.Models.Networks;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 

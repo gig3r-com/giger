@@ -12,8 +12,8 @@ namespace Giger.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<Log>> GetAllForSubnetworkAsync(string subnetworkId) =>
-            await _dbContext.Logs.Where(x => x.SubnetworkId == subnetworkId).ToListAsync();
+        public async Task<List<Log>> GetAllForSubnetworkAsync(string subnetworkName) =>
+            await _dbContext.Logs.Where(x => x.Subnetwork == subnetworkName).ToListAsync();
 
         public async Task<Log?> GetByIdAsync(string id) =>
             await _dbContext.Logs.FirstOrDefaultAsync(x => x.Id == id);

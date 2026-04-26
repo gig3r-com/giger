@@ -75,14 +75,11 @@ namespace Giger.Connections.Handlers
             {
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = GigerDateTime.Now,
-                SourceUserId = user.Id,
-                SourceUserName = user.Handle,
-                TargetUserId = conversation.Id,
-                TargetUserName = string.Join(',', conversation.Participants),
-                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
+                SourceUser = user.Handle,
+                TargetUser = string.Join(',', conversation.Participants),
+                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT.ToString() : LogType.MESSAGE.ToString(),
                 LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
-                SubnetworkId = user.SubnetworkId,
-                SubnetworkName = user.SubnetworkName,
+                Subnetwork = user.Subnetwork,
             };
 
             logService.CreateAsync(log);

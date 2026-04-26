@@ -24,6 +24,24 @@ namespace Giger.Services
         public async Task<Account?> GetByAccountNumberAsync(string accountNumber) =>
             await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
 
+        /// <summary>
+        /// Returns account with Transactions populated for API response.
+        /// Transactions are NOT stored in Account table — queried separately.
+        /// </summary>
+        public async Task<Account?> GetByAccountNumberWithTransactionsAsync(string accountNumber)
+        {
+            var account = await GetByAccountNumberAsync(accountNumber);
+            if (account is null) return null;
+
+            account.Transactions = await GetTransactionsByAccountNumberAsync(accountNumber);
+            return account;
+        }
+
+        public async Task<List<Transaction>> GetTransactionsByAccountNumberAsync(string accountNumber) =>
+            await _dbContext.Transactions
+                .Where(t => t.From == accountNumber || t.To == accountNumber)
+                .ToListAsync();
+
         public async Task CreateAsync(Account newAccount)
         {
             _dbContext.Accounts.Add(newAccount);

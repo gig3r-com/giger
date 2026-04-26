@@ -3,7 +3,7 @@ using Giger.Models.BankingModels;
 using Giger.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Giger.Extensions;
-using Giger.Models.User;
+using Giger.Models.Users;
 using Giger.Connections.Handlers;
 using System.Linq.Expressions;
 
@@ -239,20 +239,20 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            if (!IsAuthorized(account.Owner))
+            if (account.Owners.Any(o => IsAuthorized(o)))
             {
-                return Unauthorized();
+                return account.Transactions;
             }
-            return account.Transactions;
+            return Unauthorized();
         }
 
         [HttpPost("transaction")]
         public async Task<IActionResult> CreateTransaction(Transaction newTransaction, bool isGigTransfer = false)
         {
-            if (!IsAuthorized(newTransaction.FromUser))
-            {
-                return Unauthorized();
-            }
+            //if (!IsAuthorized(newTransaction.OrderingUser))
+            //{
+            //    return Unauthorized();
+            //}
             
             if (string.IsNullOrEmpty(newTransaction.Id))
             {
@@ -264,18 +264,7 @@ namespace Giger.Controllers
             }
 
             var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
-            if (giverAcc is null)
-            {
-                giverAcc = await _accountService.GetByAccountNameAsync(newTransaction.FromUser);
-                newTransaction.From = giverAcc?.AccountNumber ?? newTransaction.From;
-            }
-
             var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
-            if (receiverAcc is null)
-            {
-                receiverAcc = await _accountService.GetByAccountNameAsync(newTransaction.ToUser);
-                newTransaction.To = receiverAcc?.AccountNumber ?? newTransaction.To;
-            }
 
             if (giverAcc is null || receiverAcc is null)
             {
@@ -321,7 +310,7 @@ namespace Giger.Controllers
 
             
             NotifyTransaction(receiverAcc, clone);
-            LogTransaction(clone, giverAcc, receiverAcc);
+            //LogTransaction(clone, giverAcc, receiverAcc);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = newTransaction.Id }, newTransaction);
         }
@@ -390,47 +379,47 @@ namespace Giger.Controllers
             //}
         }
 
-        private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
-        {
-            var giverUser = await _userService.GetByUserNameAsync(transaction.OrderingUser);
-            var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
+        //private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
+        //{
+        //    var giverUser = await _userService.GetByUserNameAsync(transaction.OrderingUser);
+        //    var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
-            Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
+        //    Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
           
-            if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
-            {
-                Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
-            }
+        //    if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
+        //    {
+        //        Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
+        //    }
 
-            void Log(string subnetworkId, string subnetworkName)
-            {
-                var log = new Log
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Timestamp = GigerDateTime.Now,
-                    SourceUserId = senderAccount.OwnerId,
-                    SourceUserName = senderAccount.Owner,
-                    TargetUserId = receiverAccount.OwnerId,
-                    TargetUserName = receiverAccount.Owner,
-                    LogType = LogType.TRANSFER,
-                    LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
-                    SubnetworkId = subnetworkId,
-                    SubnetworkName = subnetworkName
-                };
+        //    void Log(string subnetworkId, string subnetworkName)
+        //    {
+        //        var log = new Log
+        //        {
+        //            Id = Guid.NewGuid().ToString(),
+        //            Timestamp = GigerDateTime.Now,
+        //            //SourceUserId = senderAccount.OwnerId,
+        //            //SourceUserName = senderAccount.Owner,
+        //            //TargetUserId = receiverAccount.OwnerId,
+        //            //TargetUserName = receiverAccount.Owner,
+        //            LogType = LogType.TRANSFER,
+        //            LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
+        //            SubnetworkId = subnetworkId,
+        //            SubnetworkName = subnetworkName
+        //        };
 
-                _logService.CreateAsync(log);
-            }
-        }
+        //        _logService.CreateAsync(log);
+        //    }
+        //}
 
-        private bool HasAccessToFactionAccount(UserPrivate sender, string accountName)
-        {
-            if (sender is null)
-                return false;
+        //private bool HasAccessToFactionAccount(User sender, string accountName)
+        //{
+        //    if (sender is null)
+        //        return false;
 
-            if (sender.Faction.ToString() == accountName)
-                return true;
+        //    if (sender.Faction.ToString() == accountName)
+        //        return true;
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

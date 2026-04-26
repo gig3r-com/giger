@@ -1,4 +1,4 @@
-﻿using Giger.Models.User;
+﻿using Giger.Models.Users;
 
 namespace Giger.Models.Hashes
 {
@@ -9,56 +9,38 @@ namespace Giger.Models.Hashes
             Id = new Guid().ToString();
         }
 
-        public RecordsHashes(UserPrivate user)
+        public RecordsHashes(User user)
         {
             Id = new Guid().ToString();
 
             int relationsHashCode = 3;
-            foreach (var relation in user.Relations)
+            foreach (var relation in user.HardRecords)
             {
                 relationsHashCode += relation.GetHashCode();
             }
-            RelationsHash = relationsHashCode;
+            HardRecords = relationsHashCode;
 
             int goalsHashCode = 5;
-            foreach (var goal in user.Goals)
+            foreach (var goal in user.OffGameRecords)
             {
                 goalsHashCode += goal.GetHashCode();
             }
-            GoalsHash = goalsHashCode;
+            OffGameRecords = goalsHashCode;
 
             int criminalEventsHashCode = 13;
-            foreach (var criminalEvent in user.CriminalEvents)
+            foreach (var criminalEvent in user.MindRecords)
             {
                 criminalEventsHashCode += criminalEvent.GetHashCode();
             }
-            CriminalEventsHash = criminalEventsHashCode;
-
-            int privateRecordsHashCode = 17;
-            foreach (var privateRecords in user.PrivateRecords)
-            {
-                privateRecordsHashCode += privateRecords.GetHashCode();
-            }
-            PrivateRecordsHash = privateRecordsHashCode;
-
-            int medicalEventsHashCode = 23;
-            foreach (var medicalEvent in user.MedicalEvents)
-            {
-                medicalEventsHashCode += medicalEvent.GetHashCode();
-            }
-            MedicalEventsHash = medicalEventsHashCode;
+            MindRecords = criminalEventsHashCode;
         }
 
         public string Id { get; set; }
 
-        public int RelationsHash { get; set; }
+        public int HardRecords { get; set; }
 
-        public int GoalsHash { get; set; }
+        public int OffGameRecords { get; set; }
 
-        public int PrivateRecordsHash { get; set; }
-
-        public int CriminalEventsHash { get; set; }
-
-        public int MedicalEventsHash { get; set; }
+        public int MindRecords { get; set; }
     }
 }

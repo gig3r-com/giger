@@ -1,32 +1,23 @@
 ﻿using Giger.Models.Networks;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace Giger.Models.Logs
 {
     public class Log
     {
-        public required string Id { get; set; }
+        public string Id { get; set; }
 
         public DateTime Timestamp { get; set; }
 
-        public required string SourceUserId { get; set; }
+        public string SourceUser { get; set; }
 
-        public required string SourceUserName { get; set; }
+        public string TargetUser { get; set; }
 
-        public string? SourceHackerName { get; set; }
+        public string LogType { get; set; }
 
-        public string? TargetUserId { get; set; }
+        public string LogData { get; set; }
 
-        public string? TargetUserName { get; set; }
-
-        public required LogType LogType { get; set; }
-
-        public required string LogData { get; set; }
-
-        public required string SubnetworkId { get; set; }
-
-        public required string SubnetworkName { get; set; }
+        public string Subnetwork { get; set; }
 
         public Log() { }
 
@@ -35,19 +26,14 @@ namespace Giger.Models.Logs
         {
             Id = Guid.NewGuid().ToString();
             Timestamp = other.Timestamp;
-            SourceUserId = other.SourceUserId;
-            SourceUserName = other.SourceUserName;
-            SourceHackerName = other.SourceHackerName;
-            TargetUserId = other.TargetUserId;
-            TargetUserName = other.TargetUserName;
+            SourceUser = other.SourceUser;
+            TargetUser = other.TargetUser;
             LogType = other.LogType;
             LogData = other.LogData;
-            SubnetworkId = subnetwork.Id;
-            SubnetworkName = subnetwork.Name;
+            Subnetwork = subnetwork.Name;
         }
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<LogType>))]
     public enum LogType
     {
         MESSAGE,

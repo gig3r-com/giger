@@ -10,7 +10,7 @@ namespace Giger.Models.MessageModels
 
         public required string Sender { get; set; } // user handle
 
-        public required string Type { get; set; }
+        public string Type { get; set; }
 
         public required string Data { get; set; }
 

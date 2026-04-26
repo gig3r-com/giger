@@ -6,20 +6,16 @@ namespace Giger.Models.BankingModels
     {
         public required string Id { get; set; }
         
-        public string? From { get; set; } // AccountNumber
+        public string From { get; set; } // AccountNumber
 
-        //public string? FromUser { get; set; } // Handle / Anonymized
-
-        public string? To { get; set; } // AccountNumber
-
-        //public string? ToUser { get; set; } // Handle / Anonymized
-
-        public string Title { get; set; }
+        public string To { get; set; } // AccountNumber
 
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
         public DateTime? Timestamp { get; set; }
+
+        public string Title { get; set; }
 
         public string? OrderingUser { get; set; } // user handle of person who ordered the transaction - only for business accounts
 
@@ -44,8 +40,8 @@ namespace Giger.Models.BankingModels
         {
             int hash = 17;
             hash += 11 * Id.GetHashCode();
-            hash += 13 * (From == null ? 1 : From.GetHashCode());
-            hash += 17 * (To == null ? 1 : To.GetHashCode());
+            hash += 13 * From.GetHashCode();
+            hash += 17 * To.GetHashCode();
             hash += 19 * Title.GetHashCode();
             hash += 23 * Amount.GetHashCode();
             hash += 27 * Timestamp.GetHashCode();
