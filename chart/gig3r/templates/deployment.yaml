@@ -15,6 +15,8 @@ spec:
         app: {{ include "gig3r.frontend.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - image: {{ include "gig3r.frontend.image" . }}
         name: {{ include "gig3r.frontend.app" . }}
@@ -40,6 +42,8 @@ spec:
         app: {{ include "gig3r.backend.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - image: {{ include "gig3r.backend.image" . }}
         name: {{ include "gig3r.backend.app" . }}

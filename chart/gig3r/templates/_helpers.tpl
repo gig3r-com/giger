@@ -14,11 +14,11 @@ gig3r-{{ default "app" .Values.environment }}-api
 {{- end }}
 
 {{- define "gig3r.frontend.image" -}}
-{{ default "mivalsten/gig3r-frontend" .Values.frontend.image }}:{{ default "dev" .Values.frontend.tag }}
+{{ .Values.frontend.image | default "ghcr.io/gig3r-com/gig3r-frontend" }}:{{ default "dev" .Values.frontend.tag }}
 {{- end }}
 
 {{- define "gig3r.backend.image" -}}
-{{ default "mivalsten/gig3r-backend" .Values.backend.image }}:{{ default "dev" .Values.backend.tag }}
+{{ .Values.backend.image | default "ghcr.io/gig3r-com/gig3r-backend" }}:{{ default "dev" .Values.backend.tag }}
 {{- end }}
 
 {{- define "gig3r.database.password" -}}
@@ -53,7 +53,7 @@ gig3r-{{ default "app" .Values.environment }}-mongodb
 {{- end }}
 
 {{- define "gig3r.mongodb.image" -}}
-{{ default "mivalsten/gig3r-mongo" .Values.database.image }}:{{ default "latest" .Values.database.tag }}
+{{ .Values.database.image | default "ghcr.io/gig3r-com/gig3r-mongo" }}:{{ default "latest" .Values.database.tag }}
 {{- end }}
 
 {{- define "gig3r.mongo-express.app" -}}

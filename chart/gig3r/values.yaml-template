@@ -2,11 +2,11 @@ environment: app
 base_url: gig3r.com
 
 frontend:
-  image: mivalsten/gig3r-frontend
+  image: ghcr.io/gig3r-com/gig3r-frontend
   tag: 0.2.0
 
 backend:
-  image: mivalsten/gig3r-backend
+  image: ghcr.io/gig3r-com/gig3r-backend
   tag: 0.2.0
 
 database:

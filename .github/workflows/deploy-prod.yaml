@@ -38,10 +38,10 @@ jobs:
       - tag-mongo
     with:
       HELM_ENVIRONMENT: app
-      HELM_FRONTEND_IMAGE: "mivalsten/gig3r-frontend"
+      HELM_FRONTEND_IMAGE: "gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ GITHUB.REF_NAME }}
-      HELM_BACKEND_IMAGE: "mivalsten/gig3r-backend"
+      HELM_BACKEND_IMAGE: "gig3r-backend"
       HELM_BACKEND_TAG: ${{ GITHUB.REF_NAME }}
-      HELM_DATABASE_IMAGE: "mivalsten/gig3r-mongo"
+      HELM_DATABASE_IMAGE: "gig3r-mongo"
       HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit

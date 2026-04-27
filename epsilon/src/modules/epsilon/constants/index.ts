@@ -1,0 +1,1 @@
+export const APP_MODE_OPTIONS = ['FULL' | 'POLICE' | 'DOC'] as const;
