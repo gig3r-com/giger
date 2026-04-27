@@ -1,4 +1,5 @@
 ﻿using Giger.Models.Users;
+using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
@@ -171,7 +172,13 @@ namespace Giger.Controllers
 			{
 				return NoContent();
 			}
-			user.HackerName = newName;
+
+            if (await _loginService.GetByUserNameAsync(newName) != null)
+            {
+                return BadRequest("HackerName already taken.");
+            }
+
+            user.HackerName = newName;
 			auth.HackerName = newName;
 			await _userService.UpdateAsync(user);
 			await _loginService.UpdateAsync(auth);

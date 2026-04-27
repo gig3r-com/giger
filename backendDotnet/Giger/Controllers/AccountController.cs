@@ -12,7 +12,7 @@ namespace Giger.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController(
-        UserService _userService, LoginService _loginService, AccountService _accountService, LogService _logService, NetworksService _networksService, 
+        UserService _userService, LoginService _loginService, AccountService _accountService, LogService _logService, NetworksService _networksService, TransactionService transactionService,
         NotificationsSocketHandler _notificationsHandler)
         : AuthController(_userService, _loginService)
         //: AuthController//(serviceProvider)
@@ -95,7 +95,13 @@ namespace Giger.Controllers
                 return NotFound();
             }
 
-            var retValue = new List<Account>(accounts);
+            await Parallel.ForEachAsync(accounts, async (account, ct) =>
+            {
+                var transactions = await transactionService.GetAllMatchingAccountAsync(account.AccountNumber);
+                account.Transactions = transactions;
+            });
+
+            return accounts;
 
             // Uncomment if factions will have their own user handles
             //var user = await _userService.GetByUserNameAsync(owner);
@@ -107,8 +113,7 @@ namespace Giger.Controllers
             //        retValue.Add(businessAccount);
             //    }
             //}
-
-            return retValue;
+            //return retValue;
         }
 
         [HttpGet("byAccountNumber")]
@@ -135,6 +140,7 @@ namespace Giger.Controllers
                 Unauthorized();
             }
 
+            account.Transactions = transactionService.GetAllMatchingAccountAsync(account.AccountNumber).Result;
             return account;
         }
 
@@ -238,10 +244,10 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
-
             if (account.Owners.Any(o => IsAuthorized(o)))
             {
-                return account.Transactions;
+                var trx = _accountService.GetTransactionsByAccountNumberAsync(accountNo).Result;
+                return trx;
             }
             return Unauthorized();
         }
@@ -263,20 +269,20 @@ namespace Giger.Controllers
                 newTransaction.Timestamp = GigerDateTime.Now;
             }
 
-            var giverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
+            var senderAcc = await _accountService.GetByAccountNumberAsync(newTransaction.From);
             var receiverAcc = await _accountService.GetByAccountNumberAsync(newTransaction.To);
 
-            if (giverAcc is null || receiverAcc is null)
+            if (senderAcc is null || receiverAcc is null)
             {
                 return BadRequest("Wrong account number");
             }
 
-            if (giverAcc.Id == receiverAcc.Id)
+            if (senderAcc.Id == receiverAcc.Id)
             {
                 return BadRequest("Cannot transfer to yourself");
             }
 
-            if (giverAcc.Balance < newTransaction.Amount)
+            if (senderAcc.Balance < newTransaction.Amount)
             {
                 return BadRequest(Messages.ACCOUNT_INSUFFICIENT_FUNDS);
             }
@@ -304,9 +310,9 @@ namespace Giger.Controllers
             receiverAcc.Balance += clone.Amount;
             await _accountService.UpdateAsync(receiverAcc);
 
-            giverAcc.Transactions.Add(newTransaction);
-            giverAcc.Balance -= newTransaction.Amount;
-            await _accountService.UpdateAsync(giverAcc);
+            senderAcc.Transactions.Add(newTransaction);
+            senderAcc.Balance -= newTransaction.Amount;
+            await _accountService.UpdateAsync(senderAcc);
 
             
             NotifyTransaction(receiverAcc, clone);
@@ -381,12 +387,12 @@ namespace Giger.Controllers
 
         //private async void LogTransaction(Transaction transaction, Account senderAccount, Account receiverAccount)
         //{
-        //    var giverUser = await _userService.GetByUserNameAsync(transaction.OrderingUser);
+        //    var senderUser = await _userService.GetByUserNameAsync(transaction.OrderingUser ?? senderAccount.Owners.First());
         //    var receiverUser = await _userService.GetByUserNameAsync(receiverAccount.Owner);
 
-        //    Log(giverUser?.SubnetworkId, giverUser?.SubnetworkName);
-          
-        //    if (giverUser?.SubnetworkId != receiverUser?.SubnetworkId)
+        //    Log(senderUser?.SubnetworkId, senderUser?.SubnetworkName);
+
+        //    if (senderUser?.SubnetworkId != receiverUser?.SubnetworkId)
         //    {
         //        Log(receiverUser?.SubnetworkId, receiverUser?.SubnetworkName);
         //    }
@@ -401,7 +407,7 @@ namespace Giger.Controllers
         //            //SourceUserName = senderAccount.Owner,
         //            //TargetUserId = receiverAccount.OwnerId,
         //            //TargetUserName = receiverAccount.Owner,
-        //            LogType = LogType.TRANSFER,
+        //            LogType = LogType.TRANSFER.ToString(),
         //            LogData = $"Transaction from {transaction.From} to {transaction.To} on {GigerDateTime.Now}",
         //            SubnetworkId = subnetworkId,
         //            SubnetworkName = subnetworkName

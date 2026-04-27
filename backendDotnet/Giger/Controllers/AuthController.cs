@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Giger.Controllers
 {
-    public abstract class AuthController//(IServiceProvider serviceProvider
-        //(UserService _userService, LoginService _loginService)
-        //)
-        : Controller
+    public abstract class AuthController : Controller
     {
-        public AuthController(UserService userService, LoginService loginService)// : this(null)
+        public AuthController(UserService userService, LoginService loginService)
         {
             _loginService = loginService;
             _userService = userService;

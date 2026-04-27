@@ -23,6 +23,7 @@ namespace Giger.Services
 
         // Gig Models
         public DbSet<Gig> Gigs { get; set; }
+        public DbSet<GigUpdate> GigUpdates { get; set; }
 
         // Hacking
         public DbSet<HackConfig> HackConfig { get; set; }
@@ -69,9 +70,13 @@ namespace Giger.Services
             {
                 entity.Ignore(a => a.Updates); // Explicit ignore as extra safety
             });
+            modelBuilder.Entity<GigUpdate>();
             modelBuilder.Entity<HackConfig>();
             modelBuilder.Entity<RecordsHashes>();
-            modelBuilder.Entity<Log>();
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.Property(n => n.HackData).HasColumnType("hstore");
+            });
             modelBuilder.Entity<Conversation>(entity =>
             {
                 entity.Ignore(a => a.Messages); // Explicit ignore as extra safety
@@ -92,6 +97,8 @@ namespace Giger.Services
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(n => n.EpsilonData).HasColumnType("hstore");
+                entity.Property(n => n.GigReputationDb).HasColumnType("hstore");
+                entity.Property(n => n.GigReputationTrack).HasColumnType("hstore");
             });
             modelBuilder.Entity<GigerConfig>();
         }

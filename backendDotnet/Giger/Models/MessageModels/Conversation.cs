@@ -14,6 +14,8 @@ namespace Giger.Models.MessageModels
 
         public required bool GigConversation { get; set; }
 
+        public string GigId { get; set; } // gig FK, only for gig conversations
+
         [NotMapped]
         public List<Message> Messages { get; set; } = [];
 

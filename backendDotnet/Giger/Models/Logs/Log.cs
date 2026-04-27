@@ -19,6 +19,8 @@ namespace Giger.Models.Logs
 
         public string Subnetwork { get; set; }
 
+        public Dictionary<string, string> HackData { get; set; }
+
         public Log() { }
 
         [SetsRequiredMembers]

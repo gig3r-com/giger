@@ -19,6 +19,8 @@ namespace Giger.Models.MessageModels
         public string Hacker { get; set; }
 
         public string EpsilonNote { get; set; }
+        
+        public string ConversationId { get; set; } // conversation FK
 
         public Message() { }
 

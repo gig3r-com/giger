@@ -1,5 +1,4 @@
 ﻿using Giger.Services;
-using Giger.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

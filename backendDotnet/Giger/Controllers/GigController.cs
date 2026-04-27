@@ -12,6 +12,7 @@ namespace Giger.Controllers
     [Route("api/[controller]")]
     public class GigController(UserService userService, LoginService loginService,
         GigService _gigService,
+        GigUpdatesService _gigUpdatesService,
         AccountService _accountService,
         ConversationService _conversationService,
         GigerConfigService _gigerConfigService,
@@ -19,14 +20,6 @@ namespace Giger.Controllers
         NotificationsSocketHandler _notificationsHandler)
         : AuthController(userService, loginService)
     {
-       //private readonly AccountService _accountService = accountService;
-       //private readonly ConversationService _conversationService = conversationService;
-       //private readonly GigerConfigService _gigerConfigService = gigerConfigService;
-       //private readonly GigService _gigService = gigService;
-       //
-       //private readonly AccountController _accountController = accountController;
-       //
-       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
 
         #region Endpoints
 
@@ -39,7 +32,11 @@ namespace Giger.Controllers
                 return Enumerable.Empty<Gig>().ToList();
             }
             var gigs = await _gigService.GetAllOwnAsync(userId);
-            //gigs.ForEach(gig => ObscureGig(gig, userId));
+            Parallel.ForEach(gigs, gig =>
+            {
+                gig.Updates = _gigUpdatesService.GetAllForGigAsync(gig.Id).Result;
+            });
+
             return gigs;
         }
 
@@ -72,7 +69,10 @@ namespace Giger.Controllers
             {
                 gigs = await _gigService.GetAllVisibleToUserAsync(requestSender.Id);
             }
-            //gigs.ForEach(gig => ObscureGig(gig, requestSender.Id));
+            Parallel.ForEach(gigs, gig =>
+            {
+                gig.Updates = _gigUpdatesService.GetAllForGigAsync(gig.Id).Result;
+            });
             return gigs;
         }
 
@@ -96,7 +96,8 @@ namespace Giger.Controllers
                 return null;
             }
             var requestSender = await _userService.GetByUserNameAsync(userName);
-            //ObscureGig(gig, requestSender.Id);
+            gig.Updates = _gigUpdatesService.GetAllForGigAsync(gig.Id).Result;
+            
             return gig;
         }
 
@@ -156,19 +157,6 @@ namespace Giger.Controllers
                     return BadRequest(Messages.ACCOUNT_NOT_FOUND);
                 }
             }
-
-            //if (newGig.IsAnonymizedAuthor)
-            //{
-            //    var anonymizedUserName = Guid.NewGuid().ToString();
-            //    var anonymizedUser = new AnonymizedUser
-            //    {
-            //        Id = Guid.NewGuid().ToString(),
-            //        UserId = newGig.AuthorId,
-            //        DisplyedAs = anonymizedUserName
-            //    };
-            //    await _anonymizedService.CreateAsync(anonymizedUser);
-            //    newGig.AuthorName = anonymizedUserName;
-            //}
 
             newGig.ConversationId = CreateNewGigConversation(newGig).Result.Id;
 
@@ -396,75 +384,40 @@ namespace Giger.Controllers
         {
             var cat = gig.Category;
             var providerUser = await _userService.GetAsync(gig.WorkerId);
-            if (providerUser != null)
+            if (providerUser == null)
+                return;
+
+            providerUser.GigReputationTrack ??= new Dictionary<string, string>();
+            providerUser.GigReputationDb ??= new Dictionary<string, string>();
+
+            // Read current tracked amount, defaulting to 0 if not yet tracked
+            decimal trackedAmount = providerUser.GigReputationTrack.TryGetValue(cat, out var trackedStr)
+                ? decimal.Parse(trackedStr)
+                : 0m;
+
+            // Add or subtract the payout
+            trackedAmount = isPositive
+                ? trackedAmount + gig.Payout
+                : trackedAmount - gig.Payout;
+
+            // Persist updated tracked amount as string (2 decimal points)
+            providerUser.GigReputationTrack[cat] = trackedAmount.ToString("F2");
+
+            // Determine new reputation level by finding the highest threshold reached
+            int newLevel = 0;
+            foreach (var (level, threshold) in ReputationLevel.OrderByDescending(kv => kv.Key))
             {
-                //if (!providerUser.AliasMap.ContainsKey(cat))
-                //{
-                //    var rep = providerUser.GigReputation[cat];
-                //    switch (rep)
-                //    {
-                //        case 0:
-                //            providerUser.AliasMap[cat] = ReputationLevel[0];
-                //            break;
-                //        case 1:
-                //            providerUser.AliasMap[cat] = ReputationLevel[1];
-                //            break;
-                //        case 2:
-                //            providerUser.AliasMap[cat] = ReputationLevel[2];
-                //            break;
-                //        case 3:
-                //            providerUser.AliasMap[cat] = ReputationLevel[3];
-                //            break;
-                //        case 4:
-                //            providerUser.AliasMap[cat] = ReputationLevel[4];
-                //            break;
-                //        case 5:
-                //            providerUser.AliasMap[cat] = ReputationLevel[5];
-                //            break;
-                //        default:
-                //            providerUser.AliasMap[cat] = providerUser.GigReputation[cat];
-                //            break;
-                //    }
-                //}
-
-                //if (isPositive)
-                //{
-                //    providerUser.AliasMap[cat] += gig.Payout;
-                //}
-                //else
-                //{
-                //    providerUser.AliasMap[cat] -= gig.Payout;
-                //}
-
-                //if (providerUser.AliasMap[cat] >= ReputationLevel[5])
-                //{
-                //    providerUser.GigReputation[cat] = 5;
-                //}
-                //else if (providerUser.AliasMap[cat] >= ReputationLevel[4])
-                //{
-                //    providerUser.GigReputation[cat] = 4;
-                //}
-                //else if (providerUser.AliasMap[cat] >= ReputationLevel[3])
-                //{
-                //    providerUser.GigReputation[cat] = 3;
-                //}
-                //else if (providerUser.AliasMap[cat] >= ReputationLevel[2])
-                //{
-                //    providerUser.GigReputation[cat] = 2;
-                //}
-                //else if (providerUser.AliasMap[cat] >= ReputationLevel[1])
-                //{
-                //    providerUser.GigReputation[cat] = 1;
-                //}
-                //else if (providerUser.AliasMap[cat] <= ReputationLevel[0])
-                //{
-                //    providerUser.GigReputation[cat] = 0;
-                //}
-
-
-
-                _userService.UpdateAsync(providerUser);
+                if (trackedAmount >= threshold)
+                {
+                    newLevel = level;
+                    break;
+                }
             }
+
+            // Persist updated reputation level as string
+            providerUser.GigReputationDb[cat] = newLevel.ToString();
+
+            await _userService.UpdateAsync(providerUser);
         }
 
         [HttpDelete("{id}/remove")]
@@ -791,32 +744,6 @@ namespace Giger.Controllers
             {4, 10001 },
             {5, 20001 },
         };
-
-        //private void ObscureGig(Gig gig, string requestSenderId)
-        //{
-        //    // if gig is already revealed by both client and author, do not obscure it for 3rd party
-        //    if (gig.IsRevealed && gig.IsRevealedByClient)
-        //    {
-        //        return;
-        //    }
-
-        //    if (gig.IsRevealed && gig.AuthorId == requestSenderId)
-        //    {
-        //        return;
-        //    }
-
-        //    if (gig.IsRevealedByClient && gig.WorkerId == requestSenderId)
-        //    {
-        //        return;
-        //    }
-
-        //    if (IsGodUser())
-        //    {
-        //        return;
-        //    }
-
-        //    gig.Obscure();
-        //}
         #endregion
     }
 }

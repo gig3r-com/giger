@@ -1,5 +1,4 @@
-﻿using Giger.Models.Hashes;
-using Giger.Models.Users;
+﻿using Giger.Models.Users;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,123 +6,32 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public partial class UserController(UserService userService, LoginService loginService) 
+    public partial class UserController(UserService userService, LoginService loginService, 
+        RecordsService recordService, ConversationService conversationService, AccountService accountService, PlotsService plotsService) 
         : AuthController(userService, loginService)
     {
-        [HttpGet("all")]
+        [HttpGet("usernames")]
         public async Task<List<string>> GetAllUserNames()
         {
             var allUsers = await _userService.GetAllPrivateUsersAsync();
             allUsers = FilterOutAllGodUsers(allUsers);
-            return allUsers.Select(u => u.Handle).ToList();
+            return allUsers.Where(u => u.Active).Select(u => u.Handle).ToList();
         }
-
-        //#region Simple User
-
-        //[HttpGet("simple/all")]
-        //public async Task<ActionResult<List<UserSimpleOld>>> GetAllSimpleUsers()
-        //{
-        //    if (!IsGodUser())
-        //    {
-        //        return Unauthorized();
-        //    }
-        //    var allUsers = await _userService.GetAllPrivateUsersAsync();
-        //    allUsers = FilterOutAllGodUsers(allUsers);
-        //    return allUsers.Select(u => new UserSimpleOld(u)).ToList();
-        //}
-
-        //[HttpGet("simple/byId")]
-        //public async Task<ActionResult<UserSimpleOld>> GetSimpleById(string id)
-        //{
-        //    var user = await _userService.GetAsync(id);
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!IsAuthorized(user.Id))
-        //    {
-        //        return Unauthorized();
-        //    }
-            
-        //    user = FilterOutGodUser(user);
-        //    if (user is null)
-        //    {
-        //        return NoContent();
-        //    }
-        //    return new UserSimpleOld(user);
-        //}
-
-        //[HttpGet("simple/hashes/byId")]
-        //public async Task<ActionResult<RecordsHashes>> GetHashesById(string id)
-        //{
-        //    var user = await _userService.GetAsync(id);
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!IsAuthorized(user.Id))
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    user = FilterOutGodUser(user);
-        //    if (user is null)
-        //    {
-        //        return NoContent();
-        //    }
-        //    return new RecordsHashes(user);
-        //}
-
-        //[HttpGet("simple/byUsername")]
-        //public async Task<ActionResult<UserSimpleOld>> GetSimpleByUsername(string username)
-        //{
-        //    var user = await _userService.GetByUserNameAsync(username);
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!IsAuthorized(user.Id))
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    user = FilterOutGodUser(user);
-        //    return new UserSimpleOld(user);
-        //}
-
-        //[HttpGet("simple/hashes/byUsername")]
-        //public async Task<ActionResult<RecordsHashes>> GetHashesByUsername(string username)
-        //{
-        //    var user = await _userService.GetByUserNameAsync(username);
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!IsAuthorized(user.Id))
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    user = FilterOutGodUser(user);
-        //    return new RecordsHashes(user);
-        //}
-
-        //#endregion
 
         #region PrivateUser
 
-        [HttpGet("private/all")]
-        public async Task<List<User>> GetAllPrivateUsers()
-        {
-            var allUsers = await _userService.GetAllPrivateUsersAsync();
-            return FilterOutAllGodUsers(allUsers);
-        }
+        //[HttpGet("full/all")]
+        //public async Task<List<User>> GetAllPrivateUsers()
+        //{
+        //    if (!IsGodUser())
+        //    {
+        //        Unauthorized();
+        //    }
+        //    var allUsers = await _userService.GetAllPrivateUsersAsync();
+        //    return FilterOutAllGodUsers(allUsers);
+        //}
 
-        [HttpGet("private/byId")]
+        [HttpGet("full/byId")]
         public async Task<ActionResult<User>> Get(string id)
         {
             var user = await _userService.GetAsync(id);
@@ -141,12 +49,48 @@ namespace Giger.Controllers
             {
                 return NoContent();
             }
-            //FilterObscurableData(user);
+            await FillUserProperties(user);
             return user;
         }
 
-        [HttpGet("private/byUsername")]
-        public async Task<ActionResult<User>> GetByUserName(string userName)
+        [HttpGet("full/byUsername")]
+        public async Task<ActionResult<User>> GetByUserNameFull(string userName)
+        {
+            var user = await _userService.GetByUserNameAsync(userName);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            if (!IsAuthorized(user.Id))
+            {
+                return Unauthorized();
+            }
+            user = FilterOutGodUser(user);
+            await FillUserProperties(user);
+
+            return user;
+        }
+
+        private async Task FillUserProperties(User user)
+        {
+            var records = await recordService.GetAllForUserAsync(user.Handle);
+            user.HardRecords = records.Where(r => r.Type == RecordType.Types.HARDRECORD.ToString()).ToArray();
+            user.OffGameRecords = records.Where(r => r.Type == RecordType.Types.OFFGAMERECORD.ToString()).ToArray();
+            user.MindRecords = records.Where(r => r.Type == RecordType.Types.MINDRECORD.ToString()).ToArray();
+
+            var conversations = conversationService.GetAllWithParticipantAsync(user.Handle).Result;
+            user.Conversations = conversations.ToArray();
+
+            var accounts = await accountService.GetByOwnerAsync(user.Handle);
+            user.Accounts = accounts.ToArray();
+
+            var plots = await plotsService.GetAllForUserAsync(user.Handle);
+            user.Plots = plots.ToArray();
+        }
+
+        [HttpGet("flat/byUsername")]
+        public async Task<ActionResult<User>> GetByUserNameFlat(string userName)
         {
             var user = await _userService.GetByUserNameAsync(userName);
             if (user is null)
@@ -159,7 +103,6 @@ namespace Giger.Controllers
                 return Unauthorized();
             }
 
-            //FilterObscurableData(user);
             return FilterOutGodUser(user);
         }
 
@@ -210,35 +153,6 @@ namespace Giger.Controllers
             return Ok();
         }
         
-        #endregion
-
-        #region PublicUser
-        [HttpGet("public/all")]
-        public async Task<List<User>> GetAllPublicUsers() => await Task.Run(() => _userService.GetAllPrivateUsersAsync().Result.Cast<User>().ToList());
-
-        [HttpGet("public/byId")]
-        public async Task<ActionResult<User>> GetPublicById(string id)
-        {
-            var user = await _userService.GetAsync(id);
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        [HttpGet("public/byUsername")]
-        public async Task<ActionResult<User>> GetPublicByUsername(string username)
-        {
-            var user = await _userService.GetByUserNameAsync(username);
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
         #endregion
 
         //private void FilterObscurableData(User user)

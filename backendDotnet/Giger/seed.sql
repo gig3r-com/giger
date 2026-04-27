@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS "Users" (
     "EpsilonConversationNotes"    TEXT         NULL,
     "EpsilonConversationsNotes"   TEXT         NULL,
     "EpsilonPlots"                TEXT         NULL,
-    "GigReputationDb"             JSONB        NOT NULL DEFAULT '{}',
-    "GigReputationTrack"          JSONB        NOT NULL DEFAULT '{}',
-    "EpsilonData"                 JSONB        NOT NULL DEFAULT '{}'
+    "GigReputationDb"             HSTORE       NOT NULL DEFAULT '',
+    "GigReputationTrack"          HSTORE       NOT NULL DEFAULT '',
+    "EpsilonData"                 HSTORE       NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS "Accounts" (
@@ -161,7 +161,8 @@ CREATE TABLE IF NOT EXISTS "Logs" (
     "TargetUser" VARCHAR(100) NULL,
     "LogType"    VARCHAR(100) NOT NULL,
     "LogData"    TEXT         NULL,
-    "Subnetwork" VARCHAR(100) NULL
+    "Subnetwork" VARCHAR(100) NULL,
+    "HackData"   HSTORE       NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS "RecordTypes" (
@@ -252,7 +253,7 @@ INSERT INTO "Users" (
     "GigReputationDb", "EpsilonData"
 ) VALUES
 (
-    'user-001', ARRAY['PLAYER'], 'shadowbyte', 'A ghost in the machine.', true,
+    'user-001', ARRAY[]::text[], 'shadowbyte', 'A ghost in the machine.', true,
     'Sam', 'Voss', 'Gunners', 'Soldier', 'Lieutenant',
     'Human', 'Human', 'Cool', 7,
     3, 7, 5, 6,
@@ -261,10 +262,10 @@ INSERT INTO "Users" (
     ARRAY['vexmira'], 'ACC-1001', 3, 'gh0st', ARRAY['ice_breaker'],
     'Test epsilon note', 'Banking note', 'Conv note',
     '[{"participants":["shadowbyte","ironclad"],"notes":"test"}]', 'Plot notes',
-    '{"combat":5,"hacking":3}'::jsonb, '{"key1":"val1"}'::jsonb
+    '"combat"=>"5","hacking"=>"3"', '"key1"=>"val1"'
 ),
 (
-    'user-002', ARRAY['PLAYER', 'MODERATOR'], 'ironclad', 'Built like a tank.', true,
+    'user-002', ARRAY['INFLUENCER', 'MODERATOR'], 'ironclad', 'Built like a tank.', true,
     'Rex', 'Muller', 'Corps', 'Enforcer', 'Captain',
     'Human', 'Cyborg', 'Aggressive', 9,
     8, 6, 3, 4,
@@ -272,10 +273,10 @@ INSERT INTO "Users" (
     'CorpNet', 'CorpSub1', 9, 2,
     ARRAY['shadowbyte'], 'ACC-2001', 5, NULL, ARRAY[]::text[],
     NULL, NULL, NULL, NULL, NULL,
-    '{"combat":8}'::jsonb, '{}'::jsonb
+    '"combat"=>"5"', ''
 ),
 (
-    'user-003', ARRAY['PLAYER'], 'vexmira', 'Digital phantom.', true,
+    'user-003', ARRAY['GOD'], 'vexmira', 'Digital phantom.', true,
     'Mira', 'Vex', 'Hackers', 'Operative', 'Ghost',
     'Human', 'Human', 'Mysterious', 6,
     2, 5, 8, 9,
@@ -283,7 +284,7 @@ INSERT INTO "Users" (
     'DarkNet', 'ShadowSub', 3, 10,
     ARRAY[]::text[], 'ACC-3001', 8, 'vex_null', ARRAY['deep_scan', 'trace_kill'],
     NULL, NULL, NULL, NULL, NULL,
-    '{"hacking":9,"recon":7}'::jsonb, '{"hidden":"data"}'::jsonb
+    '"hacking"=>"3","recon"=>"2"', '"hidden"=>"data"'
 );
 
 -- =============================================
@@ -305,23 +306,6 @@ INSERT INTO "Transactions" ("Id", "From", "To", "Amount", "Timestamp", "Title", 
 ('trx-004', 'ACC-3001', 'ACC-1001', 50.00,   '2025-01-13 08:00:00', 'Hacked transfer', 'vexmira',    'HACKED::trace_kill');
 
 -- =============================================
--- CONVERSATIONS
--- =============================================
-INSERT INTO "Conversations" ("Id", "Title", "Participants", "AnonymizedUsers", "GigConversation", "Hackers") VALUES
-('conv-001', 'Job Discussion',    ARRAY['shadowbyte', 'ironclad'], ARRAY[]::text[], false, ARRAY[]::text[]),
-('conv-002', 'Gig #1 Chat',       ARRAY['shadowbyte', 'vexmira'],  ARRAY['vexmira'], true,  ARRAY[]::text[]),
-('conv-003', 'Encrypted Channel', ARRAY['vexmira', 'ironclad'],    ARRAY[]::text[], false, ARRAY['vexmira']);
-
--- =============================================
--- MESSAGES
--- =============================================
-INSERT INTO "Messages" ("Id", "Timestamp", "Sender", "Type", "Data", "ReadBy", "Hacker", "EpsilonNote", "ConversationId") VALUES
-('msg-001', '2025-01-10 10:00:00', 'shadowbyte', 'TEXT', 'Hey, are you in for the gig?',    ARRAY['shadowbyte', 'ironclad'], NULL,       NULL,           'conv-001'),
-('msg-002', '2025-01-10 10:05:00', 'ironclad',   'TEXT', 'Sure, what is the payout?',       ARRAY['ironclad'],               NULL,       NULL,           'conv-001'),
-('msg-003', '2025-01-11 14:00:00', 'vexmira',    'TEXT', 'Package delivered.',              ARRAY['vexmira'],                NULL,       'Epsilon note', 'conv-002'),
-('msg-004', '2025-01-12 22:00:00', 'vexmira',    'HACK', 'I am in your system.',            ARRAY[]::text[],                 'vexmira',  NULL,           'conv-003');
-
--- =============================================
 -- GIGS
 -- =============================================
 INSERT INTO "Gigs" (
@@ -336,7 +320,7 @@ INSERT INTO "Gigs" (
     'AVAILABLE', 'HACKING', 'DATA_THEFT', 3,
     false, 'authorIsHiring', ARRAY['shadowbyte', 'vexmira'],
     'user-001', 'shadowbyte', NULL, NULL, NULL,
-    'shadowbyte', 'ACC-1001', NULL, '2025-01-09 08:00:00', NULL
+    'shadowbyte', 'ACC-1001', 'conv-002', '2025-01-09 08:00:00', NULL
 ),
 (
     'gig-002', 'Escort Mission', 'Escort the VIP safely.', NULL, 800.00,
@@ -354,6 +338,23 @@ INSERT INTO "Gigs" (
 );
 
 -- =============================================
+-- CONVERSATIONS
+-- =============================================
+INSERT INTO "Conversations" ("Id", "Title", "Participants", "AnonymizedUsers", "GigConversation", "Hackers") VALUES
+('conv-001', 'Job Discussion',    ARRAY['shadowbyte', 'ironclad'], ARRAY[]::text[], true,  ARRAY[]::text[]),
+('conv-002', 'Gig #1 Chat',       ARRAY['shadowbyte', 'vexmira'],  ARRAY['vexmira'], true,  ARRAY[]::text[]),
+('conv-003', 'Encrypted Channel', ARRAY['vexmira', 'ironclad'],    ARRAY[]::text[], false, ARRAY['vexmira']);
+
+-- =============================================
+-- MESSAGES
+-- =============================================
+INSERT INTO "Messages" ("Id", "Timestamp", "Sender", "Type", "Data", "ReadBy", "Hacker", "EpsilonNote", "ConversationId") VALUES
+('msg-001', '2025-01-10 10:00:00', 'shadowbyte', 'TEXT', 'Hey, are you in for the gig?',    ARRAY['shadowbyte', 'ironclad'], NULL,       NULL,           'conv-001'),
+('msg-002', '2025-01-10 10:05:00', 'ironclad',   'TEXT', 'Sure, what is the payout?',       ARRAY['ironclad'],               NULL,       NULL,           'conv-001'),
+('msg-003', '2025-01-11 14:00:00', 'vexmira',    'TEXT', 'Package delivered.',              ARRAY['vexmira'],                NULL,       'Epsilon note', 'conv-002'),
+('msg-004', '2025-01-12 22:00:00', 'vexmira',    'HACK', 'I am in your system.',            ARRAY[]::text[],                 'vexmira',  NULL,           'conv-003');
+
+-- =============================================
 -- GIG UPDATES
 -- =============================================
 INSERT INTO "GigUpdates" ("Id", "From", "To", "Date", "SourceHandlle", "GigFK") VALUES
@@ -364,8 +365,8 @@ INSERT INTO "GigUpdates" ("Id", "From", "To", "Date", "SourceHandlle", "GigFK") 
 -- NETWORKS
 -- =============================================
 INSERT INTO "Networks" ("Id", "Name", "Admin", "Subnetworks", "Nodes", "Data", "EpsilonDescription") VALUES
-('net-001', 'DarkNet',  'vexmira',    ARRAY['sub-001', 'sub-002'], '{"nodeA":"192.168.0.1"}'::hstore, '{"secret":"classified"}'::hstore, 'The underground network.'),
-('net-002', 'CorpNet',  'ironclad',   ARRAY['sub-003'],            '{"nodeB":"10.0.0.1"}'::hstore,    '{}'::hstore,                      'Corporate infrastructure.');
+('net-001', 'DarkNet', 'vexmira',  ARRAY['sub-001', 'sub-002'], '"nodeA"=>"192.168.0.1"',            '"secret"=>"classified"', 'The underground network.'),
+('net-002', 'CorpNet', 'ironclad', ARRAY['sub-003'],            '"nodeB"=>"10.0.0.1"',               '',                       'Corporate infrastructure.');
 
 -- =============================================
 -- SUBNETWORKS
@@ -378,11 +379,11 @@ INSERT INTO "Subnetworks" ("Id", "Name", "Network", "Users", "Firewall", "Operat
 -- =============================================
 -- LOGS
 -- =============================================
-INSERT INTO "Logs" ("Id", "Timestamp", "SourceUser", "TargetUser", "LogType", "LogData", "Subnetwork") VALUES
-('log-001', '2025-01-10 12:01:00', 'shadowbyte', 'vexmira',  'TRANSFER',           'Transfer of 200 from ACC-1001 to ACC-3001', 'ShadowSub'),
-('log-002', '2025-01-11 09:31:00', 'ironclad',   'ironclad', 'TRANSFER',           'Salary transfer 1000 from ACC-9001',        'CorpSub1'),
-('log-003', '2025-01-12 22:01:00', 'vexmira',    'ironclad', 'SUBNETWORK_HACKED',  'CorpSub1 breached by vexmira',              'CorpSub1'),
-('log-004', '2025-01-13 08:01:00', 'shadowbyte', 'ironclad', 'GIG_ACCEPTED',       'Gig gig-002 accepted by shadowbyte',        'ShadowSub');
+INSERT INTO "Logs" ("Id", "Timestamp", "SourceUser", "TargetUser", "LogType", "LogData", "Subnetwork", "HackData") VALUES
+('log-001', '2025-01-10 12:01:00', 'shadowbyte', 'vexmira',  'TRANSFER',          'Transfer of 200 from ACC-1001 to ACC-3001', 'ShadowSub', ''),
+('log-002', '2025-01-11 09:31:00', 'ironclad',   'ironclad', 'TRANSFER',          'Salary transfer 1000 from ACC-9001',        'CorpSub1',  ''),
+('log-003', '2025-01-12 22:01:00', 'vexmira',    'ironclad', 'SUBNETWORK_HACKED', 'CorpSub1 breached by vexmira',              'CorpSub1',  '"method"=>"trace_kill","target"=>"CorpSub1"'),
+('log-004', '2025-01-13 08:01:00', 'shadowbyte', 'ironclad', 'GIG_ACCEPTED',      'Gig gig-002 accepted by shadowbyte',        'ShadowSub', '');
 
 -- =============================================
 -- PLOTS
@@ -405,7 +406,7 @@ INSERT INTO "RecordTypes" ("Id", "Type", "User", "Category", "SubCategory", "Tit
 -- =============================================
 INSERT INTO "ProgramCodes" ("Id", "Code", "Program", "IsUsed", "Creator", "Owner") VALUES
 ('prog-001', 'XRAY-4421', 'Deep Scan',    false, 'vexmira',    NULL),
-('prog-002', g'BLCK-0092', 'Ice Breaker',  true,  NULL,         'shadowbyte'),
+('prog-002', 'BLCK-0092', 'Ice Breaker',  true,  NULL,         'shadowbyte'),
 ('prog-003', 'TRCE-7713', 'Trace Kill',   true,  'vexmira',    'vexmira');
 
 -- =============================================

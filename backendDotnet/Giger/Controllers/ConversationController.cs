@@ -5,9 +5,9 @@ using Giger.Connections.Handlers;
 
 namespace Giger.Controllers
 {
-    //[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
-    public class ConversationController(UserService _userService, LoginService _loginService,
+    public class ConversationController(UserService _userService, LoginService _loginService, MessagesService _messagesService,
         ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
         : AuthController(_userService, _loginService)
     {
@@ -37,8 +37,9 @@ namespace Giger.Controllers
 
             if (!isAuthorized)
             {
-                Unauthorized();
+                return Unauthorized();
             }
+            conversation.Messages = await _messagesService.GetAllForConversationAsync(conversation.Id);
 
             return conversation;
         }
@@ -56,6 +57,12 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
+
+            await Parallel.ForEachAsync(conversation, async (conv, ct) =>
+            {
+                conv.Messages = await _messagesService.GetAllForConversationAsync(conv.Id);
+            });
+
             return conversation;
         }
 
