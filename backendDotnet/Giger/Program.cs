@@ -5,6 +5,8 @@ using Giger.Models;
 using Giger.Controllers;
 using System.Net;
 using Giger.Services.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Giger.Services;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -21,6 +23,8 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.Configure<GigerDbSettings>(builder.Configuration.GetSection("GigerDb"));
 builder.Services.AddMvc().AddControllersAsServices();
+
+builder.Services.AddDbContext<GigerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbServices();
 
 builder.Services.AddWebSocketManager();

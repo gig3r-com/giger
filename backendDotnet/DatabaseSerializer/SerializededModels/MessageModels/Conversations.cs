@@ -1,5 +1,4 @@
 ﻿using Giger.Models.MessageModels;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.MessageModels
 {
@@ -17,23 +16,23 @@ namespace Giger.SerializededModels.MessageModels
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now,
+                            Timestamp = GigerDateTime.Now,
                             Sender = "jsilver",
-                            Text = "Hello, I am interested in your services.",
+                            Data = "Hello, I am interested in your services.",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
-                            Text = "Hello? Anyone here?",
+                            Data = "Hello? Anyone here?",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(6),
+                            Timestamp = GigerDateTime.Now.AddMinutes(6),
                             Sender = "jsilver",
-                            Text = "Hellooooooo?!",
+                            Data = "Hellooooooo?!",
                         }
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -46,23 +45,23 @@ namespace Giger.SerializededModels.MessageModels
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now,
+                            Timestamp = GigerDateTime.Now,
                             Sender = "jsilver",
-                            Text = "I will get you everything on Takayama corporation",
+                            Data = "I will get you everything on Takayama corporation",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
-                            Text = "ACCEPTED",
+                            Data = "ACCEPTED",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
-                            Text = "I will get back to you in a few hours",
+                            Data = "I will get back to you in a few hours",
                         },
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -75,23 +74,23 @@ namespace Giger.SerializededModels.MessageModels
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now,
+                            Timestamp = GigerDateTime.Now,
                             Sender = "jsilver",
-                            Text = "I will get you everything on Takayama corporation",
+                            Data = "I will get you everything on Takayama corporation",
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Id = Guid.NewGuid().ToString(),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
-                            Text = "ACCEPTED",
+                            Data = "ACCEPTED",
                         },
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Id = Guid.NewGuid().ToString(),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "triddle",
-                            Text = "I will get back to you in a few hours",
+                            Data = "I will get back to you in a few hours",
                         },
                     ],
                     Participants = ["jsilver", "triddle"],
@@ -103,24 +102,24 @@ namespace Giger.SerializededModels.MessageModels
                     Messages = [
                         new()
                         {
-                            Id = ObjectId.GenerateNewId().ToString(),
-                            Date = GigerDateTime.Now,
+                            Id = Guid.NewGuid().ToString(),
+                            Timestamp = GigerDateTime.Now,
                             Sender = "triddle",
-                            Text = "Please get me all you can on Takayama corporation",
+                            Data = "Please get me all you can on Takayama corporation",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
-                            Text = "ACCEPTED",
+                            Data = "ACCEPTED",
                         },
                         new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Date = GigerDateTime.Now.AddMinutes(2),
+                            Timestamp = GigerDateTime.Now.AddMinutes(2),
                             Sender = "jsilver",
-                            Text = "I will get back to you in a few hours",
+                            Data = "I will get back to you in a few hours",
                         },
                     ],
                     Participants = ["jsilver", "triddle"],

@@ -1,71 +1,51 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Giger.Models.BankingModels
 {
     public class Transaction
     {
-        [BsonElement("_id")]
         public required string Id { get; set; }
         
-        public string? From { get; set; } // AccountNumber
+        public string From { get; set; } // AccountNumber
 
-        public string? FromUser { get; set; } // Handle / Anonymized
+        public string To { get; set; } // AccountNumber
 
-        public string? To { get; set; } // AccountNumber
-
-        public string? ToUser { get; set; } // Handle / Anonymized
-
-        public string Title { get; set; }
-
-        [BsonIgnore]
         private decimal _amount;
         public required decimal Amount { get => _amount; set => _amount = Math.Abs(value); }
 
         public DateTime? Timestamp { get; set; }
 
-        public string? OrderingParty { get; set; } // user handle of person who ordered the transaction - only for business accounts
+        public string Title { get; set; }
+
+        public string? OrderingUser { get; set; } // user handle of person who ordered the transaction - only for business accounts
+
+        public string? HackData { get; set; } // used to store hack related data for hacked transactions
 
         public Transaction() { }
-
-        [SetsRequiredMembers]
-        public Transaction(string from, string to, string title, decimal amount)
-        {
-            Id = Guid.NewGuid().ToString();
-            From = from;
-            To = to;
-            Title = title;
-            Amount = amount;
-            Timestamp = GigerDateTime.Now;
-        }
 
         [SetsRequiredMembers]
         public Transaction(Transaction transaction)
         {
             Id = transaction.Id;
             From = transaction.From;
-            FromUser = transaction.FromUser;
             To = transaction.To;
-            ToUser = transaction.ToUser;
             Title = transaction.Title;
             Amount = transaction.Amount;
-            Timestamp = transaction.Timestamp;
-            OrderingParty = transaction.OrderingParty;
+            Timestamp = transaction.Timestamp ?? GigerDateTime.Now;
+            OrderingUser = transaction.OrderingUser;
+            HackData = transaction.HackData;
         }
 
         public override int GetHashCode()
         {
             int hash = 17;
             hash += 11 * Id.GetHashCode();
-            hash += 13 * (From == null ? 1 : From.GetHashCode());
-            hash += 13 * (FromUser == null ? 1 : FromUser.GetHashCode());
-            hash += 17 * (To == null ? 1 : To.GetHashCode());
-            hash += 17 * (ToUser == null ? 1 : ToUser.GetHashCode());
+            hash += 13 * From.GetHashCode();
+            hash += 17 * To.GetHashCode();
             hash += 19 * Title.GetHashCode();
             hash += 23 * Amount.GetHashCode();
             hash += 27 * Timestamp.GetHashCode();
-            hash += 31 * (OrderingParty == null ? 1 : OrderingParty.GetHashCode());
+            hash += 31 * (OrderingUser == null ? 1 : OrderingUser.GetHashCode());
             return hash;
         }
     }

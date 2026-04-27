@@ -1,30 +1,42 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.BankingModels
 {
     public class Account
     {
-        [BsonId]
-        [BsonElement("_id")]
         public required string Id { get; set; }
 
-        public required string Owner { get; set; }
+        private string _type;
+        public string Type // PRIVATE or BUSINESS
+        { 
+            get { return _type; }
+            set
+            {
+                if (value.Equals(PRIVATE_ACCOUNT_TYPE, StringComparison.OrdinalIgnoreCase))
+                {
+                    _type = PRIVATE_ACCOUNT_TYPE;
+                }
+                if (value.Equals(BUSINESS_ACCOUNT_TYPE, StringComparison.OrdinalIgnoreCase))
+                {
+                    _type = BUSINESS_ACCOUNT_TYPE;
+                }
+                else
+                {
+                    _type = value;
+                }
+            }
+        } 
 
-        public required string OwnerId { get; set; }
+        public string Name { get; set; }
 
-        public List<Transaction> Transactions { get; set; } = [];
-        
-        [BsonRepresentation(BsonType.String)]
-        public required AccountType Type { get; set; }
+        public string AccountNumber { get; set; }
 
-        [BsonRepresentation(BsonType.Decimal128)]
-        public required decimal Balance { get; set; }
-        
-        public required string AccountNumber { get; set; }
+        public decimal Balance { get; set; }
 
-        public bool IsActive { get; set; }
+        public List<string> Owners { get; set; }
+
+        [NotMapped] 
+        public List<Transaction> Transactions { get; set; }
 
         public override int GetHashCode()
         {
@@ -35,17 +47,22 @@ namespace Giger.Models.BankingModels
                 hash += 5 * trx.GetHashCode();
             }
             hash += 7 * Type.GetHashCode();
-            hash += 11 * Balance.GetHashCode();
-            hash += 13 * IsActive.GetHashCode();
+            hash += 11 * AccountNumber.GetHashCode();
+            hash += 13 * Name.GetHashCode();
+            hash += 17 * Balance.GetHashCode();
 
             return hash;
         }
+        
+        public const string PRIVATE_ACCOUNT_TYPE = "PRIVATE";
+        public const string BUSINESS_ACCOUNT_TYPE = "BUSINESS";
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]
-    public enum AccountType
-    {
-        PRIVATE,
-        BUSINESS
-    }
+
+    //[JsonConverter(typeof(JsonStringEnumConverter<AccountType>))]
+    //public enum AccountType
+    //{
+    //    PRIVATE,
+    //    BUSINESS
+    //}
 }

@@ -13,6 +13,7 @@ namespace DatabaseSerializer
             var assembly = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Giger.dll"));
             var modelTypes = from t in assembly.GetTypes()
                              where t.IsClass && !t.IsAbstract && t.Namespace != null && t.Namespace.Contains(nspace) && !_nonDbClasses.Contains(t.Name)
+                             where !t.Name.Contains("UpdateHashes") // Exclude UpdateHashes
                              select t;
             var modelTypesArray = modelTypes.ToArray();
 

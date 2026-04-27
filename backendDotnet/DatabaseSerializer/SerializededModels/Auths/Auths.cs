@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace Giger.SerializededModels.Auths
+﻿namespace Giger.SerializededModels.Auths
 {
     public class Auths
     {

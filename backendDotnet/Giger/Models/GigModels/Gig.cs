@@ -1,72 +1,41 @@
-﻿using Giger.Models.Obscured;
-using Giger.Models.User;
-using Microsoft.Extensions.Primitives;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Giger.Models.GigModels
 {
-    public class Gig : ObscurableInfo
+    public partial class Gig
     {
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public string? Description { get; set; }
+        public string? DescriptionDetailed { get; set; }
         public required decimal Payout { get; set; }
 
-        public required string Title { get; set; }
 
-        public string? Description { get; set; }
-
-        public string? ConversationId { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        public required GigCategoryNames Category { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        public required GigSubcategoryNames Subcategory { get; set; }
-
-        public required GigRepuationLevels ReputationRequired { get; set; }
+        public string Status { get; set; }
+        public string Category { get; set; }
+        public string Subcategory { get; set; }
+        public int ReputationRequired { get; set; }
 
         public bool IsAnonymizedAuthor { get; set; }
+        public string Mode { get; set; } // 'authorIsHiring' | 'authorWantsToBeHired';
+        public string[] IsRevealedTo { get; set; } // user handles, author is here from start
 
-        [BsonRepresentation(BsonType.String)]
-        public GigStatus Status { get; set; }
 
-        public required string AuthorId { get; set; }
+        public string AuthorId { get; set; } // TODO: DELETE
+        public string AuthorHandle { get; set; }
+        //public string AuthorAccountNumber { get; set; }
 
-        public required string AuthorName { get; set; }
+        public string? WorkerId { get; set; } // TODO: DELETE
+        public string? WorkerHandle { get; set; }
+        public string? WorkerAccountNumber { get; set; }
 
-        public string? TakenById { get; set; }
-
+        public string? ClientHandle { get; set; }
         public string? ClientAccountNumber { get; set; }
 
-        public string? ProviderAccountNumber { get; set; }
-
-        public DateTime? MarkedAsComplaintAt { get; set; }
-
+        public string? ConversationId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        [NotMapped]
+        public List<GigUpdate> Updates { get; set; }
         public string? ComplaintReason { get; set; }
-
-        public required DateTime CreatedAt { get; set; }
-
-        public DateTime? AcceptedAt { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        public required GigModes Mode { get; set; }
-
-        public bool IsRevealedByClient { get; set; } = true;
-
-        public string? DescriptionDetailed { get; set; }
-
-        public override void Obscure()
-        {
-            Payout = -1;
-            Title = REDACTED;
-            Description = REDACTED;
-            DescriptionDetailed = REDACTED;
-            ConversationId = null;
-            Category = GigCategoryNames.REDACTED;
-            Subcategory = GigSubcategoryNames.REDACTED;
-            AuthorName = REDACTED;
-            ComplaintReason = ComplaintReason == null ? null : REDACTED;
-        }
-
-        public const string ANONIMIZED = "AnoNyMUS";
     }
 }

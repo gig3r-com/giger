@@ -1,0 +1,17 @@
+DROP TABLE "Accounts";
+DROP TABLE "Auths";
+DROP TABLE "GigUpdates";
+DROP TABLE "GigerConfig";
+DROP TABLE "Gigs";
+DROP TABLE "HackConfig";
+DROP TABLE "Logs";
+DROP TABLE "Messages";
+DROP TABLE "Networks";
+DROP TABLE "Plots";
+DROP TABLE "ProgramCodes";
+DROP TABLE "RecordTypes";
+DROP TABLE "RecordsHashes";
+DROP TABLE "Subnetworks";
+DROP TABLE "Transactions";
+DROP TABLE "Users";
+DROP TABLE "Conversations";

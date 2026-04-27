@@ -9,20 +9,8 @@ using System.Text.Json;
 
 namespace Giger.Connections.Handlers
 {
-    public class ConversationMessageHandler : SocketHandler
+    public class ConversationMessageHandler(ConnectionsManager connections, IServiceProvider _serviceProvider) : SocketHandler(connections)
     {
-        ConversationService _conversationService;
-        LogService _logService;
-        UserService _userService;
-
-        public ConversationMessageHandler(ConnectionsManager connections, ConversationService conversationService, 
-            LogService logService, UserService userService) : base(connections)
-        {
-            _conversationService = conversationService;
-            _logService = logService;
-            _userService = userService;
-        }
-
         public async Task SendMessageAsync(IEnumerable<string> participants, string converasationId, Message message)
         {
             try
@@ -53,16 +41,17 @@ namespace Giger.Connections.Handlers
 
             try
             {
+                var conversationService = ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider);
                 var msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 var payload = JsonSerializer.Deserialize<MessagePayload>(msg);
-                var conversation = await _conversationService.GetAsync(payload.ConversationId);
+                var conversation = await conversationService.GetAsync(payload.ConversationId);
                 if (conversation != null)
                 {
                     conversation.Messages.Add(payload.Message);
-                    await _conversationService.UpdateAsync(conversation);
+                    await conversationService.UpdateAsync(conversation);
                     var message = JsonSerializer.Serialize(payload);
                     await SendMessageToParticipantsAsync(message, conversation.Participants);
-                    LogMessage(payload.Message, payload.ConversationId);
+                    LogMessage(payload.Message, payload.ConversationId, conversationService);
                 }
             } 
             catch (Exception ex)
@@ -71,25 +60,29 @@ namespace Giger.Connections.Handlers
             }
         }
 
-        private async void LogMessage(Message message, string conversationId)
+        private async void LogMessage(Message message, string conversationId, ConversationService? conversationService = null)
         {
-            var user = await _userService.GetByUserNameAsync(message.Sender);
-            var conversation = await _conversationService.GetAsync(conversationId);
+            LogMessage(message, conversationId,
+                conversationService ?? ScopedServiceProvider.CreateScopedGigerService<ConversationService>(_serviceProvider),
+                ScopedServiceProvider.CreateScopedGigerService<LogService>(_serviceProvider),
+                ScopedServiceProvider.CreateScopedGigerService<UserService>(_serviceProvider));
+        }
+        private async void LogMessage(Message message, string conversationId, ConversationService conversationService, LogService logService, UserService userService)
+        {
+            var user = await userService.GetByUserNameAsync(message.Sender);
+            var conversation = await conversationService.GetAsync(conversationId);
             var log = new Log()
             {
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = GigerDateTime.Now,
-                SourceUserId = user.Id,
-                SourceUserName = user.Handle,
-                TargetUserId = conversation.Id,
-                TargetUserName = string.Join(',', conversation.Participants),
-                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT : LogType.MESSAGE,
+                SourceUser = user.Handle,
+                TargetUser = string.Join(',', conversation.Participants),
+                LogType = conversation.GigConversation ? LogType.GIG_MESSAGESENT.ToString() : LogType.MESSAGE.ToString(),
                 LogData = $"Message has been sent by {user.Handle} to {string.Join(',', conversation.Participants)} user(s).",
-                SubnetworkId = user.SubnetworkId,
-                SubnetworkName = user.SubnetworkName,
+                Subnetwork = user.Subnetwork,
             };
 
-            _logService.CreateAsync(log);
+            logService.CreateAsync(log);
         }
     }
 }
