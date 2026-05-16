@@ -1,31 +1,29 @@
 ﻿using Giger.Models.Logs;
 using Giger.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LogController(UserService userService, LoginService loginService, LogService logService, NetworksService networksService) 
+    public class LogController(UserService userService, LoginService loginService, 
+        LogService _logService,
+        NetworksService _networksService) 
         : AuthController(userService, loginService)
     {
-        private readonly LogService _logService = logService;
-        private readonly NetworksService _networksService = networksService;
-
-        [HttpGet("{subnetworkId}/all")]
-        public async Task<List<Log>> GetAllSubnetworkLogs(string subnetworkId) => await _logService.GetAllForSubnetworkAsync(subnetworkId);
+        [HttpGet("{subnetworkName}/all")]
+        public async Task<List<Log>> GetAllSubnetworkLogs(string subnetworkName) => await _logService.GetAllForSubnetworkAsync(subnetworkName);
 
         [HttpPost()]
         public async Task<IActionResult> PostLog(Log newLog)
         {
-            var senderUser = await _userService.GetAsync(newLog.SourceUserId);
+            var senderUser = await _userService.GetByUserNameAsync(newLog.SourceUser);
             if (senderUser is null)
             {
                 return BadRequest();
             }
 
-            var senderSubnetwork = await _networksService.GetSubnetworkByIdAsync(senderUser.SubnetworkId);
+            var senderSubnetwork = await _networksService.GetSubnetworkByFirstNameAsync(senderUser.Subnetwork);
             if (senderSubnetwork is null)
             {
                 return NotFound();
@@ -34,12 +32,12 @@ namespace Giger.Controllers
             newLog.Timestamp = GigerDateTime.Now;
             _logService.CreateAsync(newLog);
 
-            if (newLog.TargetUserId is not null)
+            if (newLog.TargetUser is not null)
             {
-                var targetUser = await _userService.GetAsync(newLog.TargetUserId);
+                var targetUser = await _userService.GetAsync(newLog.TargetUser);
                 if (targetUser is not null)
                 {
-                    var targetSubnetwork = await _networksService.GetSubnetworkByIdAsync(targetUser.SubnetworkId);
+                    var targetSubnetwork = await _networksService.GetSubnetworkByFirstNameAsync(targetUser.Subnetwork);
                     if (targetSubnetwork.Id != senderSubnetwork.Id)
                     {
                         var copyLog = new Log(newLog, targetSubnetwork);
@@ -67,10 +65,10 @@ namespace Giger.Controllers
         [HttpPost("hack")]
         public async Task<IActionResult> PostHack(Log newLog)
         {
-            var subNetwork = await _networksService.GetSubnetworkByIdAsync(newLog.SubnetworkId);
+            var subNetwork = await _networksService.GetSubnetworkByFirstNameAsync(newLog.Subnetwork);
 
             newLog.Timestamp = GigerDateTime.Now;
-            if (newLog.LogType == LogType.SUBNETWORK_SECURITY_BREACH)
+            if (newLog.LogType == LogType.SUBNETWORK_SECURITY_BREACH.ToString())
             {
                 subNetwork.PastHacks = [.. subNetwork.PastHacks, newLog.Timestamp.ToString()];
             }

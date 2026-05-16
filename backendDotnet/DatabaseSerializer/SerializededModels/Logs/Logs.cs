@@ -1,5 +1,4 @@
 ﻿using Giger.Models.Logs;
-using MongoDB.Bson;
 
 namespace Giger.SerializededModels.Logs
 {

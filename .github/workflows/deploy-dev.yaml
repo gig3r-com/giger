@@ -16,6 +16,7 @@ on:
 
 permissions:
   packages: write
+  pull-requests: write
 
 jobs:
   build-frontend:
@@ -36,29 +37,17 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     secrets: inherit
 
-  build-mongo:
-    uses: ./.github/workflows/build-docker-image.yaml
-    with:
-      DOCKER_CONTEXT: ./data/
-      DOCKERFILE_NAME: ./data/Dockerfile
-      IMAGE_NAME: "gig3r-mongo"
-      IMAGE_TAG: ${{ github.sha }}
-    secrets: inherit
-  
   deploy-helm-chart:
     uses: ./.github/workflows/deploy-helm-chart.yaml
     needs:
       - build-frontend
       - build-backend
-      - build-mongo
     with:
       HELM_ENVIRONMENT: ${{ github.event_name != 'pull_request' && 'dev' || '' }}
       HELM_FRONTEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-frontend"
       HELM_FRONTEND_TAG: ${{ github.sha }}
       HELM_BACKEND_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-backend"
       HELM_BACKEND_TAG: ${{ github.sha }}
-      HELM_DATABASE_IMAGE: "ghcr.io/${{ github.repository_owner }}/gig3r-mongo"
-      HELM_DATABASE_TAG: ${{ github.sha }}
     secrets: inherit
 
   tests_e2e:
@@ -80,19 +69,19 @@ jobs:
       - name: Run tests
         run: npx playwright test
         env:
-          BASE_URL: "https://${{ needs.deploy-helm-chart.outputs.address }}"
+          BASE_URL: "https://${{ needs.deploy-helm-chart.outputs.apply }}"
 
   comment:
     if: github.event_name == 'pull_request'
     runs-on: microk8s-runner-1
     needs: [ deploy-helm-chart ]
     steps:
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'PR had been deployed. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.address }}](https://${{ needs.deploy-helm-chart.outputs.address }}) \nIt may take up to 10 minutes for DNS to propagate.'
+              body: 'PR had been deployed. \nEnvironment address is: [${{ needs.deploy-helm-chart.outputs.apply }}](https://${{ needs.deploy-helm-chart.outputs.apply }}) \nIt may take up to 10 minutes for DNS to propagate.'
             })

@@ -1,63 +1,93 @@
 
-# mongodb deployment
+# postgresql deployment
+{{- $initArchivePath := .Values.database.initArchivePath | default "files/postgres-init.tar.xz" -}}
+{{- $hasInitArchive := gt (len (.Files.Glob $initArchivePath)) 0 -}}
+{{- $useConfigMapInit := and .Values.database.initFromConfigMap $hasInitArchive }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "gig3r.mongodb.app" . }}
+  name: {{ include "gig3r.postgres.app" . }}
 spec:
   replicas: 1
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: {{ if eq .Values.environment "prd" }}Retain{{ else }}Delete{{ end }}
+    whenScaled: Retain
   selector:
     matchLabels:
-      app: {{ include "gig3r.mongodb.app" . }}
+      app: {{ include "gig3r.postgres.app" . }}
   template:
     metadata:
       labels:
-        app: {{ include "gig3r.mongodb.app" . }}
+        app: {{ include "gig3r.postgres.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
-      imagePullSecrets:
-      - name: regcred
+      {{- if $useConfigMapInit }}
+      initContainers:
+      - name: postgres-init-extract
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          rm -rf /workdir/*
+          tar -xJf /config/postgres-init.tar.xz -C /workdir
+        volumeMounts:
+        - name: postgres-init-archive
+          mountPath: /config
+          readOnly: true
+        - name: postgres-init-sql
+          mountPath: /workdir
+      {{- end }}
       containers:
-      - image: {{ include "gig3r.mongodb.image" . }}
-        name: {{ include "gig3r.mongodb.app" . }}
+      - image: {{ include "gig3r.postgres.image" . }}
+        name: {{ include "gig3r.postgres.app" . }}
         ports:
-        - containerPort: 27017
+        - containerPort: 5432
           protocol: TCP
         env:
-        - name: MONGO_INITDB_ROOT_USERNAME
+        - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
-        - name: MONGO_INITDB_ROOT_PASSWORD
+              key: GIGER_DB_USERNAME
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
-        - name: MONGO_INITDB_DATABASE
+              key: GIGER_DB_PASSWORD
+        - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
+              key: GIGER_DB_NAME
         volumeMounts:
-        - name: mongo-scripts
+        - name: postgres-persistent-storage
+          mountPath: /var/lib/postgresql
+        {{- if $useConfigMapInit }}
+        - name: postgres-init-sql
           mountPath: /docker-entrypoint-initdb.d
-        {{- if eq "app" .Values.environment }}
-        - name: mongo-persistent-storage
-          mountPath: /data/db
-          {{- end }}
+        {{- end }}
+      {{- if .Values.dockerconfigjson }}
       imagePullSecrets:
       - name: regcred
+      {{- end }}
       restartPolicy: Always
+      {{- if $useConfigMapInit }}
       volumes:
-        - name: "mongo-scripts"
+        - name: postgres-init-archive
           configMap:
-            name: "mongo-scripts"
-        {{- if eq "app" .Values.environment }}
-        - name: mongo-persistent-storage
-          hostPath:
-            path: /opt/mongo/{{ .Values.environment }}
-            type: DirectoryOrCreate
-        {{- end }}
+            name: {{ include "gig3r.postgres.init.configmap" . }}
+        - name: postgres-init-sql
+          emptyDir: {}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-persistent-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: {{ .Values.database.storage }}
 
 ---

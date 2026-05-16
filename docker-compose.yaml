@@ -36,41 +36,23 @@ services:
       - ./backendDotnet/Giger/appsettings.json:/app/appsettings.json
     environment:
       #- GigerDB__ConnectionString=mongodb://mongo:27017
-      - GigerDB__Host=mongo
-      - GigerDB__Port=27017
+      - GigerDB__Host=postgres
+      - GigerDB__Port=5432
       - GigerDB__Username=${GIGER_USERNAME:-giger}
       - GigerDB__Password=${GIGER_PASSWORD:-giger}
       - GigerDB__DatabaseName=${GIGER_DATABASE:-admin}
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - mongo
+      - postgres
 
-  mongo:
-    image: mongo:latest
+  postgres:
+    image: postgres:16
     restart: unless-stopped
-    expose:
-      - 27017
     ports:
-      - ${MONGO_PORT:-27017}:27017
+      - '5432:5432'
     volumes:
-      - ./docker/volumes/mongo:/data/db
-      - ./docker/mongo_init:/docker-entrypoint-initdb.d
-      - ./data/mongo:/data/
+      - ./volumes/postgres:/var/lib/postgresql
     environment:
-      MONGO_INITDB_DATABASE: ${GIGER_DATABASE:-admin}
-      MONGO_INITDB_ROOT_USERNAME: ${GIGER_USERNAME:-giger}
-      MONGO_INITDB_ROOT_PASSWORD: ${GIGER_PASSWORD:-giger}
-
-  mongo-express:
-    image: mongo-express
-    restart: unless-stopped
-    ports:
-      - ${EXPRESS_PORT:-8081}:8081
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_AUTH_DATABASE: ${GIGER_DATABASE:-admin}
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${GIGER_USERNAME:-giger}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${GIGER_PASSWORD:-giger}
-    depends_on:
-      - mongo
-      
+      - POSTGRES_USER=giger
+      - POSTGRES_PASSWORD=giger
+      - POSTGRES_DB=giger

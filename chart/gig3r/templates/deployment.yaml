@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: {{ include "gig3r.frontend.app" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.frontend.replicas | default 1 }}
   selector:
     matchLabels:
       app: {{ include "gig3r.frontend.app" . }}
@@ -15,8 +15,10 @@ spec:
         app: {{ include "gig3r.frontend.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
+      {{- if .Values.dockerconfigjson }}
       imagePullSecrets:
       - name: regcred
+      {{- end }}
       containers:
       - image: {{ include "gig3r.frontend.image" . }}
         name: {{ include "gig3r.frontend.app" . }}
@@ -32,7 +34,7 @@ kind: Deployment
 metadata:
   name: {{ include "gig3r.backend.app" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.backend.replicas | default 1 }}
   selector:
     matchLabels:
       app: {{ include "gig3r.backend.app" . }}
@@ -42,8 +44,10 @@ spec:
         app: {{ include "gig3r.backend.app" . }}
         randstr: {{ randAlphaNum 20 }}
     spec:
+      {{- if .Values.dockerconfigjson }}
       imagePullSecrets:
       - name: regcred
+      {{- end }}
       containers:
       - image: {{ include "gig3r.backend.image" . }}
         name: {{ include "gig3r.backend.app" . }}
@@ -54,85 +58,26 @@ spec:
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "1"
         - name: GigerDB__Host
-          value: {{ include "gig3r.mongodb.app" . }}
+          value: {{ include "gig3r.postgres.app" . }}
         - name: GigerDB__Port
-          value: "27017"
+          value: "5432"
         - name: GigerDB__Username
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
+              key: GIGER_DB_USERNAME
         - name: GigerDB__Password
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
+              key: GIGER_DB_PASSWORD
         - name: GigerDB__DatabaseName
           valueFrom:
             secretKeyRef:
               name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
+              key: GIGER_DB_NAME
         - name: ASPNETCORE_ENVIRONMENT
           value: {{ include "gig3r.backend.environment" .}}
-      volumes:
-      - name: config
-        secret:
-          secretName: gig3r-secret
       restartPolicy: Always
 
 ---
-
-# mongoexpress deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "gig3r.mongo-express.app" . }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: {{ include "gig3r.mongo-express.app" . }}
-  template:
-    metadata:
-      labels:
-        app: {{ include "gig3r.mongo-express.app" . }}
-        randstr: {{ randAlphaNum 20 }}
-    spec:
-      containers:
-      - image: mongo-express:latest
-        name: {{ include "gig3r.mongo-express.app" . }}
-        ports:
-        - containerPort: 8081
-          protocol: TCP
-        env:
-        - name: ME_CONFIG_MONGODB_SERVER
-          value: {{ include "gig3r.mongodb.app" . }}
-        - name: ME_CONFIG_MONGODB_AUTH_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_DATABASE
-        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_USERNAME
-        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gig3r-secret
-              key: MONGO_INITDB_ROOT_PASSWORD
-        - name: ME_CONFIG_MONGODB_URL
-          value: mongodb://$(ME_CONFIG_MONGODB_ADMINUSERNAME):$(ME_CONFIG_MONGODB_ADMINPASSWORD)@$(ME_CONFIG_MONGODB_SERVER):27017
-        - name: ME_CONFIG_BASICAUTH_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-express-secret
-              key: ME_CONFIG_BASICAUTH_USERNAME
-        - name: ME_CONFIG_BASICAUTH_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-express-secret
-              key: ME_CONFIG_BASICAUTH_PASSWORD
-      restartPolicy: Always
-

@@ -18,15 +18,13 @@ jobs:
         with:
           prefix: CI_
 
-      - name: 'Deploy'
-        uses: 'WyriHaximus/github-action-helm3@v3'
-        with:
-          exec: |
-            helm uninstall \
-            gig3r-${{ env.HELM_ENVIRONMENT }} \
-            --namespace=${{ env.HELM_ENVIRONMENT }}
-                    
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-          overrule_existing_kubeconfig: true
+      - name: delete namespace
+        id: delete-namespace
+        run: |
+          cat << EOF > /tmp/kubeconfig
+          ${{ secrets.KUBECONFIG }}
+          EOF
+          kubectl delete ns ${HELM_ENVIRONMENT}
         env:
-          HELM_ENVIRONMENT: ${{ env.CI_GITHUB_REF_NAME_SLUG_URL }}
+          KUBECONFIG: /tmp/kubeconfig
+          HELM_ENVIRONMENT: ${{ inputs.HELM_ENVIRONMENT != '' && inputs.HELM_ENVIRONMENT || env.CI_GITHUB_REF_NAME_SLUG_URL }}

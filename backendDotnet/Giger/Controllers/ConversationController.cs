@@ -7,14 +7,14 @@ namespace Giger.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ConversationController(UserService userService, LoginService loginService,
-        ConversationService conversationService, NotificationsSocketHandler notificationsHandler, ConversationMessageHandler conversationSocketHandler)
-        : AuthController(userService, loginService)
+    public class ConversationController(UserService _userService, LoginService _loginService, MessagesService _messagesService,
+        ConversationService _conversationService, NotificationsSocketHandler _notificationsHandler, ConversationMessageHandler _conversationSocketHandler)
+        : AuthController(_userService, _loginService)
     {
-        private readonly ConversationService _conversationService = conversationService;
-
-        private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
-        private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
+       //private readonly ConversationService _conversationService = conversationService;
+       //
+       //private readonly NotificationsSocketHandler _notificationsHandler = notificationsHandler;
+       //private readonly ConversationMessageHandler _conversationSocketHandler = conversationSocketHandler;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Conversation>> Get(string id)
@@ -37,8 +37,9 @@ namespace Giger.Controllers
 
             if (!isAuthorized)
             {
-                Unauthorized();
+                return Unauthorized();
             }
+            conversation.Messages = await _messagesService.GetAllForConversationAsync(conversation.Id);
 
             return conversation;
         }
@@ -56,6 +57,12 @@ namespace Giger.Controllers
             {
                 return NotFound();
             }
+
+            await Parallel.ForEachAsync(conversation, async (conv, ct) =>
+            {
+                conv.Messages = await _messagesService.GetAllForConversationAsync(conv.Id);
+            });
+
             return conversation;
         }
 
@@ -103,8 +110,8 @@ namespace Giger.Controllers
 
             if (string.IsNullOrEmpty(newMessage.Id))
             {
-                newMessage = new Message(newMessage.Sender, newMessage.Text);
-                newMessage.Date = DateTime.Now;
+                newMessage = new Message(newMessage.Sender, newMessage.Data);
+                newMessage.Timestamp = GigerDateTime.Now;
             }
 
             conversation.Messages.Add(newMessage);

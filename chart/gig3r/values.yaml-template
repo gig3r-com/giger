@@ -1,18 +1,33 @@
 environment: app
 base_url: gig3r.com
+dockerconfigjson: ""
 
 frontend:
   image: ghcr.io/gig3r-com/gig3r-frontend
   tag: 0.2.0
+  replicas: 1
 
 backend:
   image: ghcr.io/gig3r-com/gig3r-backend
   tag: 0.2.0
+  replicas: 1
 
 database:
-  name: admin
-  user: gig3r
+  name: giger
+  user: giger
+  image: postgres
+  tag: "16"
+  storage: 500MiB
+  initFromConfigMap: true
+  initArchivePath: files/postgres-init.tar.xz
 
-mongoexpress:
-  user: changeme
-  password: changeaswell
+pgadmin:
+  enabled: true
+  image: dpage/pgadmin4
+  tag: "8"
+  replicas: 1
+  email: admin@giger.local
+  password: changeme
+
+ingress:
+  enabled: true
